@@ -1,0 +1,27 @@
+{
+  "name": "specnav-requirements",
+  "version": "0.1.0",
+  "description": "Requirements and foundation spec stage for the SpecNav OpenSpec lifecycle.",
+  "author": {
+    "name": "SpecNav Maintainers",
+    "url": "https://github.com/zengwenliang416/specnav-codex-plugin"
+  },
+  "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
+  "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
+  "license": "MIT",
+  "keywords": ["codex", "openspec", "requirements", "specs"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SpecNav Requirements",
+    "shortDescription": "Foundation specs and requirements negotiation for SpecNav",
+    "longDescription": "Creates and validates repository discovery, UI design, system architecture, frontend-backend data flow, component architecture, requirements, acceptance criteria, spec maps, and component impact maps.",
+    "developerName": "SpecNav Maintainers",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": ["Use SpecNav requirements to prepare foundation specs before feature work."],
+    "brandColor": "#10A37F",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
+    "screenshots": []
+  }
+}

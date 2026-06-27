@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "budgets": [
+    {
+      "area": "component cohesion",
+      "limit": "one user-facing responsibility per shared component"
+    },
+    {
+      "area": "coupling",
+      "limit": "no page-specific imports inside shared components"
+    }
+  ]
+}

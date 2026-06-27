@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "change_id": "{{SPECNAV_CHANGE}}",
+  "entries": [
+    {
+      "changed_file": "openspec/changes/{{SPECNAV_CHANGE}}/development/handoff-to-verify.md",
+      "requirement_refs": [
+        "requirements.md"
+      ],
+      "task_refs": [
+        "development/tasks"
+      ],
+      "prototype_refs": [
+        "prototype/handoff.md"
+      ],
+      "foundation_spec_refs": [
+        "ui-design",
+        "system-architecture",
+        "frontend-backend-data-flow",
+        "component-architecture"
+      ],
+      "verification_domains": [
+        "facticity",
+        "static",
+        "unit",
+        "redteam",
+        "e2e",
+        "sensory"
+      ]
+    }
+  ],
+  "unmapped_changes": []
+}

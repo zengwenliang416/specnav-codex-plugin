@@ -1,0 +1,27 @@
+{
+  "name": "specnav-prototype",
+  "version": "0.1.0",
+  "description": "Runnable prototype, prototype verification, approval, and handoff stage for SpecNav.",
+  "author": {
+    "name": "SpecNav Maintainers",
+    "url": "https://github.com/zengwenliang416/specnav-codex-plugin"
+  },
+  "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
+  "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
+  "license": "MIT",
+  "keywords": ["codex", "openspec", "prototype", "handoff"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SpecNav Prototype",
+    "shortDescription": "Runnable prototype artifacts and handoff for SpecNav",
+    "longDescription": "Creates reviewable prototype artifacts, verifies prototype behavior, records user approval, and freezes handoff evidence for development.",
+    "developerName": "SpecNav Maintainers",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": ["Use SpecNav prototype to create a runnable review artifact from approved requirements."],
+    "brandColor": "#10A37F",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
+    "screenshots": []
+  }
+}

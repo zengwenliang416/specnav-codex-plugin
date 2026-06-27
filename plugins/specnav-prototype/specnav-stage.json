@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.stagePlugin.v1",
+  "plugin": "specnav-prototype",
+  "stage": "prototype",
+  "required": true,
+  "depends_on": [
+    "specnav-core",
+    "specnav-requirements"
+  ],
+  "commands": [
+    "specnav-prototype"
+  ],
+  "skills": [
+    "specnav-prototype",
+    "specnav-prototype-verify",
+    "specnav-prototype-handoff"
+  ],
+  "contracts": {
+    "prototype": "scripts/prototype-contract.js"
+  },
+  "state_outputs": [
+    "openspec/changes/<change>/prototype/"
+  ]
+}

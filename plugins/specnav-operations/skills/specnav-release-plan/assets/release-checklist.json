@@ -1,0 +1,15 @@
+{
+  "schema": "specnav.ops.releaseChecklist.v1",
+  "change": "{{SPECNAV_CHANGE}}",
+  "release_target": "{{SPECNAV_RELEASE_TARGET}}",
+  "checks": [
+    {
+      "name": "verification green",
+      "status": "blocked"
+    },
+    {
+      "name": "release docs prepared",
+      "status": "blocked"
+    }
+  ]
+}

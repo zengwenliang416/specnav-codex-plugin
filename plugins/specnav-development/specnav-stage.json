@@ -1,0 +1,28 @@
+{
+  "schema": "specnav.stagePlugin.v1",
+  "plugin": "specnav-development",
+  "stage": "development",
+  "required": true,
+  "depends_on": [
+    "specnav-core",
+    "specnav-requirements",
+    "specnav-prototype"
+  ],
+  "commands": [
+    "specnav-implement"
+  ],
+  "skills": [
+    "specnav-development-entry",
+    "specnav-scope-lock",
+    "specnav-vertical-slices",
+    "specnav-fix",
+    "specnav-debug",
+    "specnav-break-loop"
+  ],
+  "contracts": {
+    "development": "scripts/development-contract.js"
+  },
+  "state_outputs": [
+    "openspec/changes/<change>/development/"
+  ]
+}

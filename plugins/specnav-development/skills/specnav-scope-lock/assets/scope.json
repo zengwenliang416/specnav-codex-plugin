@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "change_id": "{{SPECNAV_CHANGE}}",
+  "stage": "development",
+  "allowed_roots": [
+    "src"
+  ],
+  "denied_roots": [
+    ".git",
+    "node_modules",
+    "dist",
+    "coverage"
+  ],
+  "requires_review_on": [
+    "package.json",
+    "database",
+    "migrations"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  },
+  "prototype_sources": [
+    "openspec/changes/{{SPECNAV_CHANGE}}/prototype/{{SPECNAV_PROTOTYPE_ENTRY}}"
+  ],
+  "expires_when": "verification_started"
+}

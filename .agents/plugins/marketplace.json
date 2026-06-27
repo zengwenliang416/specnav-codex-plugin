@@ -1,0 +1,80 @@
+{
+  "name": "specnav-marketplace",
+  "interface": {
+    "displayName": "SpecNav Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "specnav-core",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-core"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "specnav-requirements",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-requirements"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "specnav-prototype",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-prototype"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "specnav-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "specnav-verification",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-verification"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "specnav-operations",
+      "source": {
+        "source": "local",
+        "path": "./plugins/specnav-operations"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

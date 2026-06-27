@@ -1,0 +1,23 @@
+{
+  "schema": "specnav.prototype.manifest.v1",
+  "version": "1",
+  "type": "{{SPECNAV_PROTOTYPE_BRANCH}}",
+  "entry": "{{SPECNAV_PROTOTYPE_ENTRY}}",
+  "mock_strategy": "static fixtures only; no real data",
+  "touches_real_data": false,
+  "may_promote": false,
+  "promotion_requirement": "requires verifier-report.json, explicit user approval, and prototype handoff",
+  "dependencies": [],
+  "referenced_foundation_specs": [
+    "ui-design",
+    "system-architecture",
+    "frontend-backend-data-flow",
+    "component-architecture"
+  ],
+  "referenced_requirements": [
+    "requirements.md",
+    "acceptance.md",
+    "spec-map.json",
+    "component-impact-map.json"
+  ]
+}

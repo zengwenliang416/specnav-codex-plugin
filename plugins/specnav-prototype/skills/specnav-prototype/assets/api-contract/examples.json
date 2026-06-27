@@ -1,0 +1,21 @@
+{
+  "endpoint": "<decision-required>",
+  "method": "POST",
+  "auth": "<decision-required>",
+  "request": {
+    "example": "<decision-required>"
+  },
+  "responses": {
+    "200": {
+      "example": "<decision-required>"
+    },
+    "400": {
+      "error": "validation_error",
+      "message": "Describe the invalid input and next action."
+    },
+    "403": {
+      "error": "permission_denied",
+      "message": "Describe the missing permission."
+    }
+  }
+}

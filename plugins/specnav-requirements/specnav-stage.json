@@ -1,0 +1,33 @@
+{
+  "schema": "specnav.stagePlugin.v1",
+  "plugin": "specnav-requirements",
+  "stage": "requirements",
+  "required": true,
+  "depends_on": [
+    "specnav-core"
+  ],
+  "commands": [
+    "specnav-requirements"
+  ],
+  "skills": [
+    "specnav-foundation-specs",
+    "specnav-repository-discovery",
+    "specnav-requirements"
+  ],
+  "contracts": {
+    "foundation": "scripts/foundation-specs.js",
+    "discovery": "scripts/repository-discovery-contract.js",
+    "requirements": "scripts/requirements-contract.js"
+  },
+  "state_outputs": [
+    "openspec/.specnav/context/repository-discovery.json",
+    "openspec/specs/ui-design/design.md",
+    "openspec/specs/system-architecture/design.md",
+    "openspec/specs/frontend-backend-data-flow/design.md",
+    "openspec/specs/component-architecture/design.md",
+    "openspec/changes/<change>/requirements.md",
+    "openspec/changes/<change>/acceptance.md",
+    "openspec/changes/<change>/spec-map.json",
+    "openspec/changes/<change>/component-impact-map.json"
+  ]
+}

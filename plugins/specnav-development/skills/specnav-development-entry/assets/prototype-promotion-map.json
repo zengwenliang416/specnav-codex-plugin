@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "promotion_policy": "reimplement_under_development_gate",
+  "allowed_to_copy": [
+    "Static copy text approved in prototype handoff"
+  ],
+  "must_reimplement": [
+    "Production UI, state, API calls, validation, persistence, and side effects"
+  ],
+  "blocked_direct_copies": [
+    "Prototype-only fixtures, mock data, fake API handlers, and review-only layout glue"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "screens": [
+    {
+      "id": "primary-review-screen",
+      "label": "Primary Review Screen",
+      "requirements": [
+        "requirements.md"
+      ],
+      "acceptance": [
+        "acceptance.md"
+      ],
+      "components": [
+        "component-impact-map.json"
+      ],
+      "data_flows": [
+        "frontend-backend-data-flow"
+      ],
+      "implementation_files": [
+        "src/review/PrimaryReviewScreen.tsx"
+      ]
+    }
+  ],
+  "variants": [
+    "default",
+    "loading",
+    "empty",
+    "error",
+    "disabled",
+    "permission"
+  ]
+}

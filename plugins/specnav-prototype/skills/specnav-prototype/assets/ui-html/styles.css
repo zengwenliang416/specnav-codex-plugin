@@ -1,0 +1,146 @@
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --border: #eaeaea;
+  --text: #171717;
+  --muted: #4d4d4d;
+  --accent: #006bff;
+  --danger: #ea001d;
+  font-family: "Geist Sans", Inter, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 36px;
+  padding: 0 12px;
+  font: inherit;
+}
+
+button[aria-pressed="true"],
+.primary {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.shell {
+  width: min(1180px, calc(100vw - 32px));
+  margin: 32px auto;
+}
+
+.toolbar,
+.workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.toolbar {
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.workspace {
+  grid-template-columns: 280px 1fr;
+  margin-top: 24px;
+}
+
+.panel,
+.canvas {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 20px;
+}
+
+dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.canvas {
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+}
+
+.state {
+  display: none;
+  width: min(520px, 100%);
+}
+
+.shell[data-specnav-state="default"] .state-default,
+.shell[data-specnav-state="loading"] .state-loading,
+.shell[data-specnav-state="empty"] .state-empty,
+.shell[data-specnav-state="error"] .state-error,
+.shell[data-specnav-state="permission"] .state-permission {
+  display: block;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 999px;
+  vertical-align: -2px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}

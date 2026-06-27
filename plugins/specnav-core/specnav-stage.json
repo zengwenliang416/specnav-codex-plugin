@@ -1,0 +1,32 @@
+{
+  "schema": "specnav.stagePlugin.v1",
+  "plugin": "specnav-core",
+  "stage": "core",
+  "required": true,
+  "commands": [
+    "specnav",
+    "specnav-bootstrap",
+    "specnav-status",
+    "specnav-doctor"
+  ],
+  "skills": [
+    "specnav-workflow",
+    "specnav-bootstrap",
+    "specnav-route",
+    "specnav-status",
+    "specnav-doctor",
+    "specnav-debug",
+    "specnav-recovery"
+  ],
+  "contracts": {
+    "state": "scripts/workflow-state.js",
+    "bootstrap": "scripts/specnav-bootstrap.js",
+    "doctor": "scripts/specnav-doctor.js",
+    "guard": "scripts/specnav-guard.js",
+    "suite": "scripts/plugin-suite.js"
+  },
+  "state_outputs": [
+    "openspec/.specnav/workflow-state.json",
+    "openspec/.specnav/affordances.json"
+  ]
+}

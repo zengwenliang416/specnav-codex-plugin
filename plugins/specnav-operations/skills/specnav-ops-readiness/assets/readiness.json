@@ -1,0 +1,28 @@
+{
+  "schema": "specnav.ops.readiness.v1",
+  "change": "{{SPECNAV_CHANGE}}",
+  "release_target": "{{SPECNAV_RELEASE_TARGET}}",
+  "ready": false,
+  "verification": {
+    "aggregate_verdict": "blocked",
+    "receipt_confidence": "C",
+    "uncovered_scope": [
+      "Verification is not proven."
+    ],
+    "residual_risk": []
+  },
+  "git": {
+    "branch": "<decision-required>",
+    "dirty": true,
+    "untracked_reviewed": false,
+    "worktree_mode": "<decision-required>"
+  },
+  "docs": {
+    "changelog": false,
+    "release_notes": false,
+    "readme_updated": false
+  },
+  "ops": {
+    "postmortem_required": false
+  }
+}

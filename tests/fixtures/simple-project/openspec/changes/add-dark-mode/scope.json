@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "change_id": "add-dark-mode",
+  "stage": "development",
+  "allowed_roots": [
+    "src/ui/**",
+    "tests/ui/**"
+  ],
+  "denied_roots": [
+    "src/ui/private/**"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": true
+  },
+  "requires_review_on": [],
+  "prototype_sources": [
+    "openspec/changes/add-dark-mode/prototype/artifact/index.html"
+  ],
+  "expires_when": "verification_started"
+}

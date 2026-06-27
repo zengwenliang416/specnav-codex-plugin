@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SpecNav UI Prototype</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="shell" data-specnav-screen="review-screen" data-specnav-variant="balanced" data-specnav-state="default">
+      <header class="toolbar" data-specnav-component="state-toolbar">
+        <div>
+          <p class="eyebrow">SpecNav Prototype</p>
+          <h1>Review Screen</h1>
+        </div>
+        <div class="segmented" aria-label="Prototype state">
+          <button data-specnav-set-state="default" aria-pressed="true">Default</button>
+          <button data-specnav-set-state="loading">Loading</button>
+          <button data-specnav-set-state="empty">Empty</button>
+          <button data-specnav-set-state="error">Error</button>
+          <button data-specnav-set-state="permission">Permission</button>
+        </div>
+      </header>
+
+      <section class="workspace" aria-live="polite">
+        <aside class="panel" data-specnav-component="context-panel">
+          <h2>Context</h2>
+          <dl>
+            <div><dt>Change</dt><dd>{{SPECNAV_CHANGE}}</dd></div>
+            <div><dt>Branch</dt><dd>{{SPECNAV_PROTOTYPE_BRANCH}}</dd></div>
+            <div><dt>Entry</dt><dd>{{SPECNAV_PROTOTYPE_ENTRY}}</dd></div>
+          </dl>
+        </aside>
+
+        <section class="canvas" data-specnav-component="review-canvas">
+          <div class="state state-default" data-specnav-state="default">
+            <h2>Primary User Path</h2>
+            <p>Replace this with the approved screen, interaction, and data state being reviewed.</p>
+            <button class="primary">Primary Action</button>
+          </div>
+          <div class="state state-loading" data-specnav-state="loading"><span class="spinner"></span> Loading review data</div>
+          <div class="state state-empty" data-specnav-state="empty">No review items yet. Define the first requirement to continue.</div>
+          <div class="state state-error" data-specnav-state="error">Action failed. Check the API contract and retry path.</div>
+          <div class="state state-permission" data-specnav-state="permission">You do not have access to this action.</div>
+        </section>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

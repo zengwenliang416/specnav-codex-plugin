@@ -1,0 +1,21 @@
+{
+  "schema": "specnav.foundationUpdateMap.v1",
+  "targets": {
+    "ui-design": {
+      "sections": ["Colors", "Typography", "Layout", "Components", "Voice & Content"],
+      "discovery_types": ["ui-framework"]
+    },
+    "system-architecture": {
+      "sections": ["Application Topology", "Module Boundaries", "API Surface", "Database Model", "Operational Constraints"],
+      "discovery_types": ["package-scripts", "next-framework", "vite-tooling", "server-framework", "database-tooling", "ci-workflows"]
+    },
+    "frontend-backend-data-flow": {
+      "sections": ["Flow Index", "Boundary Contracts", "State Ownership", "Error & Empty States"],
+      "discovery_types": ["route-tree", "api-surface", "api-flow-ownership"]
+    },
+    "component-architecture": {
+      "sections": ["Component Taxonomy", "State Ownership Rules", "Shared Component Extraction Rules", "Testing Expectations"],
+      "discovery_types": ["ui-framework", "components", "hooks", "utilities", "test-surface"]
+    }
+  }
+}

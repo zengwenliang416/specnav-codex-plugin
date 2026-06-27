@@ -1,0 +1,14 @@
+{
+  "schema": "specnav.ops.updatePolicy.v1",
+  "default_scope": "current-host",
+  "all_hosts_requires_explicit_request": true,
+  "installations": [
+    {
+      "host": "<decision-required>",
+      "plugin_root": "<decision-required>",
+      "discovery_root": "<decision-required>",
+      "tracked_ref": "<decision-required>",
+      "reload_hint": "<decision-required>"
+    }
+  ]
+}

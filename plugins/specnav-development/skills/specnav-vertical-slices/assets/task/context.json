@@ -1,0 +1,27 @@
+{
+  "task_id": "{{SPECNAV_TASK_ID}}",
+  "goal": "User can complete the primary approved flow from the prototype handoff.",
+  "must_read": [
+    "openspec/changes/{{SPECNAV_CHANGE}}/development/tasks/{{SPECNAV_TASK_ID}}/brief.md",
+    "openspec/changes/{{SPECNAV_CHANGE}}/requirements.md",
+    "openspec/changes/{{SPECNAV_CHANGE}}/acceptance.md",
+    "openspec/changes/{{SPECNAV_CHANGE}}/prototype/handoff.md"
+  ],
+  "allowed_files": [
+    "src"
+  ],
+  "non_goals": [
+    "Do not expand scope beyond the active change.",
+    "Do not bypass component extraction rules."
+  ],
+  "expected_evidence": [
+    "Focused tests or command output",
+    "Task report",
+    "Spec review",
+    "Quality review"
+  ],
+  "unsafe_assumptions": [
+    "Any missing requirement, API, database, or component decision blocks implementation."
+  ],
+  "stop_condition": "Stop if the task would edit outside scope or duplicate reusable component behavior."
+}

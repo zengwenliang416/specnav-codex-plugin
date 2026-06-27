@@ -1,0 +1,60 @@
+{
+  "schema": "specnav.repositoryDiscovery.v1",
+  "project_root": "/absolute/path/to/project",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "discovery_path": "openspec/.specnav/context/repository-discovery.json",
+  "ignored_dirs": [".git", "build", "coverage", "dist", "node_modules"],
+  "evidence": [
+    {
+      "id": "ev-package-manifest-package-json",
+      "path": "package.json",
+      "kind": "package-manifest",
+      "summary": "package.json scripts and dependencies are available.",
+      "details": {
+        "scripts": ["build", "test"],
+        "dependencies": ["next", "react"]
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-next-framework-1",
+      "type": "next-framework",
+      "summary": "Next.js dependency suggests route, rendering, and API conventions should be reflected in foundation specs.",
+      "foundation_target": {
+        "spec": "system-architecture",
+        "section": "Application Topology"
+      },
+      "evidence_refs": ["ev-package-manifest-package-json"],
+      "confidence": 0.86
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "conflict-multiple-route-conventions-1",
+      "type": "multiple-route-conventions",
+      "summary": "Multiple route directory conventions were found.",
+      "foundation_target": {
+        "spec": "frontend-backend-data-flow",
+        "section": "Flow Index"
+      },
+      "evidence_refs": ["ev-package-manifest-package-json"],
+      "confidence": 0.78,
+      "question": "Which route convention is canonical for new requirements work?",
+      "open_item": "Confirm the canonical routing surface before updating data-flow foundation specs."
+    }
+  ],
+  "open_items": [
+    {
+      "id": "open-api-flow-ownership-1",
+      "type": "api-flow-ownership",
+      "question": "Which API flows, validation owners, and error states should be captured for the discovered API surface?",
+      "foundation_target": {
+        "spec": "frontend-backend-data-flow",
+        "section": "Boundary Contracts"
+      },
+      "evidence_refs": ["ev-package-manifest-package-json"],
+      "confidence": 0.68
+    }
+  ]
+}
