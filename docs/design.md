@@ -135,18 +135,24 @@ The required manifest fields are:
 - `interface.shortDescription`
 - `interface.capabilities`
 
-Only `specnav-core` declares hooks:
+Only `specnav-core` ships hooks:
 
 ```json
 {
-  "skills": "./skills/",
-  "hooks": "./hooks/hooks.json"
+  "skills": "./skills/"
 }
 ```
 
-Stage plugins do not declare hooks. They provide skills and scripts only. This
-keeps lifecycle enforcement centralized and avoids conflicting hook behavior
-across plugins.
+The hook file lives at the Codex default plugin hook path:
+
+```text
+plugins/specnav-core/hooks/hooks.json
+```
+
+`plugin.json` intentionally omits a top-level `hooks` field so the manifest also
+passes the stricter `plugin-creator` validation contract. Stage plugins do not
+ship hooks. They provide skills and scripts only. This keeps lifecycle
+enforcement centralized and avoids conflicting hook behavior across plugins.
 
 ## 6. Skill Entry Model
 

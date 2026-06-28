@@ -19,7 +19,8 @@ for plugin in specnav-core specnav-requirements specnav-prototype specnav-develo
   fi
 done
 
-jq -e '.hooks == "./hooks/hooks.json"' "$ROOT/plugins/specnav-core/.codex-plugin/plugin.json" >/dev/null
+jq -e 'has("hooks") | not' "$ROOT/plugins/specnav-core/.codex-plugin/plugin.json" >/dev/null
+test -f "$ROOT/plugins/specnav-core/hooks/hooks.json"
 for plugin in specnav-requirements specnav-prototype specnav-development specnav-verification specnav-operations; do
   jq -e 'has("hooks") | not' "$ROOT/plugins/$plugin/.codex-plugin/plugin.json" >/dev/null
 done
