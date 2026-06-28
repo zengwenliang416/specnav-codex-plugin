@@ -160,7 +160,7 @@ entries are skills:
 | Prototype | `specnav-prototype` |
 | Development | `specnav-development-entry`, `specnav-scope-lock`, `specnav-vertical-slices`, `specnav-fix` |
 | Verification | `specnav-verify-plan`, `specnav-verify-facticity`, `specnav-verify-static`, `specnav-verify-unit`, `specnav-verify-redteam`, `specnav-verify-e2e`, `specnav-verify-sensory`, `specnav-verify-rerun`, `specnav-html-report` |
-| Operations | `specnav-release-plan`, `specnav-ops-readiness`, `specnav-rollback-plan`, `specnav-branch-finish` |
+| Operations | `specnav-release-plan`, `specnav-ops-readiness`, `specnav-rollback`, `specnav-branch-finish` |
 
 Skills may call colocated scripts and reuse assets/templates. A skill should not
 be only a thin prose page when a repeatable validation, scaffold, or report can

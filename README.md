@@ -101,7 +101,8 @@ plugins/specnav-operations/               Release, deploy, rollback, archive rea
   `specnav-break-loop`
 - Verification: `specnav-verify-plan`, `specnav-verify-facticity`,
   `specnav-verify-static`, `specnav-verify-unit`, `specnav-verify-redteam`,
-  `specnav-verify-e2e`, `specnav-verify-sensory`, `specnav-verify-rerun`
+  `specnav-verify-e2e`, `specnav-verify-sensory`, `specnav-verify-rerun`,
+  `specnav-html-report`
 - Operations: `specnav-ops-readiness`, `specnav-release-plan`,
   `specnav-install-verify`, `specnav-update-policy`,
   `specnav-compatibility-matrix`, `specnav-branch-finish`, `specnav-deploy`,
