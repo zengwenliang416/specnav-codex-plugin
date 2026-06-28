@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CORE="$ROOT/plugins/specnav-core"
 OPS="$ROOT/plugins/specnav-operations"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -139,8 +140,19 @@ cat >"$NO_CHECKBOX/openspec/changes/add-dashboard/tasks.md" <<'MD'
 
 - user can view dashboard summary with loading empty and error states
 MD
+set +e
+PROJECT_DIR="$NO_CHECKBOX" node "$CORE/scripts/tasks-md.js" normalize --json >"$TMP_DIR/no-checkbox-normalize.json"
+normalize_status=$?
+set -e
+if [[ "$normalize_status" != "2" ]]; then
+  echo "expected tasks-md normalize to exit 2 for unchecked normalized tasks, got $normalize_status" >&2
+  cat "$TMP_DIR/no-checkbox-normalize.json" >&2
+  exit 1
+fi
+grep -Fq -- '- [ ] user can view dashboard summary with loading empty and error states' "$NO_CHECKBOX/openspec/changes/add-dashboard/tasks.md"
+assert_blocker "$TMP_DIR/no-checkbox-normalize.json" 'tasks-md:incomplete-checkboxes'
 run_gate "$NO_CHECKBOX" "$TMP_DIR/no-checkbox.json" 2
-assert_blocker "$TMP_DIR/no-checkbox.json" 'tasks-md:no-checkboxes'
+assert_blocker "$TMP_DIR/no-checkbox.json" 'tasks-md:incomplete-checkboxes'
 
 INCOMPLETE="$TMP_DIR/incomplete"
 cp -R "$PROJECT" "$INCOMPLETE"

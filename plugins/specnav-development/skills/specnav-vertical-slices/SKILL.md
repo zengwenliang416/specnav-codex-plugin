@@ -20,10 +20,11 @@ Plan, dispatch, review, and close production implementation through file-backed 
 3. Read `references/development-review.md` before closing tasks or preparing handoff.
 4. If task artifacts are missing, run `node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-vertical-slices/scripts/create-vertical-slice.js" --task-id=<task-id> --json`.
 5. Write user-visible tracer-bullet slices in `tasks.md` as checkbox tasks only: `- [ ]` before implementation, `- [x]` only after direct implementation and validation evidence exists. Avoid layer-only tasks.
-6. Create each task packet with `brief.md` and `context.json`.
-7. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review.
-8. No fallback around failed task review is allowed.
-9. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
+6. After creating or editing `tasks.md`, run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json`. Plain bullets must be converted to standard OpenSpec checkbox syntax instead of left for archive-time interpretation.
+7. Create each task packet with `brief.md` and `context.json`.
+8. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review.
+9. No fallback around failed task review is allowed.
+10. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
 
 ## Required Outputs
 

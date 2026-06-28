@@ -1,6 +1,6 @@
 # SpecNav Codex Plugin System Design
 
-Version: 0.1.2
+Version: 0.1.3
 
 This repository is the Codex-native edition of SpecNav. It keeps the lifecycle
 logic of the existing SpecNav plugin suite, but it does not reuse the old plugin
@@ -276,9 +276,10 @@ Implementation proceeds through vertical slices. Each slice must declare:
 
 `tasks.md` is task evidence, not loose notes. Every task item must use checkbox
 syntax: `- [ ]` before implementation and `- [x]` only after direct
-implementation and validation evidence exists. Plain bullets, mixed
-checkbox/plain bullets, and unchecked tasks block development handoff and
-archive readiness.
+implementation and validation evidence exists. Plain bullets must be normalized
+with `scripts/tasks-md.js normalize` into standard OpenSpec checkbox syntax;
+archive readiness remains blocked until the normalized tasks have explicit
+`- [x]` completion evidence.
 
 Shared component extraction is mandatory when duplication forms a reusable
 component or stable domain utility. The system should prefer high cohesion,
@@ -317,8 +318,8 @@ Required outputs:
 
 High-risk changes require explicit human signoff before release/archive.
 Archive also requires `tasks.md` to contain completed checkbox tasks; the gate
-must not treat "no incomplete checkbox found" as completion evidence when the
-file contains only plain bullets.
+must run `scripts/tasks-md.js normalize` first and must not treat plain bullets
+as completed task evidence.
 
 ## 14. Runtime Discovery
 

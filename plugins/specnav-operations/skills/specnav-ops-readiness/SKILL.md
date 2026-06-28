@@ -19,8 +19,9 @@ Build the final operations readiness decision.
 2. Write readiness from direct evidence only.
 3. Read `references/operations-readiness.md` before writing readiness.
 4. If readiness artifacts are missing, run `node "$SPECNAV_OPERATIONS_ROOT/skills/specnav-ops-readiness/scripts/create-readiness.js" --release-target=<target> --json`.
-5. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` before and after edits.
-6. Treat `tasks.md` checkbox state as evidence: plain bullets are `tasks-md:no-checkboxes`, mixed checkbox/plain bullets are `tasks-md:mixed-checkboxes`, unchecked tasks are `tasks-md:incomplete-checkboxes`, and no checked task is `tasks-md:no-completed-checkboxes`. Never describe plain bullets as "no incomplete checkbox" or imply completion from the absence of `- [ ]`.
+5. Run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json` before archive/readiness decisions. This converts plain task bullets into standard OpenSpec checkbox tasks.
+6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` before and after edits.
+7. Treat `tasks.md` checkbox state as evidence: plain bullets must be normalized first, unchecked tasks are `tasks-md:incomplete-checkboxes`, and no checked task is `tasks-md:no-completed-checkboxes`. Never imply completion from the absence of `- [ ]`.
 
 ## Required Outputs
 

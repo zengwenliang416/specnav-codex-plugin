@@ -15,5 +15,6 @@ node --check "$ROOT/plugins/specnav-core/scripts/specnav-session-start.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-user-prompt-submit.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-post-tool.js"
+node --check "$ROOT/plugins/specnav-core/scripts/tasks-md.js"
 
 echo "codex hook fixtures ok"
