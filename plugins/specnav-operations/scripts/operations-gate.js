@@ -131,6 +131,41 @@ function validateRequiredText(opsDir, change, name) {
   return validateText(opsDir, change, name);
 }
 
+function validateTasksMarkdown(changeDir, change) {
+  const name = 'tasks.md';
+  const text = readTextFile(path.join(changeDir, name));
+  const blockers = [];
+
+  if (!text.ok) return changeArtifact(change, name, [`missing-change-artifact:${name}`]);
+  if (text.value.trim() === '') blockers.push(`empty-change-artifact:${name}`);
+
+  const taskItems = text.value
+    .split(/\r?\n/)
+    .map((line) => line.match(/^\s*(?:[-*+]|\d+[.)])\s+(?:\[([ xX])\]\s+)?(.+?)\s*$/))
+    .filter(Boolean)
+    .map((match) => ({
+      checked: match[1] ? match[1].toLowerCase() === 'x' : null,
+      text: match[2].trim()
+    }))
+    .filter((item) => item.text);
+  const checkboxItems = taskItems.filter((item) => item.checked !== null);
+  const completedItems = checkboxItems.filter((item) => item.checked);
+  const incompleteItems = checkboxItems.filter((item) => !item.checked);
+
+  if (taskItems.length === 0) blockers.push('tasks-md:no-bullets');
+  if (taskItems.length > 0 && checkboxItems.length === 0) blockers.push('tasks-md:no-checkboxes');
+  if (checkboxItems.length > 0 && checkboxItems.length !== taskItems.length) blockers.push('tasks-md:mixed-checkboxes');
+  if (incompleteItems.length > 0) blockers.push('tasks-md:incomplete-checkboxes');
+  if (checkboxItems.length > 0 && completedItems.length === 0) blockers.push('tasks-md:no-completed-checkboxes');
+
+  return changeArtifact(change, name, blockers, {
+    bullet_count: taskItems.length,
+    checkbox_count: checkboxItems.length,
+    completed_count: completedItems.length,
+    incomplete_count: incompleteItems.length
+  });
+}
+
 function validateVerification(changeDir, change, hasSignoff) {
   const artifacts = [];
   const blockers = [];
@@ -337,6 +372,7 @@ function validateOperations(root = lib.projectRoot()) {
   blockers.push(...verification.blockers);
   if (risk.tier === 'high-risk' && !signoff) blockers.push('high-risk-signoff');
 
+  artifacts.push(validateTasksMarkdown(changeDir, change));
   artifacts.push(validateText(opsDir, change, 'readiness.md', ['Operations Scope', 'Readiness Decision', 'Evidence']));
   const readinessResult = validateReadiness(opsDir, change, verification.blockers);
   artifacts.push(readinessResult.artifact);

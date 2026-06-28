@@ -19,7 +19,7 @@ Plan, dispatch, review, and close production implementation through file-backed 
 2. Read `references/development-task-packets.md` before creating task packets.
 3. Read `references/development-review.md` before closing tasks or preparing handoff.
 4. If task artifacts are missing, run `node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-vertical-slices/scripts/create-vertical-slice.js" --task-id=<task-id> --json`.
-5. Write user-visible tracer-bullet slices in `tasks.md`; avoid layer-only tasks.
+5. Write user-visible tracer-bullet slices in `tasks.md` as checkbox tasks only: `- [ ]` before implementation, `- [x]` only after direct implementation and validation evidence exists. Avoid layer-only tasks.
 6. Create each task packet with `brief.md` and `context.json`.
 7. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review.
 8. No fallback around failed task review is allowed.
@@ -36,6 +36,7 @@ Plan, dispatch, review, and close production implementation through file-backed 
 
 - Entry blockers remain.
 - Scope is insufficient.
+- `tasks.md` has plain bullets, mixed checkbox/plain bullets, or any unchecked item during handoff.
 - A task lacks allowed files.
 - A task duplicates component logic that should be extracted under the component architecture spec.
 - Drift blocks development.

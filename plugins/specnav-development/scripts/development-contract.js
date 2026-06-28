@@ -607,14 +607,25 @@ function validateTasksMarkdown(changeDir, activeChange) {
   }
   if (text.value.trim() === '') blockers.push(`empty-development-artifact:${name}`);
 
-  const bullets = text.value
+  const taskItems = text.value
     .split(/\r?\n/)
-    .map((line) => line.match(/^\s*(?:[-*+]|\d+[.)])\s+(.+?)\s*$/))
+    .map((line) => line.match(/^\s*(?:[-*+]|\d+[.)])\s+(?:\[([ xX])\]\s+)?(.+?)\s*$/))
     .filter(Boolean)
-    .map((match) => stripListMarker(match[1]))
-    .filter(Boolean);
+    .map((match) => ({
+      checked: match[1] ? match[1].toLowerCase() === 'x' : null,
+      text: stripListMarker(match[2])
+    }))
+    .filter((item) => item.text);
+  const bullets = taskItems.map((item) => item.text);
+  const checkboxItems = taskItems.filter((item) => item.checked !== null);
+  const completedItems = checkboxItems.filter((item) => item.checked);
+  const incompleteItems = checkboxItems.filter((item) => !item.checked);
 
   if (bullets.length === 0) blockers.push('tasks-md:no-bullets');
+  if (bullets.length > 0 && checkboxItems.length === 0) blockers.push('tasks-md:no-checkboxes');
+  if (checkboxItems.length > 0 && checkboxItems.length !== bullets.length) blockers.push('tasks-md:mixed-checkboxes');
+  if (incompleteItems.length > 0) blockers.push('tasks-md:incomplete-checkboxes');
+  if (checkboxItems.length > 0 && completedItems.length === 0) blockers.push('tasks-md:no-completed-checkboxes');
 
   let verticalSlices = 0;
   for (const bullet of bullets) {
@@ -632,7 +643,12 @@ function validateTasksMarkdown(changeDir, activeChange) {
 
   if (verticalSlices === 0) blockers.push('tasks-md:no-vertical-slice');
 
-  return artifactResult(activeChange, name, unique(blockers), false, { bullet_count: bullets.length });
+  return artifactResult(activeChange, name, unique(blockers), false, {
+    bullet_count: bullets.length,
+    checkbox_count: checkboxItems.length,
+    completed_count: completedItems.length,
+    incomplete_count: incompleteItems.length
+  });
 }
 
 function validatePromotionMap(developmentDir, activeChange) {
