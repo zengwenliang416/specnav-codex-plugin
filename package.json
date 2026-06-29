@@ -4,6 +4,8 @@
   "private": true,
   "description": "SpecNav OpenSpec lifecycle plugin suite for Codex.",
   "scripts": {
+    "render:readme-diagrams": "node scripts/render-readme-diagrams.js",
+    "verify:readme-diagrams": "node scripts/verify-readme-diagrams.js",
     "test": "bash tests/run-smoke.sh"
   },
   "license": "MIT"

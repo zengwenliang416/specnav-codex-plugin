@@ -119,7 +119,7 @@ composition.
 
 ## Current Reference Assets
 
-The current accepted base images are stored in:
+The current accepted README image outputs are stored in:
 
 ```text
 docs/assets/readme/specnav-overview-bd-2k.png
@@ -133,7 +133,7 @@ docs/assets/readme/stage-7-operations-bd-2k.png
 ```
 
 README pages must not share one language-bearing image across English and
-Chinese documentation. Maintain two native image sets:
+Chinese documentation. Maintain two localized image sets:
 
 ```text
 docs/assets/readme/en/*.png
@@ -143,11 +143,26 @@ docs/assets/readme/zh-CN/*.png
 English README files must reference `docs/assets/readme/en/`. Simplified
 Chinese README files must reference `docs/assets/readme/zh-CN/`.
 
-The Chinese set is the accepted native Chinese B+D visual set. The English set
-must be regenerated as native English images that follow the Chinese set's
-style, structure, route rhythm, station count, color palette, and visual
-language. Do not create English assets by overlaying English text on top of the
-Chinese images. The image itself should be generated with English copy.
+Localized README diagrams must be rendered from the shared deterministic source
+pipeline:
+
+```text
+scripts/render-readme-diagrams.js
+scripts/verify-readme-diagrams.js
+docs/assets/readme/source/*.base.svg
+docs/assets/readme/source/*.en.svg
+docs/assets/readme/source/*.zh-CN.svg
+```
+
+Each diagram has one text-free structural SVG (`*.base.svg`) and two localized
+SVGs. The English and Chinese SVGs must keep the same geometry, route, station
+count, icons, colors, shadows, and layout coordinates. Only the `<g id="labels">`
+text layer may differ.
+
+Do not independently generate English and Chinese images. Do not place English
+copy on top of a completed Chinese bitmap, and do not place Chinese copy on top
+of a completed English bitmap. Update the shared source template, then render
+both languages from that same source.
 
 When adding new images, inspect these references first and keep the same
 composition language, color temperature, route rhythm, label density, and
@@ -159,8 +174,14 @@ Do not change this canonical style or replace the reference images without
 explicit user approval. New diagrams should extend this style rather than
 reinterpreting it.
 
-For bilingual documentation, do not use a deterministic text-overlay pipeline on
-top of one language's image. Generate a native image for each language using the
-same stage prompt, same layout constraints, and translated visible copy. Review
-the English and Chinese sets together before publishing so style drift is caught
-early.
+For bilingual documentation, run:
+
+```bash
+npm run render:readme-diagrams
+npm run verify:readme-diagrams
+```
+
+The verification step must pass before publishing. It proves that localized
+SVGs match their shared base after removing `<g id="labels">`, all localized
+PNGs are 2560 x 1440, and the default root README assets mirror the Simplified
+Chinese set.
