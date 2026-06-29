@@ -54,6 +54,10 @@ function listDirs(dir) {
   }
 }
 
+function changeRegistryFile(root) {
+  return path.join(specnavDir(root), 'change-registry.json');
+}
+
 function invalidChangeId(value) {
   if (!value || value === '.' || value === '..') return true;
   return value.includes('/') || value.includes('\\') || value.includes('..') || /\s/.test(value);
@@ -112,21 +116,200 @@ function readWorkflowStateActiveChange(root) {
   return { present: true, hasValue: true, change: cleanChangeValue(workflowState.active_change) };
 }
 
-function activeChange(root) {
-  if (Object.prototype.hasOwnProperty.call(process.env, 'SPECNAV_CHANGE')) {
-    return cleanChangeValue(process.env.SPECNAV_CHANGE);
+function listChangeIds(root) {
+  return listDirs(path.join(openspecDir(root), 'changes'))
+    .map((entry) => path.basename(entry))
+    .filter((name) => name !== 'archive' && !name.startsWith('.'))
+    .map((name) => cleanChangeValue(name))
+    .filter(Boolean)
+    .sort();
+}
+
+function inferChangeStage(root, change) {
+  const dir = path.join(openspecDir(root), 'changes', change);
+  if (fs.existsSync(path.join(dir, 'operations', 'readiness.json'))) return 'operations';
+  if (fs.existsSync(path.join(dir, 'verify', 'aggregate-report.json')) || fs.existsSync(path.join(dir, 'verify-report.json'))) return 'verification';
+  if (fs.existsSync(path.join(dir, 'development'))) return 'development';
+  if (fs.existsSync(path.join(dir, 'prototype'))) return 'prototype';
+  if (fs.existsSync(path.join(dir, 'requirements.md')) || fs.existsSync(path.join(dir, 'acceptance.md'))) return 'requirements';
+  if (fs.existsSync(path.join(dir, 'proposal.md')) || fs.existsSync(path.join(dir, 'design.md')) || fs.existsSync(path.join(dir, 'tasks.md'))) return 'openspec-artifacts';
+  return 'created';
+}
+
+function buildChangeRegistry(root) {
+  const file = changeRegistryFile(root);
+  const stored = readJson(file, {});
+  const existing = new Set(listChangeIds(root));
+  const changes = new Map();
+  const archiveRoot = path.resolve(openspecDir(root), 'changes', 'archive');
+
+  function safeArchivePath(value) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    const relative = value.trim();
+    if (path.isAbsolute(relative) || relative.split(/[\\/]+/).includes('..')) return null;
+    const absolute = path.resolve(root, relative);
+    if (absolute !== archiveRoot && !absolute.startsWith(`${archiveRoot}${path.sep}`)) return null;
+    return fs.existsSync(absolute) ? relative.split(path.sep).join('/') : null;
+  }
+
+  if (stored && typeof stored === 'object' && Array.isArray(stored.changes)) {
+    for (const item of stored.changes) {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+      const id = cleanChangeValue(item.id || item.change_id);
+      const archivePath = safeArchivePath(item.archive_path);
+      const archived = item.status === 'archived' || item.stage === 'archived';
+      if (!id || (!existing.has(id) && !(archived && archivePath))) continue;
+      changes.set(id, {
+        id,
+        stage: existing.has(id)
+          ? (typeof item.stage === 'string' && item.stage.trim() && item.stage !== 'archived' ? item.stage : inferChangeStage(root, id))
+          : 'archived',
+        status: existing.has(id)
+          ? (typeof item.status === 'string' && item.status.trim() && item.status !== 'archived' ? item.status : 'active')
+          : 'archived',
+        branch: typeof item.branch === 'string' ? item.branch : null,
+        created_at: typeof item.created_at === 'string' ? item.created_at : null,
+        last_active_at: typeof item.last_active_at === 'string' ? item.last_active_at : null,
+        ...(archivePath ? { archive_path: archivePath } : {}),
+        ...(typeof item.archived_at === 'string' ? { archived_at: item.archived_at } : {})
+      });
+    }
+  }
+
+  for (const id of existing) {
+    if (changes.has(id)) continue;
+    changes.set(id, {
+      id,
+      stage: inferChangeStage(root, id),
+      status: 'active',
+      branch: null,
+      created_at: null,
+      last_active_at: null
+    });
+  }
+
+  const storedFocus = cleanChangeValue(stored && (stored.current_focus || stored.active_focus));
+  return {
+    schema_version: 1,
+    generated_at: new Date().toISOString(),
+    current_focus: storedFocus && existing.has(storedFocus) && changes.has(storedFocus) ? storedFocus : null,
+    changes: Array.from(changes.values()).sort((a, b) => a.id.localeCompare(b.id))
+  };
+}
+
+function writeChangeRegistry(root, registry) {
+  writeJson(changeRegistryFile(root), {
+    schema_version: 1,
+    generated_at: new Date().toISOString(),
+    current_focus: registry.current_focus || null,
+    changes: registry.changes || []
+  });
+}
+
+function changeExists(root, change) {
+  return !!change && listChangeIds(root).includes(change);
+}
+
+function activeChangeState(root, options = {}) {
+  const changes = listChangeIds(root);
+  const candidates = changes.slice();
+  const requested = Object.prototype.hasOwnProperty.call(options, 'change')
+    ? options.change
+    : (Object.prototype.hasOwnProperty.call(process.env, 'SPECNAV_CHANGE') ? process.env.SPECNAV_CHANGE : undefined);
+
+  if (requested !== undefined) {
+    const change = cleanChangeValue(requested);
+    if (!change || !changes.includes(change)) {
+      return {
+        change: null,
+        source: 'explicit',
+        blockers: ['active-change'],
+        candidates,
+        registry: buildChangeRegistry(root)
+      };
+    }
+    return {
+      change,
+      source: Object.prototype.hasOwnProperty.call(options, 'change') ? 'argument' : 'env',
+      blockers: [],
+      candidates,
+      registry: buildChangeRegistry(root)
+    };
   }
 
   const explicit = readActiveChangeFile(root);
-  if (explicit.present) return explicit.change;
+  if (explicit.present) {
+    if (explicit.change && changes.includes(explicit.change)) {
+      return {
+        change: explicit.change,
+        source: 'active-change-file',
+        blockers: [],
+        candidates,
+        registry: buildChangeRegistry(root)
+      };
+    }
+    return {
+      change: null,
+      source: 'active-change-file',
+      blockers: ['active-change'],
+      candidates,
+      registry: buildChangeRegistry(root)
+    };
+  }
 
-  const changes = listDirs(path.join(openspecDir(root), 'changes'));
-  if (changes.length === 1) return cleanChangeValue(path.basename(changes[0]));
+  const registry = buildChangeRegistry(root);
+  if (registry.current_focus) {
+    return {
+      change: registry.current_focus,
+      source: 'change-registry',
+      blockers: [],
+      candidates,
+      registry
+    };
+  }
+
+  if (changes.length === 1) {
+    return {
+      change: changes[0],
+      source: 'single-change',
+      blockers: [],
+      candidates,
+      registry
+    };
+  }
 
   const workflowState = readWorkflowStateActiveChange(root);
-  if (workflowState.hasValue) return workflowState.change;
+  if (changes.length === 0 && workflowState.hasValue && workflowState.change) {
+    return {
+      change: null,
+      source: 'workflow-state-cache',
+      blockers: ['active-change'],
+      candidates,
+      registry
+    };
+  }
 
-  return null;
+  if (changes.length > 1) {
+    return {
+      change: null,
+      source: 'ambiguous',
+      blockers: ['ambiguous-change'],
+      candidates,
+      registry
+    };
+  }
+
+  return {
+    change: null,
+    source: 'no-active-change',
+    blockers: ['active-change'],
+    candidates,
+    registry
+  };
+}
+
+function activeChange(root) {
+  return activeChangeState(root).change;
 }
 
 function changeDir(root, change = activeChange(root)) {
@@ -362,9 +545,19 @@ function ensureSpecNavMarker(root) {
   return true;
 }
 
+function detectLegacyOpenSpecEntrypoints(root) {
+  void root;
+  return [];
+}
+
 module.exports = {
   activeChange,
+  activeChangeState,
+  buildChangeRegistry,
   changeDir,
+  changeExists,
+  changeRegistryFile,
+  detectLegacyOpenSpecEntrypoints,
   ensureDir,
   ensureSpecNavMarker,
   event,
@@ -374,6 +567,7 @@ module.exports = {
   specnavDir,
   specnavMarkerFile,
   isSpecNavProject,
+  listChangeIds,
   listDirs,
   listOverrides,
   openspecDir,
@@ -386,5 +580,6 @@ module.exports = {
   readText,
   runCommand,
   shellQuote,
+  writeChangeRegistry,
   writeJson
 };

@@ -22,6 +22,7 @@ Build the final operations readiness decision.
 5. Run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json` before archive/readiness decisions. This converts plain task bullets into standard OpenSpec checkbox tasks.
 6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` before and after edits.
 7. Treat `tasks.md` checkbox state as evidence: plain bullets must be normalized first, unchecked tasks are `tasks-md:incomplete-checkboxes`, and no checked task is `tasks-md:no-completed-checkboxes`. Never imply completion from the absence of `- [ ]`.
+8. For final archive, run `node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json`. Do not manually move `openspec/changes/<change>` or hand-edit `openspec/.specnav/change-registry.json`.
 
 ## Required Outputs
 
@@ -35,6 +36,7 @@ Build the final operations readiness decision.
 - Release target is missing.
 - Git state is unknown.
 - Required operations artifacts are missing.
+- Archive would require manual directory moves or manual registry edits.
 
 ## Validation
 

@@ -9,6 +9,7 @@ bash "$ROOT/tests/run-codex-skill-fixtures.sh"
 bash "$ROOT/tests/run-codex-hook-fixtures.sh"
 bash "$ROOT/tests/run-plugin-suite-resolver-fixtures.sh"
 bash "$ROOT/tests/run-task-checkbox-contract-fixtures.sh"
+bash "$ROOT/tests/run-operations-archive-action-fixtures.sh"
 
 if rg -n 'CLAUDE_PLUGIN_ROOT|\\.claude-plugin|claude plugin' \
   "$ROOT/plugins" \

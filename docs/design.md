@@ -1,6 +1,6 @@
 # SpecNav Codex Plugin System Design
 
-Version: 0.1.3
+Version: 0.1.4
 
 This repository is the Codex-native edition of SpecNav. It keeps the lifecycle
 logic of the existing SpecNav plugin suite, but it does not reuse the old plugin
@@ -99,7 +99,7 @@ It advertises six installable plugins:
 | `specnav-prototype` | Runnable prototype code and prototype handoff |
 | `specnav-development` | Scope lock, implementation entry, vertical slices, fix loop |
 | `specnav-verification` | Six-domain verification and stakeholder HTML reports |
-| `specnav-operations` | Release plan, readiness, rollback, archive gate |
+| `specnav-operations` | Release plan, readiness, rollback, archive gate, archive action |
 
 Each marketplace entry uses a local source path:
 
@@ -314,12 +314,16 @@ Required outputs:
 - readiness checklist;
 - rollback plan;
 - monitoring notes;
-- archive gate.
+- archive gate;
+- archive receipt.
 
 High-risk changes require explicit human signoff before release/archive.
 Archive also requires `tasks.md` to contain completed checkbox tasks; the gate
 must run `scripts/tasks-md.js normalize` first and must not treat plain bullets
-as completed task evidence.
+as completed task evidence. The archive action then runs `openspec validate`,
+`openspec archive`, updates `openspec/.specnav/change-registry.json`, rewrites
+archived verification evidence paths, and writes
+`operations/archive-receipt.json` inside the archived change.
 
 ## 14. Runtime Discovery
 
@@ -390,4 +394,6 @@ This Codex version is complete for the first usable release when:
 - no script depends on legacy plugin paths;
 - OpenSpec bootstrap and missing-spec guidance work in a clean project;
 - verification can produce a six-domain aggregate report and HTML report;
+- operations archive can move a completed change through `openspec archive` and
+  leave a SpecNav archive receipt;
 - the smoke test suite passes.

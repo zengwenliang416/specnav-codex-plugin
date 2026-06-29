@@ -92,23 +92,15 @@ function usage() {
   ].join('\n');
 }
 
-function invalidChangeId(value) {
-  if (!value || value === '.' || value === '..') return true;
-  return value.includes('/') || value.includes('\\') || value.includes('..') || /\s/.test(value);
-}
-
 function activeChange(root, explicitChange) {
-  const fromArg = explicitChange || null;
-  const fromEnv = process.env.SPECNAV_CHANGE || null;
-  const activeFile = path.join(lib.specnavDir(root), 'active-change');
-  const fromFile = fs.existsSync(activeFile) ? fs.readFileSync(activeFile, 'utf8').trim() : null;
-  const change = fromArg || fromEnv || fromFile;
-  if (invalidChangeId(change)) return { ok: false, change: null, blockers: ['active-change'] };
+  const state = explicitChange ? lib.activeChangeState(root, { change: explicitChange }) : lib.activeChangeState(root);
+  const change = state.change;
+  if (!change) return { ok: false, change: null, blockers: state.blockers || ['active-change'], state };
   const dir = lib.changeDir(root, change);
   if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
-    return { ok: false, change, blockers: [`missing-change-dir:${change}`] };
+    return { ok: false, change, blockers: [`missing-change-dir:${change}`], state };
   }
-  return { ok: true, change, dir, blockers: [] };
+  return { ok: true, change, dir, blockers: [], state };
 }
 
 function taskLine(line, defaultStatus) {
@@ -182,7 +174,17 @@ function run(options = parseArgs()) {
   }
   const active = activeChange(root, options.change);
   if (!active.ok) {
-    emit({ ok: false, project_root: root, active_change: active.change, blockers: active.blockers }, options.json);
+    emit({
+      ok: false,
+      project_root: root,
+      active_change: active.change,
+      change_resolution: active.state ? {
+        source: active.state.source,
+        candidates: active.state.candidates || [],
+        blockers: active.state.blockers || []
+      } : null,
+      blockers: active.blockers
+    }, options.json);
     return 2;
   }
   const file = path.join(active.dir, 'tasks.md');

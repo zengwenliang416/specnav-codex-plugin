@@ -345,18 +345,26 @@ function targetRequiredArtifacts(target) {
 
 function validateOperations(root = lib.projectRoot()) {
   const projectRoot = path.resolve(root);
-  const change = lib.activeChange(projectRoot);
+  const changeState = lib.activeChangeState(projectRoot);
+  const change = changeState.change;
   const changeDir = change ? lib.changeDir(projectRoot, change) : null;
   const opsDir = changeDir ? path.join(changeDir, 'operations') : null;
   const artifacts = [];
   const blockers = [];
 
-  if (!change || !changeDir || !fs.existsSync(changeDir)) blockers.push('active-change');
+  if (!change || !changeDir || !fs.existsSync(changeDir)) {
+    blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
+  }
   if (!opsDir) {
     return {
       ok: false,
       project_root: projectRoot,
       active_change: change || null,
+      change_resolution: {
+        source: changeState.source,
+        candidates: changeState.candidates || [],
+        blockers: changeState.blockers || []
+      },
       change_dir: changeDir,
       operations_dir: opsDir,
       release_target: null,
@@ -424,6 +432,11 @@ function validateOperations(root = lib.projectRoot()) {
     ok: blockers.length === 0,
     project_root: projectRoot,
     active_change: change || null,
+    change_resolution: {
+      source: changeState.source,
+      candidates: changeState.candidates || [],
+      blockers: changeState.blockers || []
+    },
     change_dir: changeDir,
     operations_dir: opsDir,
     release_target: target,

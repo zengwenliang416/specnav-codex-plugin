@@ -74,7 +74,14 @@ Use SpecNav from the target project, not from this plugin repository.
 | Prototype | `$specnav-prototype` | `prototype/` artifacts, verifier report, handoff | missing context, verifier red, no approval | `$specnav-development-entry` |
 | Development | `$specnav-vertical-slices` | `scope.json`, task artifacts, production edits | invalid scope, upstream drift, review failure | `$specnav-verify-plan` |
 | Verification | `$specnav-verify-plan` plus six domain skills | six-domain `verify/` evidence, aggregate report, stakeholder HTML report | stale report, red domain, missing evidence | `$specnav-release-plan` |
-| Operations | `$specnav-ops-readiness` | `operations/` readiness and release artifacts | verify not green, target ambiguous | archive/writeback |
+| Operations | `$specnav-ops-readiness` | `operations/` readiness/release artifacts, archive receipt | verify not green, target ambiguous | archive/writeback |
+
+Final archive is an explicit script action, not just a gate. After readiness is
+green, run `node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json`.
+The action normalizes `tasks.md`, requires a green archive gate, runs
+`openspec validate` and `openspec archive`, updates SpecNav change focus,
+rewrites archived evidence paths, and writes `operations/archive-receipt.json`
+inside the archived change.
 
 ## Plugin Layout
 
@@ -85,7 +92,7 @@ plugins/specnav-requirements/             Foundation specs and requirements
 plugins/specnav-prototype/                Runnable prototype artifacts and handoff
 plugins/specnav-development/              Scope lock and vertical-slice implementation
 plugins/specnav-verification/             Six-domain verification
-plugins/specnav-operations/               Release, deploy, rollback, archive readiness
+plugins/specnav-operations/               Release, deploy, rollback, archive action/readiness
 ```
 
 ## Public Skills

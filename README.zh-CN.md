@@ -71,7 +71,13 @@ codex plugin add specnav-operations@specnav-marketplace
 | 原型 | `$specnav-prototype` | `prototype/` artifacts、verifier report、handoff | 上下文缺失、verifier red、未批准 | `$specnav-development-entry` |
 | 开发 | `$specnav-vertical-slices` | `scope.json`、任务 artifacts、生产代码改动 | scope 非法、上游漂移、review 失败 | `$specnav-verify-plan` |
 | 验证 | `$specnav-verify-plan` 加六个 domain skills | 六域 `verify/` 证据、aggregate report、HTML 审阅报告 | stale report、domain red、证据缺失 | `$specnav-release-plan` |
-| 运维 | `$specnav-ops-readiness` | `operations/` readiness 和 release artifacts | verify not green、target 不明确 | archive/writeback |
+| 运维 | `$specnav-ops-readiness` | `operations/` readiness/release artifacts、archive receipt | verify not green、target 不明确 | archive/writeback |
+
+最终归档是明确的脚本动作，不只是 gate。readiness 为 green 后，运行
+`node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json`。
+这个动作会标准化 `tasks.md`，要求 archive gate 为 green，执行
+`openspec validate` 和 `openspec archive`，更新 SpecNav change focus，重写归档后的
+evidence 路径，并在归档后的 change 内写入 `operations/archive-receipt.json`。
 
 ## 插件布局
 
@@ -82,7 +88,7 @@ plugins/specnav-requirements/             Foundation specs 和需求
 plugins/specnav-prototype/                可运行原型和 handoff
 plugins/specnav-development/              Scope lock 和垂直切片开发
 plugins/specnav-verification/             六域验证
-plugins/specnav-operations/               发布、部署、回滚、归档 readiness
+plugins/specnav-operations/               发布、部署、回滚、归档动作/readiness
 ```
 
 ## 无 fallback

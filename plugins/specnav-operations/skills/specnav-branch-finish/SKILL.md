@@ -19,7 +19,8 @@ Record branch and worktree facts before finish or cleanup.
 2. Read `references/branch-finish.md` before writing cleanup decisions.
 3. Preserve unknown or externally managed worktrees.
 4. Use `assets/branch-finish.md` as the shell when the artifact is missing.
-5. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` after writing.
+5. If the user asks to archive before branch finish, run `node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json` first and require `operations/archive-receipt.json` under `openspec/changes/archive/<date>-<change>/`.
+6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` after writing branch-finish artifacts for still-active changes.
 
 ## Required Outputs
 
@@ -31,6 +32,7 @@ Record branch and worktree facts before finish or cleanup.
 - Worktree ownership is unknown.
 - Untracked files are unreviewed.
 - Cleanup lacks SpecNav-owned provenance.
+- Archive receipt is missing after a requested archive.
 
 ## Validation
 

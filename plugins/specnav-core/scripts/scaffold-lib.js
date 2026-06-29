@@ -91,11 +91,6 @@ function parseArgs(argv = process.argv.slice(2)) {
   return options;
 }
 
-function invalidChangeId(value) {
-  if (!value || value === '.' || value === '..') return true;
-  return value.includes('/') || value.includes('\\') || value.includes('..') || /\s/.test(value);
-}
-
 function projectRoot(options) {
   return path.resolve(options.project || process.env.PROJECT_DIR || process.env.PWD || process.cwd());
 }
@@ -113,18 +108,20 @@ function requireOpenSpec(root) {
 }
 
 function strictActiveChange(root, explicitChange) {
-  const fromArg = explicitChange || null;
-  const fromEnv = process.env.SPECNAV_CHANGE || null;
-  const activeFile = path.join(lib.specnavDir(root), 'active-change');
-  const fromFile = fs.existsSync(activeFile) ? fs.readFileSync(activeFile, 'utf8').trim() : null;
-  const change = fromArg || fromEnv || fromFile;
+  const state = explicitChange ? lib.activeChangeState(root, { change: explicitChange }) : lib.activeChangeState(root);
+  const change = state.change;
 
-  if (invalidChangeId(change)) {
+  if (!change || state.source === 'single-change') {
     return {
       ok: false,
       change: null,
-      blockers: ['active-change'],
-      message: 'A clean active change is required. Set --change, SPECNAV_CHANGE, or openspec/.specnav/active-change.'
+      blockers: state.blockers && state.blockers.length ? state.blockers : ['active-change'],
+      change_resolution: {
+        source: state.source,
+        candidates: state.candidates || [],
+        blockers: state.blockers || []
+      },
+      message: 'A clean active change is required. Set --change, SPECNAV_CHANGE, or openspec/.specnav/change-registry.json.'
     };
   }
 
@@ -134,6 +131,11 @@ function strictActiveChange(root, explicitChange) {
       ok: false,
       change,
       blockers: [`missing-change-dir:${change}`],
+      change_resolution: {
+        source: state.source,
+        candidates: state.candidates || [],
+        blockers: state.blockers || []
+      },
       message: `Active change directory not found: ${dir}`
     };
   }
@@ -142,6 +144,11 @@ function strictActiveChange(root, explicitChange) {
     ok: true,
     change,
     dir,
+    change_resolution: {
+      source: state.source,
+      candidates: state.candidates || [],
+      blockers: state.blockers || []
+    },
     blockers: []
   };
 }
