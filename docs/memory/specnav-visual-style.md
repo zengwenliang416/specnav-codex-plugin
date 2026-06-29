@@ -133,18 +133,21 @@ docs/assets/readme/stage-7-operations-bd-2k.png
 ```
 
 README pages must not share one language-bearing image across English and
-Chinese documentation. Generate localized exports from the same base images:
+Chinese documentation. Maintain two native image sets:
 
 ```text
-scripts/render-readme-localized-images.py
-docs/assets/readme/en/*.jpg
-docs/assets/readme/zh-CN/*.jpg
+docs/assets/readme/en/*.png
+docs/assets/readme/zh-CN/*.png
 ```
 
 English README files must reference `docs/assets/readme/en/`. Simplified
-Chinese README files must reference `docs/assets/readme/zh-CN/`. The two sets
-must use the same base image, same crop, same layout, same typography scale,
-same colors, and same station positions. Only the readable copy changes.
+Chinese README files must reference `docs/assets/readme/zh-CN/`.
+
+The Chinese set is the accepted native Chinese B+D visual set. The English set
+must be regenerated as native English images that follow the Chinese set's
+style, structure, route rhythm, station count, color palette, and visual
+language. Do not create English assets by overlaying English text on top of the
+Chinese images. The image itself should be generated with English copy.
 
 When adding new images, inspect these references first and keep the same
 composition language, color temperature, route rhythm, label density, and
@@ -156,7 +159,8 @@ Do not change this canonical style or replace the reference images without
 explicit user approval. New diagrams should extend this style rather than
 reinterpreting it.
 
-Do not create separate English and Chinese images by asking an image model to
-regenerate each language independently. That causes composition drift. Instead,
-generate one accepted base visual and use the deterministic localization script
-to render English and Chinese copy layers.
+For bilingual documentation, do not use a deterministic text-overlay pipeline on
+top of one language's image. Generate a native image for each language using the
+same stage prompt, same layout constraints, and translated visible copy. Review
+the English and Chinese sets together before publishing so style drift is caught
+early.
