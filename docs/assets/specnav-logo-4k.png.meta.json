@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "asset": "docs/assets/specnav-logo-4k.png",
+  "preview": "docs/assets/specnav-logo-readme.png",
+  "source": "docs/assets/specnav-logo-generated-raw.png",
+  "source_metadata": "docs/assets/specnav-logo-generated-raw.png.meta.json",
+  "source_image": {
+    "format": "png",
+    "width": 1254,
+    "height": 1254
+  },
+  "final_image": {
+    "format": "png",
+    "width": 4096,
+    "height": 4096,
+    "mode": "RGBA",
+    "hasAlpha": true
+  },
+  "readme_preview_image": {
+    "format": "png",
+    "width": 640,
+    "height": 640,
+    "mode": "RGBA",
+    "hasAlpha": true
+  },
+  "postprocess": {
+    "method": "edge-connected light neutral checkerboard removal, then Lanczos resize",
+    "removed_source_pixels": 1217484,
+    "source_pixels": 1572516,
+    "removed_ratio": 0.774227
+  },
+  "generation": {
+    "endpoint": "https://api.pftrader.us/v1/images/generations",
+    "model": "gpt-image-1.5",
+    "requested_size": "4096x4096",
+    "quality": "high",
+    "background": "transparent",
+    "output_format": "png",
+    "prompt_sha256": "6a2ba5997f7f32b191c7695de1ed543b1343af7d2fdd797a4571761c13ee3499",
+    "prompt_preview": "SpecNav logo, rigorous enterprise software lifecycle navigation mark, transparent background, no text, no letters, no mockup, no shadow on background. Create a precise geometric emblem: a compass-like navigation pointer integrated with laye..."
+  }
+}

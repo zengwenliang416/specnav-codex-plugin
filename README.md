@@ -1,20 +1,32 @@
-# SpecNav Codex Plugin Suite
+<p align="center">
+  <img src="docs/assets/specnav-logo-readme.png" alt="SpecNav logo" width="168" height="168">
+</p>
+
+<h1 align="center">SpecNav Codex Plugin Suite</h1>
+
+<p align="center">
+  <strong>OpenSpec-governed lifecycle plugins for Codex.</strong>
+</p>
+
+<p align="center">
+  <a href="README.zh-CN.md">中文</a> ·
+  <a href="#install-locally">Install</a> ·
+  <a href="#workflow-model">Workflow</a> ·
+  <a href="#public-skills">Skills</a> ·
+  <a href="docs/assets/specnav-logo-4k.png">4K transparent logo</a>
+</p>
+
+<p align="center">
+  <code>bootstrap</code> -> <code>spec discovery</code> -> <code>requirements</code> -> <code>prototype</code> -> <code>development</code> -> <code>verification</code> -> <code>operations</code>
+</p>
 
 SpecNav for Codex is a six-plugin OpenSpec lifecycle suite. Add this repository
 as a Codex marketplace, install all six plugins, trust the `specnav-core` hooks
 with `/hooks`, then start from `$specnav-workflow` in the target project.
 
-SpecNav governs the full engineering lifecycle:
-
-```text
-bootstrap -> spec discovery -> requirements -> prototype -> development -> verification -> operations
-```
-
 Codex proposes and edits work. SpecNav keeps the process file-backed through
 OpenSpec artifacts, deterministic scripts, lifecycle hooks, and no-fallback
 stage gates.
-
-Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
 
 ## Install Locally
 

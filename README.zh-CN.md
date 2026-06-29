@@ -1,19 +1,31 @@
-# SpecNav Codex 插件套件
+<p align="center">
+  <img src="docs/assets/specnav-logo-readme.png" alt="SpecNav logo" width="168" height="168">
+</p>
+
+<h1 align="center">SpecNav Codex 插件套件</h1>
+
+<p align="center">
+  <strong>面向 Codex 的 OpenSpec 约束型工程生命周期插件。</strong>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> ·
+  <a href="#本地安装">安装</a> ·
+  <a href="#工作流模型">工作流</a> ·
+  <a href="#常用检查">检查</a> ·
+  <a href="docs/assets/specnav-logo-4k.png">4K 透明 logo</a>
+</p>
+
+<p align="center">
+  <code>初始化</code> -> <code>规范发现</code> -> <code>需求</code> -> <code>原型</code> -> <code>开发</code> -> <code>验证</code> -> <code>运维</code>
+</p>
 
 SpecNav for Codex 是一个六插件 OpenSpec 生命周期套件。把本仓库添加为
 Codex marketplace，安装六个插件，用 `/hooks` 信任 `specnav-core` hooks，
 然后在目标项目里从 `$specnav-workflow` 开始。
 
-SpecNav 约束完整工程生命周期：
-
-```text
-初始化 -> 规范发现 -> 需求 -> 原型 -> 开发 -> 验证 -> 运维
-```
-
 Codex 负责理解、解释、提案和编辑；SpecNav 通过 OpenSpec 文件、确定性脚本、
 生命周期 hooks 和无 fallback 的阶段 gate 判断下一步是否合法。
-
-English documentation: [README.md](README.md)
 
 ## 本地安装
 

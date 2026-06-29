@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "endpoint": "https://api.pftrader.us/v1/images/generations",
+  "model": "gpt-image-1.5",
+  "size": "4096x4096",
+  "quality": "high",
+  "n": 1,
+  "background": "transparent",
+  "output_format": "png",
+  "output_compression": null,
+  "moderation": null,
+  "response_format": null,
+  "response_kind": "b64_json",
+  "bytes": 1176527,
+  "image": {
+    "format": "png",
+    "width": 1254,
+    "height": 1254
+  },
+  "out": "docs/assets/specnav-logo-4k.png",
+  "elapsed_ms": 76716,
+  "created": 1782714801,
+  "usage": {
+    "input_tokens": 105,
+    "input_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 105
+    },
+    "output_tokens": 2058,
+    "output_tokens_details": {
+      "image_tokens": 2058,
+      "text_tokens": 0
+    },
+    "total_tokens": 2163
+  },
+  "prompt_sha256": "6a2ba5997f7f32b191c7695de1ed543b1343af7d2fdd797a4571761c13ee3499",
+  "prompt_preview": "SpecNav logo, rigorous enterprise software lifecycle navigation mark, transparent background, no text, no letters, no mockup, no shadow on background. Create a precise geometric emblem: a compass-like navigation pointer integrated with laye..."
+}
