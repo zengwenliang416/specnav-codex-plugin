@@ -24,7 +24,8 @@ Create isolated, runnable prototype artifacts that answer a specific design or b
 7. If starting from templates, run `node "$SPECNAV_PROTOTYPE_ROOT/skills/specnav-prototype/scripts/create-prototype.js" --branch=<branch> --json`.
 8. Write artifacts only under `openspec/changes/<active-change>/prototype/`.
 9. Expose stable review anchors. For `ui-html`, use `data-specnav-screen`, `data-specnav-component`, `data-specnav-state`, and `data-specnav-variant`; `artifact/index.html` must include at least one `data-specnav-screen` anchor.
-10. Rerun the contract before moving to verification.
+10. Set `prototype-manifest.json.ui_capabilities` from the approved requirements. Add `data-specnav-theme-control` or `data-specnav-locale-control` only when the manifest says the prototype includes those controls.
+11. Rerun the contract before moving to verification.
 
 ## Required Outputs
 

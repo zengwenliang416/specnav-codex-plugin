@@ -137,10 +137,21 @@ states.
 Define labels, button copy, error copy, empty states, toasts, loading text, and
 whether the product uses Chinese, English, or bilingual copy.
 
+## Theme & Internationalization
+
+- Theme capability: `light-only` until the project proves otherwise.
+- Theme toggle: `none` unless an existing theme switcher or requirement is recorded.
+- Internationalization: `none` unless an existing i18n runtime, dictionaries, or locale routing is recorded.
+- Supported locales: `none` until the project language list is recorded.
+- Default locale: `none` until the project default language is recorded.
+- Prototype rule: include a theme toggle or locale switcher only when this spec says it exists or is required; otherwise prototypes must explicitly omit those controls.
+
 ## Do's and Don'ts
 
 - Do use the token names above in prototypes and production code.
 - Do require accessible focus states and body text contrast.
+- Do record theme modes and locale coverage before starting a UI prototype.
 - Do pair color state with icon or text.
 - Don't add one-off colors, spacing, shadows, or radii without updating this spec.
+- Don't invent dark mode, a theme toggle, i18n, or a language switcher when the project does not support it.
 - Don't hide important state with color alone.

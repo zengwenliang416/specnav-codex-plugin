@@ -21,9 +21,18 @@ const REQUIRED_FOUNDATION_SPECS = [
       '## Shapes',
       '## Components',
       '## Voice & Content',
+      '## Theme & Internationalization',
       "## Do's and Don'ts"
     ],
-    requiredFrontmatterKeys: ['version', 'name', 'description', 'colors', 'typography', 'spacing', 'rounded', 'components']
+    requiredFrontmatterKeys: ['version', 'name', 'description', 'colors', 'typography', 'spacing', 'rounded', 'components'],
+    requiredFieldLabels: [
+      { label: 'theme-capability', patterns: ['theme capability', 'theme support', 'theme mode', '主题能力', '主题模式', '明暗模式'] },
+      { label: 'theme-toggle', patterns: ['theme toggle', 'theme switch', '主题切换', '明暗切换', 'toggle policy'] },
+      { label: 'internationalization', patterns: ['internationalization', 'i18n', 'locale', 'language', '国际化', '多语言'] },
+      { label: 'supported-locales', patterns: ['supported locale', 'supported language', 'locales', 'languages', '支持语言', '语言列表', '语种'] },
+      { label: 'default-locale', patterns: ['default locale', 'default language', '默认语言', '默认 locale'] }
+    ],
+    requireFieldLabelsAlways: true
   },
   {
     id: 'system-architecture',
@@ -721,7 +730,9 @@ function validateSpecText(text, contract, label = null) {
 
   const missingFieldLabelValues = [];
   const missingFlowIds = [];
-  const declaresContent = (contract.requiredFieldLabels || contract.requireFlowId) ? specDeclaresContent(text) : false;
+  const declaresContent = contract.requireFieldLabelsAlways
+    ? true
+    : (contract.requiredFieldLabels || contract.requireFlowId) ? specDeclaresContent(text) : false;
   if (declaresContent) {
     if (contract.requiredFieldLabels) {
       missingFieldLabelValues.push(

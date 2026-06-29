@@ -22,7 +22,9 @@ const SPEC_MAP_FIELDS = [
   'database_entities',
   'permissions',
   'operational_constraints',
-  'data_flows'
+  'data_flows',
+  'theme_modes',
+  'locale_policy'
 ];
 
 const COMPONENT_IMPACT_MAP_FIELDS = [
@@ -129,8 +131,10 @@ function validateSpecMapContract(value) {
   const touchedSpecs = value.touched_specs;
   const hasTouchedSpecs = Array.isArray(touchedSpecs) && touchedSpecs.length > 0;
   const hasUnknownTouchedSpecs = Array.isArray(touchedSpecs) && touchedSpecs.some((id) => typeof id !== 'string' || !FOUNDATION_SPEC_IDS.has(id));
+  const hasThemeModes = Array.isArray(value.theme_modes) && value.theme_modes.length > 0;
+  const hasLocalePolicy = Array.isArray(value.locale_policy) && value.locale_policy.length > 0;
 
-  return invalidField || !hasTouchedSpecs || hasUnknownTouchedSpecs ? [blocker] : [];
+  return invalidField || !hasTouchedSpecs || hasUnknownTouchedSpecs || !hasThemeModes || !hasLocalePolicy ? [blocker] : [];
 }
 
 function validateUnresolvedGapsContract(name, value) {

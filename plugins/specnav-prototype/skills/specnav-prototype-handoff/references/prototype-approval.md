@@ -19,6 +19,10 @@ The handoff must name:
 - API contracts;
 - data flows;
 - state behavior;
+- theme support, theme modes shown, and whether a theme toggle is present or
+  intentionally omitted;
+- i18n support, locales shown, default locale, and whether a locale switcher is
+  present or intentionally omitted;
 - out-of-scope items;
 - required tests;
 - open risks.

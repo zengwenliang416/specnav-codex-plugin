@@ -38,8 +38,25 @@ const SCREEN_MAP_SCREEN_FIELDS = [
   'acceptance',
   'components',
   'data_flows',
+  'theme_modes',
+  'locales',
   'implementation_files'
 ];
+
+const THEME_SUPPORT_VALUES = new Set([
+  'none',
+  'light-only',
+  'dark-only',
+  'light-dark',
+  'system'
+]);
+
+const THEME_MODE_VALUES = new Set([
+  'none',
+  'light',
+  'dark',
+  'system'
+]);
 
 const HANDOFF_REQUIRED_TOPICS = [
   {
@@ -74,6 +91,10 @@ const HANDOFF_REQUIRED_TOPICS = [
   {
     id: 'state-behavior',
     termSets: [['state', 'behavior'], ['state', 'loading', 'empty', 'error', 'disabled', 'permission']]
+  },
+  {
+    id: 'theme-and-locale-policy',
+    termSets: [['theme', 'locale'], ['theme', 'i18n'], ['theme', 'internationalization']]
   },
   {
     id: 'out-of-scope-items',
@@ -558,6 +579,121 @@ function validateStringArrayField(value, field, options = {}) {
   return [];
 }
 
+function validateThemeCapability(capabilities, blockers) {
+  if (!isPlainObject(capabilities.theme)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme');
+    return;
+  }
+
+  const theme = capabilities.theme;
+  if (!THEME_SUPPORT_VALUES.has(theme.support)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.support');
+  }
+  if (!Array.isArray(theme.modes) || theme.modes.length === 0 || hasInvalidStringArrayMembers(theme.modes)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  } else if (theme.modes.some((mode) => !THEME_MODE_VALUES.has(mode))) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  }
+  if (theme.support === 'none' && (!Array.isArray(theme.modes) || theme.modes.length !== 1 || theme.modes[0] !== 'none')) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.none');
+  }
+  if (theme.support && theme.support !== 'none' && Array.isArray(theme.modes) && theme.modes.includes('none')) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.none');
+  }
+  if (theme.support === 'light-only' && (!Array.isArray(theme.modes) || theme.modes.length !== 1 || theme.modes[0] !== 'light')) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  }
+  if (theme.support === 'dark-only' && (!Array.isArray(theme.modes) || theme.modes.length !== 1 || theme.modes[0] !== 'dark')) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  }
+  if (theme.support === 'light-dark' && (!Array.isArray(theme.modes) || !theme.modes.includes('light') || !theme.modes.includes('dark') || theme.modes.includes('system'))) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  }
+  if (theme.support === 'system' && (!Array.isArray(theme.modes) || !theme.modes.includes('light') || !theme.modes.includes('dark') || !theme.modes.includes('system'))) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.modes');
+  }
+  if (typeof theme.toggle_in_prototype !== 'boolean') {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.toggle_in_prototype');
+  }
+  if (['none', 'light-only', 'dark-only'].includes(theme.support) && theme.toggle_in_prototype === true) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.toggle_in_prototype');
+  }
+  if (!isCleanString(theme.source)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.theme.source');
+  }
+}
+
+function validateI18nCapability(capabilities, blockers) {
+  if (!isPlainObject(capabilities.i18n)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n');
+    return;
+  }
+
+  const i18n = capabilities.i18n;
+  if (typeof i18n.enabled !== 'boolean') {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.enabled');
+  }
+  if (!Array.isArray(i18n.locales) || i18n.locales.length === 0 || hasInvalidStringArrayMembers(i18n.locales)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.locales');
+  }
+  if (!isCleanString(i18n.default_locale)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.default_locale');
+  }
+  if (i18n.enabled === false) {
+    if (!Array.isArray(i18n.locales) || i18n.locales.length !== 1 || i18n.locales[0] !== 'none') {
+      blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.none');
+    }
+    if (i18n.default_locale !== 'none') {
+      blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.default_locale');
+    }
+  }
+  if (i18n.enabled === true) {
+    if (Array.isArray(i18n.locales) && i18n.locales.includes('none')) {
+      blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.none');
+    }
+    if (Array.isArray(i18n.locales) && isCleanString(i18n.default_locale) && !i18n.locales.includes(i18n.default_locale)) {
+      blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.default_locale');
+    }
+  }
+  if (typeof i18n.locale_switch_in_prototype !== 'boolean') {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.locale_switch_in_prototype');
+  }
+  if (i18n.enabled === false && i18n.locale_switch_in_prototype === true) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.locale_switch_in_prototype');
+  }
+  if (!isCleanString(i18n.source)) {
+    blockers.push('invalid-prototype-manifest:ui_capabilities.i18n.source');
+  }
+}
+
+function validateUiCapabilities(manifest) {
+  const blockers = [];
+  if (!isPlainObject(manifest.ui_capabilities)) {
+    return ['invalid-prototype-manifest:ui_capabilities'];
+  }
+
+  validateThemeCapability(manifest.ui_capabilities, blockers);
+  validateI18nCapability(manifest.ui_capabilities, blockers);
+  return blockers;
+}
+
+function validateUiHtmlCapabilityAnchors(prototypeDir, requiredPath, manifest) {
+  const file = path.join(prototypeDir, requiredPath);
+  const text = readTextFile(file);
+  if (!text.ok || !isPlainObject(manifest && manifest.ui_capabilities)) return [];
+
+  const blockers = [];
+  const theme = manifest.ui_capabilities.theme;
+  const i18n = manifest.ui_capabilities.i18n;
+  if (isPlainObject(theme) && theme.toggle_in_prototype === true && !/data-specnav-theme-control/.test(text.value)) {
+    blockers.push(`missing-theme-control-anchor:${requiredPath}`);
+  }
+  if (isPlainObject(i18n) && i18n.locale_switch_in_prototype === true && !/data-specnav-locale-control/.test(text.value)) {
+    blockers.push(`missing-locale-control-anchor:${requiredPath}`);
+  }
+  return blockers;
+}
+
 function validateManifest(prototypeDir, change) {
   const name = 'prototype-manifest.json';
   const file = path.join(prototypeDir, name);
@@ -593,6 +729,7 @@ function validateManifest(prototypeDir, change) {
   blockers.push(...validateStringArrayField(manifest, 'dependencies'));
   blockers.push(...validateStringArrayField(manifest, 'referenced_foundation_specs', { nonEmpty: true }));
   blockers.push(...validateStringArrayField(manifest, 'referenced_requirements', { nonEmpty: true }));
+  blockers.push(...validateUiCapabilities(manifest));
 
   const entryPath = resolvePrototypePath(prototypeDir, manifest.entry);
   blockers.push(...entryPath.blockers);
@@ -632,6 +769,7 @@ function validateManifest(prototypeDir, change) {
         branchBlockers.push(...containment.blockers);
         if (manifest.type === 'ui-html' && containment.status === 'ok') {
           branchBlockers.push(...validateUiHtmlReviewAnchors(prototypeDir, branch.required));
+          branchBlockers.push(...validateUiHtmlCapabilityAnchors(prototypeDir, branch.required, manifest));
         }
       }
     }

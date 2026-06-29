@@ -25,6 +25,10 @@ The UI design spec follows the user's Geist-style `design.md` structure:
   `components`.
 - Markdown sections explain how tokens should be used, not just list values.
 - The light/dark theme relationship must be named when the project supports both.
+- `## Theme & Internationalization` must state whether theme switching exists,
+  supported modes (`none`, `light-only`, `dark-only`, `light-dark`, or
+  `system`), whether prototypes should show a theme toggle, whether i18n exists,
+  supported locales, and the default locale.
 
 If the user supplies a design file, prefer their file over SpecNav's template.
 Repair only missing contract sections or malformed token roots.

@@ -43,6 +43,8 @@ Required array fields:
 - `permissions`
 - `operational_constraints`
 - `data_flows`
+- `theme_modes`
+- `locale_policy`
 - `unresolved_gaps`
 
 `touched_specs` may only contain:
@@ -51,6 +53,11 @@ Required array fields:
 - `system-architecture`
 - `frontend-backend-data-flow`
 - `component-architecture`
+
+`theme_modes` and `locale_policy` must be non-empty. Use explicit values such as
+`light-only`, `light-dark`, `theme-toggle:none`, `i18n:disabled`,
+`locales:none`, `locales:en,zh-CN`, and `default-locale:en`. Do not leave theme
+or locale behavior implicit.
 
 ## `component-impact-map.json`
 

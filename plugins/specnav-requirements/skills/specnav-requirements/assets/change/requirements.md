@@ -21,6 +21,15 @@
 - Foundation spec: `openspec/specs/ui-design/design.md`
 - Required UI decisions: `<decision-required>`
 
+## Theme & Locale Capability Impact
+
+- Theme support: `<decision-required>` (`none`, `light-only`, `dark-only`, `light-dark`, or `system`)
+- Theme toggle policy: `<decision-required>` (show existing toggle, create new toggle, or explicitly omit)
+- Internationalization: `<decision-required>` (`enabled` or `disabled`)
+- Supported locales: `<decision-required>`
+- Default locale: `<decision-required>`
+- Prototype coverage: `<decision-required>` (which theme mode(s) and locale(s) must be visible in prototype review)
+
 ## Architecture & Database Impact
 
 - Foundation spec: `openspec/specs/system-architecture/design.md`

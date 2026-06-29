@@ -21,6 +21,11 @@ include:
 
 - desktop and mobile layout behavior;
 - loading, empty, error, disabled, and permission states when relevant;
+- the exact theme modes and locales approved by requirements;
+- a theme toggle only when `prototype-manifest.json` sets
+  `ui_capabilities.theme.toggle_in_prototype` to `true`;
+- a locale switcher only when `prototype-manifest.json` sets
+  `ui_capabilities.i18n.locale_switch_in_prototype` to `true`;
 - stable review anchors so feedback maps back to the prototype;
 - no production code edits.
 
@@ -33,6 +38,10 @@ attributes:
 - `data-specnav-component` on major components;
 - `data-specnav-state` on reviewable stateful regions;
 - `data-specnav-variant` where variants apply.
+- `data-specnav-theme-control` on the theme toggle when the prototype includes
+  one.
+- `data-specnav-locale-control` on the locale switcher when the prototype
+  includes one.
 
 The contract requires at least one `data-specnav-screen` anchor in
 `artifact/index.html`; absence reports `missing-review-anchors:artifact/index.html`.

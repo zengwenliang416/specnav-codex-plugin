@@ -23,7 +23,8 @@ Create or repair the four project-level foundation specs required before require
 6. Read `references/foundation-spec-contract.md` before creating or repairing foundation specs.
 7. If required specs are missing, run `node "$SPECNAV_REQUIREMENTS_ROOT/skills/specnav-foundation-specs/scripts/create-foundation-specs.js" --json` to create skeletons from `assets/`.
 8. If UI design is missing, guide the user to create the supplied Geist-style YAML token contract and Markdown guide.
-9. Preserve existing decisions outside reported blockers.
+9. UI design must explicitly record theme capability, theme toggle policy, i18n capability, supported locales, and default locale; do not infer dark mode or language switching from taste.
+10. Preserve existing decisions outside reported blockers.
 
 ## Required Outputs
 

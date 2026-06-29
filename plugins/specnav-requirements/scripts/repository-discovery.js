@@ -19,7 +19,13 @@ const CONFIG_FILES = [
   'vite.config.cjs',
   'next.config.js',
   'next.config.mjs',
-  'next.config.ts'
+  'next.config.ts',
+  'i18n-config.ts',
+  'i18n-config.js',
+  'next-intl.config.js',
+  'next-intl.config.mjs',
+  'tailwind.config.js',
+  'tailwind.config.ts'
 ];
 
 const DIRECTORY_SIGNALS = [
@@ -174,6 +180,62 @@ const DIRECTORY_SIGNALS = [
     finding: 'shared utility boundary',
     target: { spec: 'component-architecture', section: 'Shared Component Extraction Rules' },
     confidence: 0.58
+  },
+  {
+    path: 'dictionaries',
+    kind: 'i18n',
+    summary: 'Dictionary directory is present.',
+    finding: 'internationalization dictionary',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.82
+  },
+  {
+    path: 'i18n',
+    kind: 'i18n',
+    summary: 'i18n directory is present.',
+    finding: 'internationalization runtime',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.8
+  },
+  {
+    path: 'locales',
+    kind: 'i18n',
+    summary: 'Locale directory is present.',
+    finding: 'locale files',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.78
+  },
+  {
+    path: 'src/i18n',
+    kind: 'i18n',
+    summary: 'Source i18n directory is present.',
+    finding: 'internationalization runtime',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.78
+  },
+  {
+    path: 'src/locales',
+    kind: 'i18n',
+    summary: 'Source locale directory is present.',
+    finding: 'locale files',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.74
+  },
+  {
+    path: 'theme',
+    kind: 'theme',
+    summary: 'Theme directory is present.',
+    finding: 'theme system',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.78
+  },
+  {
+    path: 'src/theme',
+    kind: 'theme',
+    summary: 'Source theme directory is present.',
+    finding: 'theme system',
+    target: { spec: 'ui-design', section: 'Theme & Internationalization' },
+    confidence: 0.74
   }
 ];
 
@@ -424,6 +486,26 @@ function scanPackageJson(context) {
       0.78
     );
   }
+  if (hasAny(dependencies, ['next-intl', 'react-intl', 'react-i18next', 'i18next', 'vue-i18n'])) {
+    addFinding(
+      context,
+      'i18n-dependency',
+      'Internationalization dependency suggests supported locales and default locale must be captured in the UI design spec.',
+      { spec: 'ui-design', section: 'Theme & Internationalization' },
+      [evidenceId],
+      0.82
+    );
+  }
+  if (hasAny(dependencies, ['next-themes', '@theme-ui/core', 'styled-components', '@emotion/react'])) {
+    addFinding(
+      context,
+      'theme-dependency',
+      'Theme-related dependency suggests theme modes and toggle policy must be captured in the UI design spec.',
+      { spec: 'ui-design', section: 'Theme & Internationalization' },
+      [evidenceId],
+      0.76
+    );
+  }
   if (hasAny(dependencies, ['express', 'fastify', 'koa', 'hono', '@nestjs/core'])) {
     addFinding(
       context,
@@ -483,6 +565,26 @@ function scanConfigFiles(context) {
         { spec: 'system-architecture', section: 'Application Topology' },
         [evidenceId],
         0.8
+      );
+    }
+    if (relativePath.startsWith('i18n-config') || relativePath.startsWith('next-intl.config')) {
+      addFinding(
+        context,
+        'i18n-config',
+        `${relativePath} indicates locale routing or dictionary conventions.`,
+        { spec: 'ui-design', section: 'Theme & Internationalization' },
+        [evidenceId],
+        0.84
+      );
+    }
+    if (relativePath.startsWith('tailwind.config')) {
+      addFinding(
+        context,
+        'theme-config',
+        `${relativePath} may define dark mode, design tokens, or theme conventions.`,
+        { spec: 'ui-design', section: 'Theme & Internationalization' },
+        [evidenceId],
+        0.72
       );
     }
   }
@@ -617,6 +719,30 @@ function addNegotiationSignals(context, packageScan, configs, directories, testR
       { spec: 'component-architecture', section: 'Testing Expectations' },
       componentRefs,
       0.62
+    );
+  }
+
+  const i18nRefs = directories.filter(({ signal }) => signal.kind === 'i18n').map((item) => item.evidenceId);
+  if (i18nRefs.length > 0) {
+    addOpenItem(
+      context,
+      'i18n-locale-policy',
+      'Which locales are supported, what is the default locale, and should prototypes show a locale switcher?',
+      { spec: 'ui-design', section: 'Theme & Internationalization' },
+      i18nRefs,
+      0.76
+    );
+  }
+
+  const themeRefs = directories.filter(({ signal }) => signal.kind === 'theme').map((item) => item.evidenceId);
+  if (themeRefs.length > 0) {
+    addOpenItem(
+      context,
+      'theme-mode-policy',
+      'Which theme modes are supported, and should prototypes show a theme toggle or explicitly omit it?',
+      { spec: 'ui-design', section: 'Theme & Internationalization' },
+      themeRefs,
+      0.72
     );
   }
 

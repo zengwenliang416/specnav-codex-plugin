@@ -1,6 +1,6 @@
 # SpecNav Codex Plugin System Design
 
-Version: 0.1.4
+Version: 0.1.5
 
 This repository is the Codex-native edition of SpecNav. It keeps the lifecycle
 logic of the existing SpecNav plugin suite, but it does not reuse the old plugin
@@ -214,6 +214,16 @@ If any are missing, `specnav-foundation-specs` must guide the user to create
 them using the required format. Only after these specs are present may
 `specnav-requirements` begin detailed questioning.
 
+The UI design spec must also record project UI capabilities before feature
+requirements start:
+
+- supported theme modes: `none`, `light-only`, `dark-only`, `light-dark`, or
+  `system`;
+- whether a theme toggle exists, must be added, or must be omitted;
+- whether i18n exists;
+- supported locales and default locale;
+- whether prototypes must show theme and locale controls.
+
 The fourth spec enforces high cohesion and low coupling:
 
 - repeated UI or logic must be extracted when it forms a stable reusable unit;
@@ -238,6 +248,8 @@ Questions should converge on:
 - affected users and workflows;
 - data inputs, outputs, and ownership;
 - UI states and interaction contracts;
+- theme mode and locale coverage, including projects that have i18n but no
+  dark/light switch;
 - backend contracts and persistence rules;
 - edge cases, permissions, safety, and rollback;
 - acceptance criteria and test evidence.
@@ -256,6 +268,12 @@ Required outputs:
 
 The prototype is a decision artifact. It must be useful for user review before
 development begins.
+
+UI prototypes must bind to the approved theme and locale policy. If a project
+does not support dark mode, the prototype must not invent a dark/light switch.
+If a project supports i18n, the prototype manifest and screen map must name the
+language list, default locale, and whether the review artifact includes a locale
+switcher.
 
 ## 11. Development Stage
 

@@ -19,5 +19,24 @@
     "acceptance.md",
     "spec-map.json",
     "component-impact-map.json"
-  ]
+  ],
+  "ui_capabilities": {
+    "theme": {
+      "support": "<decision-required>",
+      "modes": [
+        "<decision-required>"
+      ],
+      "toggle_in_prototype": false,
+      "source": "openspec/specs/ui-design/design.md#Theme & Internationalization"
+    },
+    "i18n": {
+      "enabled": false,
+      "locales": [
+        "none"
+      ],
+      "default_locale": "none",
+      "locale_switch_in_prototype": false,
+      "source": "openspec/specs/ui-design/design.md#Theme & Internationalization"
+    }
+  }
 }
