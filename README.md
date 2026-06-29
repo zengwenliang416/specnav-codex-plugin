@@ -46,44 +46,44 @@ Future SpecNav diagrams should follow the project visual memory:
 [docs/memory/specnav-visual-style.md](docs/memory/specnav-visual-style.md).
 
 <p align="center">
-  <img src="docs/assets/readme/specnav-overview-bd-2k.png" alt="SpecNav lifecycle overview" width="100%">
+  <img src="docs/assets/readme/en/specnav-overview-bd-2k.jpg" alt="SpecNav lifecycle overview" width="100%">
 </p>
 
 <table>
   <tr>
     <td width="50%">
       <strong>1. Bootstrap</strong><br>
-      <img src="docs/assets/readme/stage-1-bootstrap-bd-2k.png" alt="SpecNav bootstrap stage">
+      <img src="docs/assets/readme/en/stage-1-bootstrap-bd-2k.jpg" alt="SpecNav bootstrap stage">
     </td>
     <td width="50%">
       <strong>2. Discovery</strong><br>
-      <img src="docs/assets/readme/stage-2-discovery-bd-2k.png" alt="SpecNav discovery stage">
+      <img src="docs/assets/readme/en/stage-2-discovery-bd-2k.jpg" alt="SpecNav discovery stage">
     </td>
   </tr>
   <tr>
     <td width="50%">
       <strong>3. Requirements</strong><br>
-      <img src="docs/assets/readme/stage-3-requirements-bd-2k.png" alt="SpecNav requirements stage">
+      <img src="docs/assets/readme/en/stage-3-requirements-bd-2k.jpg" alt="SpecNav requirements stage">
     </td>
     <td width="50%">
       <strong>4. Prototype</strong><br>
-      <img src="docs/assets/readme/stage-4-prototype-bd-2k.png" alt="SpecNav prototype stage">
+      <img src="docs/assets/readme/en/stage-4-prototype-bd-2k.jpg" alt="SpecNav prototype stage">
     </td>
   </tr>
   <tr>
     <td width="50%">
       <strong>5. Development</strong><br>
-      <img src="docs/assets/readme/stage-5-development-bd-2k.png" alt="SpecNav development stage">
+      <img src="docs/assets/readme/en/stage-5-development-bd-2k.jpg" alt="SpecNav development stage">
     </td>
     <td width="50%">
       <strong>6. Verification</strong><br>
-      <img src="docs/assets/readme/stage-6-verification-bd-2k.png" alt="SpecNav verification stage">
+      <img src="docs/assets/readme/en/stage-6-verification-bd-2k.jpg" alt="SpecNav verification stage">
     </td>
   </tr>
   <tr>
     <td colspan="2">
       <strong>7. Operations</strong><br>
-      <img src="docs/assets/readme/stage-7-operations-bd-2k.png" alt="SpecNav operations stage">
+      <img src="docs/assets/readme/en/stage-7-operations-bd-2k.jpg" alt="SpecNav operations stage">
     </td>
   </tr>
 </table>
