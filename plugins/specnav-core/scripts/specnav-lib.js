@@ -546,8 +546,50 @@ function ensureSpecNavMarker(root) {
 }
 
 function detectLegacyOpenSpecEntrypoints(root) {
-  void root;
-  return [];
+  const entries = [];
+  const skillsDir = path.join(root, '.claude', 'skills');
+  const commandsDir = path.join(root, '.claude', 'commands', 'opsx');
+  const isSpecNavDisabledStub = (file) => {
+    const text = readText(file);
+    return /\blegacy-openspec-workflow\b/.test(text)
+      && /\bSpecNav\b/.test(text)
+      && /\bDisabled\b/i.test(text);
+  };
+
+  try {
+    for (const name of fs.readdirSync(skillsDir)) {
+      const skillFile = path.join(skillsDir, name, 'SKILL.md');
+      if (!name.startsWith('openspec-') || !fs.existsSync(skillFile)) continue;
+      if (isSpecNavDisabledStub(skillFile)) continue;
+      entries.push({
+        type: 'skill',
+        name,
+        path: path.relative(root, skillFile).split(path.sep).join('/'),
+        blocker: `legacy-openspec-skill:${name}`
+      });
+    }
+  } catch {
+    // Project has no local OpenSpec skills.
+  }
+
+  try {
+    for (const name of fs.readdirSync(commandsDir)) {
+      const commandFile = path.join(commandsDir, name);
+      if (!name.endsWith('.md') || !fs.existsSync(commandFile)) continue;
+      if (isSpecNavDisabledStub(commandFile)) continue;
+      const commandName = `opsx/${name.replace(/\.md$/, '')}`;
+      entries.push({
+        type: 'command',
+        name: commandName,
+        path: path.relative(root, commandFile).split(path.sep).join('/'),
+        blocker: `legacy-opsx-command:${commandName}`
+      });
+    }
+  } catch {
+    // Project has no local OPSX commands.
+  }
+
+  return entries.sort((a, b) => a.path.localeCompare(b.path));
 }
 
 module.exports = {

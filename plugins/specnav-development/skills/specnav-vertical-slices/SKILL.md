@@ -22,7 +22,7 @@ Plan, dispatch, review, and close production implementation through file-backed 
 5. Write user-visible tracer-bullet slices in `tasks.md` as checkbox tasks only: `- [ ]` before implementation, `- [x]` only after direct implementation and validation evidence exists. Avoid layer-only tasks.
 6. After creating or editing `tasks.md`, run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json`. Plain bullets must be converted to standard OpenSpec checkbox syntax instead of left for archive-time interpretation.
 7. Create each task packet with `brief.md` and `context.json`.
-8. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review.
+8. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review. Replace every scaffold placeholder with direct evidence before closing a task.
 9. No fallback around failed task review is allowed.
 10. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
 
@@ -38,6 +38,7 @@ Plan, dispatch, review, and close production implementation through file-backed 
 - Entry blockers remain.
 - Scope is insufficient.
 - `tasks.md` has plain bullets, mixed checkbox/plain bullets, or any unchecked item during handoff.
+- Any task report, review file, ledger, drift check, validation log, or handoff file still contains `<decision-required>`, "Replace this scaffold", `development-entry-scaffold`, `vertical-slice-scaffold`, or `pending-vertical-slices`.
 - A task lacks allowed files.
 - A task duplicates component logic that should be extracted under the component architecture spec.
 - Drift blocks development.

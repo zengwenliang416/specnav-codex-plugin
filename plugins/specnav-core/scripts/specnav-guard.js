@@ -116,6 +116,14 @@ function isOpenSpecRepairCommand(command) {
     || /\bnode\b.*\b(specnav-bootstrap|specnav-doctor|workflow-state|affordances|plugin-suite)\.js\b/.test(command);
 }
 
+function isLegacyOpenSpecWorkflowCommand(command) {
+  if (!command) return false;
+  const normalized = command.replace(/\s+/g, ' ').trim();
+  return /\bopenspec\b.*\b(propose|proposal|apply|implement)\b/i.test(normalized)
+    || /\bopsx\s*[:/]\s*(propose|apply|explore|archive)\b/i.test(normalized)
+    || /\b(?:\/)?openspec-(propose|apply|explore|archive)\b/i.test(normalized);
+}
+
 function main() {
   const root = lib.projectRoot();
   const payload = readStdinJson();
@@ -127,10 +135,15 @@ function main() {
     lib.event(root, 'hook.deny', { reason: 'dangerous-command' });
     deny('dangerous shell command requires explicit manual review.');
   }
+  if (lib.isSpecNavProject(root) && isBashTool(normalized.tool) && isLegacyOpenSpecWorkflowCommand(normalized.command)) {
+    lib.event(root, 'hook.deny', { reason: 'legacy-openspec-workflow-command', command: normalized.command });
+    deny('native OpenSpec workflow entrypoints are disabled inside SpecNav projects; use SpecNav requirements/prototype/development/verification/operations commands instead.');
+  }
 
   const relPaths = normalized.paths.map((target) => toRelativeProjectPath(root, target));
   const productionPaths = relPaths.filter((rel) => !rel.startsWith('openspec/'));
   const hasOpenSpec = fs.existsSync(lib.openspecDir(root));
+  const legacyEntrypoints = hasOpenSpec ? lib.detectLegacyOpenSpecEntrypoints(root) : [];
 
   if (!hasOpenSpec) {
     if (!lib.isSpecNavProject(root)) {
@@ -152,10 +165,23 @@ function main() {
     allow(root, 'no-target-path');
   }
 
-  const change = lib.activeChange(root);
+  const changeState = lib.activeChangeState(root);
+  const change = changeState.change;
   const dir = lib.changeDir(root, change);
-  if (!change || !dir) warn(root, 'No active SpecNav change; run $specnav-status or $specnav-requirements.');
   if (!productionPaths.length) allow(root, 'openspec-edit');
+  if (legacyEntrypoints.length) {
+    lib.event(root, 'hook.deny', {
+      reason: 'legacy-openspec-workflow',
+      paths: productionPaths,
+      legacy_entrypoints: legacyEntrypoints
+    });
+    deny(`legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Disable them or replace them with SpecNav disabled stubs before production edits.`);
+  }
+  if (!change || !dir) {
+    const blockers = changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change'];
+    lib.event(root, 'hook.deny', { reason: blockers[0], paths: productionPaths, candidates: changeState.candidates || [] });
+    deny(`production edits require an explicit SpecNav change: ${blockers.join(', ')}. Set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
+  }
 
   if (!lib.fileExists(path.join(dir, 'tasks.md'))) {
     const overridden = productionPaths.every((rel) => pathOverrideAllows(root, 'missing-tasks', rel, change));

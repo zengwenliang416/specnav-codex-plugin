@@ -27,3 +27,8 @@ Check for:
 
 Do not hand off to six-domain verification until every task has a report, spec
 review, quality review, ledger entries, validation log, and drift check.
+
+Every handoff artifact must be evidence-bearing. Remove scaffold text before
+closure: `<decision-required>`, "Replace this scaffold",
+`development-entry-scaffold`, `vertical-slice-scaffold`, and
+`pending-vertical-slices` are blockers, not review notes.

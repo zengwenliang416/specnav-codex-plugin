@@ -54,6 +54,14 @@ const PROTOTYPE_DECISION_ARTIFACTS = [
 
 const HANDOFF_REPORT_STATUSES = new Set(['DONE', 'DONE_WITH_CONCERNS']);
 const HANDOFF_REVIEW_VERDICTS = new Set(['approved']);
+const SCAFFOLD_SENTINELS = [
+  ['decision-required', /<decision-required>/i],
+  ['replace-scaffold', /\breplace\s+(?:this\s+)?scaffold\b/i],
+  ['development-entry-scaffold', /\bdevelopment-entry-scaffold\b/i],
+  ['vertical-slice-scaffold', /\bvertical-slice-scaffold\b/i],
+  ['pending-vertical-slices', /\bpending-vertical-slices\b/i],
+  ['specnav-template-token', /\{\{SPECNAV_[A-Z0-9_]+\}\}/]
+];
 
 const BRIEF_HEADINGS = [
   'Goal',
@@ -173,6 +181,13 @@ function isCleanRelativePath(value) {
 
 function hasInvalidStringArrayMembers(values, pathLike = false) {
   return values.some((item) => (pathLike ? !isCleanRelativePath(item) : !isCleanString(item)));
+}
+
+function scaffoldBlockersForText(value, name) {
+  const text = String(value || '');
+  return SCAFFOLD_SENTINELS
+    .filter(([, pattern]) => pattern.test(text))
+    .map(([label]) => `scaffold-placeholder:${name}:${label}`);
 }
 
 function readJsonFile(file) {
@@ -595,7 +610,7 @@ function normalizeTaskBullet(value) {
   return normalizeContractText(value).replace(/\bthe\b/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function validateTasksMarkdown(changeDir, activeChange) {
+function validateTasksMarkdown(changeDir, activeChange, mode = DEFAULT_MODE) {
   const name = 'tasks.md';
   const file = path.join(changeDir, name);
   const text = readTextFile(file);
@@ -624,8 +639,10 @@ function validateTasksMarkdown(changeDir, activeChange) {
   if (bullets.length === 0) blockers.push('tasks-md:no-bullets');
   if (bullets.length > 0 && checkboxItems.length === 0) blockers.push('tasks-md:no-checkboxes');
   if (checkboxItems.length > 0 && checkboxItems.length !== bullets.length) blockers.push('tasks-md:mixed-checkboxes');
-  if (incompleteItems.length > 0) blockers.push('tasks-md:incomplete-checkboxes');
-  if (checkboxItems.length > 0 && completedItems.length === 0) blockers.push('tasks-md:no-completed-checkboxes');
+  if (mode === 'handoff') {
+    if (incompleteItems.length > 0) blockers.push('tasks-md:incomplete-checkboxes');
+    if (checkboxItems.length > 0 && completedItems.length === 0) blockers.push('tasks-md:no-completed-checkboxes');
+  }
 
   let verticalSlices = 0;
   for (const bullet of bullets) {
@@ -716,6 +733,7 @@ function validateBasis(developmentDir, activeChange, requiredReferences) {
     return artifactResult(activeChange, name, blockers, true);
   }
   if (text.value.trim() === '') blockers.push(`empty-development-artifact:${name}`);
+  blockers.push(...scaffoldBlockersForText(text.value, name));
 
   const normalized = normalizeContractText(text.value);
   if (!normalized.includes('requirements')) blockers.push('invalid-basis:requirements-reference');
@@ -769,6 +787,7 @@ function parseJsonl(file, name) {
     blockers.push(`missing-development-artifact:${name}`);
     return { blockers, entries };
   }
+  blockers.push(...scaffoldBlockersForText(text.value, name));
 
   const lines = text.value.split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
@@ -855,6 +874,7 @@ function validateHandoffToVerify(developmentDir, activeChange) {
     return artifactResult(activeChange, name, blockers, true);
   }
   if (text.value.trim() === '') blockers.push(`empty-development-artifact:${name}`);
+  blockers.push(...scaffoldBlockersForText(text.value, name));
   blockers.push(...validateRequiredHeadings(text.value, HANDOFF_HEADINGS, 'invalid-handoff-to-verify'));
 
   return artifactResult(activeChange, name, unique(blockers), true);
@@ -870,6 +890,7 @@ function validateTaskBrief(taskDir, relativeTaskPath) {
     return { name, path: path.join(relativeTaskPath, name), ok: false, blockers };
   }
   if (text.value.trim() === '') blockers.push(`empty-task-artifact:${name}`);
+  blockers.push(...scaffoldBlockersForText(text.value, name));
   blockers.push(...validateRequiredHeadings(text.value, BRIEF_HEADINGS, 'invalid-task-brief'));
 
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
@@ -929,6 +950,7 @@ function validateReport(taskDir, relativeTaskPath) {
     return { name, path: path.join(relativeTaskPath, name), ok: false, blockers };
   }
   if (text.value.trim() === '') blockers.push(`empty-task-artifact:${name}`);
+  blockers.push(...scaffoldBlockersForText(text.value, name));
 
   const parsed = parseMarkdownHeadings(text.value);
   blockers.push(...validateRequiredHeadings(text.value, REPORT_REQUIRED_HEADINGS, 'invalid-task-report'));
@@ -962,6 +984,7 @@ function validateVerdictFile(taskDir, relativeTaskPath, name) {
     return { name, path: path.join(relativeTaskPath, name), ok: false, blockers };
   }
   if (text.value.trim() === '') blockers.push(`empty-task-artifact:${name}`);
+  blockers.push(...scaffoldBlockersForText(text.value, name));
 
   const parsed = parseMarkdownHeadings(text.value);
   const requiredHeadings = type === 'spec-review'
@@ -1072,7 +1095,7 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   artifacts.push(validateUpstreamContracts(projectRoot, activeChange, prototype));
   artifacts.push(approvalBinding.artifact);
   artifacts.push(validateScope(projectRoot, changeDir, activeChange, approvalBinding));
-  artifacts.push(validateTasksMarkdown(changeDir, activeChange));
+  artifacts.push(validateTasksMarkdown(changeDir, activeChange, mode));
   artifacts.push(validateBeforeDevCheck(developmentDir, activeChange));
   artifacts.push(validateBasis(developmentDir, activeChange, requiredReferences));
   artifacts.push(validatePromotionMap(developmentDir, activeChange));

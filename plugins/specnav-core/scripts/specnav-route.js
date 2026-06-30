@@ -20,14 +20,14 @@ const ROUTES = {
     skill: 'specnav-foundation-specs',
     skills: ['specnav-repository-discovery', 'specnav-foundation-specs'],
     required_plugins: ['specnav-core', 'specnav-requirements'],
-    action: 'propose'
+    action: 'requirements'
   },
   requirements: {
     target_plugin: 'specnav-requirements',
     command: '$specnav-requirements',
     skill: 'specnav-requirements',
     required_plugins: ['specnav-core', 'specnav-requirements'],
-    action: 'propose'
+    action: 'requirements'
   },
   prototype: {
     target_plugin: 'specnav-prototype',

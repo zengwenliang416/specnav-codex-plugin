@@ -38,6 +38,7 @@ function main() {
   }
 
   const state = workflow.writeRuntimeArtifacts(root);
+  const legacyEntrypoints = lib.detectLegacyOpenSpecEntrypoints(root);
   lib.event(root, 'session.start', { cwd: root, status: state.status });
   output([
     '<specnav-session>',
@@ -45,6 +46,9 @@ function main() {
     `project_root: ${root}`,
     `status: ${state.status}`,
     `blockers: ${state.blockers.join(', ') || 'none'}`,
+    `legacy_openspec_entrypoints: ${legacyEntrypoints.map((entry) => `${entry.name} (${entry.path})`).join(', ') || 'none'}`,
+    'native_openspec_skills: disabled when SpecNav is active; use OpenSpec CLI only as commanded by SpecNav contracts',
+    'completion_rule: do not claim a stage complete or hand off until the owning SpecNav contract returns ok:true',
     'workflow_state: openspec/.specnav/workflow-state.json',
     '</specnav-session>'
   ].join('\n'));

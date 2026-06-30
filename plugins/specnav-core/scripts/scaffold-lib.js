@@ -306,6 +306,23 @@ function runScaffold(config) {
     files.push(...copyTemplateTree(item.source, item.target, options, values, item.filter || null));
   }
 
+  if (typeof config.afterCopy === 'function') {
+    try {
+      const extraFiles = config.afterCopy(options, { root, change, changeDir, values, files }) || [];
+      files.push(...extraFiles);
+    } catch (error) {
+      const result = {
+        ok: false,
+        project_root: root,
+        active_change: change,
+        blockers: [error.blocker || 'scaffold-after-copy-failed'],
+        message: error.message
+      };
+      emit(result, options.json);
+      return 2;
+    }
+  }
+
   const result = {
     ok: true,
     project_root: root,

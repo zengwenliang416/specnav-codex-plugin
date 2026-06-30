@@ -34,12 +34,23 @@ function main() {
   const readyActions = (ready.actions || [])
     .filter((action) => action.state === 'ready')
     .map((action) => action.id);
+  const legacyEntrypoints = ready.legacy_openspec_entrypoints || [];
+  const legacyLines = legacyEntrypoints.length
+    ? [
+        `legacy_openspec_entrypoints: ${legacyEntrypoints.map((entry) => `${entry.name} (${entry.path})`).join(', ')}`,
+        'native_openspec_skills: disabled; route through SpecNav requirements/prototype/development/verification/operations instead'
+      ]
+    : [
+        'native_openspec_skills: disabled when SpecNav is active; use OpenSpec CLI only as commanded by SpecNav contracts'
+      ];
   output([
     '<specnav-state>',
     `stage: ${state.status}`,
     `active_change: ${state.active_change || 'none'}`,
     `ready_actions: ${readyActions.join(', ') || 'none'}`,
     `blockers: ${(ready.blockers || []).join(', ') || 'none'}`,
+    ...legacyLines,
+    'completion_rule: do not claim a stage complete or hand off until the owning SpecNav contract returns ok:true',
     '</specnav-state>'
   ].join('\n'));
 }

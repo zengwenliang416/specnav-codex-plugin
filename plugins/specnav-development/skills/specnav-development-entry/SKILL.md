@@ -21,7 +21,10 @@ Validate upstream requirements and prototype gates, then record the basis for pr
 4. Read `references/development-entry.md` before writing entry artifacts.
 5. If entry artifacts are missing, run `node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-development-entry/scripts/create-development-entry.js" --json`.
 6. Write or repair `development/before-dev-check.json` and `development/basis.md` with exact relative path references.
-7. Do not start production edits until entry passes.
+7. Keep `tasks.md` in standard checkbox form. Entry allows `- [ ]` pending
+   vertical slices; do not mark them `- [x]` until direct implementation and
+   validation evidence exists.
+8. Do not start production edits until entry passes.
 
 ## Required Outputs
 
@@ -32,6 +35,7 @@ Validate upstream requirements and prototype gates, then record the basis for pr
 ## Stop Conditions
 
 - Any upstream artifact is missing or invalid.
+- `tasks.md` lacks standard checkbox syntax.
 - Approved prototype source is unclear.
 - The implementation needs a new product, architecture, data-flow, or component-boundary decision.
 

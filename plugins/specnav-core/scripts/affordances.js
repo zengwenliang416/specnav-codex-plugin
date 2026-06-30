@@ -17,7 +17,7 @@ const REQUIRED_PLUGINS = [
 
 const ACTION_PLUGINS = {
   bootstrap: ['specnav-core'],
-  propose: ['specnav-core', 'specnav-requirements'],
+  requirements: ['specnav-core', 'specnav-requirements'],
   design: ['specnav-core', 'specnav-requirements'],
   tasks: ['specnav-core', 'specnav-requirements'],
   implement: ['specnav-core', 'specnav-development'],
@@ -34,8 +34,11 @@ function defaultMarketplaceRoot() {
 
 function buildAffordances(root, options = {}) {
   const open = lib.openspecDir(root);
-  const change = lib.activeChange(root);
+  const changeState = lib.activeChangeState(root);
+  const change = changeState.change;
   const dir = lib.changeDir(root, change);
+  const legacyEntrypoints = lib.detectLegacyOpenSpecEntrypoints(root);
+  const legacyBlocker = legacyEntrypoints.length ? 'legacy-openspec-workflow' : null;
   const suiteStatus = options.suiteStatus || suite.listPlugins({
     marketplaceRoot: options.marketplaceRoot || process.env.SPECNAV_MARKETPLACE_ROOT || defaultMarketplaceRoot()
   });
@@ -68,6 +71,13 @@ function buildAffordances(root, options = {}) {
   const globalBlockers = [
     ...((suiteStatus && suiteStatus.blockers) || []),
     !hasOpenSpec ? 'missing-openspec' : null,
+    hasOpenSpec ? legacyBlocker : null,
+    hasOpenSpec && !change ? changeState.blockers[0] : null,
+    openspecStateBlocker
+  ].filter(Boolean);
+  const lifecycleBlockers = [
+    legacyBlocker,
+    hasOpenSpec && !change ? changeState.blockers[0] : null,
     openspecStateBlocker
   ].filter(Boolean);
 
@@ -88,14 +98,14 @@ function buildAffordances(root, options = {}) {
   };
 
   add('bootstrap', !hasOpenSpec, hasOpenSpec ? ['openspec-exists'] : []);
-  add('propose', hasOpenSpec && !openspecStateBlocker, hasOpenSpec ? (openspecStateBlocker ? [openspecStateBlocker] : []) : ['bootstrap']);
-  add('design', !!(proposal && !design), openspecStateBlocker ? [openspecStateBlocker] : (proposal ? [] : ['proposal']));
-  add('tasks', !!(design && !tasks), openspecStateBlocker ? [openspecStateBlocker] : (design ? [] : ['design']));
-  add('implement', !!(tasks && (verifyStatus !== 'green' || verifyReportStale)), openspecStateBlocker ? [openspecStateBlocker] : (tasks ? [] : ['tasks']));
-  add('fix', !!(tasks && verify && (verifyStatus !== 'green' || verifyReportStale)), openspecStateBlocker ? [openspecStateBlocker] : (verify ? [] : ['verify']));
-  add('verify', !!tasks, openspecStateBlocker ? [openspecStateBlocker] : (tasks ? [] : ['tasks']));
+  add('requirements', hasOpenSpec && lifecycleBlockers.length === 0, hasOpenSpec ? lifecycleBlockers : ['bootstrap']);
+  add('design', !!(proposal && !design && lifecycleBlockers.length === 0), lifecycleBlockers.length ? lifecycleBlockers : (proposal ? [] : ['proposal']));
+  add('tasks', !!(design && !tasks && lifecycleBlockers.length === 0), lifecycleBlockers.length ? lifecycleBlockers : (design ? [] : ['design']));
+  add('implement', !!(tasks && (verifyStatus !== 'green' || verifyReportStale) && lifecycleBlockers.length === 0), lifecycleBlockers.length ? lifecycleBlockers : (tasks ? [] : ['tasks']));
+  add('fix', !!(tasks && verify && (verifyStatus !== 'green' || verifyReportStale) && lifecycleBlockers.length === 0), lifecycleBlockers.length ? lifecycleBlockers : (verify ? [] : ['verify']));
+  add('verify', !!(tasks && lifecycleBlockers.length === 0), lifecycleBlockers.length ? lifecycleBlockers : (tasks ? [] : ['tasks']));
   const releaseBlockers = [];
-  if (openspecStateBlocker) releaseBlockers.push(openspecStateBlocker);
+  releaseBlockers.push(...lifecycleBlockers);
   if (!verify || verify.status !== 'green') releaseBlockers.push('verify');
   if (verifyReportStale) releaseBlockers.push('fresh-verify');
   if (risk.tier === 'high-risk' && !signoff) releaseBlockers.push('human-signoff');
@@ -115,8 +125,15 @@ function buildAffordances(root, options = {}) {
       marketplace_root: suiteStatus.marketplace_root,
       blockers: suiteStatus.blockers || []
     },
-    state_source: useOpenSpec ? 'openspec-cli' : (openspecStateBlocker ? 'blocked' : (hasOpenSpec ? 'no-active-change' : 'missing-openspec')),
+    state_source: useOpenSpec ? 'openspec-cli' : (openspecStateBlocker ? 'blocked' : (hasOpenSpec ? changeState.source : 'missing-openspec')),
     blockers: globalBlockers,
+    change_resolution: {
+      source: changeState.source,
+      candidates: changeState.candidates || [],
+      blockers: changeState.blockers || []
+    },
+    change_registry: changeState.registry,
+    legacy_openspec_entrypoints: legacyEntrypoints,
     openspec_status: openspecStatus.ok
       ? {
           schema_name: openspecStatus.status.schemaName,

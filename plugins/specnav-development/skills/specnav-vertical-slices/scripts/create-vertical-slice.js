@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const runtime = require('../../../scripts/plugin-runtime');
 const scaffold = runtime.requirePluginScript('specnav-core', 'scripts/scaffold-lib');
@@ -18,6 +19,48 @@ function fileItem(sourceFile, targetFile) {
     target: path.dirname(targetFile),
     filter: path.basename(sourceFile)
   };
+}
+
+function renderTemplate(text, values) {
+  return Object.entries(values).reduce((output, [key, value]) => {
+    return output.split(`{{${key}}}`).join(String(value));
+  }, text);
+}
+
+function shouldDropTaskContextLine(line, taskId) {
+  const trimmed = line.trim();
+  if (!trimmed) return true;
+  try {
+    const entry = JSON.parse(trimmed);
+    return entry.source === 'development-entry-scaffold'
+      || entry.status === 'pending-vertical-slices'
+      || (
+        entry.task_id === taskId
+        && entry.source === 'specnav-vertical-slices'
+        && entry.status === 'task-ready'
+      );
+  } catch {
+    return false;
+  }
+}
+
+function writeTaskContext(options, context) {
+  const taskId = context.values.SPECNAV_TASK_ID;
+  const target = path.join(context.changeDir, 'development', 'task-context.jsonl');
+  const template = '{"task_id":"{{SPECNAV_TASK_ID}}","status":"task-ready","source":"specnav-vertical-slices","note":"Task packet created; fill brief.md and context.json before development entry can pass."}';
+  const line = renderTemplate(template, context.values);
+  const exists = fs.existsSync(target);
+
+  if (options.dryRun) {
+    return [{ status: exists ? 'would-update' : 'would-create', source: 'generated:task-context', target }];
+  }
+
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const existingLines = exists ? fs.readFileSync(target, 'utf8').split(/\r?\n/) : [];
+  const keptLines = existingLines.filter((existingLine) => !shouldDropTaskContextLine(existingLine, taskId));
+  keptLines.push(line);
+  fs.writeFileSync(target, `${keptLines.join('\n')}\n`);
+  return [{ status: exists ? 'updated' : 'created', source: 'generated:task-context', target }];
 }
 
 process.exit(scaffold.runScaffold({
@@ -47,5 +90,8 @@ process.exit(scaffold.runScaffold({
         target: path.join(context.changeDir, 'development')
       }
     ];
+  },
+  afterCopy(options, context) {
+    return writeTaskContext(options, context);
   }
 }));
