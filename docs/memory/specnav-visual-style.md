@@ -43,6 +43,8 @@ Do not generate:
 - generic PowerPoint infographic cards;
 - stock-photo or photorealistic scenes;
 - pure gradient backgrounds;
+- deterministic SVG/vector diagrams that replace the approved B+D illustrated
+  map style merely to make localization easier;
 - decorative blobs, bokeh, or unrelated abstract orbs;
 - cyberpunk, neon, glassmorphism, or purple-blue dominated palettes;
 - one-note beige-only or blue-only palettes;
@@ -158,6 +160,11 @@ technical-map tone.
 Do not change this canonical style or replace the reference images without
 explicit user approval. New diagrams should extend this style rather than
 reinterpreting it.
+
+Style continuity is a hard gate. Do not solve bilingual consistency by
+switching the illustration system to a flatter deterministic SVG, dashboard, or
+generic infographic style. If localized pairs drift, regenerate or edit within
+the approved B+D illustrated-map language instead of changing the medium.
 
 For bilingual documentation, do not use a deterministic text-overlay pipeline on
 top of one language's image. Generate a native image for each language using the
