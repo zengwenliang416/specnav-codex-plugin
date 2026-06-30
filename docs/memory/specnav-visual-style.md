@@ -146,14 +146,39 @@ English README files must reference `docs/assets/readme/en/`. Simplified
 Chinese README files must reference `docs/assets/readme/zh-CN/`.
 
 The Chinese set is the accepted native Chinese B+D visual set. The English set
-must be regenerated as native English images that follow the Chinese set's
-style, structure, route rhythm, station count, color palette, and visual
-language. Do not create English assets by overlaying English text on top of the
-Chinese images. The image itself should be generated with English copy.
+must be generated or edited as native English B+D bitmap images that follow the
+Chinese set's style, structure, route rhythm, station count, color palette, and
+visual language.
+
+When the goal is high bilingual parity, use AI reference-image editing against
+the accepted B+D master image: preserve the same map, route, buildings,
+platforms, icons, colors, camera angle, and parchment texture, and replace only
+the visible copy. This is allowed because it preserves the B+D illustrated
+medium. Do not use deterministic local text overlay as the final asset, and do
+not replace the image system with SVG/vector/dashboard/flat infographic output.
 
 When adding new images, inspect these references first and keep the same
 composition language, color temperature, route rhythm, label density, and
 technical-map tone.
+
+## Bilingual Edit Workflow
+
+The accepted high-parity workflow is:
+
+1. Treat the Simplified Chinese B+D image as the current visual master, unless a
+   newer approved neutral master exists.
+2. Use AI reference-image editing to translate visible copy while preserving the
+   master composition, not independent text-to-image generation.
+3. Visually review the English and Chinese outputs side by side.
+4. Reject outputs that change the map composition, route geometry, buildings,
+   stage count, palette, perspective, or B+D illustrated-map medium.
+5. Upscale only after the reference-image edit is complete, and keep the final
+   README assets at 2560 x 1440 PNG.
+
+The 2026-06-30 English README stage images were regenerated with this workflow:
+each English image was edited from the matching `zh-CN` B+D master, then
+upscaled back to 2560 x 1440. The older independently generated English set was
+replaced because it drifted in layout and scene details.
 
 ## Update Rule
 
