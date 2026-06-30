@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
+const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
 
 const TARGETS = new Set(['local-only', 'plugin-marketplace', 'package', 'host-compatibility', 'project-deploy']);
 const RECEIPT_CONFIDENCE = new Set(['A', 'B', 'C']);
@@ -12,6 +13,25 @@ const UPDATE_SPEC_STATUSES = new Set(['no_writeback_needed', 'written_back', 'de
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function codegraphStageGuard(projectRoot, change, stage) {
+  if (!change) return null;
+  return validateCodeGraph({
+    projectRoot,
+    change,
+    stage,
+    requireEvidence: true,
+    writeArtifacts: true
+  });
+}
+
+function codegraphBlockers(result) {
+  return result && Array.isArray(result.blockers) ? result.blockers : [];
+}
+
+function codegraphWarnings(result) {
+  return result && Array.isArray(result.warnings) ? result.warnings : [];
 }
 
 function isPlainObject(value) {
@@ -351,6 +371,7 @@ function validateOperations(root = lib.projectRoot()) {
   const opsDir = changeDir ? path.join(changeDir, 'operations') : null;
   const artifacts = [];
   const blockers = [];
+  const warnings = [];
 
   if (!change || !changeDir || !fs.existsSync(changeDir)) {
     blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
@@ -369,6 +390,8 @@ function validateOperations(root = lib.projectRoot()) {
       operations_dir: opsDir,
       release_target: null,
       blockers: unique(blockers),
+      warnings: unique(warnings),
+      codegraph: null,
       artifacts
     };
   }
@@ -427,6 +450,9 @@ function validateOperations(root = lib.projectRoot()) {
   }
 
   blockers.push(...artifacts.flatMap((item) => item.blockers));
+  const codegraph = codegraphStageGuard(projectRoot, change, 'operations');
+  blockers.push(...codegraphBlockers(codegraph));
+  warnings.push(...codegraphWarnings(codegraph));
 
   return {
     ok: blockers.length === 0,
@@ -442,6 +468,8 @@ function validateOperations(root = lib.projectRoot()) {
     release_target: target,
     risk_tier: risk.tier || 'standard',
     blockers: unique(blockers),
+    warnings: unique(warnings),
+    codegraph,
     artifacts
   };
 }
@@ -457,6 +485,8 @@ function writeArchiveGate(root = lib.projectRoot()) {
     release_target: validation.release_target,
     verdict,
     blockers: validation.blockers,
+    warnings: validation.warnings || [],
+    codegraph: validation.codegraph || null,
     operations_ready: validation.ok
   };
 
@@ -485,6 +515,7 @@ function markdown(result) {
   lines.push(`- release target: \`${result.release_target || 'none'}\``);
   lines.push(`- ok: ${result.ok}`);
   if (result.blockers && result.blockers.length) lines.push(`- blockers: ${result.blockers.join(', ')}`);
+  if (Array.isArray(result.warnings) && result.warnings.length) lines.push(`- warnings: ${result.warnings.join(', ')}`);
   if (Array.isArray(result.artifacts)) {
     lines.push('');
     lines.push('| Artifact | Status | Blockers |');

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Decision",
+  "type": "object",
+  "required": ["schema", "stage", "effective_mode", "required_for_stage", "result", "blockers", "warnings"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.decision.v1" },
+    "result": { "enum": ["pass", "warn", "block"] },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  }
+}

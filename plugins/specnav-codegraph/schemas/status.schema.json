@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Status",
+  "type": "object",
+  "required": ["schema", "generated_at", "project_root", "policy", "execution_surface", "cli", "mcp", "index", "blockers"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.status.v1" },
+    "generated_at": { "type": "string" },
+    "project_root": { "type": "string" },
+    "active_change": { "type": ["string", "null"] },
+    "execution_surface": { "enum": ["mcp", "cli", "none"] },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

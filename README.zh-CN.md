@@ -23,7 +23,7 @@
 
 SpecNav 把 AI 编码从开放式聊天，收束成有文件证据、有阶段边界、有下一步判断的工程交付流程。它通过 OpenSpec 产物、Codex skills、插件 hooks 和确定性脚本判断：现在什么动作合法、什么动作被阻塞、继续前必须补齐什么证据。
 
-这个仓库是一个 Codex marketplace，里面包含六个可安装插件：
+这个仓库是一个 Codex marketplace，里面包含七个可安装插件：
 
 | 插件 | 职责 |
 | --- | --- |
@@ -33,6 +33,11 @@ SpecNav 把 AI 编码从开放式聊天，收束成有文件证据、有阶段�
 | `specnav-development` | Scope lock、垂直切片、fix/debug/break-loop 流程 |
 | `specnav-verification` | 六域验证和面向审阅人的 HTML 报告 |
 | `specnav-operations` | 发布准备、部署、回滚、监控、归档动作 |
+| `specnav-codegraph` | CodeGraph policy、context、claims、impact 和证据产物 |
+
+`specnav-codegraph` 是横跨所有阶段的代码证据层。它会随 SpecNav suite
+发布，但 CodeGraph 的 MCP 设置和每个项目的索引初始化都必须通过
+`specnav-codegraph-setup`、`specnav-codegraph-init` 显式执行。
 
 ## 阶段图谱
 
@@ -86,7 +91,7 @@ SpecNav 把 AI 编码从开放式聊天，收束成有文件证据、有阶段�
 
 ## 从 GitHub 安装
 
-把本仓库添加为 Codex marketplace，然后安装六个阶段插件：
+把本仓库添加为 Codex marketplace，然后安装七个插件：
 
 ```bash
 codex plugin marketplace add zengwenliang416/specnav-codex-plugin --ref main
@@ -97,6 +102,7 @@ codex plugin add specnav-prototype@specnav-marketplace
 codex plugin add specnav-development@specnav-marketplace
 codex plugin add specnav-verification@specnav-marketplace
 codex plugin add specnav-operations@specnav-marketplace
+codex plugin add specnav-codegraph@specnav-marketplace
 ```
 
 安装后信任 core hooks：
@@ -123,6 +129,7 @@ codex plugin add specnav-prototype@specnav-marketplace
 codex plugin add specnav-development@specnav-marketplace
 codex plugin add specnav-verification@specnav-marketplace
 codex plugin add specnav-operations@specnav-marketplace
+codex plugin add specnav-codegraph@specnav-marketplace
 ```
 
 ## 第一次使用
@@ -131,7 +138,7 @@ SpecNav 要在目标项目里运行，不是在这个插件仓库里继续操作
 
 ```text
 1. $specnav-doctor
-   检查六个插件、hooks、skills、OpenSpec CLI 和 installed cache 是否可见。
+   检查七个插件、hooks、skills、OpenSpec CLI 和 installed cache 是否可见。
 
 2. $specnav-workflow
    读取当前 affordance table，报告下一步合法动作。
@@ -145,6 +152,47 @@ SpecNav 要在目标项目里运行，不是在这个插件仓库里继续操作
 5. $specnav-requirements
    只有 OpenSpec 和必要 foundation specs 存在后，才进入需求问需。
 ```
+
+## CodeGraph 证据层
+
+CodeGraph 是代码证据来源，不替代 OpenSpec，也不替代测试。当阶段策略要求代码证据时，SpecNav 要求 CodeGraph `1.1.6` 或更新版本。
+
+CodeGraph 设置必须显式执行：
+
+```text
+1. $specnav-codegraph-setup
+   检查或修复 Codex 的 CodeGraph MCP 配置。
+
+2. $specnav-codegraph-init
+   只有用户明确要求索引当前项目时，才初始化项目本地 CodeGraph index。
+
+3. $specnav-codegraph-status
+   报告 CLI 版本、MCP 可见性、项目 index、新鲜度和 policy。
+```
+
+开发和验证阶段会写入：
+
+```text
+openspec/changes/<change>/codegraph/claims-map.json
+openspec/changes/<change>/codegraph/evidence-query-plan.json
+openspec/changes/<change>/codegraph/evidence.jsonl
+openspec/changes/<change>/codegraph/evidence-index.json
+openspec/changes/<change>/codegraph/claims-report.json
+```
+
+执行链路是：
+
+```text
+claims-map.json
+  -> evidence-query-plan.json
+  -> codegraph explore
+  -> evidence.jsonl
+  -> evidence-index.json
+  -> claims-report.json
+  -> stage gate
+```
+
+如果 CodeGraph 缺失、版本过低、未索引、证据过期，或指向了错误 worktree，required 阶段会用明确的 `codegraph:*` blocker 阻断。代码声明没有 fallback 证据。
 
 ## 流程如何运行
 
@@ -299,6 +347,7 @@ plugins/specnav-prototype/                runnable prototype 和 handoff
 plugins/specnav-development/              scope lock 和 vertical-slice implementation
 plugins/specnav-verification/             six-domain verification 和 HTML report
 plugins/specnav-operations/               release、deploy、rollback、archive
+plugins/specnav-codegraph/                CodeGraph policy 和 evidence layer
 docs/design.md                            系统设计文档
 docs/assets/readme/                       README 阶段图
 tests/                                    fixture 和 smoke tests

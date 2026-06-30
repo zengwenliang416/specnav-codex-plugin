@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Evidence Index",
+  "type": "object",
+  "required": ["schema", "generated_at", "source_raw", "raw_exists", "record_count", "by_claim", "by_stage", "blockers"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.evidence_index.v1" },
+    "source_raw": { "type": ["string", "null"] },
+    "raw_exists": { "type": "boolean" },
+    "record_count": { "type": "number" },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

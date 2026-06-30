@@ -6,6 +6,7 @@ const path = require('path');
 const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { validateDevelopment } = runtime.requirePluginScript('specnav-development', 'scripts/development-contract');
+const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
 
 const DOMAINS = ['facticity', 'static', 'unit', 'redteam', 'e2e', 'sensory'];
 const VERDICTS = new Set(['green', 'red', 'blocked']);
@@ -40,6 +41,25 @@ const INDEPENDENCE_HEADINGS = [
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function codegraphStageGuard(projectRoot, change, stage) {
+  if (!change) return null;
+  return validateCodeGraph({
+    projectRoot,
+    change,
+    stage,
+    requireEvidence: true,
+    writeArtifacts: true
+  });
+}
+
+function codegraphBlockers(result) {
+  return result && Array.isArray(result.blockers) ? result.blockers : [];
+}
+
+function codegraphWarnings(result) {
+  return result && Array.isArray(result.warnings) ? result.warnings : [];
 }
 
 function isPlainObject(value) {
@@ -248,6 +268,30 @@ function domainCards(report) {
       '</article>'
     ].join('');
   }).join('\n');
+}
+
+function codegraphSummary(report) {
+  const codegraph = report && report.codegraph;
+  if (!codegraph || !codegraph.decision) {
+    return [
+      '<div class="meta"><strong>CodeGraph</strong>not evaluated</div>',
+      '<div class="meta"><strong>Evidence</strong>no evidence index</div>',
+      '<div class="meta"><strong>Artifacts</strong>none</div>'
+    ].join('\n');
+  }
+  const decision = codegraph.decision || {};
+  const index = codegraph.evidence_index || {};
+  const artifacts = codegraph.artifacts || {};
+  const blockers = Array.isArray(codegraph.blockers) ? codegraph.blockers.length : 0;
+  const warnings = Array.isArray(codegraph.warnings) ? codegraph.warnings.length : 0;
+  return [
+    `<div class="meta"><strong>CodeGraph</strong>${escapeHtml(decision.result || 'unknown')} · ${escapeHtml(decision.effective_mode || 'unknown')}</div>`,
+    `<div class="meta"><strong>Evidence</strong>${Number(index.record_count || 0)} records · ${index.raw_exists ? 'raw present' : 'raw missing'}</div>`,
+    `<div class="meta"><strong>Artifacts</strong><code>${escapeHtml(artifacts.guard_report || 'openspec/changes/.../codegraph/guard-report.json')}</code></div>`,
+    `<div class="meta"><strong>Blockers</strong>${blockers}</div>`,
+    `<div class="meta"><strong>Warnings</strong>${warnings}</div>`,
+    `<div class="meta"><strong>Drift</strong><code>${escapeHtml(artifacts.drift_report || 'openspec/changes/.../codegraph/drift-report.json')}</code></div>`
+  ].join('\n');
 }
 
 function renderAggregateHtml(report) {
@@ -480,6 +524,13 @@ function renderAggregateHtml(report) {
     </section>
 
     <section class="section">
+      <h2>CodeGraph Evidence</h2>
+      <div class="meta-grid">
+        ${codegraphSummary(report)}
+      </div>
+    </section>
+
+    <section class="section">
       <h2>Artifact Coverage</h2>
       <table>
         <thead><tr><th>Artifact</th><th>Status</th><th>Blockers</th></tr></thead>
@@ -649,8 +700,10 @@ function validateVerify(root = lib.projectRoot()) {
   const verifyDir = changeDir ? path.join(changeDir, 'verify') : null;
   const artifacts = [];
   const blockers = [];
+  const warnings = [];
 
   if (!development.ok) blockers.push('development-blocked', ...development.blockers.map((blocker) => `development:${blocker}`));
+  if (Array.isArray(development.warnings)) warnings.push(...development.warnings.map((warning) => `development:${warning}`));
   if (!change || !changeDir || !fs.existsSync(changeDir)) blockers.push('active-change');
 
   if (verifyDir) {
@@ -673,6 +726,9 @@ function validateVerify(root = lib.projectRoot()) {
 
   blockers.push(...artifacts.flatMap((artifact) => artifact.blockers));
   if (staleMarkerUnresolved(changeDir, verifyDir)) blockers.push('stale-verify-report');
+  const codegraph = codegraphStageGuard(projectRoot, change, 'verification');
+  blockers.push(...codegraphBlockers(codegraph));
+  warnings.push(...codegraphWarnings(codegraph));
 
   return {
     ok: blockers.length === 0,
@@ -681,6 +737,8 @@ function validateVerify(root = lib.projectRoot()) {
     change_dir: changeDir,
     verify_dir: verifyDir,
     blockers: unique(blockers),
+    warnings: unique(warnings),
+    codegraph,
     development,
     artifacts
   };
@@ -712,6 +770,8 @@ function writeAggregate(root = lib.projectRoot()) {
     review_style: 'claude-warm-editorial',
     stale: staleUnresolved,
     blockers: validation.blockers,
+    warnings: validation.warnings || [],
+    codegraph: validation.codegraph || null,
     required_domains: DOMAINS,
     artifacts: validation.artifacts.map((artifact) => ({
       name: artifact.name,
@@ -729,6 +789,8 @@ function writeAggregate(root = lib.projectRoot()) {
       `- active_change: ${report.active_change || 'none'}`,
       `- verdict: ${report.verdict}`,
       `- blockers: ${report.blockers.join(', ') || '-'}`,
+      `- codegraph: ${report.codegraph && report.codegraph.decision ? report.codegraph.decision.result : 'not-evaluated'}`,
+      `- codegraph artifacts: ${report.codegraph && report.codegraph.artifacts ? report.codegraph.artifacts.guard_report : '-'}`,
       '',
       '| Artifact | Status | Blockers |',
       '| --- | --- | --- |',
@@ -766,6 +828,7 @@ function markdown(result) {
   lines.push(`- verify dir: \`${result.verify_dir || 'none'}\``);
   lines.push(`- ok: ${result.ok}`);
   if (result.blockers.length) lines.push(`- blockers: ${result.blockers.join(', ')}`);
+  if (Array.isArray(result.warnings) && result.warnings.length) lines.push(`- warnings: ${result.warnings.join(', ')}`);
   lines.push('');
   lines.push('| Artifact | Status | Blockers |');
   lines.push('| --- | --- | --- |');
@@ -786,6 +849,8 @@ function main() {
       change_dir: null,
       verify_dir: null,
       blockers: [`unknown-command:${command}`],
+      warnings: [],
+      codegraph: null,
       artifacts: []
     };
     process.stdout.write(args.includes('--json') ? `${JSON.stringify(result, null, 2)}\n` : markdown(result));

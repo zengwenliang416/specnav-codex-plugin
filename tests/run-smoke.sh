@@ -11,6 +11,8 @@ bash "$ROOT/tests/run-codex-development-fixtures.sh"
 bash "$ROOT/tests/run-plugin-suite-resolver-fixtures.sh"
 bash "$ROOT/tests/run-task-checkbox-contract-fixtures.sh"
 bash "$ROOT/tests/run-operations-archive-action-fixtures.sh"
+bash "$ROOT/tests/run-codegraph-policy-fixtures.sh"
+bash "$ROOT/tests/run-codegraph-context-fixtures.sh"
 
 if rg -n 'CLAUDE_PLUGIN_ROOT|\\.claude-plugin|claude plugin' \
   "$ROOT/plugins" \

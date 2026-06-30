@@ -6,6 +6,7 @@ const path = require('path');
 const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { validatePrototype } = runtime.requirePluginScript('specnav-prototype', 'scripts/prototype-contract');
+const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
 
 const CHANGE_ARTIFACTS = ['scope.json', 'tasks.md'];
 
@@ -151,6 +152,25 @@ const VERTICAL_SLICE_PATTERN = /\b(?:user|users|customer|customers|admin|operato
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function codegraphStageGuard(projectRoot, change, stage) {
+  if (!change) return null;
+  return validateCodeGraph({
+    projectRoot,
+    change,
+    stage,
+    requireEvidence: true,
+    writeArtifacts: true
+  });
+}
+
+function codegraphBlockers(result) {
+  return result && Array.isArray(result.blockers) ? result.blockers : [];
+}
+
+function codegraphWarnings(result) {
+  return result && Array.isArray(result.warnings) ? result.warnings : [];
 }
 
 function escapeRegExp(value) {
@@ -1077,6 +1097,8 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
       change_dir: changeDir,
       development_dir: changeDir ? path.join(changeDir, 'development') : null,
       blockers: unique(['prototype-blocked', ...(prototype.blockers || []).map((blocker) => `prototype:${blocker}`)]),
+      warnings: [],
+      codegraph: null,
       prototype,
       artifacts: [],
       tasks: []
@@ -1136,6 +1158,9 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
 
   blockers.push(...artifacts.flatMap((artifact) => artifact.blockers));
   blockers.push(...tasks.flatMap((task) => task.blockers));
+  const codegraph = codegraphStageGuard(projectRoot, activeChange, 'development');
+  blockers.push(...codegraphBlockers(codegraph));
+  const warnings = unique(codegraphWarnings(codegraph));
 
   return {
     ok: blockers.length === 0,
@@ -1145,6 +1170,8 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
     change_dir: changeDir,
     development_dir: developmentDir,
     blockers: unique(blockers),
+    warnings,
+    codegraph,
     prototype,
     artifacts,
     tasks
@@ -1162,6 +1189,7 @@ function markdown(result) {
   lines.push(`- development dir: \`${result.development_dir || 'none'}\``);
   lines.push(`- ok: ${result.ok}`);
   if (result.blockers.length) lines.push(`- blockers: ${result.blockers.join(', ')}`);
+  if (Array.isArray(result.warnings) && result.warnings.length) lines.push(`- warnings: ${result.warnings.join(', ')}`);
   lines.push('');
   lines.push('| Artifact | Status | Blockers |');
   lines.push('| --- | --- | --- |');
@@ -1217,6 +1245,8 @@ function main() {
       change_dir: null,
       development_dir: null,
       blockers: [args.error],
+      warnings: [],
+      codegraph: null,
       prototype: null,
       artifacts: [],
       tasks: []

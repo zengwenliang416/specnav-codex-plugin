@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const runtime = require('../../../scripts/plugin-runtime');
 const scaffold = runtime.requirePluginScript('specnav-core', 'scripts/scaffold-lib');
+const codegraphPlan = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-plan');
 
 const skillRoot = path.resolve(__dirname, '..');
 const assetsRoot = path.join(skillRoot, 'assets');
@@ -63,6 +64,25 @@ function writeTaskContext(options, context) {
   return [{ status: exists ? 'updated' : 'created', source: 'generated:task-context', target }];
 }
 
+function writeCodeGraphPlan(options, context) {
+  const result = codegraphPlan.plan({
+    projectRoot: context.root,
+    change: context.change,
+    stage: 'development',
+    write: !options.dryRun
+  });
+  if (!result.ok) {
+    const error = new Error(`CodeGraph plan generation failed: ${(result.blockers || []).join(', ')}`);
+    error.blocker = (result.blockers || [])[0] || 'codegraph-plan-failed';
+    throw error;
+  }
+  return (result.written || []).map((target) => ({
+    status: 'updated',
+    source: 'generated:codegraph-plan',
+    target
+  }));
+}
+
 process.exit(scaffold.runScaffold({
   requiresChange: true,
   extraHelp: 'Creates tasks.md, development task packet shells, ledger shells, and handoff shell. Use --task-id=<id>.',
@@ -92,6 +112,9 @@ process.exit(scaffold.runScaffold({
     ];
   },
   afterCopy(options, context) {
-    return writeTaskContext(options, context);
+    return [
+      ...writeTaskContext(options, context),
+      ...writeCodeGraphPlan(options, context)
+    ];
   }
 }));

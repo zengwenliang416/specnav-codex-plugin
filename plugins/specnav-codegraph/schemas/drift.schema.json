@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Drift",
+  "type": "object",
+  "required": ["schema", "drift", "blockers"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.drift.v1" },
+    "drift": { "type": "array" },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -7,7 +7,7 @@ node - <<'NODE'
 const path = require('path');
 const root = process.cwd();
 const runtime = require(path.join(root, 'plugins/specnav-core/scripts/plugin-runtime.js'));
-for (const plugin of ['specnav-core', 'specnav-requirements', 'specnav-prototype', 'specnav-development', 'specnav-verification', 'specnav-operations']) {
+for (const plugin of ['specnav-core', 'specnav-requirements', 'specnav-prototype', 'specnav-development', 'specnav-verification', 'specnav-operations', 'specnav-codegraph']) {
   const resolved = runtime.resolvePluginRoot(plugin);
   if (!resolved.endsWith(path.join('plugins', plugin))) {
     throw new Error(`bad resolution for ${plugin}: ${resolved}`);

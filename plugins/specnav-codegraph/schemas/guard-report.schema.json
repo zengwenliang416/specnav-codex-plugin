@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Guard Report",
+  "type": "object",
+  "required": ["schema", "generated_at", "stage", "ok", "decision", "blockers", "warnings"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.guard_report.v1" },
+    "stage": { "type": "string" },
+    "ok": { "type": "boolean" },
+    "decision": { "type": "object" },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  }
+}

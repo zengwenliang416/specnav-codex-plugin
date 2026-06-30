@@ -26,7 +26,7 @@ delivery process. It uses OpenSpec artifacts, Codex skills, plugin hooks, and
 deterministic scripts to decide what is legal next, what is blocked, and what
 evidence must exist before the agent can move forward.
 
-This repository is a Codex marketplace that ships six installable plugins:
+This repository is a Codex marketplace that ships seven installable plugins:
 
 | Plugin | Responsibility |
 | --- | --- |
@@ -36,6 +36,11 @@ This repository is a Codex marketplace that ships six installable plugins:
 | `specnav-development` | Scope lock, vertical slices, fix/debug/break-loop workflows |
 | `specnav-verification` | Six-domain verification and stakeholder HTML reports |
 | `specnav-operations` | Release readiness, deploy, rollback, monitor, archive action |
+| `specnav-codegraph` | CodeGraph policy, context, claims, impact, and evidence artifacts |
+
+`specnav-codegraph` is a cross-cutting evidence layer. It ships with SpecNav,
+but CodeGraph setup and per-project indexing remain explicit actions through
+`specnav-codegraph-setup` and `specnav-codegraph-init`.
 
 ## Stage Atlas
 
@@ -90,7 +95,7 @@ Future SpecNav diagrams should follow the project visual memory:
 
 ## Install From GitHub
 
-Add this repository as a Codex marketplace, then install all six stage plugins:
+Add this repository as a Codex marketplace, then install all seven plugins:
 
 ```bash
 codex plugin marketplace add zengwenliang416/specnav-codex-plugin --ref main
@@ -101,6 +106,7 @@ codex plugin add specnav-prototype@specnav-marketplace
 codex plugin add specnav-development@specnav-marketplace
 codex plugin add specnav-verification@specnav-marketplace
 codex plugin add specnav-operations@specnav-marketplace
+codex plugin add specnav-codegraph@specnav-marketplace
 ```
 
 Trust the core hooks after installation:
@@ -128,6 +134,7 @@ codex plugin add specnav-prototype@specnav-marketplace
 codex plugin add specnav-development@specnav-marketplace
 codex plugin add specnav-verification@specnav-marketplace
 codex plugin add specnav-operations@specnav-marketplace
+codex plugin add specnav-codegraph@specnav-marketplace
 ```
 
 ## First Run
@@ -151,6 +158,52 @@ Run SpecNav in the target project, not inside this plugin repository.
 5. $specnav-requirements
    Start requirements only after OpenSpec and required foundation specs exist.
 ```
+
+## CodeGraph Evidence Layer
+
+CodeGraph is a code-evidence source, not a replacement for OpenSpec or tests.
+SpecNav requires CodeGraph `1.1.6` or newer when a stage policy requires code
+evidence.
+
+CodeGraph setup is explicit:
+
+```text
+1. $specnav-codegraph-setup
+   Check or repair Codex MCP wiring for CodeGraph.
+
+2. $specnav-codegraph-init
+   Run project-local CodeGraph initialization only when the user explicitly
+   asks for indexing.
+
+3. $specnav-codegraph-status
+   Report CLI version, MCP visibility, project index, staleness, and policy.
+```
+
+During development and verification, SpecNav writes:
+
+```text
+openspec/changes/<change>/codegraph/claims-map.json
+openspec/changes/<change>/codegraph/evidence-query-plan.json
+openspec/changes/<change>/codegraph/evidence.jsonl
+openspec/changes/<change>/codegraph/evidence-index.json
+openspec/changes/<change>/codegraph/claims-report.json
+```
+
+The execution chain is:
+
+```text
+claims-map.json
+  -> evidence-query-plan.json
+  -> codegraph explore
+  -> evidence.jsonl
+  -> evidence-index.json
+  -> claims-report.json
+  -> stage gate
+```
+
+If CodeGraph is missing, too old, unindexed, stale, or pointed at the wrong
+worktree, required stages block with a concrete `codegraph:*` blocker. There is
+no fallback evidence for code-backed claims.
 
 ## How The Flow Works
 
@@ -318,6 +371,7 @@ plugins/specnav-prototype/                runnable prototype and handoff
 plugins/specnav-development/              scope lock and vertical-slice implementation
 plugins/specnav-verification/             six-domain verification and HTML report
 plugins/specnav-operations/               release, deploy, rollback, archive
+plugins/specnav-codegraph/                CodeGraph policy and evidence layer
 docs/design.md                            system design
 docs/assets/readme/                       README stage diagrams
 tests/                                    fixture and smoke tests

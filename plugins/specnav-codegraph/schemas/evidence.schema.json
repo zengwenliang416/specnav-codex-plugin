@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Evidence",
+  "type": "object",
+  "required": ["schema", "generated_at", "stage", "query", "tool", "project_path", "confidence", "blockers"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.evidence.v1" },
+    "confidence": { "enum": ["matched", "partial", "missing", "not-indexed", "stale"] },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  }
+}

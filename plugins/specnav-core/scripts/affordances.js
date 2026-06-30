@@ -12,7 +12,8 @@ const REQUIRED_PLUGINS = [
   'specnav-prototype',
   'specnav-development',
   'specnav-verification',
-  'specnav-operations'
+  'specnav-operations',
+  'specnav-codegraph'
 ];
 
 const ACTION_PLUGINS = {

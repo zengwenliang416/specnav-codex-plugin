@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-for plugin in specnav-core specnav-requirements specnav-prototype specnav-development specnav-verification specnav-operations; do
+for plugin in specnav-core specnav-requirements specnav-prototype specnav-development specnav-verification specnav-operations specnav-codegraph; do
   manifest="$ROOT/plugins/$plugin/.codex-plugin/plugin.json"
   jq -e --arg plugin "$plugin" '.name == $plugin' "$manifest" >/dev/null
   jq -e '.version and .description and .skills == "./skills/"' "$manifest" >/dev/null
@@ -21,7 +21,7 @@ done
 
 jq -e 'has("hooks") | not' "$ROOT/plugins/specnav-core/.codex-plugin/plugin.json" >/dev/null
 test -f "$ROOT/plugins/specnav-core/hooks/hooks.json"
-for plugin in specnav-requirements specnav-prototype specnav-development specnav-verification specnav-operations; do
+for plugin in specnav-requirements specnav-prototype specnav-development specnav-verification specnav-operations specnav-codegraph; do
   jq -e 'has("hooks") | not' "$ROOT/plugins/$plugin/.codex-plugin/plugin.json" >/dev/null
 done
 

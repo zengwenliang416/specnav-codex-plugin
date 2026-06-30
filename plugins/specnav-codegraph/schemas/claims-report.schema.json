@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Claims Report",
+  "type": "object",
+  "required": ["schema", "generated_at", "active_change", "claims_count", "verified_claims", "unverified_claims", "blockers"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.claims_report.v1" },
+    "claims_count": { "type": "number" },
+    "verified_claims": { "type": "array", "items": { "type": "string" } },
+    "unverified_claims": { "type": "array", "items": { "type": "string" } },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  }
+}

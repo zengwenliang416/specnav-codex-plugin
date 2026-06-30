@@ -1,0 +1,37 @@
+{
+  "schema": "specnav.stagePlugin.v1",
+  "plugin": "specnav-codegraph",
+  "stage": "codegraph",
+  "required": true,
+  "depends_on": [
+    "specnav-core"
+  ],
+  "skills": [
+    "specnav-codegraph-setup",
+    "specnav-codegraph-init",
+    "specnav-codegraph-status",
+    "specnav-codegraph-context",
+    "specnav-codegraph-claims",
+    "specnav-codegraph-impact"
+  ],
+  "contracts": {
+    "status": "scripts/codegraph-doctor.js",
+    "contract": "scripts/codegraph-contract.js",
+    "plan": "scripts/codegraph-plan.js",
+    "context": "scripts/codegraph-context.js",
+    "claims": "scripts/codegraph-claims.js",
+    "impact": "scripts/codegraph-impact.js"
+  },
+  "state_outputs": [
+    "openspec/changes/<change>/codegraph/status.json",
+    "openspec/changes/<change>/codegraph/decision.json",
+    "openspec/changes/<change>/codegraph/guard-report.json",
+    "openspec/changes/<change>/codegraph/evidence-query-plan.json",
+    "openspec/changes/<change>/codegraph/evidence.jsonl",
+    "openspec/changes/<change>/codegraph/evidence-index.json",
+    "openspec/changes/<change>/codegraph/claims-map.json",
+    "openspec/changes/<change>/codegraph/claims-report.json",
+    "openspec/changes/<change>/codegraph/drift-report.json",
+    "openspec/changes/<change>/codegraph/impact-report.json"
+  ]
+}

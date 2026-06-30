@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecNav CodeGraph Claims",
+  "type": "object",
+  "required": ["schema", "active_change", "claims"],
+  "properties": {
+    "schema": { "const": "specnav.codegraph.claims.v1" },
+    "active_change": { "type": "string" },
+    "claims": { "type": "array" },
+    "generated_at": { "type": "string" }
+  }
+}
