@@ -40,7 +40,6 @@ SpecNav 把 AI 编码从开放式聊天，收束成有文件证据、有阶段�
 
 后续新增 SpecNav 图像时，应先遵循项目视觉记忆：
 [docs/memory/specnav-visual-style.md](docs/memory/specnav-visual-style.md)。
-中英文图像从同一份源布局渲染，只允许本地化文字层不同。
 
 <p align="center">
   <img src="docs/assets/readme/zh-CN/specnav-overview-bd-2k.png" alt="SpecNav 生命周期总览图" width="100%">

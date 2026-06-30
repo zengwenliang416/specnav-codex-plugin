@@ -44,8 +44,6 @@ contract, and next-action boundary.
 
 Future SpecNav diagrams should follow the project visual memory:
 [docs/memory/specnav-visual-style.md](docs/memory/specnav-visual-style.md).
-The English and Chinese diagrams are rendered from the same source layout; only
-the localized text layer differs.
 
 <p align="center">
   <img src="docs/assets/readme/en/specnav-overview-bd-2k.png" alt="SpecNav lifecycle overview" width="100%">
