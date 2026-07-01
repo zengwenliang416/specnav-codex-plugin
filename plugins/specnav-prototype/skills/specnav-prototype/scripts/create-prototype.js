@@ -11,7 +11,8 @@ const assetsRoot = path.join(skillRoot, 'assets');
 const branchAssets = {
   'ui-html': [
     { source: path.join(assetsRoot, 'ui-html'), target: 'artifact' },
-    { source: path.join(assetsRoot, 'screen-map.json'), target: 'screen-map.json', file: true }
+    { source: path.join(assetsRoot, 'screen-map.json'), target: 'screen-map.json', file: true },
+    { source: path.join(assetsRoot, 'visual-inventory.json'), target: 'visual-inventory.json', file: true }
   ],
   'logic-state': [
     { source: path.join(assetsRoot, 'logic-state'), target: 'logic' }

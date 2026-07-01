@@ -18,10 +18,11 @@ Verify that the selected prototype branch exists, runs, and exposes reviewable s
 1. Run `node "$SPECNAV_PROTOTYPE_ROOT/scripts/prototype-contract.js" --json` first.
 2. Read `prototype/prototype-manifest.json` and verify only the declared branch and entry.
 3. Read `references/prototype-verification.md` before writing verifier evidence.
-4. For `ui-html`, inspect desktop, mobile, variants, tweaks, and loading, empty, error, disabled, and permission states.
-5. For other branches, run the declared harness or inspect concrete schemas, transitions, and public APIs.
-6. Use `assets/verifier-report.json` as the report shell when the file is missing.
-7. Write `prototype/verifier-report.json` with green, red, or blocked status and evidence.
+4. For `ui-html`, inspect `visual-inventory.json` before screenshots. Verify that the HTML mirrors the current project shell and does not use a generic review canvas.
+5. For `ui-html`, inspect desktop, mobile, variants, tweaks, theme modes, locales, and loading, empty, error, disabled, permission, and populated states.
+6. For other branches, run the declared harness or inspect concrete schemas, transitions, and public APIs.
+7. Use `assets/verifier-report.json` as the report shell when the file is missing.
+8. Write `prototype/verifier-report.json` with green, red, or blocked status and evidence.
 
 ## Required Outputs
 

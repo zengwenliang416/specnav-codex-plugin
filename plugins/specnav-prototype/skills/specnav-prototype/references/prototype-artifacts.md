@@ -19,6 +19,9 @@ All prototype files live under:
 UI prototypes must be runnable by opening `artifact/index.html`. They should
 include:
 
+- `visual-inventory.json` with direct project visual evidence;
+- the current project's real shell structure, not a generic review canvas;
+- the current project's business labels, actions, fields, density, and chrome;
 - desktop and mobile layout behavior;
 - loading, empty, error, disabled, and permission states when relevant;
 - the exact theme modes and locales approved by requirements;
@@ -35,6 +38,7 @@ UI HTML prototypes must expose stable review anchors as project-local
 attributes:
 
 - `data-specnav-screen` on the screen root (required);
+- `data-specnav-project-shell` on the project shell root (required);
 - `data-specnav-component` on major components;
 - `data-specnav-state` on reviewable stateful regions;
 - `data-specnav-variant` where variants apply.
@@ -45,6 +49,8 @@ attributes:
 
 The contract requires at least one `data-specnav-screen` anchor in
 `artifact/index.html`; absence reports `missing-review-anchors:artifact/index.html`.
+The contract also requires at least one `data-specnav-project-shell` anchor in
+`artifact/index.html`; absence reports `missing-project-shell-anchor:artifact/index.html`.
 
 ## Review Rule
 

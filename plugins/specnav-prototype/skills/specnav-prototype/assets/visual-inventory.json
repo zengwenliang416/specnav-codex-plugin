@@ -1,0 +1,73 @@
+{
+  "schema": "specnav.prototype.visualInventory.v1",
+  "version": "1",
+  "discovery_status": "complete",
+  "source_project": "{{SPECNAV_PROJECT_NAME}}",
+  "evidence": {
+    "screenshots": [
+      "openspec/specs/ui-design/design.md#Current Screenshots"
+    ],
+    "routes": [
+      "src/app/routes.tsx"
+    ],
+    "design_specs": [
+      "openspec/specs/ui-design/design.md"
+    ],
+    "component_sources": [
+      "openspec/changes/{{SPECNAV_CHANGE}}/component-impact-map.json"
+    ],
+    "codegraph_claims": []
+  },
+  "project_shell": {
+    "source": "existing application shell",
+    "required_elements": [
+      "navigation",
+      "page title",
+      "primary action",
+      "content region"
+    ],
+    "omitted_elements": [],
+    "theme_policy": "match prototype-manifest.json ui_capabilities.theme",
+    "i18n_policy": "match prototype-manifest.json ui_capabilities.i18n"
+  },
+  "business_surface": {
+    "screens": [
+      "primary-review-screen"
+    ],
+    "fields": [
+      "replace with real project fields"
+    ],
+    "actions": [
+      "replace with real project actions"
+    ],
+    "states": [
+      "loading",
+      "empty",
+      "error",
+      "disabled",
+      "permission",
+      "populated"
+    ]
+  },
+  "verification_matrix": {
+    "viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "theme_modes": [
+      "light"
+    ],
+    "locales": [
+      "none"
+    ],
+    "states": [
+      "loading",
+      "empty",
+      "error",
+      "disabled",
+      "permission",
+      "populated"
+    ]
+  },
+  "unsupported_capabilities": []
+}

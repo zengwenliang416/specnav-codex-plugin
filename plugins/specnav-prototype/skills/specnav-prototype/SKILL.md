@@ -20,12 +20,14 @@ Create isolated, runnable prototype artifacts that answer a specific design or b
 3. Classify the prototype question before writing code.
 4. Read `references/prototype-branches.md` before choosing the branch.
 5. Read `references/prototype-artifacts.md` before creating prototype files.
-6. Branch Classification: use `ui-html`, `logic-state`, `api-contract`, `data-flow`, or `component-seam`.
-7. If starting from templates, run `node "$SPECNAV_PROTOTYPE_ROOT/skills/specnav-prototype/scripts/create-prototype.js" --branch=<branch> --json`.
-8. Write artifacts only under `openspec/changes/<active-change>/prototype/`.
-9. Expose stable review anchors. For `ui-html`, use `data-specnav-screen`, `data-specnav-component`, `data-specnav-state`, and `data-specnav-variant`; `artifact/index.html` must include at least one `data-specnav-screen` anchor.
-10. Set `prototype-manifest.json.ui_capabilities` from the approved requirements. Add `data-specnav-theme-control` or `data-specnav-locale-control` only when the manifest says the prototype includes those controls.
-11. Rerun the contract before moving to verification.
+6. For `ui-html`, read `references/project-visual-discovery.md` before writing HTML.
+7. Branch Classification: use `ui-html`, `logic-state`, `api-contract`, `data-flow`, or `component-seam`.
+8. If starting from templates, run `node "$SPECNAV_PROTOTYPE_ROOT/skills/specnav-prototype/scripts/create-prototype.js" --branch=<branch> --json`.
+9. Write artifacts only under `openspec/changes/<active-change>/prototype/`.
+10. Expose stable review anchors. For `ui-html`, use `data-specnav-screen`, `data-specnav-project-shell`, `data-specnav-component`, `data-specnav-state`, and `data-specnav-variant`; `artifact/index.html` must include at least one `data-specnav-screen` anchor and one `data-specnav-project-shell` anchor.
+11. For `ui-html`, write `visual-inventory.json` before finalizing `artifact/index.html`. The prototype must mirror the current project's shell, component density, navigation, theme/i18n capability, and business copy from direct evidence. A generic review screen is blocked.
+12. Set `prototype-manifest.json.ui_capabilities` from the approved requirements. Add `data-specnav-theme-control` or `data-specnav-locale-control` only when the manifest says the prototype includes those controls.
+13. Rerun the contract before moving to verification.
 
 ## Required Outputs
 
@@ -33,6 +35,7 @@ Create isolated, runnable prototype artifacts that answer a specific design or b
 - `prototype/prototype-manifest.json`.
 - Branch code or harness.
 - Branch review maps such as `screen-map.json`, `component-tree.md`, or `data-flow-map.md`.
+- For `ui-html`: `prototype/visual-inventory.json`.
 - Branch starters: `assets/question.md`, `assets/prototype-manifest.json`, `assets/screen-map.json`, `assets/ui-html/index.html`, `assets/ui-html/styles.css`, `assets/ui-html/app.js`, `assets/logic-state/harness.js`, `assets/api-contract/examples.json`, `assets/data-flow/data-flow-map.md`, `assets/data-flow/data-flow/flow-harness.js`, `assets/component-seam/component-tree.md`, and `assets/component-seam/component/component-map.md`.
 
 ## Stop Conditions

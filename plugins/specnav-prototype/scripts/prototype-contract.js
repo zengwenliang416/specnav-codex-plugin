@@ -9,6 +9,7 @@ const { validateRequirements } = runtime.requirePluginScript('specnav-requiremen
 
 const MANIFEST_SCHEMA = 'specnav.prototype.manifest.v1';
 const VERIFIER_SCHEMA = 'specnav.prototype.verifier.v1';
+const VISUAL_INVENTORY_SCHEMA = 'specnav.prototype.visualInventory.v1';
 
 const PROTOTYPE_TYPES = new Set([
   'ui-html',
@@ -28,6 +29,7 @@ const APPROVED_CORE_ARTIFACTS = [
 
 const GAP_SENSITIVE_FILES = [
   'screen-map.json',
+  'visual-inventory.json',
   'component-tree.md',
   'data-flow-map.md',
   'handoff.md'
@@ -37,6 +39,7 @@ const SCREEN_MAP_SCREEN_FIELDS = [
   'requirements',
   'acceptance',
   'components',
+  'visual_evidence',
   'data_flows',
   'theme_modes',
   'locales',
@@ -116,7 +119,7 @@ const BRANCH_REQUIREMENTS = {
     kind: 'file',
     entry: (entry) => entry === 'artifact/index.html',
     entryBlocker: 'prototype-entry-mismatch:ui-html',
-    gapRequired: ['screen-map.json']
+    gapRequired: ['screen-map.json', 'visual-inventory.json']
   },
   'logic-state': {
     required: 'logic',
@@ -451,10 +454,13 @@ function validateUiHtmlReviewAnchors(prototypeDir, requiredPath) {
   const file = path.join(prototypeDir, requiredPath);
   const text = readTextFile(file);
   if (!text.ok) return [];
-  if (!/data-specnav-screen/.test(text.value)) {
-    return [`missing-review-anchors:${requiredPath}`];
+  const blockers = [];
+  if (!/data-specnav-screen/.test(text.value)) blockers.push(`missing-review-anchors:${requiredPath}`);
+  if (!/data-specnav-project-shell/.test(text.value)) blockers.push(`missing-project-shell-anchor:${requiredPath}`);
+  if (/Replace this with|Primary User Path|Primary Action|<title>\s*SpecNav UI Prototype\s*<\/title>/i.test(text.value)) {
+    blockers.push(`generic-ui-prototype-template:${requiredPath}`);
   }
-  return [];
+  return blockers;
 }
 
 function validateGapSensitiveFiles(prototypeDir, change, requiredNames) {
@@ -475,6 +481,8 @@ function validateGapSensitiveFiles(prototypeDir, change, requiredNames) {
 
     const artifact = name === 'handoff.md'
       ? validateHandoffArtifact(prototypeDir, change)
+      : name === 'visual-inventory.json' && requiredNames.includes(name)
+        ? validateVisualInventoryArtifact(prototypeDir, change)
       : name === 'screen-map.json' && requiredNames.includes(name)
         ? validateScreenMapArtifact(prototypeDir, change)
         : validateTextArtifact(prototypeDir, change, name, { gapSensitive: true, nonEmpty: false });
@@ -483,6 +491,84 @@ function validateGapSensitiveFiles(prototypeDir, change, requiredNames) {
   }
 
   return { artifacts, blockers };
+}
+
+function validateNestedStringArray(root, pathSegments, blocker, options = {}) {
+  let value = root;
+  for (const segment of pathSegments) {
+    if (!isPlainObject(value) || !hasOwn(value, segment)) return [blocker];
+    value = value[segment];
+  }
+  if (!Array.isArray(value)) return [blocker];
+  if (options.nonEmpty !== false && value.length === 0) return [blocker];
+  if (hasInvalidStringArrayMembers(value)) return [blocker];
+  return [];
+}
+
+function validateVisualInventoryContract(value) {
+  const blockers = [];
+
+  if (value.schema !== VISUAL_INVENTORY_SCHEMA) blockers.push('invalid-visual-inventory:schema');
+  if (!isCleanString(value.version)) blockers.push('invalid-visual-inventory:version');
+  if (value.discovery_status !== 'complete') blockers.push('visual-inventory:not-complete');
+  if (!isCleanString(value.source_project)) blockers.push('invalid-visual-inventory:source_project');
+
+  blockers.push(...validateNestedStringArray(value, ['evidence', 'screenshots'], 'invalid-visual-inventory:evidence.screenshots'));
+  blockers.push(...validateNestedStringArray(value, ['evidence', 'routes'], 'invalid-visual-inventory:evidence.routes'));
+  blockers.push(...validateNestedStringArray(value, ['evidence', 'design_specs'], 'invalid-visual-inventory:evidence.design_specs'));
+  blockers.push(...validateNestedStringArray(value, ['evidence', 'component_sources'], 'invalid-visual-inventory:evidence.component_sources'));
+  blockers.push(...validateNestedStringArray(value, ['evidence', 'codegraph_claims'], 'invalid-visual-inventory:evidence.codegraph_claims', { nonEmpty: false }));
+
+  if (!isPlainObject(value.project_shell)) {
+    blockers.push('invalid-visual-inventory:project_shell');
+  } else {
+    if (!isCleanString(value.project_shell.source)) blockers.push('invalid-visual-inventory:project_shell.source');
+    blockers.push(...validateNestedStringArray(value, ['project_shell', 'required_elements'], 'invalid-visual-inventory:project_shell.required_elements'));
+    blockers.push(...validateNestedStringArray(value, ['project_shell', 'omitted_elements'], 'invalid-visual-inventory:project_shell.omitted_elements', { nonEmpty: false }));
+    if (!isCleanString(value.project_shell.theme_policy)) blockers.push('invalid-visual-inventory:project_shell.theme_policy');
+    if (!isCleanString(value.project_shell.i18n_policy)) blockers.push('invalid-visual-inventory:project_shell.i18n_policy');
+  }
+
+  blockers.push(...validateNestedStringArray(value, ['business_surface', 'screens'], 'invalid-visual-inventory:business_surface.screens'));
+  blockers.push(...validateNestedStringArray(value, ['business_surface', 'fields'], 'invalid-visual-inventory:business_surface.fields'));
+  blockers.push(...validateNestedStringArray(value, ['business_surface', 'actions'], 'invalid-visual-inventory:business_surface.actions'));
+  blockers.push(...validateNestedStringArray(value, ['business_surface', 'states'], 'invalid-visual-inventory:business_surface.states'));
+  blockers.push(...validateNestedStringArray(value, ['verification_matrix', 'viewports'], 'invalid-visual-inventory:verification_matrix.viewports'));
+  blockers.push(...validateNestedStringArray(value, ['verification_matrix', 'theme_modes'], 'invalid-visual-inventory:verification_matrix.theme_modes'));
+  blockers.push(...validateNestedStringArray(value, ['verification_matrix', 'locales'], 'invalid-visual-inventory:verification_matrix.locales'));
+  blockers.push(...validateNestedStringArray(value, ['verification_matrix', 'states'], 'invalid-visual-inventory:verification_matrix.states'));
+  blockers.push(...validateNestedStringArray(value, ['unsupported_capabilities'], 'invalid-visual-inventory:unsupported_capabilities', { nonEmpty: false }));
+
+  return blockers;
+}
+
+function validateVisualInventoryArtifact(prototypeDir, change) {
+  const name = 'visual-inventory.json';
+  const file = path.join(prototypeDir, name);
+  const text = readTextFile(file);
+  const blockers = [];
+
+  if (!text.ok) {
+    blockers.push(text.status === 'missing' ? `missing-prototype-artifact:${name}` : `unreadable-prototype-artifact:${name}`);
+    return artifactResult(change, name, blockers);
+  }
+  if (text.value.trim() === '') blockers.push(`empty-prototype-artifact:${name}`);
+  if (/\b(?:TODO|TBD|unresolved|gap)\b/i.test(text.value) || /{{|}}|<decision-required>|replace with real/i.test(text.value)) {
+    blockers.push(`unresolved-prototype-gap:${name}`);
+  }
+
+  const parsed = readJsonFile(file);
+  if (!parsed.ok) {
+    blockers.push(parsed.status === 'invalid-json' ? `invalid-json:${name}` : `unreadable-prototype-artifact:${name}`);
+    return artifactResult(change, name, blockers);
+  }
+  if (!isPlainObject(parsed.value)) {
+    blockers.push(`invalid-json-shape:${name}`);
+    return artifactResult(change, name, blockers);
+  }
+  blockers.push(...validateVisualInventoryContract(parsed.value));
+
+  return artifactResult(change, name, blockers);
 }
 
 function validateScreenMapContract(value) {
@@ -677,6 +763,26 @@ function validateUiCapabilities(manifest) {
   return blockers;
 }
 
+function validateVisualContext(manifest) {
+  if (manifest.type !== 'ui-html') return [];
+  const blockers = [];
+  const context = manifest.visual_context;
+
+  if (!isPlainObject(context)) return ['invalid-prototype-manifest:visual_context'];
+  if (context.required_for_ui_html !== true) blockers.push('invalid-prototype-manifest:visual_context.required_for_ui_html');
+  if (context.project_shell_required !== true) blockers.push('invalid-prototype-manifest:visual_context.project_shell_required');
+  if (context.generic_shell_allowed !== false) blockers.push('invalid-prototype-manifest:visual_context.generic_shell_allowed');
+
+  const inventory = normalizePrototypeRelativePath(context.inventory, 'invalid-prototype-manifest:visual_context.inventory');
+  if (!inventory.ok) {
+    blockers.push(...inventory.blockers);
+  } else if (inventory.normalized !== 'visual-inventory.json') {
+    blockers.push('invalid-prototype-manifest:visual_context.inventory');
+  }
+
+  return blockers;
+}
+
 function validateUiHtmlCapabilityAnchors(prototypeDir, requiredPath, manifest) {
   const file = path.join(prototypeDir, requiredPath);
   const text = readTextFile(file);
@@ -730,6 +836,7 @@ function validateManifest(prototypeDir, change) {
   blockers.push(...validateStringArrayField(manifest, 'referenced_foundation_specs', { nonEmpty: true }));
   blockers.push(...validateStringArrayField(manifest, 'referenced_requirements', { nonEmpty: true }));
   blockers.push(...validateUiCapabilities(manifest));
+  blockers.push(...validateVisualContext(manifest));
 
   const entryPath = resolvePrototypePath(prototypeDir, manifest.entry);
   blockers.push(...entryPath.blockers);
@@ -819,12 +926,42 @@ function validateVerifier(prototypeDir, change, expectedEntry = null) {
   if (!Array.isArray(verifier.checks) || verifier.checks.length === 0 || hasInvalidStringArrayMembers(verifier.checks)) {
     blockers.push('invalid-prototype-verifier:checks');
   }
+  if (expectedEntry === 'artifact/index.html') {
+    blockers.push(...validateUiVerifierContract(verifier));
+  }
 
   return {
     artifact: artifactResult(change, name, blockers, { status: verifier.status || null, checked_entry: checkedEntry }),
     blockers,
     verifier
   };
+}
+
+function validateUiVerifierContract(verifier) {
+  const blockers = [];
+
+  if (!isPlainObject(verifier.project_fidelity)) {
+    blockers.push('invalid-prototype-verifier:project_fidelity');
+  } else {
+    if (verifier.project_fidelity.status !== 'green') blockers.push('invalid-prototype-verifier:project_fidelity.status');
+    if (verifier.project_fidelity.inventory !== 'visual-inventory.json') blockers.push('invalid-prototype-verifier:project_fidelity.inventory');
+    if (verifier.project_fidelity.shell_checked !== true) blockers.push('invalid-prototype-verifier:project_fidelity.shell_checked');
+    if (verifier.project_fidelity.generic_shell_detected !== false) blockers.push('invalid-prototype-verifier:project_fidelity.generic_shell_detected');
+    if (!Array.isArray(verifier.project_fidelity.notes) || verifier.project_fidelity.notes.length === 0 || hasInvalidStringArrayMembers(verifier.project_fidelity.notes)) {
+      blockers.push('invalid-prototype-verifier:project_fidelity.notes');
+    }
+  }
+
+  if (!isPlainObject(verifier.visual_matrix)) {
+    blockers.push('invalid-prototype-verifier:visual_matrix');
+  } else {
+    blockers.push(...validateNestedStringArray(verifier, ['visual_matrix', 'viewports'], 'invalid-prototype-verifier:visual_matrix.viewports'));
+    blockers.push(...validateNestedStringArray(verifier, ['visual_matrix', 'theme_modes'], 'invalid-prototype-verifier:visual_matrix.theme_modes'));
+    blockers.push(...validateNestedStringArray(verifier, ['visual_matrix', 'locales'], 'invalid-prototype-verifier:visual_matrix.locales'));
+    blockers.push(...validateNestedStringArray(verifier, ['visual_matrix', 'states'], 'invalid-prototype-verifier:visual_matrix.states'));
+  }
+
+  return blockers;
 }
 
 function validateDecisionShape(decision, prototypeType) {

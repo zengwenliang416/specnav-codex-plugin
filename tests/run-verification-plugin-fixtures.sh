@@ -167,7 +167,7 @@ Question: Which dashboard variant should ship?
 MD
   cat >"$proto/artifact/index.html" <<'HTML'
 <!doctype html>
-<html><body><main data-specnav-screen="dashboard" data-specnav-variant="balanced">Dashboard</main></body></html>
+<html><body><main data-specnav-project-shell="existing-dashboard-shell" data-specnav-screen="dashboard" data-specnav-variant="balanced"><nav data-specnav-component="app-sidebar">Dashboard</nav><section data-specnav-component="dashboard-summary" data-specnav-state="populated">Dashboard</section></main></body></html>
 HTML
   cat >"$proto/screen-map.json" <<'JSON'
 {
@@ -176,11 +176,47 @@ HTML
     "requirements": ["requirements.md#dashboard"],
     "acceptance": ["Dashboard renders loading, empty, and error states."],
     "components": ["DashboardView"],
+    "visual_evidence": ["visual-inventory.json#project_shell"],
     "data_flows": ["Dashboard API to view state"],
     "theme_modes": ["light"],
     "locales": ["none"],
     "implementation_files": ["src/dashboard/DashboardView.tsx"]
   }]
+}
+JSON
+  cat >"$proto/visual-inventory.json" <<'JSON'
+{
+  "schema": "specnav.prototype.visualInventory.v1",
+  "version": "1",
+  "discovery_status": "complete",
+  "source_project": "dashboard-fixture",
+  "evidence": {
+    "screenshots": ["openspec/specs/ui-design/design.md#Current Screenshots"],
+    "routes": ["src/app/routes.tsx"],
+    "design_specs": ["openspec/specs/ui-design/design.md"],
+    "component_sources": ["openspec/changes/add-dashboard/component-impact-map.json"],
+    "codegraph_claims": []
+  },
+  "project_shell": {
+    "source": "src/app/AppShell.tsx",
+    "required_elements": ["sidebar navigation", "page title", "primary content region"],
+    "omitted_elements": [],
+    "theme_policy": "light-only from ui-design spec",
+    "i18n_policy": "i18n disabled from ui-design spec"
+  },
+  "business_surface": {
+    "screens": ["dashboard"],
+    "fields": ["summary metric", "last updated", "status"],
+    "actions": ["refresh summary"],
+    "states": ["loading", "empty", "error", "disabled", "permission", "populated"]
+  },
+  "verification_matrix": {
+    "viewports": ["desktop", "mobile"],
+    "theme_modes": ["light"],
+    "locales": ["none"],
+    "states": ["loading", "empty", "error", "disabled", "permission", "populated"]
+  },
+  "unsupported_capabilities": []
 }
 JSON
   cat >"$proto/prototype-manifest.json" <<'JSON'
@@ -196,6 +232,12 @@ JSON
   "referenced_requirements": ["requirements.md"],
   "may_promote": false,
   "promotion_requirement": "development gate",
+  "visual_context": {
+    "required_for_ui_html": true,
+    "inventory": "visual-inventory.json",
+    "project_shell_required": true,
+    "generic_shell_allowed": false
+  },
   "ui_capabilities": {
     "theme": {
       "support": "light-only",
@@ -218,6 +260,19 @@ JSON
   "schema": "specnav.prototype.verifier.v1",
   "status": "green",
   "checked_entry": "artifact/index.html",
+  "project_fidelity": {
+    "status": "green",
+    "inventory": "visual-inventory.json",
+    "shell_checked": true,
+    "generic_shell_detected": false,
+    "notes": ["project shell anchor and dashboard visual inventory reviewed"]
+  },
+  "visual_matrix": {
+    "viewports": ["desktop", "mobile"],
+    "theme_modes": ["light"],
+    "locales": ["none"],
+    "states": ["loading", "empty", "error", "disabled", "permission", "populated"]
+  },
   "checks": ["entry exists"]
 }
 JSON

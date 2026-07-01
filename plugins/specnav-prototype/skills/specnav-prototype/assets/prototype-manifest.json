@@ -7,6 +7,12 @@
   "touches_real_data": false,
   "may_promote": false,
   "promotion_requirement": "requires verifier-report.json, explicit user approval, and prototype handoff",
+  "visual_context": {
+    "required_for_ui_html": true,
+    "inventory": "visual-inventory.json",
+    "project_shell_required": true,
+    "generic_shell_allowed": false
+  },
   "dependencies": [],
   "referenced_foundation_specs": [
     "ui-design",
