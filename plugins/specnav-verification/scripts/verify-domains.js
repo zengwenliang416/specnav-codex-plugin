@@ -38,6 +38,12 @@ const INDEPENDENCE_HEADINGS = [
   'Evidence References',
   'Cannot Verify From Provided Evidence'
 ];
+const USER_TEST_CASE_HEADINGS = [
+  'User Test Case Scope',
+  'Aligned Test Cases',
+  'User Signoff',
+  'Domain Mapping'
+];
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
@@ -177,6 +183,20 @@ function validatePlan(verifyDir, change) {
   for (const field of ['inputs', 'changed_files', 'commands', 'manual_reviews']) {
     if (!Array.isArray(plan[field])) blockers.push(`invalid-verify-plan:${field}`);
   }
+  const gate = plan.user_test_case_gate;
+  if (!isPlainObject(gate)) {
+    blockers.push('invalid-verify-plan:user_test_case_gate');
+  } else {
+    const expectedGate = {
+      cases: 'verify/user-test-cases.json',
+      signoff: 'verify/user-test-case-signoff.json',
+      domain_matrix: 'verify/domain-case-matrix.json'
+    };
+    if (gate.required !== true) blockers.push('invalid-verify-plan:user_test_case_gate.required');
+    for (const [field, expected] of Object.entries(expectedGate)) {
+      if (gate[field] !== expected) blockers.push(`invalid-verify-plan:user_test_case_gate.${field}`);
+    }
+  }
 
   return artifactResult(change, name, blockers, { required_domains: plan.required_domains || [] });
 }
@@ -215,6 +235,128 @@ function validateTraceability(verifyDir, change) {
     });
   }
   return artifactResult(change, name, blockers);
+}
+
+function isResolvedUserString(value) {
+  return isCleanString(value) && !value.includes('<decision-required>');
+}
+
+function cleanStringArray(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => isResolvedUserString(item));
+}
+
+function validateUserTestCaseGate(verifyDir, change) {
+  const artifacts = [];
+  const casesName = 'user-test-cases.json';
+  const signoffName = 'user-test-case-signoff.json';
+  const matrixName = 'domain-case-matrix.json';
+  const casesParsed = readJsonFile(path.join(verifyDir, casesName));
+  const signoffParsed = readJsonFile(path.join(verifyDir, signoffName));
+  const matrixParsed = readJsonFile(path.join(verifyDir, matrixName));
+  const caseBlockers = [];
+  const signoffBlockers = [];
+  const matrixBlockers = [];
+  const caseIds = [];
+  const approvedCaseIds = [];
+
+  artifacts.push(validateTextHeadings(verifyDir, change, 'user-test-cases.md', USER_TEST_CASE_HEADINGS, 'invalid-user-test-cases-md'));
+
+  if (!casesParsed.ok) {
+    caseBlockers.push(casesParsed.status === 'invalid-json' ? `invalid-json:${casesName}` : `missing-verify-artifact:${casesName}`);
+  } else if (!isPlainObject(casesParsed.value)) {
+    caseBlockers.push(`invalid-json-shape:${casesName}`);
+  } else {
+    const data = casesParsed.value;
+    if (data.schema_version !== 1) caseBlockers.push('invalid-user-test-cases:schema_version');
+    if (data.change_id !== change) caseBlockers.push('invalid-user-test-cases:change_id');
+    if (!Array.isArray(data.cases) || data.cases.length === 0) {
+      caseBlockers.push('verify:user-test-cases-missing');
+    } else {
+      data.cases.forEach((item, index) => {
+        if (!isPlainObject(item)) {
+          caseBlockers.push(`invalid-user-test-case:shape:${index + 1}`);
+          return;
+        }
+        if (!isResolvedUserString(item.id)) caseBlockers.push(`invalid-user-test-case:id:${index + 1}`);
+        else caseIds.push(item.id);
+        for (const field of ['title', 'actor', 'user_goal']) {
+          if (!isResolvedUserString(item[field])) caseBlockers.push(`invalid-user-test-case:${field}:${item.id || index + 1}`);
+        }
+        for (const field of ['preconditions', 'steps', 'expected_results', 'acceptance_refs', 'source_refs']) {
+          if (!cleanStringArray(item[field])) caseBlockers.push(`invalid-user-test-case:${field}:${item.id || index + 1}`);
+        }
+      });
+    }
+  }
+  const duplicateCaseIds = caseIds.filter((id, index) => caseIds.indexOf(id) !== index);
+  if (duplicateCaseIds.length > 0) caseBlockers.push('invalid-user-test-cases:duplicate-ids');
+  artifacts.push(artifactResult(change, casesName, caseBlockers, { case_ids: unique(caseIds) }));
+
+  if (!signoffParsed.ok) {
+    signoffBlockers.push(signoffParsed.status === 'invalid-json' ? `invalid-json:${signoffName}` : `missing-verify-artifact:${signoffName}`);
+  } else if (!isPlainObject(signoffParsed.value)) {
+    signoffBlockers.push(`invalid-json-shape:${signoffName}`);
+  } else {
+    const signoff = signoffParsed.value;
+    if (signoff.schema_version !== 1) signoffBlockers.push('invalid-user-test-case-signoff:schema_version');
+    if (signoff.change_id !== change) signoffBlockers.push('invalid-user-test-case-signoff:change_id');
+    if (signoff.status !== 'approved') signoffBlockers.push('verify:user-test-cases-unapproved');
+    if (!isResolvedUserString(signoff.user_decision)) signoffBlockers.push('invalid-user-test-case-signoff:user_decision');
+    if (!cleanStringArray(signoff.approved_case_ids)) {
+      signoffBlockers.push('invalid-user-test-case-signoff:approved_case_ids');
+    } else {
+      approvedCaseIds.push(...signoff.approved_case_ids);
+      for (const id of signoff.approved_case_ids) {
+        if (!caseIds.includes(id)) signoffBlockers.push(`invalid-user-test-case-signoff:unknown-case:${id}`);
+      }
+      for (const id of caseIds) {
+        if (!signoff.approved_case_ids.includes(id)) signoffBlockers.push(`verify:user-test-case-not-approved:${id}`);
+      }
+    }
+  }
+  artifacts.push(artifactResult(change, signoffName, signoffBlockers, { approved_case_ids: unique(approvedCaseIds) }));
+
+  if (!matrixParsed.ok) {
+    matrixBlockers.push(matrixParsed.status === 'invalid-json' ? `invalid-json:${matrixName}` : `missing-verify-artifact:${matrixName}`);
+  } else if (!isPlainObject(matrixParsed.value)) {
+    matrixBlockers.push(`invalid-json-shape:${matrixName}`);
+  } else {
+    const matrix = matrixParsed.value;
+    if (matrix.schema_version !== 1) matrixBlockers.push('invalid-domain-case-matrix:schema_version');
+    if (matrix.change_id !== change) matrixBlockers.push('invalid-domain-case-matrix:change_id');
+    if (!Array.isArray(matrix.cases) || matrix.cases.length === 0) {
+      matrixBlockers.push('verify:domain-case-matrix-missing');
+    } else {
+      const matrixIds = [];
+      matrix.cases.forEach((entry, index) => {
+        if (!isPlainObject(entry)) {
+          matrixBlockers.push(`invalid-domain-case-matrix:case:${index + 1}`);
+          return;
+        }
+        if (!isResolvedUserString(entry.case_id)) {
+          matrixBlockers.push(`invalid-domain-case-matrix:case_id:${index + 1}`);
+          return;
+        }
+        matrixIds.push(entry.case_id);
+        if (!caseIds.includes(entry.case_id)) matrixBlockers.push(`invalid-domain-case-matrix:unknown-case:${entry.case_id}`);
+        if (!isPlainObject(entry.domains)) {
+          matrixBlockers.push(`invalid-domain-case-matrix:domains:${entry.case_id}`);
+          return;
+        }
+        for (const domain of DOMAINS) {
+          if (!cleanStringArray(entry.domains[domain])) {
+            matrixBlockers.push(`verify:domain-case-missing:${entry.case_id}:${domain}`);
+          }
+        }
+      });
+      for (const id of approvedCaseIds) {
+        if (!matrixIds.includes(id)) matrixBlockers.push(`verify:domain-case-matrix-missing-case:${id}`);
+      }
+    }
+  }
+  artifacts.push(artifactResult(change, matrixName, matrixBlockers));
+
+  return artifacts;
 }
 
 function validateBlockers(verifyDir, change) {
@@ -695,7 +837,8 @@ function staleMarkerUnresolved(changeDir, verifyDir) {
 function validateVerify(root = lib.projectRoot()) {
   const projectRoot = path.resolve(root);
   const development = validateDevelopment(projectRoot, { mode: 'handoff' });
-  const change = development.active_change || lib.activeChange(projectRoot);
+  const changeState = lib.activeChangeState(projectRoot);
+  const change = development.active_change || changeState.change;
   const changeDir = change ? lib.changeDir(projectRoot, change) : null;
   const verifyDir = changeDir ? path.join(changeDir, 'verify') : null;
   const artifacts = [];
@@ -704,13 +847,16 @@ function validateVerify(root = lib.projectRoot()) {
 
   if (!development.ok) blockers.push('development-blocked', ...development.blockers.map((blocker) => `development:${blocker}`));
   if (Array.isArray(development.warnings)) warnings.push(...development.warnings.map((warning) => `development:${warning}`));
-  if (!change || !changeDir || !fs.existsSync(changeDir)) blockers.push('active-change');
+  if (!change || !changeDir || !fs.existsSync(changeDir)) {
+    blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
+  }
 
   if (verifyDir) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
     artifacts.push(validatePlan(verifyDir, change));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
     artifacts.push(validateTraceability(verifyDir, change));
+    artifacts.push(...validateUserTestCaseGate(verifyDir, change));
     artifacts.push(validateBlockers(verifyDir, change));
     artifacts.push(validateTextHeadings(verifyDir, change, 'receipt.md', ['Covered Scope', 'Uncovered Scope', 'Residual Risk', 'Confidence'], 'invalid-receipt-md'));
     artifacts.push(validateReceipt(verifyDir, change));
@@ -734,6 +880,11 @@ function validateVerify(root = lib.projectRoot()) {
     ok: blockers.length === 0,
     project_root: projectRoot,
     active_change: change || null,
+    change_resolution: {
+      source: changeState.source,
+      candidates: changeState.candidates || [],
+      blockers: changeState.blockers || []
+    },
     change_dir: changeDir,
     verify_dir: verifyDir,
     blockers: unique(blockers),

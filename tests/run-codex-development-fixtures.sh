@@ -39,6 +39,10 @@ fi
 
 PROJECT_DIR="$PROJECT" node "$VERIFY/skills/specnav-verify-plan/scripts/create-verify-plan.js" --json >"$TMP_DIR/create-verify.json"
 jq -e '.ok == true' "$TMP_DIR/create-verify.json" >/dev/null
+jq -e '.status == "pending-user-review"' "$CHANGE_DIR/verify/user-test-cases.json" >/dev/null
+jq -e '.status == "pending"' "$CHANGE_DIR/verify/user-test-case-signoff.json" >/dev/null
+test -f "$CHANGE_DIR/verify/user-test-cases.md"
+test -f "$CHANGE_DIR/verify/domain-case-matrix.json"
 jq -e '.claims[] | select(.stage == "verification" and .task_id == "002-dashboard-detail")' "$CHANGE_DIR/codegraph/claims-map.json" >/dev/null
 jq -e '.queries[] | select(.stage == "verification" and .claim_id == "verification:task-002-dashboard-detail")' "$CHANGE_DIR/codegraph/evidence-query-plan.json" >/dev/null
 

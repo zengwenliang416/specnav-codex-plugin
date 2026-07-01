@@ -1,6 +1,6 @@
 # SpecNav Codex Plugin System Design
 
-Version: 0.1.5
+Version: 0.1.6
 
 This repository is the Codex-native edition of SpecNav. It keeps the lifecycle
 logic of the existing SpecNav plugin suite, but it does not reuse the old plugin

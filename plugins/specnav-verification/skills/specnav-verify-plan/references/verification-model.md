@@ -11,6 +11,18 @@ SpecNav verification has six required domains in this order:
 5. e2e
 6. sensory
 
+Before any domain can claim green, verification must pass the user-aligned test
+case gate:
+
+1. `verify/user-test-cases.json` defines the user-visible cases under review.
+2. `verify/user-test-case-signoff.json` records explicit user approval.
+3. `verify/domain-case-matrix.json` maps every approved case to all six domains.
+
+The approved user test cases are the verification object. The six domains are
+the lenses used to evaluate those cases. Do not invent additional scope inside a
+domain unless it is added back to the user test case contract or recorded as a
+new blocker.
+
 The plan must preserve the user's six-stage model. Do not collapse domains into
 one generic test pass.
 

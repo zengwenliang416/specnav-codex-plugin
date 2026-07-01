@@ -15,10 +15,10 @@ Run static and structural verification declared by the plan.
 
 ## Workflow
 
-1. Read `verify/plan.json`.
+1. Read `verify/plan.json`, `verify/user-test-cases.json`, `verify/user-test-case-signoff.json`, and `verify/domain-case-matrix.json`.
 2. Read `references/static-rubric.md` before choosing static commands.
 3. Run every required static command.
-4. Include OpenSpec validation, lint, type checks, dependency checks, schema checks, and banned-pattern scans when applicable.
+4. Include OpenSpec validation, lint, type checks, dependency checks, schema checks, banned-pattern scans, and user test case coverage when applicable.
 5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 6. If a required tool is unavailable, record blocker class `tool-unavailable`.
 
@@ -31,6 +31,7 @@ Run static and structural verification declared by the plan.
 
 - Plan is missing.
 - A required command cannot run.
+- User test cases are missing, unsigned, or not mapped to static checks.
 - Static evidence is incomplete.
 - A missing required check would be downgraded to a warning.
 

@@ -20,3 +20,13 @@
 - Every green verdict requires command, file, runtime, screenshot, trace, or
   review evidence.
 - Missing evidence is a blocker, not a warning.
+
+## User-Aligned Test Case Gate
+
+- Generate `verify/user-test-cases.md` and `verify/user-test-cases.json` from
+  requirements, acceptance, prototype handoff, development tasks, and handoff.
+- Ask the user to approve, edit, remove, or add cases.
+- Freeze approval in `verify/user-test-case-signoff.json`.
+- Map every approved case across all six domains in
+  `verify/domain-case-matrix.json`.
+- Six-domain verification is blocked until the signoff status is `approved`.

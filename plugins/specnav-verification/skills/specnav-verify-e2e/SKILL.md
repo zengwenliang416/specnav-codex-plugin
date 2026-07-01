@@ -15,9 +15,9 @@ Validate complete user and business flows across boundaries.
 
 ## Workflow
 
-1. Read plan, data-flow specs, requirements, prototype handoff, and development handoff.
+1. Read plan, user-approved test cases, domain-case matrix, data-flow specs, requirements, prototype handoff, and development handoff.
 2. Read `references/e2e-rubric.md` before selecting flows.
-3. Use realistic data and execute representative flows.
+3. Use realistic data and execute the approved user test cases as representative flows.
 4. Record screenshots, traces, logs, or explicit blocked evidence when execution is impossible.
 5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 6. Check frontend, backend, API, state, database, and integration effects together.
@@ -30,6 +30,7 @@ Validate complete user and business flows across boundaries.
 ## Stop Conditions
 
 - Environment cannot safely run.
+- User test cases are missing, unsigned, or not mapped to E2E flows.
 - Flow preconditions are unknown.
 - Required data contracts are missing.
 

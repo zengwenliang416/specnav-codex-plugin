@@ -15,9 +15,9 @@ Run evidence-backed human review that automation cannot fully cover.
 
 ## Workflow
 
-1. Stay read-only over production code and verification evidence.
+1. Stay read-only over production code and verification evidence, including user-approved test cases and the domain-case matrix.
 2. Read `references/sensory-rubric.md` before reviewing.
-3. Review readability, UX, interaction quality, accessibility, performance feel, maintainability, component cohesion and coupling.
+3. Review readability, UX, interaction quality, accessibility, performance feel, maintainability, component cohesion and coupling for each approved user test case.
 4. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 5. Tie every finding to a file, artifact, screenshot, command, transcript, or inspection note.
 6. Report unverified claims explicitly.
@@ -30,6 +30,7 @@ Run evidence-backed human review that automation cannot fully cover.
 ## Stop Conditions
 
 - Independence is compromised.
+- User test cases are missing, unsigned, or not mapped to sensory review.
 - Evidence is missing.
 - A finding cannot be tied to concrete evidence.
 

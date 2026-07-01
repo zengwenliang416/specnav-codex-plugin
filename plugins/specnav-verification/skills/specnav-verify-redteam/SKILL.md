@@ -15,9 +15,9 @@ Probe security, robustness, and abuse cases missed by normal tests.
 
 ## Workflow
 
-1. Read plan, architecture specs, data-flow specs, permissions, and development handoff.
+1. Read plan, user-approved test cases, domain-case matrix, architecture specs, data-flow specs, permissions, and development handoff.
 2. Read `references/redteam-rubric.md` before designing probes.
-3. Design probes appropriate to risk tier.
+3. Design probes appropriate to risk tier for each approved user test case.
 4. Classify each failure in `verify/root-cause-checks.jsonl` before routing fixes.
 5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 6. Record destructive test evidence without touching real data unless explicitly approved.
@@ -31,6 +31,7 @@ Probe security, robustness, and abuse cases missed by normal tests.
 
 - Probes would touch real data without approval.
 - Required environment is unavailable.
+- User test cases are missing, unsigned, or not mapped to redteam probes.
 - Root cause cannot be classified.
 
 ## Validation

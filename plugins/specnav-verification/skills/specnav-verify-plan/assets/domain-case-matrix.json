@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "change_id": "{{SPECNAV_CHANGE}}",
+  "cases": [
+    {
+      "case_id": "utc-primary-approved-flow",
+      "domains": {
+        "facticity": [
+          "Confirm the case comes from requirements, acceptance, prototype handoff, and development handoff."
+        ],
+        "static": [
+          "Check static contracts, schemas, types, lint, and structure for code paths used by this case."
+        ],
+        "unit": [
+          "Cover the core behavior, edge cases, empty state, and error handling behind this case."
+        ],
+        "redteam": [
+          "Probe malformed, unauthorized, destructive, boundary, and abuse variants of this case."
+        ],
+        "e2e": [
+          "Run or explicitly block the complete user path for this case."
+        ],
+        "sensory": [
+          "Review interaction quality, readability, performance feel, accessibility, and maintainability for this case."
+        ]
+      }
+    }
+  ]
+}

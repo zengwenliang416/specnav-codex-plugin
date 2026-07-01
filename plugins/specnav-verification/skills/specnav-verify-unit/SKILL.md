@@ -15,9 +15,9 @@ Validate behavior-facing unit and regression coverage.
 
 ## Workflow
 
-1. Read plan, development reports, changed-file traceability, and tests.
+1. Read plan, user-approved test cases, domain-case matrix, development reports, changed-file traceability, and tests.
 2. Read `references/unit-rubric.md` before assessing test quality.
-3. Confirm public behavior coverage for critical paths and edge cases.
+3. Confirm public behavior coverage for critical paths and edge cases named by the approved user test cases.
 4. Reject tests coupled to private methods, implementation-only mocks, or collaborator call counts.
 5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 6. Record coverage quality and gaps.
@@ -31,6 +31,7 @@ Validate behavior-facing unit and regression coverage.
 
 - Changed behavior has no meaningful coverage.
 - Tests cannot run.
+- User test cases are missing, unsigned, or not mapped to unit checks.
 - Assertions verify implementation details rather than behavior.
 
 ## Validation

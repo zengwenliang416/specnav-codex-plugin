@@ -16,6 +16,12 @@
     "prototype/handoff.md",
     "development/handoff-to-verify.md"
   ],
+  "user_test_case_gate": {
+    "required": true,
+    "cases": "verify/user-test-cases.json",
+    "signoff": "verify/user-test-case-signoff.json",
+    "domain_matrix": "verify/domain-case-matrix.json"
+  },
   "changed_files": [],
   "commands": [],
   "manual_reviews": [
