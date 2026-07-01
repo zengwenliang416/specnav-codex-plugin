@@ -44,6 +44,7 @@ const USER_TEST_CASE_HEADINGS = [
   'User Signoff',
   'Domain Mapping'
 ];
+const RUNTIME_SURFACES = ['runtime', 'browser'];
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
@@ -74,6 +75,10 @@ function isPlainObject(value) {
 
 function isCleanString(value) {
   return typeof value === 'string' && value.trim() !== '' && value === value.trim();
+}
+
+function cleanStringArray(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => isCleanString(item));
 }
 
 function readJsonFile(file) {
@@ -183,6 +188,10 @@ function validatePlan(verifyDir, change) {
   for (const field of ['inputs', 'changed_files', 'commands', 'manual_reviews']) {
     if (!Array.isArray(plan[field])) blockers.push(`invalid-verify-plan:${field}`);
   }
+  if (Array.isArray(plan.changed_files)) {
+    if (plan.changed_files.length === 0) blockers.push('invalid-verify-plan:changed_files-empty');
+    if (plan.changed_files.some((item) => !isCleanString(item))) blockers.push('invalid-verify-plan:changed_files');
+  }
   const gate = plan.user_test_case_gate;
   if (!isPlainObject(gate)) {
     blockers.push('invalid-verify-plan:user_test_case_gate');
@@ -195,6 +204,19 @@ function validatePlan(verifyDir, change) {
     if (gate.required !== true) blockers.push('invalid-verify-plan:user_test_case_gate.required');
     for (const [field, expected] of Object.entries(expectedGate)) {
       if (gate[field] !== expected) blockers.push(`invalid-verify-plan:user_test_case_gate.${field}`);
+    }
+  }
+  const runtimeGate = plan.runtime_evidence_gate;
+  if (!isPlainObject(runtimeGate)) {
+    blockers.push('invalid-verify-plan:runtime_evidence_gate');
+  } else {
+    if (runtimeGate.required !== true) blockers.push('invalid-verify-plan:runtime_evidence_gate.required');
+    if (runtimeGate.evidence !== 'verify/runtime-evidence.json') blockers.push('invalid-verify-plan:runtime_evidence_gate.evidence');
+    if (!cleanStringArray(runtimeGate.required_surfaces)) blockers.push('invalid-verify-plan:runtime_evidence_gate.required_surfaces');
+    else {
+      for (const surface of RUNTIME_SURFACES) {
+        if (!runtimeGate.required_surfaces.includes(surface)) blockers.push(`invalid-verify-plan:runtime_evidence_gate.missing:${surface}`);
+      }
     }
   }
 
@@ -241,7 +263,7 @@ function isResolvedUserString(value) {
   return isCleanString(value) && !value.includes('<decision-required>');
 }
 
-function cleanStringArray(value) {
+function resolvedStringArray(value) {
   return Array.isArray(value) && value.length > 0 && value.every((item) => isResolvedUserString(item));
 }
 
@@ -283,7 +305,7 @@ function validateUserTestCaseGate(verifyDir, change) {
           if (!isResolvedUserString(item[field])) caseBlockers.push(`invalid-user-test-case:${field}:${item.id || index + 1}`);
         }
         for (const field of ['preconditions', 'steps', 'expected_results', 'acceptance_refs', 'source_refs']) {
-          if (!cleanStringArray(item[field])) caseBlockers.push(`invalid-user-test-case:${field}:${item.id || index + 1}`);
+          if (!resolvedStringArray(item[field])) caseBlockers.push(`invalid-user-test-case:${field}:${item.id || index + 1}`);
         }
       });
     }
@@ -302,7 +324,7 @@ function validateUserTestCaseGate(verifyDir, change) {
     if (signoff.change_id !== change) signoffBlockers.push('invalid-user-test-case-signoff:change_id');
     if (signoff.status !== 'approved') signoffBlockers.push('verify:user-test-cases-unapproved');
     if (!isResolvedUserString(signoff.user_decision)) signoffBlockers.push('invalid-user-test-case-signoff:user_decision');
-    if (!cleanStringArray(signoff.approved_case_ids)) {
+    if (!resolvedStringArray(signoff.approved_case_ids)) {
       signoffBlockers.push('invalid-user-test-case-signoff:approved_case_ids');
     } else {
       approvedCaseIds.push(...signoff.approved_case_ids);
@@ -344,7 +366,7 @@ function validateUserTestCaseGate(verifyDir, change) {
           return;
         }
         for (const domain of DOMAINS) {
-          if (!cleanStringArray(entry.domains[domain])) {
+          if (!resolvedStringArray(entry.domains[domain])) {
             matrixBlockers.push(`verify:domain-case-missing:${entry.case_id}:${domain}`);
           }
         }
@@ -357,6 +379,84 @@ function validateUserTestCaseGate(verifyDir, change) {
   artifacts.push(artifactResult(change, matrixName, matrixBlockers));
 
   return artifacts;
+}
+
+function migrationRequired(changeDir) {
+  if (!changeDir) return false;
+  const parsed = readJsonFile(path.join(changeDir, 'development', 'migrations', 'manifest.json'));
+  return parsed.ok && isPlainObject(parsed.value) && parsed.value.required === true;
+}
+
+function validateDiffTraceability(verifyDir, change) {
+  const name = 'diff-traceability';
+  const blockers = [];
+  const plan = readJsonFile(path.join(verifyDir, 'plan.json'));
+  const trace = readJsonFile(path.join(verifyDir, 'traceability-matrix.json'));
+  if (!plan.ok || !trace.ok || !isPlainObject(plan.value) || !isPlainObject(trace.value)) {
+    return artifactResult(change, name, ['diff-traceability:missing-inputs']);
+  }
+  const changedFiles = Array.isArray(plan.value.changed_files) ? plan.value.changed_files : [];
+  const traceEntries = Array.isArray(trace.value.entries) ? trace.value.entries : [];
+  const tracedFiles = new Set(traceEntries.map((entry) => entry && entry.changed_file).filter(isCleanString));
+  for (const file of changedFiles) {
+    if (!tracedFiles.has(file)) blockers.push(`diff-traceability:unmapped:${file}`);
+  }
+  return artifactResult(change, name, blockers, { changed_files: changedFiles.length, traced_files: tracedFiles.size });
+}
+
+function validateRuntimeEvidence(verifyDir, change, databaseRequired) {
+  const name = 'runtime-evidence.json';
+  const parsed = readJsonFile(path.join(verifyDir, name));
+  const blockers = [];
+  const requiredSurfaces = new Set([...RUNTIME_SURFACES, ...(databaseRequired ? ['database'] : [])]);
+  const seenSurfaces = new Set();
+
+  if (!parsed.ok) {
+    return artifactResult(change, name, [parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-verify-artifact:${name}`], { required_surfaces: Array.from(requiredSurfaces) });
+  }
+  if (!isPlainObject(parsed.value)) return artifactResult(change, name, [`invalid-json-shape:${name}`], { required_surfaces: Array.from(requiredSurfaces) });
+
+  const evidence = parsed.value;
+  if (evidence.schema_version !== 1) blockers.push('invalid-runtime-evidence:schema_version');
+  if (evidence.change_id !== change) blockers.push('invalid-runtime-evidence:change_id');
+  if (evidence.status !== 'green') blockers.push('runtime-evidence-not-green');
+  if (!Array.isArray(evidence.surfaces) || evidence.surfaces.length === 0) {
+    blockers.push('invalid-runtime-evidence:surfaces');
+  } else {
+    evidence.surfaces.forEach((surface, index) => {
+      if (!isPlainObject(surface)) {
+        blockers.push(`invalid-runtime-evidence:surface:${index + 1}`);
+        return;
+      }
+      if (!isCleanString(surface.surface)) {
+        blockers.push(`invalid-runtime-evidence:surface-name:${index + 1}`);
+        return;
+      }
+      seenSurfaces.add(surface.surface);
+      if (surface.required !== true) blockers.push(`runtime-evidence-surface-not-required:${surface.surface}`);
+      if (surface.status !== 'pass') blockers.push(`runtime-evidence-surface-not-pass:${surface.surface}`);
+      if (!isCleanString(surface.command)) blockers.push(`invalid-runtime-evidence:command:${surface.surface}`);
+      if (!cleanStringArray(surface.evidence_refs)) blockers.push(`invalid-runtime-evidence:evidence_refs:${surface.surface}`);
+      const browserRefs = [
+        ...(Array.isArray(surface.artifact_refs) ? surface.artifact_refs : []),
+        ...(Array.isArray(surface.screenshot_refs) ? surface.screenshot_refs : [])
+      ];
+      const databaseRefs = [
+        ...(Array.isArray(surface.query_refs) ? surface.query_refs : []),
+        ...(Array.isArray(surface.artifact_refs) ? surface.artifact_refs : [])
+      ];
+      if (surface.surface === 'browser' && !cleanStringArray(browserRefs)) {
+        blockers.push('invalid-runtime-evidence:browser-artifact_refs');
+      }
+      if (surface.surface === 'database' && !cleanStringArray(databaseRefs)) {
+        blockers.push('invalid-runtime-evidence:database-query_refs');
+      }
+    });
+  }
+  for (const surface of requiredSurfaces) {
+    if (!seenSurfaces.has(surface)) blockers.push(`runtime-evidence-missing-surface:${surface}`);
+  }
+  return artifactResult(change, name, blockers, { required_surfaces: Array.from(requiredSurfaces), surfaces: Array.from(seenSurfaces) });
 }
 
 function validateBlockers(verifyDir, change) {
@@ -856,7 +956,9 @@ function validateVerify(root = lib.projectRoot()) {
     artifacts.push(validatePlan(verifyDir, change));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
     artifacts.push(validateTraceability(verifyDir, change));
+    artifacts.push(validateDiffTraceability(verifyDir, change));
     artifacts.push(...validateUserTestCaseGate(verifyDir, change));
+    artifacts.push(validateRuntimeEvidence(verifyDir, change, migrationRequired(changeDir)));
     artifacts.push(validateBlockers(verifyDir, change));
     artifacts.push(validateTextHeadings(verifyDir, change, 'receipt.md', ['Covered Scope', 'Uncovered Scope', 'Residual Risk', 'Confidence'], 'invalid-receipt-md'));
     artifacts.push(validateReceipt(verifyDir, change));

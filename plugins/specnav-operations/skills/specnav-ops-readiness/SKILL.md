@@ -15,18 +15,20 @@ Build the final operations readiness decision.
 
 ## Workflow
 
-1. Read verification aggregate report, receipt, blocker classification, development handoff, `tasks.md`, release plan, git state, and operations artifacts.
+1. Read verification aggregate report, receipt, blocker classification, development handoff, `tasks.md`, `development/migrations/manifest.json`, release plan, git state, and operations artifacts.
 2. Write readiness from direct evidence only.
 3. Read `references/operations-readiness.md` before writing readiness.
 4. If readiness artifacts are missing, run `node "$SPECNAV_OPERATIONS_ROOT/skills/specnav-ops-readiness/scripts/create-readiness.js" --release-target=<target> --json`.
 5. Run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json` before archive/readiness decisions. This converts plain task bullets into standard OpenSpec checkbox tasks.
 6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` before and after edits.
 7. Treat `tasks.md` checkbox state as evidence: plain bullets must be normalized first, unchecked tasks are `tasks-md:incomplete-checkboxes`, and no checked task is `tasks-md:no-completed-checkboxes`. Never imply completion from the absence of `- [ ]`.
-8. For final archive, run `node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json`. Do not manually move `openspec/changes/<change>` or hand-edit `openspec/.specnav/change-registry.json`.
+8. If `development/migrations/manifest.json` has `required=true`, release target must be `project-deploy`, `readiness.json` must set `ops.migrations` to `pass`, and `operations/migration-deployment.json` must record applied migration ids, evidence refs, and rollback refs or strategy.
+9. For final archive, run `node "$SPECNAV_OPERATIONS_ROOT/scripts/archive-change.js" --change <change> --json`. Do not manually move `openspec/changes/<change>` or hand-edit `openspec/.specnav/change-registry.json`.
 
 ## Required Outputs
 
 - `operations/readiness.md` and `operations/readiness.json`.
+- `operations/migration-deployment.json` when `development/migrations/manifest.json` has `required=true`.
 - Readiness shells: `assets/readiness.md` and `assets/readiness.json`.
 
 ## Stop Conditions
@@ -36,6 +38,7 @@ Build the final operations readiness decision.
 - Release target is missing.
 - Git state is unknown.
 - Required operations artifacts are missing.
+- Required migrations are not represented in readiness and migration deployment evidence.
 - Archive would require manual directory moves or manual registry edits.
 
 ## Validation

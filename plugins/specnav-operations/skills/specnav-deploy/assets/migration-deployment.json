@@ -1,0 +1,15 @@
+{
+  "schema": "specnav.ops.migrationDeployment.v1",
+  "change": "{{SPECNAV_CHANGE}}",
+  "status": "blocked",
+  "source_manifest": "development/migrations/manifest.json",
+  "applied_migrations": [],
+  "evidence_refs": [
+    "<decision-required>"
+  ],
+  "rollback_refs": [],
+  "rollback_strategy": "<decision-required>",
+  "notes": [
+    "Required only when development/migrations/manifest.json has required=true. Record the exact applied migration ids and verification evidence before project-deploy readiness can pass."
+  ]
+}

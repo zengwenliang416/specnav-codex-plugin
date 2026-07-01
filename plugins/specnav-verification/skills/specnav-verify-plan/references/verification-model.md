@@ -23,6 +23,16 @@ the lenses used to evaluate those cases. Do not invent additional scope inside a
 domain unless it is added back to the user test case contract or recorded as a
 new blocker.
 
+Verification also requires executable runtime evidence:
+
+1. `verify/runtime-evidence.json` must include a passing `runtime` surface.
+2. `verify/runtime-evidence.json` must include a passing `browser` surface with
+   screenshot, trace, transcript, or equivalent artifact refs.
+3. If `development/migrations/manifest.json` has `required=true`,
+   `verify/runtime-evidence.json` must include a passing `database` surface.
+4. `plan.changed_files` must be non-empty and each file must appear in
+   `traceability-matrix.json`.
+
 The plan must preserve the user's six-stage model. Do not collapse domains into
 one generic test pass.
 

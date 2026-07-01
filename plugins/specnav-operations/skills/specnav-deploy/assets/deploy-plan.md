@@ -14,7 +14,9 @@
 
 ## Migrations
 
-- `<decision-required>`
+- Manifest: `development/migrations/manifest.json`
+- Deployment evidence: `operations/migration-deployment.json`
+- If migrations are not required, state `development/migrations/manifest.json required=false`.
 
 ## Smoke Checks
 

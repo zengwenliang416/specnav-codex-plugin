@@ -22,6 +22,15 @@
     "signoff": "verify/user-test-case-signoff.json",
     "domain_matrix": "verify/domain-case-matrix.json"
   },
+  "runtime_evidence_gate": {
+    "required": true,
+    "evidence": "verify/runtime-evidence.json",
+    "required_surfaces": [
+      "runtime",
+      "browser"
+    ],
+    "database_surface_required_when": "development/migrations/manifest.json required=true"
+  },
   "changed_files": [],
   "commands": [],
   "manual_reviews": [

@@ -42,6 +42,10 @@ function isCleanString(value) {
   return typeof value === 'string' && value.trim() !== '' && value === value.trim();
 }
 
+function cleanStringArray(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => isCleanString(item));
+}
+
 function readJsonFile(file) {
   try {
     return { ok: true, value: JSON.parse(fs.readFileSync(file, 'utf8')), status: 'ok' };
@@ -348,6 +352,74 @@ function validateUpdateSpec(opsDir, change, hasSignoff) {
   return artifact(change, name, blockers);
 }
 
+function readMigrationManifest(changeDir) {
+  const parsed = readJsonFile(path.join(changeDir, 'development', 'migrations', 'manifest.json'));
+  if (!parsed.ok || !isPlainObject(parsed.value)) {
+    return { required: false, ids: [], paths: [], blocker: 'missing-development-migrations-manifest' };
+  }
+  const migrations = Array.isArray(parsed.value.migrations) ? parsed.value.migrations : [];
+  return {
+    required: parsed.value.required === true,
+    ids: migrations.map((entry) => entry && entry.id).filter(isCleanString),
+    paths: migrations.map((entry) => entry && entry.path).filter(isCleanString),
+    blocker: null
+  };
+}
+
+function validateMigrationDeployment(opsDir, changeDir, change, target, readiness) {
+  const manifest = readMigrationManifest(changeDir);
+  const artifacts = [];
+  const blockers = [];
+
+  if (manifest.required && target !== 'project-deploy') blockers.push('migration-required-release-target');
+  if (manifest.required && readiness && isPlainObject(readiness.ops) && readiness.ops.migrations !== 'pass') {
+    blockers.push('readiness-migrations-not-pass');
+  }
+
+  if (!manifest.required) return { artifacts, blockers };
+
+  const name = 'migration-deployment.json';
+  const parsed = readJsonFile(path.join(opsDir, name));
+  const deploymentBlockers = [];
+  if (!parsed.ok) {
+    deploymentBlockers.push(parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-operations-artifact:${name}`);
+  } else if (!isPlainObject(parsed.value)) {
+    deploymentBlockers.push(`invalid-json-shape:${name}`);
+  } else {
+    const deployment = parsed.value;
+    if (deployment.schema !== 'specnav.ops.migrationDeployment.v1') deploymentBlockers.push('invalid-migration-deployment:schema');
+    if (deployment.change !== change) deploymentBlockers.push('invalid-migration-deployment:change');
+    if (deployment.status !== 'pass') deploymentBlockers.push('migration-deployment-not-pass');
+    if (deployment.source_manifest !== 'development/migrations/manifest.json') deploymentBlockers.push('invalid-migration-deployment:source_manifest');
+    if (!cleanStringArray(deployment.applied_migrations)) deploymentBlockers.push('invalid-migration-deployment:applied_migrations');
+    else {
+      for (const id of manifest.ids) {
+        if (!deployment.applied_migrations.includes(id)) deploymentBlockers.push(`migration-not-applied:${id}`);
+      }
+    }
+    if (!cleanStringArray(deployment.evidence_refs)) deploymentBlockers.push('invalid-migration-deployment:evidence_refs');
+    if (!cleanStringArray(deployment.rollback_refs) && !isCleanString(deployment.rollback_strategy)) {
+      deploymentBlockers.push('invalid-migration-deployment:rollback');
+    }
+  }
+  artifacts.push(artifact(change, name, deploymentBlockers));
+  blockers.push(...deploymentBlockers);
+
+  const deploy = readTextFile(path.join(opsDir, 'deploy-plan.md'));
+  const rollback = readTextFile(path.join(opsDir, 'rollback-plan.md'));
+  const planBlockers = [];
+  if (!deploy.ok || !deploy.value.includes('development/migrations/manifest.json')) {
+    planBlockers.push('deploy-plan-missing-migration-manifest');
+  }
+  if (!rollback.ok || !rollback.value.toLowerCase().includes('migration')) {
+    planBlockers.push('rollback-plan-missing-migration-rollback');
+  }
+  artifacts.push(artifact(change, 'migration-plan-references', planBlockers));
+  blockers.push(...planBlockers);
+
+  return { artifacts, blockers: unique(blockers) };
+}
+
 function targetRequiredArtifacts(target) {
   const required = new Set(['readiness.md', 'readiness.json', 'release-plan.md', 'release-checklist.json', 'branch-finish.md', 'changelog.md', 'release-notes.md', 'update-spec.json']);
   if (target === 'plugin-marketplace' || target === 'host-compatibility') {
@@ -409,6 +481,9 @@ function validateOperations(root = lib.projectRoot()) {
   artifacts.push(readinessResult.artifact);
   const readiness = readinessResult.readiness;
   const target = readiness && TARGETS.has(readiness.release_target) ? readiness.release_target : null;
+  const migrationDeployment = validateMigrationDeployment(opsDir, changeDir, change, target, readiness);
+  artifacts.push(...migrationDeployment.artifacts);
+  blockers.push(...migrationDeployment.blockers);
 
   artifacts.push(validateText(opsDir, change, 'release-plan.md', ['Release Target', 'Required Artifacts', 'Release Decision']));
   if (target) artifacts.push(validateReleaseChecklist(opsDir, change, target));

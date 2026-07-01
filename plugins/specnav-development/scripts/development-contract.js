@@ -23,6 +23,8 @@ const DEVELOPMENT_ENTRY_ARTIFACTS = [
 
 const DEVELOPMENT_HANDOFF_ARTIFACTS = [
   ...DEVELOPMENT_ENTRY_ARTIFACTS,
+  'migrations/manifest.json',
+  'migrations/README.md',
   'task-ledger.jsonl',
   'drift-check.jsonl',
   'validation-log.jsonl',
@@ -82,6 +84,17 @@ const BRIEF_HEADINGS = [
   'Stop Conditions',
   'Unsafe Assumptions'
 ];
+const BRIEF_CORE_HEADINGS = [
+  'Goal',
+  'Vertical Slice',
+  'In Scope',
+  'Files Allowed',
+  'Verification Commands',
+  'Stop Conditions'
+];
+const SQL_INTENT_PATTERN = /\b(?:ALTER\s+TABLE|CREATE\s+TABLE|DROP\s+TABLE|CREATE\s+INDEX|DROP\s+INDEX|INSERT\s+INTO|UPDATE\s+[a-z0-9_."`]+?\s+SET|DELETE\s+FROM|sys_menu|sys_role_menu|migration|migrations|seed\s+sql|ddl|dml)\b/i;
+const SQL_FILE_PATTERN = /\.sql$/i;
+const SQL_KIND_PATTERN = /\b(?:ALTER|CREATE|DROP|INSERT|UPDATE|DELETE|TRUNCATE|MERGE)\b/i;
 
 const HANDOFF_HEADINGS = [
   'Implemented Slices',
@@ -376,6 +389,18 @@ function validateRequiredHeadings(text, headings, blockerPrefix) {
       continue;
     }
     if (!hasSubstantiveBody(parsed, match)) blockers.push(`${blockerPrefix}:empty-heading:${heading}`);
+  }
+
+  return blockers;
+}
+
+function validateOptionalHeadings(text, headings, blockerPrefix) {
+  const parsed = parseMarkdownHeadings(text);
+  const blockers = [];
+
+  for (const heading of headings) {
+    const match = findHeading(parsed, heading);
+    if (match && !hasSubstantiveBody(parsed, match)) blockers.push(`${blockerPrefix}:empty-heading:${heading}`);
   }
 
   return blockers;
@@ -829,6 +854,138 @@ function parseJsonl(file, name) {
   return { blockers, entries };
 }
 
+function scanSqlIntent(changeDir) {
+  const candidates = [
+    'requirements.md',
+    'acceptance.md',
+    'tasks.md',
+    'development/handoff-to-verify.md',
+    'development/validation-log.jsonl',
+    'development/task-ledger.jsonl',
+    'verify/traceability-matrix.json',
+    'verify/evidence-index.jsonl'
+  ];
+  const taskRoot = path.join(changeDir, 'development', 'tasks');
+  try {
+    for (const taskId of fs.readdirSync(taskRoot)) {
+      for (const file of ['brief.md', 'report.md', 'spec-review.md', 'quality-review.md']) {
+        candidates.push(path.join('development', 'tasks', taskId, file));
+      }
+    }
+  } catch {
+    // Missing task directories are reported by the task validators.
+  }
+
+  const hits = [];
+  for (const relative of candidates) {
+    const text = readTextFile(path.join(changeDir, relative));
+    if (text.ok && SQL_INTENT_PATTERN.test(text.value)) hits.push(relative);
+  }
+  return unique(hits);
+}
+
+function validateMigrations(developmentDir, changeDir, activeChange) {
+  const manifestName = 'migrations/manifest.json';
+  const readmeName = 'migrations/README.md';
+  const manifestPath = path.join(developmentDir, manifestName);
+  const readmePath = path.join(developmentDir, readmeName);
+  const sqlIntentSources = scanSqlIntent(changeDir);
+  const artifacts = [];
+  const blockers = [];
+  const parsed = readJsonFile(manifestPath);
+  let manifest = null;
+
+  if (!parsed.ok) {
+    blockers.push(parsed.status === 'invalid-json' ? `invalid-json:${manifestName}` : `missing-development-artifact:${manifestName}`);
+    artifacts.push(artifactResult(activeChange, manifestName, unique(blockers), true, { sql_intent_sources: sqlIntentSources }));
+    artifacts.push(artifactResult(activeChange, readmeName, [`missing-development-artifact:${readmeName}`], true));
+    return { artifacts, blockers: unique(blockers), required: sqlIntentSources.length > 0, sql_intent_sources: sqlIntentSources };
+  }
+  if (!isPlainObject(parsed.value)) {
+    blockers.push(`invalid-json-shape:${manifestName}`);
+  } else {
+    manifest = parsed.value;
+    if (manifest.schema_version !== 1) blockers.push('invalid-migrations-manifest:schema_version');
+    if (manifest.change_id !== activeChange) blockers.push('invalid-migrations-manifest:change_id');
+    if (typeof manifest.required !== 'boolean') blockers.push('invalid-migrations-manifest:required');
+    if (!['not_required', 'ready'].includes(manifest.status)) blockers.push('invalid-migrations-manifest:status');
+    if (sqlIntentSources.length > 0 && manifest.required !== true) blockers.push('migration-manifest-sql-mentioned-but-not-required');
+    if (manifest.required === true && manifest.status !== 'ready') blockers.push('migration-manifest-not-ready');
+
+    const migrations = Array.isArray(manifest.migrations) ? manifest.migrations : null;
+    if (!migrations) blockers.push('invalid-migrations-manifest:migrations');
+    else if (manifest.required === true && migrations.length === 0) blockers.push('migration-manifest:no-migrations');
+
+    const seenIds = [];
+    if (migrations) {
+      migrations.forEach((entry, index) => {
+        if (!isPlainObject(entry)) {
+          blockers.push(`invalid-migration-entry:${index + 1}`);
+          return;
+        }
+        if (!isCleanString(entry.id)) blockers.push(`invalid-migration-entry:id:${index + 1}`);
+        else seenIds.push(entry.id);
+        if (!['ddl', 'seed', 'data', 'rollback'].includes(entry.kind)) blockers.push(`invalid-migration-entry:kind:${entry.id || index + 1}`);
+        if (!Number.isInteger(entry.order) || entry.order < 1) blockers.push(`invalid-migration-entry:order:${entry.id || index + 1}`);
+        if (!isCleanRelativePath(entry.path) || !entry.path.startsWith('development/migrations/') || !SQL_FILE_PATTERN.test(entry.path)) {
+          blockers.push(`invalid-migration-entry:path:${entry.id || index + 1}`);
+          return;
+        }
+        const sql = readTextFile(path.join(changeDir, entry.path));
+        if (!sql.ok) blockers.push(`missing-migration-file:${entry.path}`);
+        else {
+          if (sql.value.trim() === '') blockers.push(`empty-migration-file:${entry.path}`);
+          blockers.push(...scaffoldBlockersForText(sql.value, entry.path));
+          if (!SQL_KIND_PATTERN.test(sql.value)) blockers.push(`migration-file-no-sql:${entry.path}`);
+        }
+      });
+    }
+    const duplicates = seenIds.filter((id, index) => seenIds.indexOf(id) !== index);
+    if (duplicates.length > 0) blockers.push('invalid-migrations-manifest:duplicate-ids');
+
+    if (!isPlainObject(manifest.verification)) blockers.push('invalid-migrations-manifest:verification');
+    else {
+      for (const field of ['commands', 'evidence']) {
+        if (!Array.isArray(manifest.verification[field]) || manifest.verification[field].length === 0) {
+          if (manifest.required === true) blockers.push(`invalid-migrations-manifest:verification.${field}`);
+        } else if (hasInvalidStringArrayMembers(manifest.verification[field])) {
+          blockers.push(`invalid-migrations-manifest:verification.${field}`);
+        }
+      }
+    }
+
+    if (manifest.required === true) {
+      const rollback = Array.isArray(manifest.rollback) ? manifest.rollback : [];
+      if (rollback.length === 0 && !isCleanString(manifest.rollback_strategy)) {
+        blockers.push('migration-manifest:missing-rollback');
+      }
+    }
+  }
+
+  artifacts.push(artifactResult(activeChange, manifestName, unique(blockers), true, {
+    required: manifest ? manifest.required === true : sqlIntentSources.length > 0,
+    sql_intent_sources: sqlIntentSources
+  }));
+
+  const readme = readTextFile(readmePath);
+  const readmeBlockers = [];
+  if (!readme.ok) readmeBlockers.push(`missing-development-artifact:${readmeName}`);
+  else {
+    if (readme.value.trim() === '') readmeBlockers.push(`empty-development-artifact:${readmeName}`);
+    readmeBlockers.push(...scaffoldBlockersForText(readme.value, readmeName));
+    readmeBlockers.push(...validateRequiredHeadings(readme.value, ['Execution Order', 'Validation', 'Rollback'], 'invalid-migrations-readme'));
+  }
+  artifacts.push(artifactResult(activeChange, readmeName, unique(readmeBlockers), true));
+  blockers.push(...readmeBlockers);
+
+  return {
+    artifacts,
+    blockers: unique(blockers),
+    required: !!(manifest && manifest.required === true),
+    sql_intent_sources: sqlIntentSources
+  };
+}
+
 function validateTaskContextLog(developmentDir, activeChange) {
   const name = 'task-context.jsonl';
   const result = parseJsonl(path.join(developmentDir, name), name);
@@ -911,7 +1068,8 @@ function validateTaskBrief(taskDir, relativeTaskPath) {
   }
   if (text.value.trim() === '') blockers.push(`empty-task-artifact:${name}`);
   blockers.push(...scaffoldBlockersForText(text.value, name));
-  blockers.push(...validateRequiredHeadings(text.value, BRIEF_HEADINGS, 'invalid-task-brief'));
+  blockers.push(...validateRequiredHeadings(text.value, BRIEF_CORE_HEADINGS, 'invalid-task-brief'));
+  blockers.push(...validateOptionalHeadings(text.value, BRIEF_HEADINGS.filter((heading) => !BRIEF_CORE_HEADINGS.includes(heading)), 'invalid-task-brief'));
 
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
@@ -1138,6 +1296,8 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   const taskIds = tasks.map((task) => task.task_id);
   artifacts.push(validateTaskContextLog(developmentDir, activeChange));
   if (mode === 'handoff') {
+    const migrations = validateMigrations(developmentDir, changeDir, activeChange);
+    artifacts.push(...migrations.artifacts);
     artifacts.push(validateTaskLedger(developmentDir, activeChange, taskIds));
     artifacts.push(validateDriftCheck(developmentDir, activeChange));
     artifacts.push(validateValidationLog(developmentDir, activeChange));

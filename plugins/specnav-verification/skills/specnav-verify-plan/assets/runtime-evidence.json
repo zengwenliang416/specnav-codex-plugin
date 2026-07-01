@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "change_id": "{{SPECNAV_CHANGE}}",
+  "status": "blocked",
+  "surfaces": [
+    {
+      "surface": "runtime",
+      "required": true,
+      "status": "blocked",
+      "command": "<decision-required>",
+      "evidence_refs": [
+        "<decision-required>"
+      ],
+      "notes": [
+        "Start the application or service under the target runtime and capture the command, output, logs, or health check."
+      ]
+    },
+    {
+      "surface": "browser",
+      "required": true,
+      "status": "blocked",
+      "command": "<decision-required>",
+      "evidence_refs": [
+        "<decision-required>"
+      ],
+      "artifact_refs": [
+        "<decision-required>"
+      ],
+      "notes": [
+        "Use Playwright or equivalent browser automation for the approved user test cases. Screenshot or trace artifacts are required."
+      ]
+    }
+  ]
+}

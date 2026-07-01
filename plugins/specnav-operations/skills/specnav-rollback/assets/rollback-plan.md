@@ -10,7 +10,8 @@
 
 ## Data Recovery
 
-- `<decision-required>`
+- Include migration rollback SQL refs or rollback strategy when
+  `development/migrations/manifest.json` has `required=true`.
 
 ## Verification
 

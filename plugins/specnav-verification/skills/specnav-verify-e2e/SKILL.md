@@ -18,9 +18,11 @@ Validate complete user and business flows across boundaries.
 1. Read plan, user-approved test cases, domain-case matrix, data-flow specs, requirements, prototype handoff, and development handoff.
 2. Read `references/e2e-rubric.md` before selecting flows.
 3. Use realistic data and execute the approved user test cases as representative flows.
-4. Record screenshots, traces, logs, or explicit blocked evidence when execution is impossible.
-5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
-6. Check frontend, backend, API, state, database, and integration effects together.
+4. Start the actual runtime surface required by the project, run browser automation or an equivalent user-visible browser check, and record both results in `verify/runtime-evidence.json`.
+5. If `development/migrations/manifest.json` has `required=true`, run database verification queries and add a passing `database` surface to `verify/runtime-evidence.json`.
+6. Record screenshots, traces, logs, database query refs, or explicit blocked evidence when execution is impossible.
+7. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
+8. Check frontend, backend, API, state, database, and integration effects together.
 
 ## Required Outputs
 
@@ -33,6 +35,8 @@ Validate complete user and business flows across boundaries.
 - User test cases are missing, unsigned, or not mapped to E2E flows.
 - Flow preconditions are unknown.
 - Required data contracts are missing.
+- Runtime or browser evidence is missing from `verify/runtime-evidence.json`.
+- Database migration is required but no database verification surface exists.
 
 ## Validation
 

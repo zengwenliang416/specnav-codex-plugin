@@ -19,18 +19,21 @@ Prepare deployment mechanics for project-deploy targets.
 2. Read `references/deploy-plan.md` before writing deployment mechanics.
 3. Document exact deployment mechanics before deployment.
 4. Use `assets/deploy-plan.md` as the shell when the artifact is missing.
-5. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` after writing.
+5. If `development/migrations/manifest.json` has `required=true`, copy/write `operations/migration-deployment.json` from `assets/migration-deployment.json`, apply every migration id from the manifest, record evidence refs, and ensure `deploy-plan.md` references `development/migrations/manifest.json`.
+6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` after writing.
 
 ## Required Outputs
 
 - `operations/deploy-plan.md`.
-- Deploy shell: `assets/deploy-plan.md`.
+- `operations/migration-deployment.json` when development migrations are required.
+- Deploy shells: `assets/deploy-plan.md` and `assets/migration-deployment.json`.
 
 ## Stop Conditions
 
 - Release target is not project-deploy.
 - Secrets or config are unknown.
 - Migration effects are unclear.
+- Required migrations are not represented in `operations/migration-deployment.json`.
 - Smoke checks cannot be named.
 
 ## Validation
