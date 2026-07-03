@@ -36,7 +36,7 @@ Create isolated, runnable prototype artifacts that answer a specific design or b
 - Branch code or harness.
 - Branch review maps such as `screen-map.json`, `component-tree.md`, or `data-flow-map.md`.
 - For `ui-html`: `prototype/visual-inventory.json`.
-- Branch starters: `assets/question.md`, `assets/prototype-manifest.json`, `assets/screen-map.json`, `assets/ui-html/index.html`, `assets/ui-html/styles.css`, `assets/ui-html/app.js`, `assets/logic-state/harness.js`, `assets/api-contract/examples.json`, `assets/data-flow/data-flow-map.md`, `assets/data-flow/data-flow/flow-harness.js`, `assets/component-seam/component-tree.md`, and `assets/component-seam/component/component-map.md`.
+- Branch starters: `assets/question.md`, `assets/prototype-manifest.json`, `assets/screen-map.json`, `assets/visual-inventory.json`, `assets/ui-html/index.html`, `assets/ui-html/styles.css`, `assets/ui-html/app.js`, `assets/logic-state/harness.js`, `assets/api-contract/examples.json`, `assets/data-flow/data-flow-map.md`, `assets/data-flow/data-flow/flow-harness.js`, `assets/component-seam/component-tree.md`, and `assets/component-seam/component/component-map.md`.
 
 ## Stop Conditions
 

@@ -1,6 +1,6 @@
 {
   "name": "specnav-development",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Development gate, scope lock, vertical slice, task ledger, review, fix-loop, and break-loop stage for SpecNav.",
   "author": {
     "name": "SpecNav Maintainers",
@@ -9,7 +9,13 @@
   "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "license": "MIT",
-  "keywords": ["codex", "openspec", "development", "scope", "review"],
+  "keywords": [
+    "codex",
+    "openspec",
+    "development",
+    "scope",
+    "review"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav Development",
@@ -17,8 +23,14 @@
     "longDescription": "Validates upstream gates, locks implementation scope, plans vertical slices, records task evidence, and runs review, fix, debug, and break-loop workflows.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
-    "defaultPrompt": ["Use SpecNav development to start scoped implementation after prototype approval."],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use SpecNav development to start scoped implementation after prototype approval."
+    ],
     "brandColor": "#10A37F",
     "composerIcon": "./assets/icon.svg",
     "logo": "./assets/logo.svg",

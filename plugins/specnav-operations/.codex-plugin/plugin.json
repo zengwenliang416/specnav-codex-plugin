@@ -1,6 +1,6 @@
 {
   "name": "specnav-operations",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Release, install verification, update policy, compatibility, deploy, rollback, monitor, postmortem, and archive stage for SpecNav.",
   "author": {
     "name": "SpecNav Maintainers",
@@ -9,7 +9,13 @@
   "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "license": "MIT",
-  "keywords": ["codex", "openspec", "release", "operations", "rollback"],
+  "keywords": [
+    "codex",
+    "openspec",
+    "release",
+    "operations",
+    "rollback"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav Operations",
@@ -17,8 +23,14 @@
     "longDescription": "Checks operational readiness, release targets, install verification, update policy, host compatibility, deployment, rollback, monitoring, postmortems, writeback, and archive gates.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
-    "defaultPrompt": ["Use SpecNav operations to prepare release readiness after green verification."],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use SpecNav operations to prepare release readiness after green verification."
+    ],
     "brandColor": "#10A37F",
     "composerIcon": "./assets/icon.svg",
     "logo": "./assets/logo.svg",

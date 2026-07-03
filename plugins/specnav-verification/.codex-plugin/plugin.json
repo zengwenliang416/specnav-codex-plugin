@@ -1,6 +1,6 @@
 {
   "name": "specnav-verification",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Six-domain verification, stale rerun, evidence aggregation, and HTML review report stage for SpecNav.",
   "author": {
     "name": "SpecNav Maintainers",
@@ -9,7 +9,13 @@
   "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "license": "MIT",
-  "keywords": ["codex", "openspec", "verification", "testing", "html-report"],
+  "keywords": [
+    "codex",
+    "openspec",
+    "verification",
+    "testing",
+    "html-report"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav Verification",
@@ -17,8 +23,14 @@
     "longDescription": "Plans and runs facticity, static, unit, redteam, E2E, and sensory verification, then aggregates JSON, Markdown, and warm editorial HTML reports.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
-    "defaultPrompt": ["Use SpecNav verification to produce six-domain evidence and an HTML review report."],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use SpecNav verification to produce six-domain evidence and an HTML review report."
+    ],
     "brandColor": "#10A37F",
     "composerIcon": "./assets/icon.svg",
     "logo": "./assets/logo.svg",

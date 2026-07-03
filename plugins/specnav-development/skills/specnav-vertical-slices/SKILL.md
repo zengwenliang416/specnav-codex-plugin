@@ -35,7 +35,7 @@ Plan, dispatch, review, and close production implementation through file-backed 
 - Task reports, review files, ledgers, validation logs, and `development/handoff-to-verify.md`.
 - `development/migrations/manifest.json`, `development/migrations/README.md`, and any required executable `.sql` migration files.
 - `codegraph/claims-map.json` and `codegraph/evidence-query-plan.json` with development task claims.
-- Task and review shells: `assets/tasks.md`, `assets/task/brief.md`, `assets/task/context.json`, `assets/task/report.md`, `assets/task/spec-review.md`, `assets/task/quality-review.md`, `assets/development/task-ledger.jsonl`, `assets/development/drift-check.jsonl`, `assets/development/validation-log.jsonl`, `assets/development/handoff-to-verify.md`, and `assets/development/migrations/`.
+- Task and review shells: `assets/tasks.md`, `assets/task/brief.md`, `assets/task/context.json`, `assets/task/report.md`, `assets/task/spec-review.md`, `assets/task/quality-review.md`, `assets/development/task-ledger.jsonl`, `assets/development/drift-check.jsonl`, `assets/development/validation-log.jsonl`, `assets/development/handoff-to-verify.md`, `assets/development/migrations/manifest.json`, and `assets/development/migrations/README.md`.
 
 ## Stop Conditions
 

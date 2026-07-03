@@ -1,6 +1,6 @@
 {
   "name": "specnav-codegraph",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "CodeGraph evidence layer, policy engine, and evidence artifacts for SpecNav.",
   "author": {
     "name": "SpecNav Maintainers",
@@ -9,7 +9,12 @@
   "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "license": "MIT",
-  "keywords": ["codex", "openspec", "codegraph", "evidence"],
+  "keywords": [
+    "codex",
+    "openspec",
+    "codegraph",
+    "evidence"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav CodeGraph",
@@ -17,7 +22,11 @@
     "longDescription": "Detects CodeGraph CLI and MCP state, evaluates evidence policy, writes durable evidence artifacts, and supports context, claims, and impact checks for SpecNav.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
     "defaultPrompt": [
       "Use SpecNav CodeGraph to inspect code evidence status.",
       "Use SpecNav CodeGraph to gather evidence for a code-backed claim."

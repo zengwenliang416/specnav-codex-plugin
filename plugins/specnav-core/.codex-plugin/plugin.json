@@ -1,6 +1,6 @@
 {
   "name": "specnav-core",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Core runtime, routing, hooks, status, doctor, recovery, and suite dependency checks for SpecNav.",
   "author": {
     "name": "SpecNav Maintainers",
@@ -9,7 +9,13 @@
   "homepage": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "repository": "https://github.com/zengwenliang416/specnav-codex-plugin",
   "license": "MIT",
-  "keywords": ["codex", "openspec", "workflow", "hooks", "lifecycle"],
+  "keywords": [
+    "codex",
+    "openspec",
+    "workflow",
+    "hooks",
+    "lifecycle"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav Core",
@@ -17,7 +23,11 @@
     "longDescription": "Provides SpecNav routing, bootstrap, status, doctor, recovery, lifecycle hooks, suite dependency checks, and no-fallback OpenSpec guardrails.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
     "defaultPrompt": [
       "Use SpecNav to inspect the next legal lifecycle action.",
       "Use SpecNav to bootstrap this project before requirements."
