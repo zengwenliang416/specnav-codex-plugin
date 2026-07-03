@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  fixtures:
+    name: Fixture suites
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install OpenSpec CLI (version verified locally)
+        run: npm install -g @fission-ai/openspec@1.2.0
+
+      - name: Syntax-check all plugin scripts
+        run: |
+          set -euo pipefail
+          find plugins -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Run fixture suites
+        run: |
+          set -euo pipefail
+          for suite in tests/run-*.sh; do
+            echo "RUN $suite"
+            bash "$suite"
+          done
