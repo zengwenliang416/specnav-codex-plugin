@@ -164,13 +164,34 @@ entries are skills:
 | Core | `specnav-bootstrap`, `specnav-status`, `specnav-doctor`, `specnav-route`, `specnav-workflow`, `specnav-debug` |
 | Requirements | `specnav-repository-discovery`, `specnav-foundation-specs`, `specnav-requirements` |
 | Prototype | `specnav-prototype` |
-| Development | `specnav-development-entry`, `specnav-scope-lock`, `specnav-vertical-slices`, `specnav-fix` |
+| Development | `specnav-development-entry`, `specnav-light-change`, `specnav-scope-lock`, `specnav-vertical-slices`, `specnav-fix` |
 | Verification | `specnav-verify-plan`, `specnav-verify-facticity`, `specnav-verify-static`, `specnav-verify-unit`, `specnav-verify-redteam`, `specnav-verify-e2e`, `specnav-verify-sensory`, `specnav-verify-rerun`, `specnav-html-report` |
 | Operations | `specnav-release-plan`, `specnav-ops-readiness`, `specnav-rollback`, `specnav-branch-finish` |
 
 Skills may call colocated scripts and reuse assets/templates. A skill should not
 be only a thin prose page when a repeatable validation, scaffold, or report can
 be backed by a script.
+
+## 6.1 Light Lane For Simple Changes
+
+Codex requests are triaged before a development lane is selected. The shared
+`change-triage.js` script classifies intent and explicit paths into:
+
+| Lane | Use Case | Required Verification |
+| --- | --- | --- |
+| `light` | docs, copy, labels, comments, README, and very small low-risk style/config edits | static + unit |
+| `standard` | feature, workflow, UI behavior, component, or architecture work | six-domain verification |
+| `full` | auth, permissions, billing, security, database, API route, deployment, package, or SpecNav-internal changes | six-domain verification plus high-risk controls |
+
+The `light` lane loads `specnav-light-change`. It still requires OpenSpec,
+a clean active change, `risk-tier.json`, bounded `scope.json`, standard
+checkbox `tasks.md`, and machine-checkable `acceptance.json`. It may skip
+foundation-spec blocking, runnable prototype approval, per-slice review packets,
+and the full six-domain verification set.
+
+Light lane must escalate to `standard` or `full` if the request touches more
+than three intended paths, more than ten production files after edits, or any
+high-risk path/surface.
 
 ## 7. Hook Design
 

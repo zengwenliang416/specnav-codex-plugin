@@ -16,8 +16,8 @@ Selectively re-run the affected verification domain plus downstream domains afte
 ## Workflow
 
 1. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json`; a `stale-verify-report` blocker means re-run is required.
-2. Read `verify/plan.json`, `root-cause-checks.jsonl`, and `traceability-matrix.json` to identify the domain that owns the fixed defect and the downstream domains that depended on the changed behavior.
-3. Re-run the affected domain first, then each downstream domain, writing fresh domain reports so they are newer than `verify-report.stale`.
+2. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json` to compute the minimal rerun set deterministically from the git diff and `traceability-matrix.json`. Its `domains_to_rerun` output is authoritative; do not pick domains by judgment. If it reports `full_rerun: true` (unmapped changed files), all six domains rerun and the matrix must be extended to cover the unmapped files.
+3. Re-run each domain in `domains_to_rerun` (affected domain first), writing fresh domain reports so they are newer than `verify-report.stale`. Read `verify/plan.json` and `root-cause-checks.jsonl` for the per-domain evidence requirements.
 4. Do not re-run unaffected domains and do not edit the stale marker by hand; the aggregate clears it only when the rerun reports are fresh.
 5. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json` to recompute the verdict and clear the marker once all required domains are fresh and green.
 

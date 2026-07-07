@@ -12,6 +12,17 @@ const HIGH_RISK_PATTERNS = [
   /package-lock\.json$|pnpm-lock\.yaml$|yarn\.lock$|package\.json$/i
 ];
 
+// Lane routing: the tier decides which lifecycle lane the change takes.
+// - light: docs/config-only low-risk changes — prototype may be recorded as
+//   not_required, quality review folds into spec review, verification
+//   requires only static + unit domains.
+// - standard / full: the complete lifecycle. full additionally requires
+//   human signoff at release (existing high-risk behavior).
+// Anti-gaming: a light-lane change whose cumulative production diff exceeds
+// escalation_threshold files must re-classify (lane-escalation-required).
+const LANE_BY_TIER = { 'high-risk': 'full', standard: 'standard', lite: 'light' };
+const DEFAULT_ESCALATION_THRESHOLD = 10;
+
 function classify(paths) {
   const normalized = paths.map((p) => p.split(path.sep).join('/'));
   const hits = [];
@@ -20,13 +31,20 @@ function classify(paths) {
       if (pattern.test(p)) hits.push(p);
     }
   }
+  let result;
   if (hits.length) {
-    return { tier: 'high-risk', source: 'path-trigger', triggers: Array.from(new Set(hits)) };
+    result = { tier: 'high-risk', source: 'path-trigger', triggers: Array.from(new Set(hits)) };
+  } else if (normalized.some((p) => /^src\/|^app\/|^lib\/|^packages\//.test(p))) {
+    result = { tier: 'standard', source: 'path-heuristic', triggers: [] };
+  } else {
+    result = { tier: 'lite', source: 'path-heuristic', triggers: [] };
   }
-  if (normalized.some((p) => /^src\/|^app\/|^lib\/|^packages\//.test(p))) {
-    return { tier: 'standard', source: 'path-heuristic', triggers: [] };
-  }
-  return { tier: 'lite', source: 'path-heuristic', triggers: [] };
+  result.lane = LANE_BY_TIER[result.tier];
+  result.escalation_threshold = DEFAULT_ESCALATION_THRESHOLD;
+  result.reason = result.triggers.length
+    ? `high-risk path triggers: ${result.triggers.join(', ')}`
+    : `no high-risk triggers; classified by path heuristic over ${normalized.length} path(s)`;
+  return result;
 }
 
 function pathsFromDesign(changeDir) {

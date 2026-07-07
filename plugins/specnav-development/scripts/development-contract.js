@@ -419,11 +419,12 @@ function pathReferencesText(text, relativePath) {
   return String(text || '').includes(relativePath);
 }
 
-function validateUpstreamContracts(projectRoot, activeChange, prototype) {
+function validateUpstreamContracts(projectRoot, activeChange, prototype, lane = 'standard') {
   const name = 'upstream-contracts';
   const blockers = [];
   const requirements = prototype && prototype.requirements;
   const foundation = requirements && requirements.foundation;
+  const foundationRequired = lane !== 'light';
 
   if (!requirements || requirements.ok !== true) {
     blockers.push('upstream-requirements:not-ok');
@@ -446,9 +447,9 @@ function validateUpstreamContracts(projectRoot, activeChange, prototype) {
     }
   }
 
-  if (!foundation || foundation.ok !== true) {
+  if (foundationRequired && (!foundation || foundation.ok !== true)) {
     blockers.push('upstream-foundation:not-ok');
-  } else {
+  } else if (foundationRequired) {
     if (!foundation.project_root || path.resolve(foundation.project_root) !== projectRoot) {
       blockers.push('upstream-foundation:project-root');
     }
@@ -992,6 +993,170 @@ function validateTaskContextLog(developmentDir, activeChange) {
   return artifactResult(activeChange, name, unique(result.blockers), true, { entries: result.entries.length });
 }
 
+function validateLaneEscalation(projectRoot, changeDir) {
+  // Anti-gaming: a light-lane change whose cumulative production diff grows
+  // beyond escalation_threshold files must re-classify. Splitting a big
+  // change into "small" light-lane slices does not dodge the standard lane.
+  const laneInfo = lib.readLane(changeDir);
+  if (laneInfo.lane !== 'light') return [];
+  const diff = lib.runCommand('git diff --name-only HEAD && git ls-files --others --exclude-standard', {
+    cwd: projectRoot,
+    timeoutMs: 30000
+  });
+  if (!diff.ok) return [];
+  const files = Array.from(new Set(
+    diff.stdout.split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((file) => file && !file.startsWith('openspec/'))
+  ));
+  if (files.length > laneInfo.escalation_threshold) {
+    return [`lane-escalation-required:${files.length}-files-exceeds-${laneInfo.escalation_threshold}`];
+  }
+  return [];
+}
+
+function validateLightAcceptanceCompletion(changeDir, activeChange, mode) {
+  const base = validateAcceptanceAssertions(changeDir, activeChange);
+
+  if (!base) {
+    return artifactResult(activeChange, 'acceptance.json', ['missing-requirements-artifact:acceptance.json'], false, {
+      assertions: 0,
+      passing: 0
+    });
+  }
+  const acceptance = lib.readAcceptanceAssertions(changeDir);
+  const blockers = [...base.blockers];
+  if (mode === 'handoff' && acceptance.ok) {
+    for (const assertion of acceptance.assertions) {
+      if (assertion.status !== 'passing') blockers.push(`acceptance:non-passing:${assertion.id}`);
+      if (!(typeof assertion.evidence_ref === 'string' && assertion.evidence_ref.trim())) {
+        blockers.push(`acceptance:missing-evidence:${assertion.id}`);
+      }
+    }
+  }
+
+  return artifactResult(activeChange, 'acceptance.json', unique(blockers), false, {
+    assertions: base.assertions,
+    passing: base.passing
+  });
+}
+
+function validateAcceptanceAssertions(changeDir, activeChange) {
+  const name = 'acceptance.json';
+  const acceptance = lib.readAcceptanceAssertions(changeDir);
+  if (!acceptance.present) return null;
+  const blockers = [...acceptance.blockers];
+
+  // Freeze contract: the assertion identity digest is pinned on first
+  // development-contract run. Adding, removing, or rewording assertions
+  // during implementation is tampering; only status/evidence may change.
+  const freezeFile = path.join(changeDir, 'development', 'acceptance-freeze.json');
+  if (acceptance.ok) {
+    const digest = lib.acceptanceAssertionsDigest(acceptance.assertions);
+    const freeze = lib.readJson(freezeFile, null);
+    if (!freeze || typeof freeze.digest !== 'string') {
+      lib.writeJson(freezeFile, {
+        schema_version: 1,
+        change_id: activeChange,
+        digest,
+        assertion_count: acceptance.assertions.length,
+        frozen_at: new Date().toISOString()
+      });
+    } else if (freeze.digest !== digest) {
+      blockers.push('acceptance:assertions-mutated');
+    }
+  }
+
+  return artifactResult(activeChange, name, unique(blockers), false, {
+    assertions: acceptance.assertions.length,
+    passing: acceptance.assertions.filter((assertion) => assertion.status === 'passing').length
+  });
+}
+
+function validateLightDevelopment(projectRoot, mode, prototype, activeChange, changeDir, developmentDir) {
+  const artifacts = [];
+  const blockers = [];
+  const tasks = [];
+
+  artifacts.push(validateUpstreamContracts(projectRoot, activeChange, prototype, 'light'));
+  artifacts.push(validateScope(projectRoot, changeDir, activeChange, null));
+  artifacts.push(validateTasksMarkdown(changeDir, activeChange, mode));
+  artifacts.push(validateLightAcceptanceCompletion(changeDir, activeChange, mode));
+  blockers.push(...validateLaneEscalation(projectRoot, changeDir));
+
+  for (const artifact of artifacts) blockers.push(...artifact.blockers);
+
+  const codegraph = codegraphStageGuard(projectRoot, activeChange, 'development');
+  blockers.push(...codegraphBlockers(codegraph));
+  const warnings = unique(codegraphWarnings(codegraph));
+
+  return {
+    ok: blockers.length === 0,
+    project_root: projectRoot,
+    mode,
+    lane: 'light',
+    active_change: activeChange,
+    change_dir: changeDir,
+    development_dir: developmentDir,
+    blockers: unique(blockers),
+    warnings,
+    loops: [],
+    codegraph,
+    prototype,
+    artifacts,
+    tasks
+  };
+}
+
+const LOOP_DETECTION_THRESHOLD = Number(process.env.SPECNAV_LOOP_THRESHOLD || 3);
+const LEDGER_FAILURE_STATUSES = new Set([
+  'spec_review_failed',
+  'quality_review_failed',
+  'fix_failed',
+  'debug_failed',
+  'blocked',
+  'failed'
+]);
+const LEDGER_ESCALATION_STATUSES = new Set(['escalated', 'break_loop', 'replanned', 'split']);
+
+function detectTaskLoops(developmentDir) {
+  // Deterministic circuit breaker: N consecutive failures of a task on the
+  // same blocker (no pass or escalation in between) trips loop-detected.
+  // The breaker resets when a later ledger entry records an escalation.
+  const result = parseJsonl(path.join(developmentDir, 'task-ledger.jsonl'), 'task-ledger.jsonl');
+  const streaks = new Map();
+  const tripped = new Map();
+
+  for (const entry of result.entries) {
+    const taskId = entry.task || entry.task_id;
+    if (!taskId || typeof entry.status !== 'string') continue;
+    const status = entry.status;
+    if (LEDGER_ESCALATION_STATUSES.has(status)) {
+      streaks.delete(taskId);
+      tripped.delete(taskId);
+      continue;
+    }
+    if (LEDGER_FAILURE_STATUSES.has(status)) {
+      const cause = typeof entry.blocker === 'string' && entry.blocker
+        ? entry.blocker
+        : status;
+      const current = streaks.get(taskId);
+      const next = current && current.cause === cause ? { cause, count: current.count + 1 } : { cause, count: 1 };
+      streaks.set(taskId, next);
+      if (next.count >= LOOP_DETECTION_THRESHOLD) tripped.set(taskId, next);
+      continue;
+    }
+    // Any non-failure, non-escalation status (progress, pass) breaks the streak.
+    streaks.delete(taskId);
+  }
+
+  return Array.from(tripped.entries()).map(([taskId, streak]) => ({
+    task_id: taskId,
+    cause: streak.cause,
+    consecutive_failures: streak.count
+  }));
+}
+
 function validateTaskLedger(developmentDir, activeChange, taskIds) {
   const name = 'task-ledger.jsonl';
   const result = parseJsonl(path.join(developmentDir, name), name);
@@ -1031,14 +1196,42 @@ function validateValidationLog(developmentDir, activeChange) {
   const name = 'validation-log.jsonl';
   const result = parseJsonl(path.join(developmentDir, name), name);
   const blockers = [...result.blockers];
-  const hasPass = result.entries.some((entry) => {
+  const isPass = (entry) => {
     const status = String(entry.status || '').toLowerCase();
     return entry.ok === true || status === 'pass' || status === 'passed';
-  });
+  };
+  const executed = result.entries.filter((entry) => entry.attestation === 'system-executed');
+  const selfReported = result.entries.filter((entry) => entry.attestation !== 'system-executed');
+  const hasPass = result.entries.some(isPass);
+  const hasExecutedPass = executed.some(isPass);
+  const executedFailures = executed.filter((entry) => !isPass(entry));
 
   if (!hasPass) blockers.push('validation-log:no-pass');
+  // Handoff requires at least one system-executed pass when any entry is
+  // replayable: claims alone do not clear the gate. Run
+  // specnav-verification/scripts/evidence-runner.js to upgrade attestation.
+  const hasReplayable = selfReported.some((entry) =>
+    entry.replayable !== false && typeof entry.command === 'string' && entry.command.trim());
+  if (hasReplayable && !hasExecutedPass) blockers.push('validation-log:no-executed-evidence');
+  // Executed evidence outranks claims: a system-executed failure blocks even
+  // when a self-reported pass exists for the same work.
+  for (const entry of executedFailures) {
+    blockers.push(`validation-log:executed-evidence-failed:${entry.task || entry.task_id || 'unknown'}`);
+  }
+  // Non-replayable self-reported entries must carry a caveat explaining why
+  // the evidence cannot be executed by the runner.
+  for (const entry of selfReported) {
+    if (entry.replayable === false && !(typeof entry.caveat === 'string' && entry.caveat.trim())) {
+      blockers.push(`validation-log:non-replayable-missing-caveat:${entry.task || entry.task_id || 'unknown'}`);
+    }
+  }
 
-  return artifactResult(activeChange, name, unique(blockers), true, { entries: result.entries.length });
+  return artifactResult(activeChange, name, unique(blockers), true, {
+    entries: result.entries.length,
+    executed_entries: executed.length,
+    executed_pass: hasExecutedPass,
+    attestation: hasExecutedPass ? 'system-executed' : 'self-reported-only'
+  });
 }
 
 function validateHandoffToVerify(developmentDir, activeChange) {
@@ -1152,7 +1345,7 @@ function validateReport(taskDir, relativeTaskPath) {
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
 
-function validateVerdictFile(taskDir, relativeTaskPath, name) {
+function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
   const text = readTextFile(path.join(taskDir, name));
   const blockers = [];
   const type = name === 'spec-review.md' ? 'spec-review' : 'quality-review';
@@ -1171,17 +1364,37 @@ function validateVerdictFile(taskDir, relativeTaskPath, name) {
   blockers.push(...validateRequiredHeadings(text.value, requiredHeadings, `invalid-${type}`));
 
   const verdictHeading = findHeading(parsed, 'Verdict');
+  let verdict = null;
   if (!verdictHeading) {
     blockers.push(`invalid-${type}:missing-verdict`);
   } else {
-    const verdict = firstSubstantiveValue(parsed, verdictHeading);
+    verdict = firstSubstantiveValue(parsed, verdictHeading);
     if (!HANDOFF_REVIEW_VERDICTS.has(verdict)) blockers.push(`invalid-${type}:verdict`);
+  }
+
+  // Generation/evaluation separation: when the change has a machine-checkable
+  // acceptance contract, an approved spec review is only valid if it cites
+  // which assertions the reviewer verified. An approval that cannot point at
+  // assertions is an opinion, not evidence.
+  if (type === 'spec-review' && acceptanceIds && acceptanceIds.size > 0 && verdict === 'approved') {
+    const assertionsHeading = findHeading(parsed, 'Acceptance Assertions Verified');
+    if (!assertionsHeading) {
+      blockers.push('review:unsupported-verdict');
+    } else {
+      const body = headingBodyLines(parsed, assertionsHeading).join('\n');
+      const cited = Array.from(new Set((body.match(/\b[A-Z][A-Z0-9]*\d+\b/g) || [])));
+      const validCited = cited.filter((id) => acceptanceIds.has(id));
+      for (const id of cited) {
+        if (!acceptanceIds.has(id)) blockers.push(`review:invalid-reference:${id}`);
+      }
+      if (validCited.length === 0) blockers.push('review:unsupported-verdict');
+    }
   }
 
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
 
-function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMustRead) {
+function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMustRead, acceptanceIds) {
   const taskDir = path.join(developmentDir, 'tasks', dirName);
   const relativeTaskPath = artifactPath(activeChange, path.join('tasks', dirName), true);
   const requiredBriefPath = artifactPath(activeChange, path.join('tasks', dirName, 'brief.md'), true);
@@ -1201,8 +1414,8 @@ function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMu
   if (mode === 'handoff') {
     validators.push(
       () => validateReport(taskDir, relativeTaskPath),
-      () => validateVerdictFile(taskDir, relativeTaskPath, 'spec-review.md'),
-      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md')
+      () => validateVerdictFile(taskDir, relativeTaskPath, 'spec-review.md', acceptanceIds),
+      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md', acceptanceIds)
     );
   }
 
@@ -1266,6 +1479,11 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   const activeChange = prototype.active_change;
   const changeDir = lib.changeDir(projectRoot, activeChange);
   const developmentDir = path.join(changeDir, 'development');
+  const lane = lib.readLane(changeDir).lane;
+  if (lane === 'light') {
+    return validateLightDevelopment(projectRoot, mode, prototype, activeChange, changeDir, developmentDir);
+  }
+
   const artifacts = [];
   const tasks = [];
   const blockers = [];
@@ -1290,11 +1508,24 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   } else if (taskDirs.length === 0) {
     blockers.push('missing-development-task-dir');
   } else {
-    for (const dirName of taskDirs) tasks.push(validateTaskDir(developmentDir, activeChange, dirName, mode, requiredReferences));
+    const acceptanceForReviews = lib.readAcceptanceAssertions(changeDir);
+    const acceptanceIds = new Set(
+      acceptanceForReviews.present
+        ? acceptanceForReviews.assertions.map((assertion) => assertion.id).filter(Boolean)
+        : []
+    );
+    for (const dirName of taskDirs) tasks.push(validateTaskDir(developmentDir, activeChange, dirName, mode, requiredReferences, acceptanceIds));
   }
 
   const taskIds = tasks.map((task) => task.task_id);
   artifacts.push(validateTaskContextLog(developmentDir, activeChange));
+  const acceptanceArtifact = validateAcceptanceAssertions(changeDir, activeChange);
+  if (acceptanceArtifact) artifacts.push(acceptanceArtifact);
+  blockers.push(...validateLaneEscalation(projectRoot, changeDir));
+  const loops = detectTaskLoops(developmentDir);
+  for (const loop of loops) {
+    blockers.push(`loop-detected:${loop.task_id}`);
+  }
   if (mode === 'handoff') {
     const migrations = validateMigrations(developmentDir, changeDir, activeChange);
     artifacts.push(...migrations.artifacts);
@@ -1331,6 +1562,7 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
     development_dir: developmentDir,
     blockers: unique(blockers),
     warnings,
+    loops,
     codegraph,
     prototype,
     artifacts,
@@ -1422,4 +1654,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validateDevelopment };
+module.exports = { detectTaskLoops, validateDevelopment };

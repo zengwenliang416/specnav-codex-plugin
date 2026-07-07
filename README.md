@@ -217,6 +217,26 @@ no fallback evidence for code-backed claims.
 | Verification | `$specnav-verify-plan` plus six domain skills | facticity, static, unit, redteam, E2E, sensory evidence, aggregate report, HTML report | release planning is allowed |
 | Operations | `$specnav-ops-readiness`, `$specnav-release-plan`, deploy/rollback/archive skills | release target, readiness, rollback, monitor, archive receipt | change can be archived |
 
+## Light Lane For Simple Changes
+
+Not every request needs the full requirements -> prototype -> development
+packet. `$specnav-route` and `$specnav-development-entry` now run
+`change-triage.js` before choosing the next workflow. Simple docs, copy,
+labels, comments, README, and very small low-risk styling/config edits route to
+the `light` lane and load `$specnav-light-change`.
+
+Light lane still requires an OpenSpec project, a clean active change, standard
+checkbox `tasks.md`, a bounded `scope.json`, and machine-checkable
+`acceptance.json`. It may skip foundation-spec blocking, runnable prototype
+approval, per-slice review packets, and the full six-domain verification set.
+Verification is reduced to static + unit evidence.
+
+The lane escalates back to standard or full when the request touches auth,
+permissions, billing, security, database, API routes, deployment, package
+manifests, SpecNav internals, more than three intended paths, or more than ten
+production files after edits. If the intended paths are unclear, SpecNav should
+ask for the edit scope before creating light artifacts.
+
 ## Foundation Spec Gate
 
 Requirements do not begin from feature brainstorming. SpecNav first checks for

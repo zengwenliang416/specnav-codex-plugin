@@ -1,6 +1,7 @@
 ---
 name: specnav-rollback
 description: Use this skill when SpecNav needs rollback planning, rollback triggers, exact rollback command or manual step, migration reversal, data recovery notes, or rollback verification for a release with deploy risk.
+disable-model-invocation: true
 ---
 
 ## Runtime Paths

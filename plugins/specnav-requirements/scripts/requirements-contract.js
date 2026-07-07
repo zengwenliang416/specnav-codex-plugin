@@ -92,9 +92,10 @@ function hasInvalidArrayMembers(values) {
   return values.some((item) => typeof item !== 'string' || item.length === 0 || item !== item.trim());
 }
 
-function validateArrayFieldContract(value, fields, blocker) {
+function validateArrayFieldContract(value, fields, blocker, options = {}) {
   let hasNonEmptyArray = false;
   let invalidField = false;
+  const requireNonEmpty = options.requireNonEmpty !== false;
 
   for (const field of fields) {
     if (!Object.prototype.hasOwnProperty.call(value, field)) {
@@ -109,12 +110,13 @@ function validateArrayFieldContract(value, fields, blocker) {
     if (value[field].length > 0) hasNonEmptyArray = true;
   }
 
-  return invalidField || !hasNonEmptyArray ? [blocker] : [];
+  return invalidField || (requireNonEmpty && !hasNonEmptyArray) ? [blocker] : [];
 }
 
-function validateSpecMapContract(value) {
+function validateSpecMapContract(value, options = {}) {
   const blocker = 'invalid-spec-map-contract:spec-map.json';
   let invalidField = false;
+  const requireFoundationMapping = options.requireFoundationMapping !== false;
 
   for (const field of SPEC_MAP_FIELDS) {
     if (!Object.prototype.hasOwnProperty.call(value, field)) {
@@ -134,7 +136,10 @@ function validateSpecMapContract(value) {
   const hasThemeModes = Array.isArray(value.theme_modes) && value.theme_modes.length > 0;
   const hasLocalePolicy = Array.isArray(value.locale_policy) && value.locale_policy.length > 0;
 
-  return invalidField || !hasTouchedSpecs || hasUnknownTouchedSpecs || !hasThemeModes || !hasLocalePolicy ? [blocker] : [];
+  return invalidField
+    || (requireFoundationMapping && (!hasTouchedSpecs || hasUnknownTouchedSpecs || !hasThemeModes || !hasLocalePolicy))
+    ? [blocker]
+    : [];
 }
 
 function validateUnresolvedGapsContract(name, value) {
@@ -147,22 +152,28 @@ function validateUnresolvedGapsContract(name, value) {
   return [];
 }
 
-function validateJsonArtifactContract(name, value) {
+function validateJsonArtifactContract(name, value, lane = 'standard') {
   const blockers = [];
+  const lightLane = lane === 'light';
   if (name === 'spec-map.json') {
-    blockers.push(...validateSpecMapContract(value));
+    blockers.push(...validateSpecMapContract(value, { requireFoundationMapping: !lightLane }));
     blockers.push(...validateUnresolvedGapsContract(name, value));
     return blockers;
   }
   if (name === 'component-impact-map.json') {
-    blockers.push(...validateArrayFieldContract(value, COMPONENT_IMPACT_MAP_FIELDS, 'invalid-component-impact-map-contract:component-impact-map.json'));
+    blockers.push(...validateArrayFieldContract(
+      value,
+      COMPONENT_IMPACT_MAP_FIELDS,
+      'invalid-component-impact-map-contract:component-impact-map.json',
+      { requireNonEmpty: !lightLane }
+    ));
     blockers.push(...validateUnresolvedGapsContract(name, value));
     return blockers;
   }
   return blockers;
 }
 
-function validateArtifact(dir, change, name) {
+function validateArtifact(dir, change, name, lane = 'standard') {
   const relativePath = artifactPath(change, name);
   const file = dir ? path.join(dir, name) : null;
   const blockers = [];
@@ -198,7 +209,7 @@ function validateArtifact(dir, change, name) {
   } else if (!isPlainObject(parsed.value)) {
     blockers.push(`invalid-json-shape:${name}`);
   } else {
-    blockers.push(...validateJsonArtifactContract(name, parsed.value));
+    blockers.push(...validateJsonArtifactContract(name, parsed.value, lane));
   }
 
   return {
@@ -215,18 +226,21 @@ function validateRequirements(root = lib.projectRoot()) {
   const change = strictActiveChange(projectRoot);
   const dir = change ? lib.changeDir(projectRoot, change) : null;
   const activeChangeOk = changeDirExists(dir);
+  const lane = activeChangeOk ? lib.readLane(dir).lane : 'standard';
   const blockers = [];
 
-  if (!foundation.ok) blockers.push(...foundation.blockers);
+  if (!foundation.ok && lane !== 'light') blockers.push(...foundation.blockers);
   if (!activeChangeOk) blockers.push('active-change');
 
-  const artifacts = activeChangeOk ? REQUIRED_ARTIFACTS.map((name) => validateArtifact(dir, change, name)) : [];
+  const artifacts = activeChangeOk ? REQUIRED_ARTIFACTS.map((name) => validateArtifact(dir, change, name, lane)) : [];
   blockers.push(...artifacts.flatMap((artifact) => artifact.blockers));
 
   return {
     ok: blockers.length === 0,
     project_root: projectRoot,
     active_change: activeChangeOk ? change : null,
+    lane,
+    foundation_required: lane !== 'light',
     blockers: unique(blockers),
     foundation,
     artifacts

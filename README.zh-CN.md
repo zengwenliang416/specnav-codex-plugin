@@ -206,6 +206,18 @@ claims-map.json
 | 验证 | `$specnav-verify-plan` 加六个 domain skills | 真实性、静态、单元、红队、E2E、体感证据，聚合报告，HTML 报告 | 允许进入发布计划 |
 | 运维 | `$specnav-ops-readiness`、`$specnav-release-plan`、deploy/rollback/archive skills | release target、readiness、rollback、monitor、archive receipt | 允许归档 change |
 
+## 简单需求的 Light Lane
+
+不是每个需求都需要完整的 requirements -> prototype -> development
+制品包。`$specnav-route` 和 `$specnav-development-entry` 会先运行
+`change-triage.js` 判断请求复杂度。简单文档、文案、标签、注释、
+README，以及极小范围的低风险样式或配置调整，会进入 `light` lane
+并加载 `$specnav-light-change`。
+
+Light lane 仍然要求目标项目已有 OpenSpec、存在明确 active change、使用标准 checkbox `tasks.md`、写出有边界的 `scope.json`，并提供机器可检查的 `acceptance.json`。它可以跳过 foundation spec 阻塞、可运行原型批准、逐切片评审包和完整六域验证。验证范围降为 static + unit。
+
+如果请求触碰 auth、permission、billing、security、database、API route、deployment、package manifest、SpecNav 内部文件，或者预计超过三个路径、实际超过十个生产文件，必须升级回 standard 或 full lane。如果预计修改路径不清楚，SpecNav 需要先问清范围，再创建 light 制品。
+
 ## Foundation Spec Gate
 
 需求阶段不从功能畅想开始。SpecNav 会先检查四类项目级 foundation specs：

@@ -10,6 +10,9 @@
   "allowed_files": [
     "src"
   ],
+  "test_paths": [
+    "tests/{{SPECNAV_TASK_ID}}/**"
+  ],
   "non_goals": [
     "Do not expand scope beyond the active change.",
     "Do not bypass component extraction rules."

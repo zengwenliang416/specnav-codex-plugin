@@ -5,6 +5,7 @@ const path = require('path');
 const suite = require('./plugin-suite');
 const lib = require('./specnav-lib');
 const { buildAffordances } = require('./affordances');
+const { triageChange, splitPaths } = require('./change-triage');
 
 const ROUTES = {
   bootstrap: {
@@ -42,6 +43,13 @@ const ROUTES = {
     skill: 'specnav-development-entry',
     required_plugins: ['specnav-core', 'specnav-development'],
     action: 'implement'
+  },
+  light: {
+    target_plugin: 'specnav-development',
+    command: '$specnav-light-change',
+    skill: 'specnav-light-change',
+    required_plugins: ['specnav-core', 'specnav-requirements', 'specnav-prototype', 'specnav-development'],
+    action: null
   },
   fix: {
     target_plugin: 'specnav-development',
@@ -102,6 +110,7 @@ function defaultMarketplaceRoot() {
 function parseArgs(args) {
   const blockers = [];
   let intent = '';
+  let paths = [];
   let marketplaceRoot = process.env.SPECNAV_MARKETPLACE_ROOT || defaultMarketplaceRoot();
   let json = false;
   const positional = [];
@@ -112,13 +121,14 @@ function parseArgs(args) {
       json = true;
       continue;
     }
-    if (arg === '--intent' || arg === '--marketplace-root') {
+    if (arg === '--intent' || arg === '--marketplace-root' || arg === '--paths') {
       const value = args[i + 1];
       if (!isNonEmpty(value) || value.startsWith('--')) {
         blockers.push(`missing-argument:${arg}`);
         continue;
       }
       if (arg === '--intent') intent = value;
+      else if (arg === '--paths') paths.push(...splitPaths(value));
       else marketplaceRoot = value;
       i += 1;
       continue;
@@ -134,6 +144,7 @@ function parseArgs(args) {
   if (!intent && positional.length) intent = positional.join(' ');
   return {
     intent,
+    paths: unique(paths),
     marketplaceRoot: path.resolve(marketplaceRoot),
     json,
     blockers: unique(blockers)
@@ -144,7 +155,7 @@ function includesAny(text, patterns) {
   return patterns.some((pattern) => pattern.test(text));
 }
 
-function classifyIntent(intent, affordances) {
+function classifyIntent(intent, affordances, triage = null) {
   const text = String(intent || '').toLowerCase();
   const missingOpenSpec = (affordances.blockers || []).includes('missing-openspec')
     || !!((affordances.actions || []).find((action) => action.id === 'bootstrap' && action.state === 'ready'));
@@ -171,6 +182,7 @@ function classifyIntent(intent, affordances) {
   if (includesAny(text, [/\barchive\b/])) return 'archive';
   if (includesAny(text, [/\brelease\b/, /\bdeploy\b/, /\brollback\b/, /\bmonitor\b/, /\bpostmortem\b/, /\boperations?\b/, /\bops\b/])) return 'release';
   if (includesAny(text, [/\bverify\b/, /\bverification\b/, /\bcheck\b/, /\bvalidate\b/, /\btest\b/, /\bfacticity\b/, /\be2e\b/, /\bred ?team\b/, /\bsensory\b/])) return 'verification';
+  if (triage && triage.lane === 'light') return 'light';
   if (includesAny(text, [/\bfix\b/, /\bdebug\b/, /\brepair\b/, /\bbreak loop\b/])) return 'fix';
   if (includesAny(text, [/\bimplement\b/, /\bbuild\b/, /\bdevelop\b/, /\bcode\b/, /\bvertical slice\b/])) return 'development';
   if (includesAny(text, [/\bprototype\b/, /\bmock\b/, /\bwireframe\b/, /\bclickable\b/])) return 'prototype';
@@ -212,7 +224,8 @@ function buildRoute(cli) {
   const suiteStatus = suite.listPlugins({ marketplaceRoot: cli.marketplaceRoot });
   const root = lib.projectRoot();
   const affordances = buildAffordances(root, { marketplaceRoot: cli.marketplaceRoot, suiteStatus });
-  const routeId = classifyIntent(cli.intent, affordances);
+  const triage = triageChange({ intent: cli.intent, paths: cli.paths || [] });
+  const routeId = classifyIntent(cli.intent, affordances, triage);
   const route = ROUTES[routeId] || ROUTES.status;
   const targetCheck = targetSuiteBlockers(route, cli.marketplaceRoot);
   const action = route.action ? findAction(affordances, route.action) : null;
@@ -246,6 +259,7 @@ function buildRoute(cli) {
     no_fallback: true,
     marketplace_root: cli.marketplaceRoot,
     project_root: root,
+    triage,
     action: action ? {
       id: action.id,
       state: action.state,
@@ -270,6 +284,7 @@ function toMarkdown(result) {
     `- skill: \`${result.skill}\``,
     `- required plugins: \`${result.required_plugins.join(', ')}\``,
     `- blockers: \`${result.blockers.join(', ') || 'none'}\``,
+    `- lane: \`${result.triage ? result.triage.lane : 'unknown'}\``,
     `- confirmation required: \`${result.confirmation_required}\``,
     `- no fallback: \`${result.no_fallback}\``
   ].join('\n') + '\n';

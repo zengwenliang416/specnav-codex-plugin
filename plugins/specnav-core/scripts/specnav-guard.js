@@ -18,36 +18,53 @@ function toolName(payload) {
   return payload.tool_name || payload.toolName || payload.name || '';
 }
 
+// Host contract: `tool_input.file_path`, `tool_input.notebook_path`, and
+// `tool_input.command` are the documented-stable payload fields. Everything
+// else below is defensive fallback; fallback hits are reported so a host
+// payload-shape change surfaces as an event instead of failing silently.
+const FALLBACK_PATH_FIELDS = ['path', 'destination_path', 'target_path'];
+const NESTED_CONTAINER_FIELDS = ['edits', 'files', 'paths', 'targets'];
+
 function addPath(paths, value) {
-  if (typeof value !== 'string') return;
+  if (typeof value !== 'string') return false;
   const trimmed = value.trim();
-  if (trimmed) paths.add(trimmed);
+  if (!trimmed) return false;
+  paths.add(trimmed);
+  return true;
 }
 
-function collectPaths(value, paths) {
+function collectFallbackPaths(value, paths, fallbackFields, context) {
   if (!value || typeof value !== 'object') return;
   if (Array.isArray(value)) {
-    for (const item of value) collectPaths(item, paths);
+    for (const item of value) collectFallbackPaths(item, paths, fallbackFields, context);
     return;
   }
-  addPath(paths, value.file_path);
-  addPath(paths, value.path);
-  addPath(paths, value.notebook_path);
-  addPath(paths, value.destination_path);
-  addPath(paths, value.target_path);
-  for (const key of ['edits', 'files', 'paths', 'targets']) {
-    collectPaths(value[key], paths);
+  const candidates = context.nested
+    ? ['file_path', 'notebook_path', ...FALLBACK_PATH_FIELDS]
+    : FALLBACK_PATH_FIELDS;
+  for (const field of candidates) {
+    const before = paths.size;
+    if (addPath(paths, value[field]) && paths.size > before) {
+      fallbackFields.add(context.nested ? `nested:${field}` : field);
+    }
+  }
+  for (const key of NESTED_CONTAINER_FIELDS) {
+    collectFallbackPaths(value[key], paths, fallbackFields, { nested: true });
   }
 }
 
 function normalizePayload(payload) {
   const input = payload.tool_input || payload.input || {};
   const paths = new Set();
-  collectPaths(input, paths);
+  const fallbackFields = new Set();
+  addPath(paths, input.file_path);
+  addPath(paths, input.notebook_path);
+  collectFallbackPaths(input, paths, fallbackFields, { nested: false });
   return {
     tool: toolName(payload),
     command: typeof input.command === 'string' ? input.command : '',
-    paths: Array.from(paths)
+    paths: Array.from(paths),
+    fallback_fields: Array.from(fallbackFields).sort()
   };
 }
 
@@ -63,8 +80,19 @@ function toRelativeProjectPath(root, target) {
   return path.relative(root, path.resolve(root, target)).split(path.sep).join('/');
 }
 
-function deny(message) {
-  console.error(`SpecNav gate denied: ${message}`);
+function deny(blockerId, message) {
+  const reason = `[${blockerId}] ${message}`;
+  // Exit code 2 is the portable blocking contract; the JSON decision below is
+  // emitted for hosts that consume structured hook output (stdout is ignored
+  // by Claude Code on exit 2, so this is additive).
+  process.stdout.write(`${JSON.stringify({
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'deny',
+      permissionDecisionReason: reason
+    }
+  })}\n`);
+  console.error(`SpecNav gate denied: ${reason}`);
   process.exit(2);
 }
 
@@ -77,6 +105,44 @@ function warn(root, message) {
 function allow(root, reason = 'allow') {
   lib.event(root, 'hook.allow', { reason });
   process.exit(0);
+}
+
+function selfCheck(options = {}) {
+  if (process.env.SPECNAV_GUARD_SELFCHECK_FORCE_FAIL === '1') {
+    return { ok: false, failures: [{ case: 'forced', reason: 'SPECNAV_GUARD_SELFCHECK_FORCE_FAIL=1' }] };
+  }
+  const normalize = options.normalize || normalizePayload;
+  const cases = [
+    {
+      name: 'write-file-path',
+      payload: { tool_name: 'Write', tool_input: { file_path: 'src/selfcheck.ts', content: 'x' } },
+      expect: (result) => result.tool === 'Write' && result.paths.includes('src/selfcheck.ts')
+    },
+    {
+      name: 'bash-command',
+      payload: { tool_name: 'Bash', tool_input: { command: 'echo selfcheck' } },
+      expect: (result) => result.tool === 'Bash' && result.command === 'echo selfcheck'
+    },
+    {
+      name: 'notebook-path',
+      payload: { tool_name: 'NotebookEdit', tool_input: { notebook_path: 'notebooks/selfcheck.ipynb' } },
+      expect: (result) => result.tool === 'NotebookEdit' && result.paths.includes('notebooks/selfcheck.ipynb')
+    }
+  ];
+  const failures = [];
+  for (const item of cases) {
+    let result = null;
+    try {
+      result = normalize(item.payload);
+    } catch (error) {
+      failures.push({ case: item.name, reason: `normalize threw: ${error.message}` });
+      continue;
+    }
+    if (!result || !item.expect(result)) {
+      failures.push({ case: item.name, reason: 'unexpected normalization result' });
+    }
+  }
+  return { ok: failures.length === 0, failures };
 }
 
 function overrideAllows(root, gate, context) {
@@ -109,6 +175,28 @@ function pathAllowedByScope(scope, rel) {
   return { ok: included, reason: included ? 'included' : 'not-included' };
 }
 
+function collectFrozenTestPaths(changeDir) {
+  // TDD tamper-guard: task context.json may declare test_paths. A test file
+  // may be created once (tests-first), but modifying an existing test during
+  // implementation requires an explicit frozen-tests override.
+  const patterns = [];
+  const tasksDir = path.join(changeDir, 'development', 'tasks');
+  let taskIds = [];
+  try {
+    taskIds = fs.readdirSync(tasksDir);
+  } catch {
+    return patterns;
+  }
+  for (const taskId of taskIds) {
+    const context = lib.readJson(path.join(tasksDir, taskId, 'context.json'), null);
+    if (!context || !Array.isArray(context.test_paths)) continue;
+    for (const pattern of context.test_paths) {
+      if (typeof pattern === 'string' && pattern.trim()) patterns.push(pattern.trim());
+    }
+  }
+  return patterns;
+}
+
 function isOpenSpecRepairCommand(command) {
   if (!command) return false;
   return /\bopenspec\b.*\b(init|validate|status)\b/.test(command)
@@ -128,16 +216,22 @@ function main() {
   const root = lib.projectRoot();
   const payload = readStdinJson();
   const normalized = normalizePayload(payload);
+  if (normalized.fallback_fields.length) {
+    lib.event(root, 'guard.unknown-payload-shape', {
+      tool: normalized.tool,
+      fallback_fields: normalized.fallback_fields
+    });
+  }
   if (normalized.command && /\brm\s+-rf\s+\/|\bsudo\b|curl\b.+\|\s*(sh|bash)|wget\b.+\|\s*(sh|bash)/.test(normalized.command)) {
     if (overrideAllows(root, 'dangerous-command', { command: normalized.command })) {
       allow(root, 'override-dangerous-command');
     }
     lib.event(root, 'hook.deny', { reason: 'dangerous-command' });
-    deny('dangerous shell command requires explicit manual review.');
+    deny('dangerous-command', 'dangerous shell command requires explicit manual review. Fix: run it manually outside the agent, or create a dangerous-command override with a reason.');
   }
   if (lib.isSpecNavProject(root) && isBashTool(normalized.tool) && isLegacyOpenSpecWorkflowCommand(normalized.command)) {
     lib.event(root, 'hook.deny', { reason: 'legacy-openspec-workflow-command', command: normalized.command });
-    deny('native OpenSpec workflow entrypoints are disabled inside SpecNav projects; use SpecNav requirements/prototype/development/verification/operations commands instead.');
+    deny('legacy-openspec-workflow-command', 'native OpenSpec workflow entrypoints are disabled inside SpecNav projects. Fix: use SpecNav requirements/prototype/development/verification/operations commands instead.');
   }
 
   const relPaths = normalized.paths.map((target) => toRelativeProjectPath(root, target));
@@ -155,7 +249,7 @@ function main() {
       allow(root, 'openspec-command-without-openspec');
     }
     lib.event(root, 'hook.deny', { reason: 'missing-openspec', paths: productionPaths, command: normalized.command });
-    deny('missing openspec/ blocks production work; initialize or repair OpenSpec first.');
+    deny('missing-openspec', 'missing openspec/ blocks production work. Fix: run $specnav-bootstrap to initialize or repair OpenSpec first.');
   }
 
   if (!normalized.paths.length) {
@@ -175,12 +269,12 @@ function main() {
       paths: productionPaths,
       legacy_entrypoints: legacyEntrypoints
     });
-    deny(`legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Disable them or replace them with SpecNav disabled stubs before production edits.`);
+    deny('legacy-openspec-workflow', `legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Fix: disable them or replace them with SpecNav disabled stubs before production edits.`);
   }
   if (!change || !dir) {
     const blockers = changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change'];
     lib.event(root, 'hook.deny', { reason: blockers[0], paths: productionPaths, candidates: changeState.candidates || [] });
-    deny(`production edits require an explicit SpecNav change: ${blockers.join(', ')}. Set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
+    deny(blockers[0], `production edits require an explicit SpecNav change (${blockers.join(', ')}). Fix: set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
   }
 
   if (!lib.fileExists(path.join(dir, 'tasks.md'))) {
@@ -189,7 +283,7 @@ function main() {
       allow(root, 'override-missing-tasks');
     }
     lib.event(root, 'hook.deny', { reason: 'missing-tasks', paths: productionPaths });
-    deny('production edits require an active OpenSpec change with tasks.md.');
+    deny('missing-tasks', 'production edits require an active OpenSpec change with tasks.md. Fix: create tasks.md for the active change before editing production files.');
   }
 
   const scope = lib.readFileScope(dir);
@@ -200,15 +294,23 @@ function main() {
       paths: productionPaths,
       scope_source: scope.source
     });
-    deny(`production edits require a valid scope.json: ${(scope.blockers || []).join(', ') || 'invalid-scope'}.`);
+    deny('invalid-scope', `production edits require a valid scope.json (${(scope.blockers || []).join(', ') || 'invalid-scope'}). Fix: repair ${scope.source} for the active change.`);
   }
 
+  const frozenTestPaths = collectFrozenTestPaths(dir);
   const reviewHits = [];
   for (const rel of productionPaths) {
     if (/^tests\/acceptance\//.test(rel)) {
       if (pathOverrideAllows(root, 'frozen-acceptance', rel, change)) continue;
       lib.event(root, 'hook.deny', { reason: 'frozen-acceptance', path: rel });
-      deny(`acceptance contract is frozen during implementation: ${rel}`);
+      deny('frozen-acceptance', `acceptance contract is frozen during implementation: ${rel}. Fix: create a frozen-acceptance override with a reason if the contract itself must change.`);
+    }
+    if (frozenTestPaths.some((pattern) => lib.globLikeMatch(pattern, rel)) && fs.existsSync(path.resolve(root, rel))) {
+      if (!pathOverrideAllows(root, 'frozen-tests', rel, change)) {
+        lib.event(root, 'hook.deny', { reason: 'frozen-tests', path: rel });
+        deny('frozen-tests', `${rel} is a committed task test (context.json test_paths) and is frozen during implementation. Fix: create a frozen-tests override with a reason if the test itself must change.`);
+      }
+      continue;
     }
     const scopeResult = pathAllowedByScope(scope, rel);
     if (!scopeResult.ok) {
@@ -222,13 +324,13 @@ function main() {
         exclude: scope.exclude,
         scope_source: scope.source
       });
-      deny(`${rel} is outside declared SpecNav file scope from ${scope.source}: ${scope.include.join(', ') || '(no include scope)'}`);
+      deny('scope', `${rel} is outside declared SpecNav file scope from ${scope.source} (allowed: ${scope.include.join(', ') || 'none'}). Fix: extend scope.json allowed_roots or create a scope override.`);
     }
     if (scope.operations) {
       const operation = fs.existsSync(path.resolve(root, rel)) ? 'modify' : 'create';
       if (scope.operations[operation] === false && !pathOverrideAllows(root, 'operation', rel, change)) {
         lib.event(root, 'hook.deny', { reason: 'operation', operation, path: rel });
-        deny(`${operation} of ${rel} is blocked by scope.json allowed_operations.`);
+        deny('operation', `${operation} of ${rel} is blocked by scope.json allowed_operations. Fix: enable the operation in scope.json or create an operation override.`);
       }
     }
     if (Array.isArray(scope.reviewRequired) && scope.reviewRequired.some((pattern) => lib.globLikeMatch(pattern, rel))) {
@@ -247,8 +349,9 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
-  collectPaths,
+  collectFallbackPaths,
   normalizePayload,
   pathAllowedByScope,
+  selfCheck,
   toRelativeProjectPath
 };

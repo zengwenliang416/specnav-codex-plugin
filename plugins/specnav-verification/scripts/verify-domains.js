@@ -167,7 +167,7 @@ function validateTextHeadings(verifyDir, change, name, headings, prefix) {
   return artifactResult(change, name, blockers);
 }
 
-function validatePlan(verifyDir, change) {
+function validatePlan(verifyDir, change, requiredDomains = DOMAINS) {
   const name = 'plan.json';
   const parsed = readJsonFile(path.join(verifyDir, name));
   const blockers = [];
@@ -181,7 +181,7 @@ function validatePlan(verifyDir, change) {
   if (!isCleanString(plan.risk_tier)) blockers.push('invalid-verify-plan:risk_tier');
   if (!Array.isArray(plan.required_domains)) blockers.push('invalid-verify-plan:required_domains');
   else {
-    for (const domain of DOMAINS) {
+    for (const domain of requiredDomains) {
       if (!plan.required_domains.includes(domain)) blockers.push(`verify-plan:missing-domain:${domain}`);
     }
   }
@@ -789,7 +789,25 @@ function renderAggregateHtml(report) {
 `;
 }
 
-function validateReceipt(verifyDir, change) {
+function hasExecutedValidationEvidence(changeDir) {
+  if (!changeDir) return false;
+  const text = lib.readText(path.join(changeDir, 'development', 'validation-log.jsonl'));
+  if (!text) return false;
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    try {
+      const entry = JSON.parse(line);
+      const status = String(entry.status || '').toLowerCase();
+      const pass = entry.ok === true || status === 'pass' || status === 'passed';
+      if (entry.attestation === 'system-executed' && pass) return true;
+    } catch {
+      // Invalid lines are the development contract's problem to report.
+    }
+  }
+  return false;
+}
+
+function validateReceipt(verifyDir, change, changeDir) {
   const name = 'receipt.json';
   const parsed = readJsonFile(path.join(verifyDir, name));
   const blockers = [];
@@ -806,6 +824,12 @@ function validateReceipt(verifyDir, change) {
   if (Array.isArray(receipt.uncovered_scope) && receipt.uncovered_scope.length > 0) blockers.push('receipt-uncovered-scope');
   if (Array.isArray(receipt.residual_risk) && receipt.residual_risk.length > 0 && receipt.confidence === 'A') blockers.push('receipt-confidence-overclaim');
   if (!['A', 'B', 'C'].includes(receipt.confidence)) blockers.push('invalid-receipt:confidence');
+  // Confidence above C requires at least one system-executed pass in the
+  // validation log; a receipt built purely on self-reported claims must not
+  // overclaim. Run evidence-runner.js to upgrade attestation.
+  if (['A', 'B'].includes(receipt.confidence) && !hasExecutedValidationEvidence(changeDir)) {
+    blockers.push('receipt-confidence-unexecuted-evidence');
+  }
   return artifactResult(change, name, blockers);
 }
 
@@ -951,24 +975,53 @@ function validateVerify(root = lib.projectRoot()) {
     blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
   }
 
+  // Machine-checkable completion contract: every acceptance.json assertion
+  // must be passing (with evidence) before verification can go green.
+  if (changeDir && fs.existsSync(changeDir)) {
+    const acceptance = lib.readAcceptanceAssertions(changeDir);
+    if (acceptance.present) {
+      const acceptanceBlockers = [...acceptance.blockers];
+      for (const assertion of acceptance.assertions) {
+        if (assertion.status !== 'passing') acceptanceBlockers.push(`acceptance-assertion-failing:${assertion.id || 'unknown'}`);
+      }
+      artifacts.push(artifactResult(change, 'acceptance.json', unique(acceptanceBlockers), {
+        assertions: acceptance.assertions.length,
+        passing: acceptance.assertions.filter((assertion) => assertion.status === 'passing').length
+      }));
+      blockers.push(...acceptanceBlockers);
+    }
+  }
+
+  // Lane routing: light-lane changes verify only static + unit; the heavier
+  // gates (user test cases, runtime evidence, behavior evals, sensory
+  // independence) apply to standard/full lanes.
+  const lane = changeDir ? lib.readLane(changeDir).lane : 'standard';
+  const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
+
   if (verifyDir) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
-    artifacts.push(validatePlan(verifyDir, change));
+    artifacts.push(validatePlan(verifyDir, change, laneDomains));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
     artifacts.push(validateTraceability(verifyDir, change));
     artifacts.push(validateDiffTraceability(verifyDir, change));
-    artifacts.push(...validateUserTestCaseGate(verifyDir, change));
-    artifacts.push(validateRuntimeEvidence(verifyDir, change, migrationRequired(changeDir)));
+    if (lane !== 'light') {
+      artifacts.push(...validateUserTestCaseGate(verifyDir, change));
+      artifacts.push(validateRuntimeEvidence(verifyDir, change, migrationRequired(changeDir)));
+    }
     artifacts.push(validateBlockers(verifyDir, change));
     artifacts.push(validateTextHeadings(verifyDir, change, 'receipt.md', ['Covered Scope', 'Uncovered Scope', 'Residual Risk', 'Confidence'], 'invalid-receipt-md'));
-    artifacts.push(validateReceipt(verifyDir, change));
-    artifacts.push(...validateBehaviorEvals(verifyDir, change));
-    for (const domain of DOMAINS) {
+    artifacts.push(validateReceipt(verifyDir, change, changeDir));
+    if (lane !== 'light') {
+      artifacts.push(...validateBehaviorEvals(verifyDir, change));
+    }
+    for (const domain of laneDomains) {
       artifacts.push(validateTextHeadings(verifyDir, change, `${domain}/report.md`, DOMAIN_REPORT_HEADINGS, `invalid-domain-report-md:${domain}`));
       artifacts.push(validateDomainReport(verifyDir, change, domain));
     }
     artifacts.push(validateUnitRubric(verifyDir, change));
-    artifacts.push(validateTextHeadings(verifyDir, change, 'sensory/reviewer-independence.md', INDEPENDENCE_HEADINGS, 'invalid-reviewer-independence'));
+    if (lane !== 'light') {
+      artifacts.push(validateTextHeadings(verifyDir, change, 'sensory/reviewer-independence.md', INDEPENDENCE_HEADINGS, 'invalid-reviewer-independence'));
+    }
     artifacts.push(artifactResult(change, 'root-cause-checks.jsonl', parseJsonl(path.join(verifyDir, 'root-cause-checks.jsonl'), 'root-cause-checks.jsonl', true).blockers));
   }
 
@@ -1003,8 +1056,10 @@ function writeAggregate(root = lib.projectRoot()) {
   const verifyDir = validation.verify_dir;
   const staleUnresolved = staleMarkerUnresolved(validation.change_dir, verifyDir);
   const verdict = validation.ok ? 'green' : 'red';
+  const lane = validation.change_dir ? lib.readLane(validation.change_dir).lane : 'standard';
+  const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
   const domains = {};
-  for (const domain of DOMAINS) {
+  for (const domain of laneDomains) {
     const artifact = validation.artifacts.find((item) => item.name === `${domain}/report.json`);
     domains[domain] = artifact && VERDICTS.has(artifact.verdict) ? artifact.verdict : 'blocked';
   }
@@ -1025,7 +1080,8 @@ function writeAggregate(root = lib.projectRoot()) {
     blockers: validation.blockers,
     warnings: validation.warnings || [],
     codegraph: validation.codegraph || null,
-    required_domains: DOMAINS,
+    lane,
+    required_domains: laneDomains,
     artifacts: validation.artifacts.map((artifact) => ({
       name: artifact.name,
       path: artifact.path,

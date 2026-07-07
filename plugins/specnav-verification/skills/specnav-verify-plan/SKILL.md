@@ -1,6 +1,6 @@
 ---
 name: specnav-verify-plan
-description: Use this skill when SpecNav development is complete and the user wants a six-domain verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, or receipt shell.
+description: Use this skill when SpecNav development is complete and the user wants a verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, receipt shell, or light-lane static/unit verification.
 ---
 
 ## Runtime Paths
@@ -21,15 +21,16 @@ Create shared verification plan and evidence contracts.
 4. Read `references/domain-report-schema.md` before creating report shells.
 5. Read `references/review-report-style.md` before final aggregate reporting.
 6. If shared verification artifacts are missing, run `node "$SPECNAV_VERIFICATION_ROOT/skills/specnav-verify-plan/scripts/create-verify-plan.js" --json`.
-7. Generate `verify/user-test-cases.md` and `verify/user-test-cases.json` from requirements, acceptance, prototype handoff, development tasks, development handoff, and CodeGraph claims.
-8. Ask the user to approve, edit, add, or remove the test cases. Freeze approval in `verify/user-test-case-signoff.json`; six-domain verification is blocked until its status is `approved`.
-9. Map every approved test case across all six domains in `verify/domain-case-matrix.json`.
-10. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` include verification traceability claims. The `create-verify-plan.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage verification --write --json` after changing development handoff or verify scope.
-11. Require `verify/runtime-evidence.json` to prove runtime and browser execution. If `development/migrations/manifest.json` has `required=true`, require database evidence too.
-12. Write verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, runtime evidence, and receipt shell.
-13. Require all six domains: facticity, static, unit, redteam, e2e, and sensory.
-14. Every file in `plan.changed_files` must appear in `traceability-matrix.json`; do not mark verification green from stale reports that are not tied to the diff.
-15. After all domain reports exist, run aggregate and make sure HTML review reports are written.
+7. For `lane: "light"`, generate verification scope from `requirements.md`, `acceptance.md`, `acceptance.json`, `prototype/decision.json`, `scope.json`, `tasks.md`, and CodeGraph claims. Require only static and unit domains.
+8. For standard/full lanes, generate `verify/user-test-cases.md` and `verify/user-test-cases.json` from requirements, acceptance, prototype handoff, development tasks, development handoff, and CodeGraph claims.
+9. Ask the user to approve, edit, add, or remove the test cases. Freeze approval in `verify/user-test-case-signoff.json`; verification is blocked until its status is `approved`.
+10. Map every approved test case across the required domains in `verify/domain-case-matrix.json`.
+11. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` include verification traceability claims. The `create-verify-plan.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage verification --write --json` after changing development handoff or verify scope.
+12. Require `verify/runtime-evidence.json` to prove runtime and browser execution for standard/full lanes. If `development/migrations/manifest.json` has `required=true`, require database evidence too.
+13. Write verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, runtime evidence, and receipt shell.
+14. Require all six domains for standard/full lanes: facticity, static, unit, redteam, e2e, and sensory. Require only static and unit for light lane.
+15. Every file in `plan.changed_files` must appear in `traceability-matrix.json`; do not mark verification green from stale reports that are not tied to the diff.
+16. After all required domain reports exist, run aggregate and make sure HTML review reports are written.
 
 ## Required Outputs
 
@@ -45,8 +46,8 @@ Create shared verification plan and evidence contracts.
 - Development handoff is blocked.
 - Active change is unclear.
 - User-aligned test cases are missing or not approved by the user.
-- Any required domain is omitted.
-- `verify/runtime-evidence.json` is missing, blocked, or lacks runtime/browser/database surfaces required by the change.
+- Any required domain is omitted. For light lane, required domains are static and unit only.
+- `verify/runtime-evidence.json` is missing, blocked, or lacks runtime/browser/database surfaces required by standard/full lane changes.
 - `plan.changed_files` is empty or not mapped in `traceability-matrix.json`.
 
 ## Validation

@@ -402,12 +402,18 @@ function readFileScope(changeDir) {
 
 function globLikeMatch(pattern, relativePath) {
   const normalized = relativePath.split(path.sep).join('/');
+  if (!pattern.includes('*')) {
+    // Literal patterns match the exact path, or descendants when the pattern
+    // names a directory. A bare prefix (src/app.js vs src/app.jsx) must NOT
+    // match — that widened scope.json enforcement (C4).
+    return normalized === pattern || normalized.startsWith(`${pattern}/`);
+  }
   const escaped = pattern
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')
     .replace(/\*\*/g, '::DOUBLE_STAR::')
     .replace(/\*/g, '[^/]*')
     .replace(/::DOUBLE_STAR::/g, '.*');
-  return new RegExp(`^${escaped}$`).test(normalized) || normalized.startsWith(pattern.replace(/\*\*$/, ''));
+  return new RegExp(`^${escaped}$`).test(normalized);
 }
 
 function event(root, type, payload = {}) {
@@ -526,6 +532,119 @@ function openspecStatus(root, change) {
   };
 }
 
+const VALID_LANES = new Set(['light', 'standard', 'full']);
+
+function readLane(changeDir) {
+  // Lane routing source of truth: openspec/changes/<change>/risk-tier.json
+  // written by risk-tier.js. Absent or malformed files default to the
+  // standard lane — lanes only ever loosen gates when explicitly declared.
+  const fallback = { lane: 'standard', tier: 'standard', source: 'default', escalation_threshold: 10 };
+  if (!changeDir) return fallback;
+  const value = readJson(path.join(changeDir, 'risk-tier.json'), null);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return fallback;
+  const lane = VALID_LANES.has(value.lane) ? value.lane : (value.tier === 'high-risk' ? 'full' : 'standard');
+  return {
+    lane,
+    tier: typeof value.tier === 'string' ? value.tier : 'standard',
+    source: typeof value.source === 'string' ? value.source : 'risk-tier.json',
+    escalation_threshold: Number.isFinite(value.escalation_threshold) ? value.escalation_threshold : 10
+  };
+}
+
+const ACCEPTANCE_VERIFY_VIA = new Set(['facticity', 'static', 'unit', 'redteam', 'e2e', 'sensory']);
+
+function readAcceptanceAssertions(changeDir) {
+  // acceptance.json is the machine-checkable completion contract: a frozen
+  // assertion set whose statuses may flip, but whose text may not change
+  // during implementation. Returns null when the change predates the format.
+  const file = path.join(changeDir, 'acceptance.json');
+  if (!fs.existsSync(file)) return { present: false, ok: true, assertions: [], blockers: [] };
+  const value = readJson(file, undefined);
+  if (value === undefined || !value || typeof value !== 'object' || Array.isArray(value)) {
+    return { present: true, ok: false, assertions: [], blockers: ['invalid-json:acceptance.json'] };
+  }
+  const blockers = [];
+  if (!Array.isArray(value.assertions) || value.assertions.length === 0) {
+    return { present: true, ok: false, assertions: [], blockers: ['acceptance-json:no-assertions'] };
+  }
+  const seen = new Set();
+  const assertions = [];
+  value.assertions.forEach((assertion, index) => {
+    const label = (assertion && typeof assertion.id === 'string' && assertion.id) || `#${index + 1}`;
+    if (!assertion || typeof assertion !== 'object' || Array.isArray(assertion)) {
+      blockers.push(`acceptance-json:invalid-assertion:${label}`);
+      return;
+    }
+    if (typeof assertion.id !== 'string' || !assertion.id.trim()) blockers.push(`acceptance-json:missing-id:${label}`);
+    else if (seen.has(assertion.id)) blockers.push(`acceptance-json:duplicate-id:${assertion.id}`);
+    else seen.add(assertion.id);
+    if (typeof assertion.statement !== 'string' || !assertion.statement.trim()) blockers.push(`acceptance-json:missing-statement:${label}`);
+    if (!ACCEPTANCE_VERIFY_VIA.has(assertion.verify_via)) blockers.push(`acceptance-json:invalid-verify-via:${label}`);
+    if (!['failing', 'passing'].includes(assertion.status)) blockers.push(`acceptance-json:invalid-status:${label}`);
+    if (assertion.status === 'passing' && !(typeof assertion.evidence_ref === 'string' && assertion.evidence_ref.trim())) {
+      blockers.push(`acceptance-json:passing-without-evidence:${label}`);
+    }
+    assertions.push(assertion);
+  });
+  return { present: true, ok: blockers.length === 0, assertions, blockers };
+}
+
+function acceptanceAssertionsDigest(assertions) {
+  // Digest covers the frozen identity (id + statement + verify_via), not the
+  // mutable status/evidence fields.
+  const crypto = require('crypto');
+  const canonical = assertions
+    .map((assertion) => [assertion.id, assertion.statement, assertion.verify_via])
+    .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
+  return crypto.createHash('sha256').update(JSON.stringify(canonical)).digest('hex');
+}
+
+function sessionLockFile(root) {
+  return path.join(specnavDir(root), 'session-lock');
+}
+
+function readSessionLock(root) {
+  const lock = readJson(sessionLockFile(root), null);
+  if (!lock || typeof lock !== 'object' || Array.isArray(lock)) return null;
+  if (typeof lock.session_id !== 'string' || !lock.session_id) return null;
+  const expiresAt = Date.parse(lock.expires_at || '');
+  return {
+    session_id: lock.session_id,
+    host: typeof lock.host === 'string' ? lock.host : 'unknown',
+    acquired_at: lock.acquired_at || null,
+    expires_at: lock.expires_at || null,
+    expired: !Number.isFinite(expiresAt) || expiresAt <= Date.now()
+  };
+}
+
+const SESSION_LOCK_TTL_MINUTES = 240;
+
+function acquireSessionLock(root, options = {}) {
+  const sessionId = typeof options.sessionId === 'string' && options.sessionId ? options.sessionId : null;
+  if (!sessionId) return { acquired: false, reason: 'no-session-id', lock: null };
+  const existing = readSessionLock(root);
+  if (existing && !existing.expired && existing.session_id !== sessionId) {
+    return { acquired: false, reason: 'held-by-other', lock: existing };
+  }
+  const ttlMinutes = Number.isFinite(options.ttlMinutes) ? options.ttlMinutes : SESSION_LOCK_TTL_MINUTES;
+  const now = Date.now();
+  const lock = {
+    schema_version: 1,
+    session_id: sessionId,
+    host: options.host || 'claude',
+    acquired_at: new Date(now).toISOString(),
+    ttl_minutes: ttlMinutes,
+    expires_at: new Date(now + ttlMinutes * 60 * 1000).toISOString()
+  };
+  writeJson(sessionLockFile(root), lock);
+  event(root, 'session-lock.acquired', {
+    session_id: sessionId,
+    host: lock.host,
+    takeover: !!(existing && existing.expired && existing.session_id !== sessionId)
+  });
+  return { acquired: true, reason: existing && existing.session_id === sessionId ? 'renewed' : 'acquired', lock };
+}
+
 function specnavMarkerFile(root) {
   return path.join(root, '.specnav.json');
 }
@@ -593,8 +712,11 @@ function detectLegacyOpenSpecEntrypoints(root) {
 }
 
 module.exports = {
+  acceptanceAssertionsDigest,
+  acquireSessionLock,
   activeChange,
   activeChangeState,
+  readAcceptanceAssertions,
   buildChangeRegistry,
   changeDir,
   changeExists,
@@ -619,8 +741,11 @@ module.exports = {
   projectRoot,
   readFileScope,
   readJson,
+  readLane,
+  readSessionLock,
   readText,
   runCommand,
+  sessionLockFile,
   shellQuote,
   writeChangeRegistry,
   writeJson

@@ -964,11 +964,13 @@ function validateUiVerifierContract(verifier) {
   return blockers;
 }
 
-function validateDecisionShape(decision, prototypeType) {
+function validateDecisionShape(decision, prototypeType, lane = 'standard') {
   const blockers = [];
 
   if (decision.status === 'not_required') {
-    blockers.push('invalid-prototype-decision-status:not_required');
+    // Light lane: docs/config-only changes may skip the prototype with a
+    // recorded reason. Standard/full lanes must always prototype.
+    if (lane !== 'light') blockers.push('invalid-prototype-decision-status:not_required');
     if (!isNonEmptyString(decision.reason)) blockers.push('invalid-prototype-decision:not_required-reason');
     return blockers;
   }
@@ -989,7 +991,7 @@ function validateDecisionShape(decision, prototypeType) {
   return blockers;
 }
 
-function validateDecision(prototypeDir, change, prototypeType = null) {
+function validateDecision(prototypeDir, change, prototypeType = null, lane = 'standard') {
   const name = 'decision.json';
   const file = path.join(prototypeDir, name);
   const parsed = readJsonFile(file);
@@ -1006,7 +1008,7 @@ function validateDecision(prototypeDir, change, prototypeType = null) {
   }
 
   decision = parsed.value;
-  blockers.push(...validateDecisionShape(decision, prototypeType));
+  blockers.push(...validateDecisionShape(decision, prototypeType, lane));
 
   return {
     artifact: artifactResult(change, name, blockers, { status: decision.status || null }),
@@ -1015,7 +1017,7 @@ function validateDecision(prototypeDir, change, prototypeType = null) {
   };
 }
 
-function validateApprovedPrototype(prototypeDir, change) {
+function validateApprovedPrototype(prototypeDir, change, lane = 'standard') {
   const artifacts = [];
   const blockers = [];
 
@@ -1041,7 +1043,7 @@ function validateApprovedPrototype(prototypeDir, change) {
   artifacts.push(verifier.artifact);
   blockers.push(...verifier.blockers);
 
-  const decision = validateDecision(prototypeDir, change, manifest.prototypeType);
+  const decision = validateDecision(prototypeDir, change, manifest.prototypeType, lane);
   artifacts.push(decision.artifact);
   blockers.push(...decision.blockers);
 
@@ -1115,7 +1117,30 @@ function validatePrototype(root = lib.projectRoot()) {
     };
   }
 
-  const result = validateApprovedPrototype(prototypeDir, activeChange);
+  // Light lane: a decision.json with status not_required (plus a reason)
+  // satisfies the prototype gate without the full artifact suite. The lane
+  // itself is declared by risk-tier.json; absence defaults to standard.
+  const lane = lib.readLane(changeDir).lane;
+  if (lane === 'light') {
+    const lightDecision = validateDecision(prototypeDir, activeChange, null, lane);
+    if (lightDecision.decision && lightDecision.decision.status === 'not_required' && lightDecision.blockers.length === 0) {
+      return {
+        ok: true,
+        project_root: projectRoot,
+        active_change: activeChange,
+        prototype_dir: prototypeDir,
+        lane,
+        blockers: [],
+        requirements,
+        artifacts: [lightDecision.artifact],
+        manifest: null,
+        verifier: null,
+        decision: { status: 'not_required', prototype_type: null }
+      };
+    }
+  }
+
+  const result = validateApprovedPrototype(prototypeDir, activeChange, lane);
   artifacts = result.artifacts;
   blockers.push(...result.blockers);
   manifest = result.manifest;

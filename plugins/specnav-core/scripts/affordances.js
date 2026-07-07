@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const lib = require('./specnav-lib');
 const suite = require('./plugin-suite');
+const guard = require('./specnav-guard');
 
 const REQUIRED_PLUGINS = [
   'specnav-core',
@@ -69,8 +70,10 @@ function buildAffordances(root, options = {}) {
   const signoff = dir && lib.fileExists(path.join(dir, 'signoff.yaml'));
   const operations = lib.readJson(dir && path.join(dir, 'operations', 'readiness.json'), null);
   const operationsReady = !!(operations && operations.ready === true);
+  const guardSelfCheck = guard.selfCheck();
   const globalBlockers = [
     ...((suiteStatus && suiteStatus.blockers) || []),
+    !guardSelfCheck.ok ? 'guard-selfcheck-failed' : null,
     !hasOpenSpec ? 'missing-openspec' : null,
     hasOpenSpec ? legacyBlocker : null,
     hasOpenSpec && !change ? changeState.blockers[0] : null,

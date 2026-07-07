@@ -18,8 +18,8 @@ Drive the review fix-loop for a single task until spec review and quality review
 1. Run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode entry --json` to confirm the active change and task.
 2. Read the failing `spec-review.md` and `quality-review.md` and collect the Required Fixes verbatim.
 3. Apply only the Critical and Important fixes the review demands; verify each reviewer suggestion against files, tests, and logs before applying it.
-4. Update `report.md`, then re-run spec review; spec review must reach approved before quality review runs.
-5. Re-run quality review after spec review is approved; loop spec-fix and quality-fix until both verdicts are approved.
+4. Update `report.md`, then re-run spec review by invoking `specnav-task-review` — reviews run in an isolated verifier context, never in this implementation session. Spec review must reach approved before quality review runs.
+5. Re-run quality review (again via `specnav-task-review`) after spec review is approved; loop spec-fix and quality-fix until both verdicts are approved. An approved spec review must cite verified acceptance assertion ids when `acceptance.json` exists.
 6. Record each pass in `task-ledger.jsonl` and the supporting evidence in `validation-log.jsonl`. No fallback around a failed review is allowed.
 7. If a required fix needs a new product, architecture, data-flow, scope, or spec decision, stop and route upstream instead of re-running review.
 

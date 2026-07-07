@@ -1,6 +1,7 @@
 ---
 name: specnav-deploy
 description: Use this skill when SpecNav release target is project-deploy and deployment mechanics, environment, commands, config, secrets, migrations, smoke checks, owner, or deploy window must be documented.
+disable-model-invocation: true
 ---
 
 ## Runtime Paths
@@ -18,8 +19,8 @@ Prepare deployment mechanics for project-deploy targets.
 1. Use only when release target is `project-deploy`.
 2. Read `references/deploy-plan.md` before writing deployment mechanics.
 3. Document exact deployment mechanics before deployment.
-4. Use `assets/deploy-plan.md` as the shell when the artifact is missing.
-5. If `development/migrations/manifest.json` has `required=true`, copy/write `operations/migration-deployment.json` from `assets/migration-deployment.json`, apply every migration id from the manifest, record evidence refs, and ensure `deploy-plan.md` references `development/migrations/manifest.json`.
+4. If `development/migrations/manifest.json` has `required=true`, copy/write `operations/migration-deployment.json` from `assets/migration-deployment.json`, apply every migration id from the manifest, record evidence refs, and ensure `deploy-plan.md` references `development/migrations/manifest.json`.
+5. Use `assets/deploy-plan.md` as the shell when the artifact is missing.
 6. Run `node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json` after writing.
 
 ## Required Outputs
