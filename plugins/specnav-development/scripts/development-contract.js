@@ -1041,6 +1041,67 @@ function validateLightAcceptanceCompletion(changeDir, activeChange, mode) {
   });
 }
 
+function validateLightGate(changeDir, activeChange) {
+  const name = 'light-gate.json';
+  const parsed = readJsonFile(path.join(changeDir, name));
+  const blockers = [];
+
+  if (!parsed.ok) {
+    blockers.push(parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-change-artifact:${name}`);
+    return artifactResult(activeChange, name, blockers);
+  }
+  if (!isPlainObject(parsed.value)) {
+    blockers.push(`invalid-json-shape:${name}`);
+    return artifactResult(activeChange, name, blockers);
+  }
+
+  const gate = parsed.value;
+  if (gate.schema_version !== 1) blockers.push('invalid-light-gate:schema_version');
+  if (gate.gate !== 'specnav.light.compactGate.v1') blockers.push('invalid-light-gate:gate');
+  if (gate.change_id !== activeChange) blockers.push('invalid-light-gate:change_id');
+  if (gate.lane !== 'light') blockers.push('invalid-light-gate:lane');
+
+  if (!isPlainObject(gate.entry)) {
+    blockers.push('invalid-light-gate:entry');
+  } else {
+    if (gate.entry.status !== 'ready') blockers.push('light-entry:not-ready');
+    if (!isCleanString(gate.entry.intent)) blockers.push('invalid-light-gate:entry.intent');
+    if (!Array.isArray(gate.entry.editable_paths) || gate.entry.editable_paths.length === 0) {
+      blockers.push('light-entry:paths-missing');
+    } else if (hasInvalidStringArrayMembers(gate.entry.editable_paths, true)) {
+      blockers.push('light-entry:invalid-paths');
+    }
+    if (gate.entry.scope !== 'scope.json') blockers.push('invalid-light-gate:entry.scope');
+    if (gate.entry.tasks !== 'tasks.md') blockers.push('invalid-light-gate:entry.tasks');
+    if (!Array.isArray(gate.entry.acceptance_refs) || gate.entry.acceptance_refs.length === 0) {
+      blockers.push('invalid-light-gate:entry.acceptance_refs');
+    }
+  }
+
+  if (!isPlainObject(gate.test)) {
+    blockers.push('invalid-light-gate:test');
+  } else {
+    if (!Array.isArray(gate.test.required_domains)) {
+      blockers.push('invalid-light-gate:test.required_domains');
+    } else {
+      for (const domain of ['static', 'unit']) {
+        if (!gate.test.required_domains.includes(domain)) blockers.push(`light-test:missing-domain:${domain}`);
+      }
+    }
+    if (gate.test.cases !== 'verify/user-test-cases.json') blockers.push('invalid-light-gate:test.cases');
+    if (gate.test.signoff !== 'verify/user-test-case-signoff.json') blockers.push('invalid-light-gate:test.signoff');
+    if (gate.test.domain_matrix !== 'verify/domain-case-matrix.json') blockers.push('invalid-light-gate:test.domain_matrix');
+  }
+
+  if (!isPlainObject(gate.archive)) {
+    blockers.push('invalid-light-gate:archive');
+  } else if (!Array.isArray(gate.archive.requires) || gate.archive.requires.length === 0) {
+    blockers.push('invalid-light-gate:archive.requires');
+  }
+
+  return artifactResult(activeChange, name, unique(blockers), false);
+}
+
 function validateAcceptanceAssertions(changeDir, activeChange) {
   const name = 'acceptance.json';
   const acceptance = lib.readAcceptanceAssertions(changeDir);
@@ -1079,6 +1140,7 @@ function validateLightDevelopment(projectRoot, mode, prototype, activeChange, ch
   const tasks = [];
 
   artifacts.push(validateUpstreamContracts(projectRoot, activeChange, prototype, 'light'));
+  artifacts.push(validateLightGate(changeDir, activeChange));
   artifacts.push(validateScope(projectRoot, changeDir, activeChange, null));
   artifacts.push(validateTasksMarkdown(changeDir, activeChange, mode));
   artifacts.push(validateLightAcceptanceCompletion(changeDir, activeChange, mode));

@@ -383,6 +383,7 @@ JSONL
 JSONL
   cat >"$dev/validation-log.jsonl" <<'JSONL'
 {"task":"001-dashboard-summary","command":"npm test","status":"passed","ok":true}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log"}
 JSONL
   cat >"$dev/migrations/manifest.json" <<'JSON'
 {
@@ -704,7 +705,7 @@ MD
 {"schema_version":1,"change_id":"add-dashboard","evidence_action":"ran six-domain verification","result":"green","covered_scope":["dashboard summary"],"uncovered_scope":[],"residual_risk":[],"confidence":"A"}
 JSON
   cat >"$verify/behavior-evals/scenarios.json" <<'JSON'
-{"schema_version":1,"scenarios":[{"id":"verify-runs-six-domains","prompt":"$specnav-verify-plan","expected":["write aggregate report"]}]}
+{"schema_version":1,"scenarios":[{"id":"verify-runs-six-domains","prompt":"/specnav-verify","expected":["write aggregate report"]}]}
 JSON
   cat >"$verify/behavior-evals/report.md" <<'MD'
 # Behavior Evals
@@ -721,7 +722,7 @@ JSON
   cat >"$verify/behavior-evals/transcripts/verify-runs-six-domains.md" <<'MD'
 # Clean Session Transcript
 
-Prompt: $specnav-verify-plan
+Prompt: /specnav-verify
 
 Observed:
 - Loaded active change.
@@ -787,6 +788,9 @@ test -f "$VERIFY/skills/specnav-verify-sensory/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-rerun/SKILL.md"
 jq -e '.contracts.verification == "scripts/verify-domains.js"' "$VERIFY/specnav-stage.json" >/dev/null
 jq -e 'has("planned_contracts") | not' "$VERIFY/specnav-stage.json" >/dev/null
+grep -Fq -- '--marketplace-root "$SPECNAV_MARKETPLACE_ROOT"' "$VERIFY/commands/specnav-verify.md"
+grep -Fq 'node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json' "$VERIFY/commands/specnav-verify.md"
+grep -Fq 'node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json' "$VERIFY/commands/specnav-verify.md"
 
 PROJECT="$TMP_DIR/verify-project"
 write_base_project "$PROJECT"

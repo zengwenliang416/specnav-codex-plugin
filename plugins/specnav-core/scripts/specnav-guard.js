@@ -97,9 +97,21 @@ function deny(blockerId, message) {
 }
 
 function warn(root, message) {
-  console.error(`SpecNav gate warning: ${message}`);
+  // Non-blocking advisory. Exit 0 + structured JSON is the Claude Code
+  // contract for "allow with a message"; exit 1 renders as a hook ERROR
+  // banner ("Failed with non-blocking status code") even though nothing is
+  // blocked, which reads as breakage to the user. The warning still reaches
+  // the model via systemMessage and stays auditable via the hook.warn event.
   lib.event(root, 'hook.warn', { message });
-  process.exit(1);
+  process.stdout.write(`${JSON.stringify({
+    systemMessage: `SpecNav gate warning: ${message}`,
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'allow',
+      permissionDecisionReason: `SpecNav gate warning: ${message}`
+    }
+  })}\n`);
+  process.exit(0);
 }
 
 function allow(root, reason = 'allow') {
@@ -173,6 +185,34 @@ function pathAllowedByScope(scope, rel) {
   if (!scope.include.length) return { ok: false, reason: 'missing-allowed-roots' };
   const included = scope.include.some((pattern) => lib.globLikeMatch(pattern, rel));
   return { ok: included, reason: included ? 'included' : 'not-included' };
+}
+
+function isPlainObject(value) {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function validateLightEntryGate(changeDir, activeChange) {
+  if (lib.readLane(changeDir).lane !== 'light') return [];
+  const gate = lib.readJson(path.join(changeDir, 'light-gate.json'), null);
+  const blockers = [];
+  if (!isPlainObject(gate)) return ['light-entry:missing'];
+  if (gate.schema_version !== 1) blockers.push('light-entry:invalid-schema');
+  if (gate.gate !== 'specnav.light.compactGate.v1') blockers.push('light-entry:invalid-gate');
+  if (gate.change_id !== activeChange) blockers.push('light-entry:change-mismatch');
+  if (gate.lane !== 'light') blockers.push('light-entry:lane-mismatch');
+  if (!isPlainObject(gate.entry)) {
+    blockers.push('light-entry:missing-entry');
+  } else {
+    if (gate.entry.status !== 'ready') blockers.push('light-entry:not-ready');
+    if (!Array.isArray(gate.entry.editable_paths) || gate.entry.editable_paths.length === 0) {
+      blockers.push('light-entry:paths-missing');
+    }
+    if (gate.entry.scope !== 'scope.json') blockers.push('light-entry:scope-missing');
+    if (gate.entry.tasks !== 'tasks.md') blockers.push('light-entry:tasks-missing');
+  }
+  if (!isPlainObject(gate.test)) blockers.push('light-test:missing-gate');
+  if (!isPlainObject(gate.archive)) blockers.push('light-archive:missing-gate');
+  return Array.from(new Set(blockers));
 }
 
 function collectFrozenTestPaths(changeDir) {
@@ -249,7 +289,7 @@ function main() {
       allow(root, 'openspec-command-without-openspec');
     }
     lib.event(root, 'hook.deny', { reason: 'missing-openspec', paths: productionPaths, command: normalized.command });
-    deny('missing-openspec', 'missing openspec/ blocks production work. Fix: run $specnav-bootstrap to initialize or repair OpenSpec first.');
+    deny('missing-openspec', 'missing openspec/ blocks production work. Fix: use $specnav-bootstrap to initialize or repair OpenSpec first.');
   }
 
   if (!normalized.paths.length) {
@@ -284,6 +324,12 @@ function main() {
     }
     lib.event(root, 'hook.deny', { reason: 'missing-tasks', paths: productionPaths });
     deny('missing-tasks', 'production edits require an active OpenSpec change with tasks.md. Fix: create tasks.md for the active change before editing production files.');
+  }
+
+  const lightGateBlockers = validateLightEntryGate(dir, change);
+  if (lightGateBlockers.length) {
+    lib.event(root, 'hook.deny', { reason: lightGateBlockers[0], blockers: lightGateBlockers, paths: productionPaths });
+    deny(lightGateBlockers[0], `light lane production edits require a valid light-gate.json (${lightGateBlockers.join(', ')}). Fix: use the specnav-light-change skill to create the compact entry gate before implementation.`);
   }
 
   const scope = lib.readFileScope(dir);

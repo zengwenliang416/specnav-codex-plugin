@@ -14,6 +14,7 @@ bash "$ROOT/tests/run-lane-routing-fixtures.sh"
 bash "$ROOT/tests/run-operations-archive-action-fixtures.sh"
 bash "$ROOT/tests/run-codegraph-policy-fixtures.sh"
 bash "$ROOT/tests/run-codegraph-context-fixtures.sh"
+bash "$ROOT/tests/run-light-compact-gate-fixtures.sh"
 
 if rg -n 'CLAUDE_PLUGIN_ROOT|\\.claude-plugin|claude plugin' \
   "$ROOT/plugins" \

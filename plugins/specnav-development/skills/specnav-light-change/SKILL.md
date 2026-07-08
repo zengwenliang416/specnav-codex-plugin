@@ -25,7 +25,8 @@ node "$SPECNAV_CORE_ROOT/scripts/change-triage.js" --intent "$INTENT" --json
 
 2. If `lane` is not `light`, stop and route to the reported standard or full lane. Do not force light mode.
 3. Require an existing OpenSpec project and a clean active change. Do not call an OpenSpec native skill.
-4. Create the light artifacts:
+4. Create the light artifacts. This also creates `light-gate.json` and a
+   pending user test case signoff under `verify/`:
 
 ```bash
 node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-light-change/scripts/create-light-change.js" --intent "$INTENT" --paths "$PATHS" --json
@@ -37,7 +38,8 @@ node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-light-change/scripts/create-light
 node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode entry --json
 ```
 
-6. Only edit files listed by the generated `scope.json`.
+6. Only edit files listed by the generated `scope.json`. SpecNav guards block
+   light-lane production edits when `light-gate.json` is missing or not ready.
 7. Before verification handoff, update `tasks.md` to `[x]` and update each
    `acceptance.json` assertion to `passing` with an `evidence_ref`, then run:
 
@@ -45,9 +47,14 @@ node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode entry --
 node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json
 ```
 
+8. Do not fabricate user testing. Before SpecNav verification can go green, the
+   pending light test case must be approved in
+   `verify/user-test-case-signoff.json`.
+
 ## Required Light Artifacts
 
 - `openspec/changes/<change>/risk-tier.json`
+- `openspec/changes/<change>/light-gate.json`
 - `openspec/changes/<change>/requirements.md`
 - `openspec/changes/<change>/acceptance.md`
 - `openspec/changes/<change>/acceptance.json`
@@ -56,6 +63,10 @@ node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff 
 - `openspec/changes/<change>/prototype/decision.json`
 - `openspec/changes/<change>/scope.json`
 - `openspec/changes/<change>/tasks.md`
+- `openspec/changes/<change>/verify/user-test-cases.md`
+- `openspec/changes/<change>/verify/user-test-cases.json`
+- `openspec/changes/<change>/verify/user-test-case-signoff.json`
+- `openspec/changes/<change>/verify/domain-case-matrix.json`
 
 ## Escalation
 

@@ -167,10 +167,11 @@ function validateTextHeadings(verifyDir, change, name, headings, prefix) {
   return artifactResult(change, name, blockers);
 }
 
-function validatePlan(verifyDir, change, requiredDomains = DOMAINS) {
+function validatePlan(verifyDir, change, requiredDomains = DOMAINS, options = {}) {
   const name = 'plan.json';
   const parsed = readJsonFile(path.join(verifyDir, name));
   const blockers = [];
+  const runtimeEvidenceRequired = options.runtimeEvidenceRequired !== false;
 
   if (!parsed.ok) return artifactResult(change, name, [parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-verify-artifact:${name}`]);
   if (!isPlainObject(parsed.value)) return artifactResult(change, name, [`invalid-json-shape:${name}`]);
@@ -207,17 +208,25 @@ function validatePlan(verifyDir, change, requiredDomains = DOMAINS) {
     }
   }
   const runtimeGate = plan.runtime_evidence_gate;
-  if (!isPlainObject(runtimeGate)) {
-    blockers.push('invalid-verify-plan:runtime_evidence_gate');
-  } else {
-    if (runtimeGate.required !== true) blockers.push('invalid-verify-plan:runtime_evidence_gate.required');
-    if (runtimeGate.evidence !== 'verify/runtime-evidence.json') blockers.push('invalid-verify-plan:runtime_evidence_gate.evidence');
-    if (!cleanStringArray(runtimeGate.required_surfaces)) blockers.push('invalid-verify-plan:runtime_evidence_gate.required_surfaces');
-    else {
-      for (const surface of RUNTIME_SURFACES) {
-        if (!runtimeGate.required_surfaces.includes(surface)) blockers.push(`invalid-verify-plan:runtime_evidence_gate.missing:${surface}`);
+  if (runtimeEvidenceRequired) {
+    if (!isPlainObject(runtimeGate)) {
+      blockers.push('invalid-verify-plan:runtime_evidence_gate');
+    } else {
+      if (runtimeGate.required !== true) blockers.push('invalid-verify-plan:runtime_evidence_gate.required');
+      if (runtimeGate.evidence !== 'verify/runtime-evidence.json') blockers.push('invalid-verify-plan:runtime_evidence_gate.evidence');
+      if (!cleanStringArray(runtimeGate.required_surfaces)) blockers.push('invalid-verify-plan:runtime_evidence_gate.required_surfaces');
+      else {
+        for (const surface of RUNTIME_SURFACES) {
+          if (!runtimeGate.required_surfaces.includes(surface)) blockers.push(`invalid-verify-plan:runtime_evidence_gate.missing:${surface}`);
+        }
       }
     }
+  } else if (runtimeGate !== undefined && runtimeGate !== null && !isPlainObject(runtimeGate)) {
+    blockers.push('invalid-verify-plan:runtime_evidence_gate');
+  } else if (isPlainObject(runtimeGate) && runtimeGate.required === true) {
+    if (runtimeGate.required !== true) blockers.push('invalid-verify-plan:runtime_evidence_gate.required');
+    if (runtimeGate.evidence !== 'verify/runtime-evidence.json') blockers.push('invalid-verify-plan:runtime_evidence_gate.evidence');
+    if (!Array.isArray(runtimeGate.required_surfaces)) blockers.push('invalid-verify-plan:runtime_evidence_gate.required_surfaces');
   }
 
   return artifactResult(change, name, blockers, { required_domains: plan.required_domains || [] });
@@ -267,7 +276,7 @@ function resolvedStringArray(value) {
   return Array.isArray(value) && value.length > 0 && value.every((item) => isResolvedUserString(item));
 }
 
-function validateUserTestCaseGate(verifyDir, change) {
+function validateUserTestCaseGate(verifyDir, change, requiredDomains = DOMAINS) {
   const artifacts = [];
   const casesName = 'user-test-cases.json';
   const signoffName = 'user-test-case-signoff.json';
@@ -365,7 +374,7 @@ function validateUserTestCaseGate(verifyDir, change) {
           matrixBlockers.push(`invalid-domain-case-matrix:domains:${entry.case_id}`);
           return;
         }
-        for (const domain of DOMAINS) {
+        for (const domain of requiredDomains) {
           if (!resolvedStringArray(entry.domains[domain])) {
             matrixBlockers.push(`verify:domain-case-missing:${entry.case_id}:${domain}`);
           }
@@ -992,20 +1001,20 @@ function validateVerify(root = lib.projectRoot()) {
     }
   }
 
-  // Lane routing: light-lane changes verify only static + unit; the heavier
-  // gates (user test cases, runtime evidence, behavior evals, sensory
-  // independence) apply to standard/full lanes.
+  // Lane routing: light-lane changes verify only static + unit. User test case
+  // signoff still applies to every lane; only runtime/browser and behavior eval
+  // evidence stays reserved for standard/full lanes.
   const lane = changeDir ? lib.readLane(changeDir).lane : 'standard';
   const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
 
   if (verifyDir) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
-    artifacts.push(validatePlan(verifyDir, change, laneDomains));
+    artifacts.push(validatePlan(verifyDir, change, laneDomains, { runtimeEvidenceRequired: lane !== 'light' }));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
     artifacts.push(validateTraceability(verifyDir, change));
     artifacts.push(validateDiffTraceability(verifyDir, change));
+    artifacts.push(...validateUserTestCaseGate(verifyDir, change, laneDomains));
     if (lane !== 'light') {
-      artifacts.push(...validateUserTestCaseGate(verifyDir, change));
       artifacts.push(validateRuntimeEvidence(verifyDir, change, migrationRequired(changeDir)));
     }
     artifacts.push(validateBlockers(verifyDir, change));

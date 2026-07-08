@@ -132,6 +132,8 @@ function buildArtifacts(root, change, changeDir, options, triage) {
   const taskText = `User can see the requested light change reflected in ${subject}.`;
   const prototypeDecision = path.join(changeDir, 'prototype', 'decision.json');
   const lightOptions = { ...options, root };
+  const testCaseId = 'LIGHT-CASE-001';
+  const acceptanceId = 'LIGHT-001';
 
   writeJson(path.join(changeDir, 'risk-tier.json'), {
     schema_version: 1,
@@ -144,6 +146,40 @@ function buildArtifacts(root, change, changeDir, options, triage) {
     escalation_threshold: 10,
     escalation_triggers: triage.escalation_triggers,
     generated_at: now
+  }, lightOptions, files);
+
+  writeJson(path.join(changeDir, 'light-gate.json'), {
+    schema_version: 1,
+    gate: 'specnav.light.compactGate.v1',
+    change_id: change,
+    lane: 'light',
+    entry: {
+      status: 'ready',
+      intent: options.intent || 'Light change',
+      editable_paths: paths,
+      scope: 'scope.json',
+      tasks: 'tasks.md',
+      acceptance_refs: [acceptanceId],
+      created_at: now
+    },
+    test: {
+      status: 'pending_user_signoff',
+      required_domains: ['static', 'unit'],
+      case_count: { min: 1, max: 3 },
+      cases: 'verify/user-test-cases.json',
+      signoff: 'verify/user-test-case-signoff.json',
+      domain_matrix: 'verify/domain-case-matrix.json'
+    },
+    archive: {
+      status: 'blocked_until_green_verify',
+      requires: [
+        'tasks.md all checkbox tasks are checked',
+        'acceptance.json assertions are passing with evidence_ref',
+        'verify/aggregate-report.json is green',
+        'verify/user-test-case-signoff.json is approved',
+        'openspec validate passes'
+      ]
+    }
   }, lightOptions, files);
 
   writeText(path.join(changeDir, 'requirements.md'), [
@@ -167,7 +203,7 @@ function buildArtifacts(root, change, changeDir, options, triage) {
     schema_version: 1,
     assertions: [
       {
-        id: 'LIGHT-001',
+        id: acceptanceId,
         statement: taskText,
         verify_via: 'static',
         status: 'failing',
@@ -234,6 +270,75 @@ function buildArtifacts(root, change, changeDir, options, triage) {
     `- [ ] ${taskText}`,
     ''
   ].join('\n'), lightOptions, files);
+
+  writeText(path.join(changeDir, 'verify', 'user-test-cases.md'), [
+    '# User Test Cases',
+    '',
+    '## User Test Case Scope',
+    '',
+    `- Light lane scope: ${options.intent || 'Light change'}`,
+    `- Editable paths: ${paths.join(', ')}`,
+    '',
+    '## Aligned Test Cases',
+    '',
+    `- [ ] ${testCaseId}: ${taskText}`,
+    '',
+    '## User Signoff',
+    '',
+    '- Status: pending user approval.',
+    '',
+    '## Domain Mapping',
+    '',
+    '- Static: verify the changed files and contracts.',
+    '- Unit: run the smallest behavior or smoke check that proves the acceptance assertion.',
+    ''
+  ].join('\n'), lightOptions, files);
+
+  writeJson(path.join(changeDir, 'verify', 'user-test-cases.json'), {
+    schema_version: 1,
+    change_id: change,
+    cases: [
+      {
+        id: testCaseId,
+        title: taskText,
+        actor: 'User',
+        user_goal: options.intent || 'Confirm the light change is correct.',
+        preconditions: [
+          `Active SpecNav change is ${change}.`,
+          `Editable paths are limited to: ${paths.join(', ')}.`
+        ],
+        steps: [
+          `Inspect ${subject} after the edit.`,
+          'Run the light lane static and unit verification commands.'
+        ],
+        expected_results: [taskText],
+        acceptance_refs: [acceptanceId],
+        source_refs: [`acceptance.json#${acceptanceId}`]
+      }
+    ]
+  }, lightOptions, files);
+
+  writeJson(path.join(changeDir, 'verify', 'user-test-case-signoff.json'), {
+    schema_version: 1,
+    change_id: change,
+    status: 'pending',
+    user_decision: '<decision-required>',
+    approved_case_ids: []
+  }, lightOptions, files);
+
+  writeJson(path.join(changeDir, 'verify', 'domain-case-matrix.json'), {
+    schema_version: 1,
+    change_id: change,
+    cases: [
+      {
+        case_id: testCaseId,
+        domains: {
+          static: ['Validate the changed file content, formatting, and declared scope.'],
+          unit: ['Run the smallest command or smoke check that proves the acceptance assertion.']
+        }
+      }
+    ]
+  }, lightOptions, files);
 
   return files;
 }

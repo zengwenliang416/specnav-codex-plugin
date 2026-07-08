@@ -190,7 +190,7 @@ function validateTasksMarkdown(changeDir, change) {
   });
 }
 
-function validateVerification(changeDir, change, hasSignoff) {
+function validateVerification(changeDir, change, hasSignoff, lane = 'standard') {
   const artifacts = [];
   const blockers = [];
   const verifyDir = path.join(changeDir, 'verify');
@@ -227,8 +227,10 @@ function validateVerification(changeDir, change, hasSignoff) {
   });
   artifacts.push(verifyArtifact(change, 'blocker-classification.jsonl', blockerBlockers, { entries: blockerResult.entries.length }));
 
-  const handoff = readTextFile(path.join(changeDir, 'development', 'handoff-to-verify.md'));
-  artifacts.push(changeArtifact(change, 'development/handoff-to-verify.md', handoff.ok && handoff.value.trim() !== '' ? [] : ['missing-development-handoff']));
+  if (lane !== 'light') {
+    const handoff = readTextFile(path.join(changeDir, 'development', 'handoff-to-verify.md'));
+    artifacts.push(changeArtifact(change, 'development/handoff-to-verify.md', handoff.ok && handoff.value.trim() !== '' ? [] : ['missing-development-handoff']));
+  }
 
   if (fs.existsSync(path.join(changeDir, 'verify-report.stale'))) {
     blockers.push('fresh-verify');
@@ -236,6 +238,46 @@ function validateVerification(changeDir, change, hasSignoff) {
 
   blockers.push(...artifacts.flatMap((item) => item.blockers));
   return { blockers: unique(blockers), artifacts };
+}
+
+function validateLightGate(changeDir, change) {
+  const name = 'light-gate.json';
+  const parsed = readJsonFile(path.join(changeDir, name));
+  const blockers = [];
+  if (!parsed.ok) return changeArtifact(change, name, [parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-change-artifact:${name}`]);
+  if (!isPlainObject(parsed.value)) return changeArtifact(change, name, [`invalid-json-shape:${name}`]);
+  const gate = parsed.value;
+  if (gate.schema_version !== 1) blockers.push('invalid-light-gate:schema_version');
+  if (gate.gate !== 'specnav.light.compactGate.v1') blockers.push('invalid-light-gate:gate');
+  if (gate.change_id !== change) blockers.push('invalid-light-gate:change_id');
+  if (gate.lane !== 'light') blockers.push('invalid-light-gate:lane');
+  if (!isPlainObject(gate.entry) || gate.entry.status !== 'ready') blockers.push('light-entry:not-ready');
+  if (!isPlainObject(gate.test)) {
+    blockers.push('light-test:missing-gate');
+  } else {
+    if (gate.test.cases !== 'verify/user-test-cases.json') blockers.push('invalid-light-gate:test.cases');
+    if (gate.test.signoff !== 'verify/user-test-case-signoff.json') blockers.push('invalid-light-gate:test.signoff');
+    if (gate.test.domain_matrix !== 'verify/domain-case-matrix.json') blockers.push('invalid-light-gate:test.domain_matrix');
+  }
+  if (!isPlainObject(gate.archive) || !Array.isArray(gate.archive.requires) || gate.archive.requires.length === 0) {
+    blockers.push('light-archive:missing-requirements');
+  }
+  return changeArtifact(change, name, unique(blockers));
+}
+
+function validateLightUserTestSignoff(changeDir, change) {
+  const name = 'user-test-case-signoff.json';
+  const parsed = readJsonFile(path.join(changeDir, 'verify', name));
+  const blockers = [];
+  if (!parsed.ok) return verifyArtifact(change, name, [parsed.status === 'invalid-json' ? `invalid-json:verify/${name}` : `missing-verify-artifact:${name}`]);
+  if (!isPlainObject(parsed.value)) return verifyArtifact(change, name, [`invalid-json-shape:verify/${name}`]);
+  const signoff = parsed.value;
+  if (signoff.schema_version !== 1) blockers.push('invalid-user-test-case-signoff:schema_version');
+  if (signoff.change_id !== change) blockers.push('invalid-user-test-case-signoff:change_id');
+  if (signoff.status !== 'approved') blockers.push('verify:user-test-cases-unapproved');
+  if (!isCleanString(signoff.user_decision)) blockers.push('invalid-user-test-case-signoff:user_decision');
+  if (!cleanStringArray(signoff.approved_case_ids)) blockers.push('invalid-user-test-case-signoff:approved_case_ids');
+  return verifyArtifact(change, name, unique(blockers));
 }
 
 function validateReadiness(opsDir, change, verificationBlockers) {
@@ -435,6 +477,47 @@ function targetRequiredArtifacts(target) {
   return required;
 }
 
+function validateLightOperations(projectRoot, change, changeDir, risk) {
+  const opsDir = path.join(changeDir, 'operations');
+  const artifacts = [];
+  const blockers = [];
+  const warnings = [];
+  const signoff = fs.existsSync(path.join(opsDir, 'signoff.yaml')) || fs.existsSync(path.join(changeDir, 'signoff.yaml'));
+
+  const verification = validateVerification(changeDir, change, signoff, 'light');
+  artifacts.push(...verification.artifacts);
+  blockers.push(...verification.blockers);
+  artifacts.push(validateTasksMarkdown(changeDir, change));
+  artifacts.push(validateLightGate(changeDir, change));
+  artifacts.push(validateLightUserTestSignoff(changeDir, change));
+  if (risk.tier === 'high-risk' && !signoff) blockers.push('high-risk-signoff');
+
+  blockers.push(...artifacts.flatMap((item) => item.blockers));
+  const codegraph = codegraphStageGuard(projectRoot, change, 'operations');
+  blockers.push(...codegraphBlockers(codegraph));
+  warnings.push(...codegraphWarnings(codegraph));
+
+  return {
+    ok: blockers.length === 0,
+    project_root: projectRoot,
+    active_change: change,
+    change_resolution: {
+      source: 'active-change',
+      candidates: [change],
+      blockers: []
+    },
+    change_dir: changeDir,
+    operations_dir: opsDir,
+    release_target: 'local-only',
+    risk_tier: risk.tier || 'lite',
+    lane: 'light',
+    blockers: unique(blockers),
+    warnings: unique(warnings),
+    codegraph,
+    artifacts
+  };
+}
+
 function validateOperations(root = lib.projectRoot()) {
   const projectRoot = path.resolve(root);
   const changeState = lib.activeChangeState(projectRoot);
@@ -447,6 +530,10 @@ function validateOperations(root = lib.projectRoot()) {
 
   if (!change || !changeDir || !fs.existsSync(changeDir)) {
     blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
+  }
+  const risk = changeDir ? lib.readJson(path.join(changeDir, 'risk-tier.json'), { tier: 'standard' }) : { tier: 'standard' };
+  if (change && changeDir && fs.existsSync(changeDir) && lib.readLane(changeDir).lane === 'light') {
+    return validateLightOperations(projectRoot, change, changeDir, risk);
   }
   if (!opsDir) {
     return {
@@ -469,7 +556,6 @@ function validateOperations(root = lib.projectRoot()) {
   }
 
   const signoff = fs.existsSync(path.join(opsDir, 'signoff.yaml')) || fs.existsSync(path.join(changeDir, 'signoff.yaml'));
-  const risk = lib.readJson(path.join(changeDir, 'risk-tier.json'), { tier: 'standard' });
   const verification = validateVerification(changeDir, change, signoff);
   artifacts.push(...verification.artifacts);
   blockers.push(...verification.blockers);
@@ -558,6 +644,7 @@ function writeArchiveGate(root = lib.projectRoot()) {
     generated_at: new Date().toISOString(),
     active_change: validation.active_change,
     release_target: validation.release_target,
+    lane: validation.lane || 'standard',
     verdict,
     blockers: validation.blockers,
     warnings: validation.warnings || [],
