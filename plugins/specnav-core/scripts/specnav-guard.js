@@ -237,6 +237,29 @@ function collectFrozenTestPaths(changeDir) {
   return patterns;
 }
 
+function collectPromotedCheckRules(root) {
+  // Act->capability enforcement. Reads admitted promoted-check rule files. A rule
+  // is enforced ONLY when it declares enforcement:"gate" (a deliberate opt-in);
+  // advisory rules are ignored here. Mirrors the frozen-tests data-declared model.
+  const dir = path.join(root, 'openspec', 'knowledge', 'promoted-checks');
+  let files = [];
+  try {
+    files = fs.readdirSync(dir).filter((file) => file.endsWith('.json'));
+  } catch {
+    return [];
+  }
+  const rules = [];
+  for (const file of files) {
+    const rule = lib.readJson(path.join(dir, file), null);
+    if (!rule || rule.schema !== 'specnav.knowledge.promotedCheck.v1') continue;
+    if (rule.enforcement !== 'gate') continue;
+    const globs = Array.isArray(rule.deny_globs) ? rule.deny_globs.filter((glob) => typeof glob === 'string' && glob.trim()) : [];
+    if (!globs.length || typeof rule.id !== 'string' || !rule.id.trim()) continue;
+    rules.push({ id: rule.id.trim(), deny_globs: globs, reason: typeof rule.reason === 'string' ? rule.reason : '' });
+  }
+  return rules;
+}
+
 function isOpenSpecRepairCommand(command) {
   if (!command) return false;
   return /\bopenspec\b.*\b(init|validate|status)\b/.test(command)
@@ -344,6 +367,7 @@ function main() {
   }
 
   const frozenTestPaths = collectFrozenTestPaths(dir);
+  const promotedCheckRules = collectPromotedCheckRules(root);
   const reviewHits = [];
   for (const rel of productionPaths) {
     if (/^tests\/acceptance\//.test(rel)) {
@@ -377,6 +401,13 @@ function main() {
       if (scope.operations[operation] === false && !pathOverrideAllows(root, 'operation', rel, change)) {
         lib.event(root, 'hook.deny', { reason: 'operation', operation, path: rel });
         deny('operation', `${operation} of ${rel} is blocked by scope.json allowed_operations. Fix: enable the operation in scope.json or create an operation override.`);
+      }
+    }
+    for (const rule of promotedCheckRules) {
+      if (rule.deny_globs.some((pattern) => lib.globLikeMatch(pattern, rel))) {
+        if (pathOverrideAllows(root, 'promoted-check', rel, change)) continue;
+        lib.event(root, 'hook.deny', { reason: `promoted-check:${rule.id}`, path: rel, rule: rule.id });
+        deny(`promoted-check:${rule.id}`, `${rel} matches admitted promoted check ${rule.id}${rule.reason ? ` (${rule.reason})` : ''}. Fix: address the checked risk, or create a promoted-check override with a reason.`);
       }
     }
     if (Array.isArray(scope.reviewRequired) && scope.reviewRequired.some((pattern) => lib.globLikeMatch(pattern, rel))) {

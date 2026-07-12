@@ -22,12 +22,14 @@
     "specnav-rollback",
     "specnav-monitor",
     "specnav-postmortem",
-    "specnav-update-spec"
+    "specnav-update-spec",
+    "specnav-promote-check"
   ],
   "contracts": {
     "operations": "scripts/operations-gate.js",
     "archive": "scripts/archive-gate.js",
-    "archive_action": "scripts/archive-change.js"
+    "archive_action": "scripts/archive-change.js",
+    "promotion_dry_run": "scripts/promotion-dry-run.js"
   },
   "state_outputs": [
     "openspec/changes/<change>/operations/"

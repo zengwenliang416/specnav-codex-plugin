@@ -7,6 +7,7 @@ const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { validateDevelopment } = runtime.requirePluginScript('specnav-development', 'scripts/development-contract');
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
+const foundation = runtime.requirePluginScript('specnav-requirements', 'scripts/foundation-specs');
 
 const DOMAINS = ['facticity', 'static', 'unit', 'redteam', 'e2e', 'sensory'];
 const VERDICTS = new Set(['green', 'red', 'blocked']);
@@ -244,7 +245,18 @@ function validateEvidenceIndex(verifyDir, change) {
   return artifactResult(change, name, blockers, { entries: result.entries.length });
 }
 
-function validateTraceability(verifyDir, change) {
+const ANCHOR_CODE_EXTENSIONS = new Set([
+  '.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.py', '.go', '.rb', '.java',
+  '.kt', '.rs', '.php', '.cs', '.swift', '.c', '.cc', '.cpp', '.h', '.hpp',
+  '.m', '.mm', '.scala', '.vue', '.svelte'
+]);
+
+function isAnchorCodeFile(rel) {
+  return ANCHOR_CODE_EXTENSIONS.has(path.extname(String(rel || '')).toLowerCase());
+}
+
+// requireAnchorRefs is set only when ai-annotation-policy enforcement === 'gate'.
+function validateTraceability(verifyDir, change, requireAnchorRefs = false) {
   const name = 'traceability-matrix.json';
   const parsed = readJsonFile(path.join(verifyDir, name));
   const blockers = [];
@@ -262,6 +274,13 @@ function validateTraceability(verifyDir, change) {
       if (!isPlainObject(entry) || !isCleanString(entry.changed_file)) blockers.push(`invalid-traceability-entry:changed_file:${index + 1}`);
       for (const field of ['requirement_refs', 'task_refs', 'prototype_refs', 'foundation_spec_refs', 'verification_domains']) {
         if (!Array.isArray(entry && entry[field]) || entry[field].length === 0) blockers.push(`invalid-traceability-entry:${field}:${index + 1}`);
+      }
+      // anchor_refs is optional; only required (non-empty) for code files under
+      // an opt-in gate policy. Never blocks under advisory/absent policy.
+      if (requireAnchorRefs && isPlainObject(entry) && isAnchorCodeFile(entry.changed_file)) {
+        if (!Array.isArray(entry.anchor_refs) || entry.anchor_refs.length === 0) {
+          blockers.push(`invalid-traceability-entry:anchor_refs:${index + 1}`);
+        }
       }
     });
   }
@@ -967,6 +986,24 @@ function staleMarkerUnresolved(changeDir, verifyDir) {
   return false;
 }
 
+// L3 anchor coverage is folded into the verify gate ONLY when the optional
+// ai-annotation-policy declares `enforcement: gate` (per-project opt-in). Under
+// advisory/absent policy this returns null and never touches the gate verdict.
+function validateAnchorCoverage(projectRoot, verifyDir, change) {
+  const policy = foundation.validateAnnotationPolicy(projectRoot);
+  if (policy.enforcement !== 'gate') return null;
+  const name = 'static/anchor-report.json';
+  const parsed = readJsonFile(path.join(verifyDir, name));
+  if (!parsed.ok) {
+    return artifactResult(change, name, [parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-anchor-report`]);
+  }
+  const report = parsed.value;
+  const blockers = Array.isArray(report && report.blockers) ? report.blockers.slice() : [];
+  return artifactResult(change, name, blockers, {
+    coverage_ratio: report && typeof report.coverage_ratio === 'number' ? report.coverage_ratio : null
+  });
+}
+
 function validateVerify(root = lib.projectRoot()) {
   const projectRoot = path.resolve(root);
   const development = validateDevelopment(projectRoot, { mode: 'handoff' });
@@ -1011,7 +1048,8 @@ function validateVerify(root = lib.projectRoot()) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
     artifacts.push(validatePlan(verifyDir, change, laneDomains, { runtimeEvidenceRequired: lane !== 'light' }));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
-    artifacts.push(validateTraceability(verifyDir, change));
+    const anchorGate = foundation.validateAnnotationPolicy(projectRoot).enforcement === 'gate';
+    artifacts.push(validateTraceability(verifyDir, change, anchorGate));
     artifacts.push(validateDiffTraceability(verifyDir, change));
     artifacts.push(...validateUserTestCaseGate(verifyDir, change, laneDomains));
     if (lane !== 'light') {
@@ -1028,6 +1066,8 @@ function validateVerify(root = lib.projectRoot()) {
       artifacts.push(validateDomainReport(verifyDir, change, domain));
     }
     artifacts.push(validateUnitRubric(verifyDir, change));
+    const anchorArtifact = validateAnchorCoverage(projectRoot, verifyDir, change);
+    if (anchorArtifact) artifacts.push(anchorArtifact);
     if (lane !== 'light') {
       artifacts.push(validateTextHeadings(verifyDir, change, 'sensory/reviewer-independence.md', INDEPENDENCE_HEADINGS, 'invalid-reviewer-independence'));
     }

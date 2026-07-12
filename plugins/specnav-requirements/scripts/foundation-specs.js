@@ -122,6 +122,15 @@ const REQUIRED_FOUNDATION_SPECS = [
 
 const UI_REQUIRED_TOKEN_ROOTS = ['colors', 'typography', 'spacing', 'rounded', 'components'];
 
+// L3 AI-facing annotation policy is an OPTIONAL foundation spec. It is deliberately
+// NOT part of REQUIRED_FOUNDATION_SPECS: absence is legal (advisory-by-default).
+// When present it must declare an enforcement level so the anchor scan knows whether
+// to warn (advisory) or block (gate). Consumed by verification/scripts/anchor-scan.js.
+const ANNOTATION_POLICY_PATH = 'openspec/specs/ai-annotation-policy/design.md';
+const ANNOTATION_POLICY_SECTIONS = ['# ', '## Overview', '## Anchor Convention', '## Seam Coverage', '## Enforcement'];
+const ANNOTATION_ENFORCEMENT_LEVELS = ['advisory', 'gate'];
+const DEFAULT_ANCHOR_PATTERN = '@ai-anchor';
+
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
 }
@@ -1005,6 +1014,51 @@ function validateFoundationSpecs(root = lib.projectRoot()) {
   };
 }
 
+// Optional L3 policy validator. Absent policy -> present:false, ok:true, no blockers
+// (so requirements-gate behavior is unchanged for projects that never opt in).
+// Present-but-malformed -> invalid-annotation-policy:* blockers.
+function validateAnnotationPolicy(root = lib.projectRoot()) {
+  const projectRoot = path.resolve(root);
+  const file = path.join(projectRoot, ANNOTATION_POLICY_PATH);
+  if (!fs.existsSync(file)) {
+    return { present: false, ok: true, enforcement: null, anchor_pattern: DEFAULT_ANCHOR_PATTERN, path: ANNOTATION_POLICY_PATH, missing_sections: [], blockers: [] };
+  }
+
+  const read = readRequiredSpecText(file);
+  if (!read.ok) {
+    return { present: true, ok: false, enforcement: null, anchor_pattern: DEFAULT_ANCHOR_PATTERN, path: ANNOTATION_POLICY_PATH, missing_sections: [], blockers: ['invalid-annotation-policy:unreadable'] };
+  }
+
+  const blockers = [];
+  const missingSections = ANNOTATION_POLICY_SECTIONS.filter((heading) => !markdownHasSection(read.text, heading));
+  if (missingSections.length) blockers.push('invalid-annotation-policy:sections');
+
+  const fm = parseFrontmatterKeys(read.text, ['version', 'name', 'enforcement']);
+  let enforcement = null;
+  let anchorPattern = DEFAULT_ANCHOR_PATTERN;
+  if (!fm.parse_ok) {
+    blockers.push('invalid-annotation-policy:frontmatter');
+  } else {
+    const value = fm.value || {};
+    if (!fm.keys.includes('enforcement') || !ANNOTATION_ENFORCEMENT_LEVELS.includes(value.enforcement)) {
+      blockers.push('invalid-annotation-policy:enforcement');
+    } else {
+      enforcement = value.enforcement;
+    }
+    if (typeof value.anchor_pattern === 'string' && value.anchor_pattern.trim()) anchorPattern = value.anchor_pattern.trim();
+  }
+
+  return {
+    present: true,
+    ok: blockers.length === 0,
+    enforcement,
+    anchor_pattern: anchorPattern,
+    path: ANNOTATION_POLICY_PATH,
+    missing_sections: missingSections,
+    blockers: unique(blockers)
+  };
+}
+
 function markdown(result) {
   const lines = [];
   lines.push('# SpecNav Foundation Specs');
@@ -1033,4 +1087,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validateFoundationSpecs, validateOne, markdown };
+module.exports = { validateFoundationSpecs, validateOne, validateAnnotationPolicy, markdown, ANNOTATION_POLICY_PATH, DEFAULT_ANCHOR_PATTERN };

@@ -21,6 +21,7 @@ Run static and structural verification declared by the plan.
 4. Include OpenSpec validation, lint, type checks, dependency checks, schema checks, banned-pattern scans, and user test case coverage when applicable.
 5. Use `assets/report.md` and `assets/report.json` as shells when the domain report is missing.
 6. If a required tool is unavailable, record blocker class `tool-unavailable`.
+7. Run the L3 anchor coverage scan: `node "$SPECNAV_VERIFICATION_ROOT/scripts/anchor-scan.js" --json`. It is advisory by default (writes `verify/static/anchor-report.json` and an `anchor.coverage` event, never blocks). It only blocks with `anchor-uncovered:<file>` when the optional `ai-annotation-policy` declares `enforcement: gate`. Surface uncovered touched seams in the static report regardless of enforcement level.
 
 ## Required Outputs
 

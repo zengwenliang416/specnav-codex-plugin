@@ -1,0 +1,13 @@
+{
+  "schema": "specnav.knowledge.promotedCheck.v1",
+  "id": "<kebab-case-id>",
+  "statement": "Generalized rule. Prune UIDs/order-ids to business variables, e.g. 'edits to pricing modules must recompute cart totals'.",
+  "verify_via": "guard",
+  "enforcement": "advisory",
+  "deny_globs": [
+    "src/<seam>/**"
+  ],
+  "reason": "Why this seam is risky, from the postmortem.",
+  "generalized": true,
+  "evidence_ref": "operations/postmortem.md"
+}

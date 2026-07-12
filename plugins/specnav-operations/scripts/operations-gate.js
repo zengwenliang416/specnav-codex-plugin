@@ -10,6 +10,12 @@ const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegr
 const TARGETS = new Set(['local-only', 'plugin-marketplace', 'package', 'host-compatibility', 'project-deploy']);
 const RECEIPT_CONFIDENCE = new Set(['A', 'B', 'C']);
 const UPDATE_SPEC_STATUSES = new Set(['no_writeback_needed', 'written_back', 'deferred']);
+// Act -> capability promotion. A promoted_check distils a resolved bad case into
+// a reusable deterministic check. `candidate` is advisory and never blocks
+// archive; `admitted` (the may_promote step) requires a passed dry-run, a
+// generalized statement, and signoff before it may become an enforced rule.
+const PROMOTED_CHECK_VERIFY_VIA = new Set(['guard', 'fixture', 'static']);
+const PROMOTED_CHECK_STATUSES = new Set(['candidate', 'admitted', 'declined']);
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
@@ -391,7 +397,40 @@ function validateUpdateSpec(opsDir, change, hasSignoff) {
   if (!Array.isArray(update.unresolved_items)) blockers.push('invalid-update-spec:unresolved_items');
   else if (update.unresolved_items.length > 0) blockers.push('update-spec-unresolved-items');
   if (update.status === 'deferred' && !hasSignoff) blockers.push('update-spec-deferred-signoff');
+  blockers.push(...validatePromotedChecks(update, hasSignoff));
   return artifact(change, name, blockers);
+}
+
+// Optional. Absent promoted_checks => no blockers (existing changes unaffected).
+function validatePromotedChecks(update, hasSignoff) {
+  const blockers = [];
+  if (!Object.prototype.hasOwnProperty.call(update, 'promoted_checks')) return blockers;
+  if (!Array.isArray(update.promoted_checks)) return ['invalid-update-spec:promoted_checks'];
+
+  const seen = new Set();
+  update.promoted_checks.forEach((check, index) => {
+    const ref = isPlainObject(check) && isCleanString(check.id) ? check.id : `#${index + 1}`;
+    if (!isPlainObject(check)) {
+      blockers.push(`invalid-promoted-check:${ref}:shape`);
+      return;
+    }
+    if (!isCleanString(check.id)) blockers.push(`invalid-promoted-check:${ref}:id`);
+    else if (seen.has(check.id)) blockers.push(`invalid-promoted-check:${ref}:duplicate-id`);
+    else seen.add(check.id);
+    if (!isCleanString(check.statement)) blockers.push(`invalid-promoted-check:${ref}:statement`);
+    if (!PROMOTED_CHECK_VERIFY_VIA.has(check.verify_via)) blockers.push(`invalid-promoted-check:${ref}:verify_via`);
+    if (!PROMOTED_CHECK_STATUSES.has(check.status)) blockers.push(`invalid-promoted-check:${ref}:status`);
+    if (check.generalized !== undefined && typeof check.generalized !== 'boolean') {
+      blockers.push(`invalid-promoted-check:${ref}:generalized`);
+    }
+    // candidate/declined never block archive. admitted must clear the may_promote bar.
+    if (check.status === 'admitted') {
+      if (!isCleanString(check.dry_run_ref)) blockers.push(`promoted-check-admitted-missing-dry-run:${ref}`);
+      if (check.generalized !== true) blockers.push(`promoted-check-admitted-not-generalized:${ref}`);
+      if (!hasSignoff) blockers.push(`promoted-check-admitted-signoff:${ref}`);
+    }
+  });
+  return blockers;
 }
 
 function readMigrationManifest(changeDir) {

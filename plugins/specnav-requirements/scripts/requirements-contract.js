@@ -232,6 +232,11 @@ function validateRequirements(root = lib.projectRoot()) {
   if (!foundation.ok && lane !== 'light') blockers.push(...foundation.blockers);
   if (!activeChangeOk) blockers.push('active-change');
 
+  // Optional L3 annotation policy: absent is legal; present-but-malformed blocks
+  // so a broken opt-in config surfaces early. Does not add a required artifact.
+  const annotationPolicy = foundationSpecs.validateAnnotationPolicy(projectRoot);
+  if (annotationPolicy.present && !annotationPolicy.ok) blockers.push(...annotationPolicy.blockers);
+
   const artifacts = activeChangeOk ? REQUIRED_ARTIFACTS.map((name) => validateArtifact(dir, change, name, lane)) : [];
   blockers.push(...artifacts.flatMap((artifact) => artifact.blockers));
 
@@ -243,6 +248,7 @@ function validateRequirements(root = lib.projectRoot()) {
     foundation_required: lane !== 'light',
     blockers: unique(blockers),
     foundation,
+    annotation_policy: annotationPolicy,
     artifacts
   };
 }

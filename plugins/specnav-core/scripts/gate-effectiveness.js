@@ -44,6 +44,12 @@ function analyze(root) {
   let redAfterAllow = 0;
   let pendingAllows = 0;
 
+  // Act->promotion lifecycle and L3 anchor coverage trend. Promoted-check *gate*
+  // denies flow through hook.deny (reason `promoted-check:<id>`) into the gate
+  // rows above, so they are already effectiveness-measured like any other gate.
+  const promotion = { candidates: 0, dry_runs: 0, dry_run_pass: 0, admitted: 0, declined: 0 };
+  const anchor = { runs: 0, latest_coverage: null, min_coverage: null, sum_coverage: 0, uncovered_total: 0 };
+
   for (const entry of events) {
     const payload = entry.payload || {};
     switch (entry.type) {
@@ -64,6 +70,28 @@ function analyze(root) {
         verifies += 1;
         if (payload.status === 'red' && pendingAllows > 0) redAfterAllow += 1;
         pendingAllows = 0;
+        break;
+      case 'promotion.candidate':
+        promotion.candidates += 1;
+        break;
+      case 'promotion.dry-run':
+        promotion.dry_runs += 1;
+        if (payload.result === 'pass') promotion.dry_run_pass += 1;
+        break;
+      case 'promotion.admitted':
+        promotion.admitted += 1;
+        break;
+      case 'promotion.declined':
+        promotion.declined += 1;
+        break;
+      case 'anchor.coverage':
+        anchor.runs += 1;
+        if (typeof payload.coverage_ratio === 'number') {
+          anchor.latest_coverage = payload.coverage_ratio;
+          anchor.min_coverage = anchor.min_coverage === null ? payload.coverage_ratio : Math.min(anchor.min_coverage, payload.coverage_ratio);
+          anchor.sum_coverage += payload.coverage_ratio;
+        }
+        if (typeof payload.uncovered_count === 'number') anchor.uncovered_total += payload.uncovered_count;
         break;
       default:
         break;
@@ -96,6 +124,17 @@ function analyze(root) {
       verifies,
       red_verifies_after_allows: redAfterAllow
     },
+    promotion: {
+      ...promotion,
+      dry_run_pass_rate: promotion.dry_runs > 0 ? Number((promotion.dry_run_pass / promotion.dry_runs).toFixed(3)) : null
+    },
+    anchor_coverage: {
+      runs: anchor.runs,
+      latest_coverage: anchor.latest_coverage,
+      min_coverage: anchor.min_coverage,
+      avg_coverage: anchor.runs > 0 ? Number((anchor.sum_coverage / anchor.runs).toFixed(3)) : null,
+      uncovered_total: anchor.uncovered_total
+    },
     decision_rules: [
       'override_rate >= 0.5 with sufficient sample: the gate is probably wrong — fix its criteria or demote it to a warning',
       'override_rate >= 0.2: review the gate criteria against recent overrides',
@@ -127,6 +166,16 @@ function toMarkdown(report) {
     lines.push(`| ${row.gate} | ${row.denies} | ${row.warns} | ${row.overrides} | ${row.override_rate === null ? '-' : row.override_rate} | ${row.signal} |`);
   }
   if (!report.gates.length) lines.push('| (no gate events recorded) | - | - | - | - | - |');
+  if (report.promotion && (report.promotion.candidates || report.promotion.dry_runs || report.promotion.admitted || report.promotion.declined)) {
+    lines.push('');
+    lines.push('## Act -> promotion');
+    lines.push(`- candidates: ${report.promotion.candidates}, dry-runs: ${report.promotion.dry_runs} (pass rate ${report.promotion.dry_run_pass_rate === null ? '-' : report.promotion.dry_run_pass_rate}), admitted: ${report.promotion.admitted}, declined: ${report.promotion.declined}`);
+  }
+  if (report.anchor_coverage && report.anchor_coverage.runs) {
+    lines.push('');
+    lines.push('## L3 anchor coverage');
+    lines.push(`- runs: ${report.anchor_coverage.runs}, latest: ${report.anchor_coverage.latest_coverage}, min: ${report.anchor_coverage.min_coverage}, avg: ${report.anchor_coverage.avg_coverage}, uncovered total: ${report.anchor_coverage.uncovered_total}`);
+  }
   return `${lines.join('\n')}\n`;
 }
 

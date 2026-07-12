@@ -25,6 +25,7 @@ Create or repair the four project-level foundation specs required before require
 8. If UI design is missing, guide the user to create the supplied Geist-style YAML token contract and Markdown guide.
 9. UI design must explicitly record theme capability, theme toggle policy, i18n capability, supported locales, and default locale; do not infer dark mode or language switching from taste.
 10. Preserve existing decisions outside reported blockers.
+11. Optional L3 layer: if the project wants AI-facing anchor comments, read `references/ai-annotation-policy.md`, then run `node "$SPECNAV_REQUIREMENTS_ROOT/skills/specnav-foundation-specs/scripts/create-annotation-policy.js" --json` to scaffold the optional `ai-annotation-policy` spec from `assets-optional/ai-annotation-policy/design.md`. It ships `enforcement: advisory` and never blocks unless flipped to `gate`.
 
 ## Required Outputs
 

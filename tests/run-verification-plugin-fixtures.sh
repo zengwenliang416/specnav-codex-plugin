@@ -788,9 +788,10 @@ test -f "$VERIFY/skills/specnav-verify-sensory/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-rerun/SKILL.md"
 jq -e '.contracts.verification == "scripts/verify-domains.js"' "$VERIFY/specnav-stage.json" >/dev/null
 jq -e 'has("planned_contracts") | not' "$VERIFY/specnav-stage.json" >/dev/null
-grep -Fq -- '--marketplace-root "$SPECNAV_MARKETPLACE_ROOT"' "$VERIFY/commands/specnav-verify.md"
-grep -Fq 'node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json' "$VERIFY/commands/specnav-verify.md"
-grep -Fq 'node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json' "$VERIFY/commands/specnav-verify.md"
+# Codex has no commands/ layer (commands are exposed via interface.defaultPrompt +
+# skills). The verify-domains aggregate invocation is wired in the html-report
+# skill; the development handoff is enforced inside verify-domains.js itself.
+grep -Fq 'node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json' "$VERIFY/skills/specnav-html-report/SKILL.md"
 
 PROJECT="$TMP_DIR/verify-project"
 write_base_project "$PROJECT"
