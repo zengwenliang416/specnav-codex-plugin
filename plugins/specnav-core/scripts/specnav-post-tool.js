@@ -15,9 +15,17 @@ function main() {
   const dir = lib.changeDir(root, change);
   if (!dir) process.exit(0);
   const report = path.join(dir, 'verify-report.json');
+  const staleMarker = path.join(dir, 'verify-report.stale');
   if (fs.existsSync(report)) {
+    // Idempotent: once the report is marked stale, later edits in the same
+    // implementation burst add no information — skip the write and the event
+    // (observed 1.4k duplicate verify.stale events per project).
+    if (fs.existsSync(staleMarker)) {
+      drainStdin();
+      process.exit(0);
+    }
     try {
-      fs.writeFileSync(path.join(dir, 'verify-report.stale'), `${new Date().toISOString()}\n`);
+      fs.writeFileSync(staleMarker, `${new Date().toISOString()}\n`);
       lib.event(root, 'verify.stale', { active_change: change });
     } catch (error) {
       // Bookkeeping failure must not outrank the edit itself: warn loudly,

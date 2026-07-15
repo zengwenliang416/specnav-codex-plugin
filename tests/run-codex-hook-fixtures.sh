@@ -14,24 +14,33 @@ NO_STATE="$TMP_DIR/no-state"
 cp -R "$PROJECT_FIXTURE" "$PROJECT"
 cp -R "$NO_STATE_FIXTURE" "$NO_STATE"
 
+# run_case <payload> <project> <expected-exit> [expect-stdout] [strict]
 run_case() {
   local name="$1"
   local project="$2"
   local expected="$3"
+  local expect_stdout="${4:-}"
+  local strict="${5:-}"
   local payload="$PAYLOADS/$name.json"
   local out="$TMP_DIR/$name.out"
   local err="$TMP_DIR/$name.err"
 
   set +e
-  PROJECT_DIR="$project" node "$CORE/scripts/specnav-guard.js" <"$payload" >"$out" 2>"$err"
+  SPECNAV_STRICT="$strict" PROJECT_DIR="$project" node "$CORE/scripts/specnav-guard.js" <"$payload" >"$out" 2>"$err"
   local status=$?
   set -e
 
   if [[ "$status" != "$expected" ]]; then
-    echo "codex hook fixture failed: $name expected=$expected actual=$status" >&2
+    echo "codex hook fixture failed: $name (strict='$strict') expected=$expected actual=$status" >&2
     echo "--- stderr ---" >&2
     cat "$err" >&2
     echo "--- stdout ---" >&2
+    cat "$out" >&2
+    exit 1
+  fi
+
+  if [[ -n "$expect_stdout" ]] && ! grep -q "$expect_stdout" "$out"; then
+    echo "codex hook fixture failed: $name stdout missing '$expect_stdout'" >&2
     cat "$out" >&2
     exit 1
   fi
@@ -50,7 +59,9 @@ node --check "$ROOT/plugins/specnav-core/scripts/specnav-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-post-tool.js"
 node --check "$ROOT/plugins/specnav-core/scripts/tasks-md.js"
 
-run_case bash-openspec-propose "$PROJECT" 2
+# Accounting-first default: legacy-entrypoint invocation warns; strict blocks.
+run_case bash-openspec-propose "$PROJECT" 0 "SpecNav gate warning"
+run_case bash-openspec-propose "$PROJECT" 2 "" 1
 run_case bash-openspec-propose "$NO_STATE" 0
 
 LEGACY_OPENSPEC_PROJECT="$TMP_DIR/legacy-openspec-project"
@@ -66,7 +77,8 @@ cat >"$LEGACY_OPENSPEC_PROJECT/.claude/commands/opsx/propose.md" <<'MD'
 
 Legacy OpenSpec command.
 MD
-run_case write-allowed "$LEGACY_OPENSPEC_PROJECT" 2
+run_case write-allowed "$LEGACY_OPENSPEC_PROJECT" 0 "SpecNav gate warning"
+run_case write-allowed "$LEGACY_OPENSPEC_PROJECT" 2 "" 1
 run_case openspec-allowed "$LEGACY_OPENSPEC_PROJECT" 0
 
 SPECNAV_DISABLE_OPENSPEC=1 PROJECT_DIR="$LEGACY_OPENSPEC_PROJECT" node "$CORE/scripts/affordances.js" --json >"$TMP_DIR/legacy-affordances.json"

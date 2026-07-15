@@ -344,6 +344,23 @@ function readFileScope(changeDir) {
   try {
     jsonScope = JSON.parse(fs.readFileSync(scopeFile, 'utf8'));
   } catch (error) {
+    if (!error || !(error instanceof SyntaxError)) {
+      // Light lane v2: a single light-change.json carries the scope; synthesize
+      // an equivalent scope so guard/contract consumers need no special casing.
+      const light = readLightChange(changeDir);
+      if (light.present && light.ok) {
+        return {
+          ok: true,
+          source: 'light-change.json',
+          include: light.value.entry.editable_paths.slice(),
+          exclude: [],
+          operations: null,
+          reviewRequired: [],
+          externalRepos: normalizeExternalRepos(changeDir, light.value.external_repos).repos,
+          blockers: []
+        };
+      }
+    }
     return {
       ok: false,
       source: 'scope.json',
@@ -388,6 +405,8 @@ function readFileScope(changeDir) {
   const reviewRequired = Array.isArray(jsonScope.requires_review_on)
     ? jsonScope.requires_review_on.filter((value) => typeof value === 'string' && value.trim())
     : [];
+  const external = normalizeExternalRepos(changeDir, jsonScope.external_repos);
+  blockers.push(...external.blockers);
 
   return {
     ok: blockers.length === 0,
@@ -396,8 +415,86 @@ function readFileScope(changeDir) {
     exclude,
     operations,
     reviewRequired,
+    externalRepos: external.repos,
     blockers
   };
+}
+
+// Cross-repo scope: scope.json may declare external_repos so a change can
+// deliberately edit files in a sibling repository. Each entry must name a
+// real directory outside the current project and a reason (audited via the
+// hook.external-edit event). Roots resolve relative to the change's project.
+function normalizeExternalRepos(changeDir, value) {
+  if (value === undefined || value === null) return { repos: [], blockers: [] };
+  if (!Array.isArray(value)) return { repos: [], blockers: ['invalid-scope-external-repos'] };
+  const projectRootDir = changeDir ? path.resolve(changeDir, '..', '..', '..') : process.cwd();
+  const repos = [];
+  const blockers = [];
+  value.forEach((entry, index) => {
+    const label = `external-repo:${index + 1}`;
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+      blockers.push(`${label}:invalid-shape`);
+      return;
+    }
+    if (typeof entry.root !== 'string' || !entry.root.trim()) {
+      blockers.push(`${label}:missing-root`);
+      return;
+    }
+    if (typeof entry.reason !== 'string' || !entry.reason.trim()) {
+      blockers.push(`${label}:missing-reason`);
+      return;
+    }
+    const resolvedRoot = path.resolve(projectRootDir, entry.root);
+    let stat = null;
+    try {
+      stat = fs.statSync(resolvedRoot);
+    } catch {}
+    if (!stat || !stat.isDirectory()) {
+      blockers.push(`${label}:root-not-found`);
+      return;
+    }
+    const relToProject = path.relative(projectRootDir, resolvedRoot);
+    if (relToProject === '' || (!relToProject.startsWith('..') && !path.isAbsolute(relToProject))) {
+      blockers.push(`${label}:root-inside-project`);
+      return;
+    }
+    repos.push({
+      root: resolvedRoot,
+      declared_root: entry.root,
+      include: Array.isArray(entry.include) ? entry.include.filter((item) => typeof item === 'string' && item.trim()) : ['**'],
+      exclude: Array.isArray(entry.exclude) ? entry.exclude.filter((item) => typeof item === 'string' && item.trim()) : [],
+      reason: entry.reason.trim()
+    });
+  });
+  return { repos, blockers };
+}
+
+// Light lane v2: one light-change.json replaces the 14-artifact packet.
+function readLightChange(changeDir) {
+  if (!changeDir) return { present: false, ok: false, value: null, blockers: [] };
+  const file = path.join(changeDir, 'light-change.json');
+  if (!fs.existsSync(file)) return { present: false, ok: false, value: null, blockers: [] };
+  const value = readJson(file, undefined);
+  const blockers = [];
+  if (value === undefined) return { present: true, ok: false, value: null, blockers: ['invalid-json:light-change.json'] };
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return { present: true, ok: false, value: null, blockers: ['invalid-json-shape:light-change.json'] };
+  }
+  if (value.schema !== 'specnav.lightChange.v2') blockers.push('light-change:invalid-schema');
+  if (typeof value.change_id !== 'string' || !value.change_id.trim()) blockers.push('light-change:missing-change-id');
+  if (typeof value.intent !== 'string' || !value.intent.trim()) blockers.push('light-change:missing-intent');
+  const entry = value.entry;
+  if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+    blockers.push('light-change:missing-entry');
+  } else {
+    if (entry.status !== 'ready') blockers.push('light-change:entry-not-ready');
+    if (!Array.isArray(entry.editable_paths) || entry.editable_paths.length === 0) {
+      blockers.push('light-change:paths-missing');
+    }
+  }
+  if (!Array.isArray(value.acceptance) || value.acceptance.length === 0) blockers.push('light-change:missing-acceptance');
+  if (!Array.isArray(value.tasks) || value.tasks.length === 0) blockers.push('light-change:missing-tasks');
+  return { present: true, ok: blockers.length === 0, value, blockers };
 }
 
 function globLikeMatch(pattern, relativePath) {
@@ -541,7 +638,14 @@ function readLane(changeDir) {
   const fallback = { lane: 'standard', tier: 'standard', source: 'default', escalation_threshold: 10 };
   if (!changeDir) return fallback;
   const value = readJson(path.join(changeDir, 'risk-tier.json'), null);
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return fallback;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    // Light lane v2: the single light-change.json declares the lane itself.
+    const light = readLightChange(changeDir);
+    if (light.present && light.ok) {
+      return { lane: 'light', tier: 'lite', source: 'light-change.json', escalation_threshold: 10 };
+    }
+    return fallback;
+  }
   const lane = VALID_LANES.has(value.lane) ? value.lane : (value.tier === 'high-risk' ? 'full' : 'standard');
   return {
     lane,
@@ -558,18 +662,29 @@ function readAcceptanceAssertions(changeDir) {
   // assertion set whose statuses may flip, but whose text may not change
   // during implementation. Returns null when the change predates the format.
   const file = path.join(changeDir, 'acceptance.json');
-  if (!fs.existsSync(file)) return { present: false, ok: true, assertions: [], blockers: [] };
+  if (!fs.existsSync(file)) {
+    // Light lane v2: assertions live inside light-change.json.
+    const light = readLightChange(changeDir);
+    if (light.present && light.ok && Array.isArray(light.value.acceptance)) {
+      return validateAcceptanceList(light.value.acceptance);
+    }
+    return { present: false, ok: true, assertions: [], blockers: [] };
+  }
   const value = readJson(file, undefined);
   if (value === undefined || !value || typeof value !== 'object' || Array.isArray(value)) {
     return { present: true, ok: false, assertions: [], blockers: ['invalid-json:acceptance.json'] };
   }
-  const blockers = [];
   if (!Array.isArray(value.assertions) || value.assertions.length === 0) {
     return { present: true, ok: false, assertions: [], blockers: ['acceptance-json:no-assertions'] };
   }
+  return validateAcceptanceList(value.assertions);
+}
+
+function validateAcceptanceList(list) {
+  const blockers = [];
   const seen = new Set();
   const assertions = [];
-  value.assertions.forEach((assertion, index) => {
+  list.forEach((assertion, index) => {
     const label = (assertion && typeof assertion.id === 'string' && assertion.id) || `#${index + 1}`;
     if (!assertion || typeof assertion !== 'object' || Array.isArray(assertion)) {
       blockers.push(`acceptance-json:invalid-assertion:${label}`);
@@ -738,10 +853,12 @@ module.exports = {
   openspecStatus,
   overridesDir,
   parseScope,
+  normalizeExternalRepos,
   projectRoot,
   readFileScope,
   readJson,
   readLane,
+  readLightChange,
   readSessionLock,
   readText,
   runCommand,

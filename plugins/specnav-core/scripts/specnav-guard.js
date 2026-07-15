@@ -2,8 +2,18 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const lib = require('./specnav-lib');
+
+// Accounting-first policy (0.6): the guard keeps a small set of hard gates
+// (truly destructive commands, contract freezes, explicitly admitted
+// promoted checks) and downgrades everything else to a non-blocking warning
+// plus an auditable event. SPECNAV_STRICT=1 restores blocking behavior for
+// the soft gates.
+function strictMode() {
+  return process.env.SPECNAV_STRICT === '1';
+}
 
 function readStdinJson() {
   try {
@@ -96,13 +106,13 @@ function deny(blockerId, message) {
   process.exit(2);
 }
 
-function warn(root, message) {
+function warn(root, message, reason = 'warn') {
   // Non-blocking advisory. Exit 0 + structured JSON is the Claude Code
   // contract for "allow with a message"; exit 1 renders as a hook ERROR
   // banner ("Failed with non-blocking status code") even though nothing is
   // blocked, which reads as breakage to the user. The warning still reaches
   // the model via systemMessage and stays auditable via the hook.warn event.
-  lib.event(root, 'hook.warn', { message });
+  lib.event(root, 'hook.warn', { reason, message });
   process.stdout.write(`${JSON.stringify({
     systemMessage: `SpecNav gate warning: ${message}`,
     hookSpecificOutput: {
@@ -114,9 +124,61 @@ function warn(root, message) {
   process.exit(0);
 }
 
+// Soft gate: accounting-first default records a warning and lets the edit
+// proceed; SPECNAV_STRICT=1 restores the historical blocking behavior.
+function softDeny(root, blockerId, message) {
+  if (strictMode()) {
+    lib.event(root, 'hook.deny', { reason: blockerId });
+    deny(blockerId, message);
+  }
+  warn(root, `[${blockerId}] ${message}`, blockerId);
+}
+
 function allow(root, reason = 'allow') {
-  lib.event(root, 'hook.allow', { reason });
+  // hook.allow is pure noise at scale (6k+ entries per project); keep the
+  // audit trail opt-in. Deny/warn/override events are always recorded.
+  if (process.env.SPECNAV_EVENT_VERBOSE === '1') lib.event(root, 'hook.allow', { reason });
   process.exit(0);
+}
+
+// Paths owned by the coding harness or the OS, never by project governance:
+// Claude/Codex config, plans, memory, and temp directories. A temp prefix is
+// only treated as harness-owned when the project itself lives elsewhere —
+// otherwise a project rooted under /tmp would lose all sibling-path handling.
+function isHarnessPath(absolutePath, projectRootDir) {
+  const home = os.homedir();
+  const prefixes = [
+    path.join(home, '.claude'),
+    path.join(home, '.codex'),
+    path.join(home, '.config'),
+    os.tmpdir(),
+    '/tmp',
+    '/private/tmp'
+  ];
+  return prefixes.some((prefix) => {
+    if (projectRootDir && isContainedIn(prefix, projectRootDir)) return false;
+    const rel = path.relative(prefix, absolutePath);
+    return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+  });
+}
+
+function isContainedIn(rootDir, absolutePath) {
+  const rel = path.relative(rootDir, absolutePath);
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+}
+
+// Best-effort cross-repo bookkeeping: when this session edits a declared
+// external repo that itself has an active SpecNav change with a verify
+// report, mark that report stale so the sibling's next verify re-runs.
+function touchExternalStale(externalRoot) {
+  try {
+    const change = lib.activeChange(externalRoot);
+    const dir = lib.changeDir(externalRoot, change);
+    if (!dir) return;
+    if (fs.existsSync(path.join(dir, 'verify-report.json'))) {
+      fs.writeFileSync(path.join(dir, 'verify-report.stale'), `${new Date().toISOString()}\n`);
+    }
+  } catch {}
 }
 
 function selfCheck(options = {}) {
@@ -193,6 +255,14 @@ function isPlainObject(value) {
 
 function validateLightEntryGate(changeDir, activeChange) {
   if (lib.readLane(changeDir).lane !== 'light') return [];
+  // Light lane v2: a valid single-file light-change.json satisfies the entry
+  // gate on its own; the 14-artifact packet (light-gate.json et al) remains
+  // accepted for in-flight changes.
+  const lightChange = lib.readLightChange(changeDir);
+  if (lightChange.present) {
+    if (lightChange.ok && lightChange.value.change_id === activeChange) return [];
+    return lightChange.blockers.length ? lightChange.blockers : ['light-change:invalid'];
+  }
   const gate = lib.readJson(path.join(changeDir, 'light-gate.json'), null);
   const blockers = [];
   if (!isPlainObject(gate)) return ['light-entry:missing'];
@@ -269,10 +339,31 @@ function isOpenSpecRepairCommand(command) {
 
 function isLegacyOpenSpecWorkflowCommand(command) {
   if (!command) return false;
-  const normalized = command.replace(/\s+/g, ' ').trim();
-  return /\bopenspec\b.*\b(propose|proposal|apply|implement)\b/i.test(normalized)
-    || /\bopsx\s*[:/]\s*(propose|apply|explore|archive)\b/i.test(normalized)
-    || /\b(?:\/)?openspec-(propose|apply|explore|archive)\b/i.test(normalized);
+  // Only match actual invocations in command position (start of a shell
+  // segment). Matching anywhere in the string flagged commit messages and
+  // heredoc bodies that merely mention "OpenSpec propose" (observed misfires).
+  const segments = String(command).split(/(?:^|&&|\|\||[;|\n])\s*/);
+  return segments.some((raw) => {
+    const segment = raw.trim();
+    return /^openspec\s+(propose|proposal|apply|implement)\b/i.test(segment)
+      || /^opsx\s*[:/]\s*(propose|apply|explore|archive)\b/i.test(segment)
+      || /^\/?openspec-(propose|apply|explore|archive)\b/i.test(segment);
+  });
+}
+
+// Hard-deny only the precisely destructive shapes. `rm -rf` on a project
+// subdirectory or /tmp is routine cleanup and must not be blocked (observed
+// misfires: `rm -rf .next`, `rm -rf /tmp/codex-A`).
+const DANGEROUS_COMMAND_PATTERNS = [
+  /\brm\s+(?:-[a-zA-Z]*r[a-zA-Z]*f[a-zA-Z]*|-[a-zA-Z]*f[a-zA-Z]*r[a-zA-Z]*)\s+(?:--\s+)?(?:"\/"|'\/'|\/|\/\*|~|~\/|\$HOME\b)\s*(?:$|[;&|])/,
+  /\bsudo\s+rm\b/,
+  /\bmkfs(?:\.|\b)/,
+  /\bdd\s+if=[^\s]+\s+of=\/dev\//,
+  /\b(?:curl|wget)\b[^|;&]*\|\s*(?:sh|bash|zsh)\b/
+];
+
+function isDangerousCommand(command) {
+  return DANGEROUS_COMMAND_PATTERNS.some((pattern) => pattern.test(command));
 }
 
 function main() {
@@ -285,34 +376,45 @@ function main() {
       fallback_fields: normalized.fallback_fields
     });
   }
-  if (normalized.command && /\brm\s+-rf\s+\/|\bsudo\b|curl\b.+\|\s*(sh|bash)|wget\b.+\|\s*(sh|bash)/.test(normalized.command)) {
+  if (normalized.command && isDangerousCommand(normalized.command)) {
     if (overrideAllows(root, 'dangerous-command', { command: normalized.command })) {
       allow(root, 'override-dangerous-command');
     }
-    lib.event(root, 'hook.deny', { reason: 'dangerous-command' });
+    lib.event(root, 'hook.deny', { reason: 'dangerous-command', command: normalized.command.slice(0, 200) });
     deny('dangerous-command', 'dangerous shell command requires explicit manual review. Fix: run it manually outside the agent, or create a dangerous-command override with a reason.');
   }
   if (lib.isSpecNavProject(root) && isBashTool(normalized.tool) && isLegacyOpenSpecWorkflowCommand(normalized.command)) {
-    lib.event(root, 'hook.deny', { reason: 'legacy-openspec-workflow-command', command: normalized.command });
-    deny('legacy-openspec-workflow-command', 'native OpenSpec workflow entrypoints are disabled inside SpecNav projects. Fix: use SpecNav requirements/prototype/development/verification/operations commands instead.');
+    softDeny(root, 'legacy-openspec-workflow-command', 'native OpenSpec workflow entrypoints are disabled inside SpecNav projects. Fix: use SpecNav requirements/prototype/development/verification/operations commands instead.');
   }
 
-  const relPaths = normalized.paths.map((target) => toRelativeProjectPath(root, target));
+  // Split targets: absolute/`../` paths that resolve outside the project are
+  // governed by the external-path policy (harness allowlist + declared
+  // external repos), never by in-project scope globs.
+  const externalAbsPaths = [];
+  const relPaths = [];
+  for (const target of normalized.paths) {
+    const absolute = path.resolve(root, target);
+    if (isContainedIn(root, absolute)) relPaths.push(toRelativeProjectPath(root, absolute));
+    else externalAbsPaths.push(absolute);
+  }
   const productionPaths = relPaths.filter((rel) => !rel.startsWith('openspec/'));
   const hasOpenSpec = fs.existsSync(lib.openspecDir(root));
   const legacyEntrypoints = hasOpenSpec ? lib.detectLegacyOpenSpecEntrypoints(root) : [];
+
+  // Harness-owned paths (Claude/Codex config, plans, memory, tmp) are always
+  // out of project governance — resolve them before any project gate.
+  const externalPending = externalAbsPaths.filter((absolute) => !isHarnessPath(absolute, root));
 
   if (!hasOpenSpec) {
     if (!lib.isSpecNavProject(root)) {
       allow(root, 'non-specnav-project');
     }
-    const openspecRepairPaths = relPaths.length > 0 && productionPaths.length === 0;
+    const openspecRepairPaths = normalized.paths.length > 0 && productionPaths.length === 0 && externalPending.length === 0;
     if (openspecRepairPaths) allow(root, 'openspec-repair-without-openspec');
     if (isBashTool(normalized.tool) && isOpenSpecRepairCommand(normalized.command)) {
       allow(root, 'openspec-command-without-openspec');
     }
-    lib.event(root, 'hook.deny', { reason: 'missing-openspec', paths: productionPaths, command: normalized.command });
-    deny('missing-openspec', 'missing openspec/ blocks production work. Fix: use $specnav-bootstrap to initialize or repair OpenSpec first.');
+    softDeny(root, 'missing-openspec', 'missing openspec/ blocks production work. Fix: use $specnav-bootstrap to initialize or repair OpenSpec first.');
   }
 
   if (!normalized.paths.length) {
@@ -325,51 +427,79 @@ function main() {
   const changeState = lib.activeChangeState(root);
   const change = changeState.change;
   const dir = lib.changeDir(root, change);
-  if (!productionPaths.length) allow(root, 'openspec-edit');
+
+  // External (cross-repo) targets: allowed when declared in scope.json
+  // external_repos; undeclared targets collect into a soft gate flushed after
+  // the in-project hard gates (so an external miss never short-circuits a
+  // frozen-acceptance / promoted-check deny on the same tool call).
+  const externalViolations = [];
+  if (externalPending.length) {
+    const scopeForExternal = dir ? lib.readFileScope(dir) : { externalRepos: [] };
+    const declaredRepos = Array.isArray(scopeForExternal.externalRepos) ? scopeForExternal.externalRepos : [];
+    for (const absolute of externalPending) {
+      const repo = declaredRepos.find((entry) => isContainedIn(entry.root, absolute));
+      if (repo) {
+        const relInRepo = path.relative(repo.root, absolute).split(path.sep).join('/');
+        const excluded = repo.exclude.some((pattern) => lib.globLikeMatch(pattern, relInRepo));
+        const included = !excluded && repo.include.some((pattern) => lib.globLikeMatch(pattern, relInRepo));
+        if (included) {
+          lib.event(root, 'hook.external-edit', {
+            external_root: repo.root,
+            path: relInRepo,
+            active_change: change,
+            reason: repo.reason
+          });
+          touchExternalStale(repo.root);
+          continue;
+        }
+      }
+      if (pathOverrideAllows(root, 'external-scope', absolute, change)) continue;
+      externalViolations.push(absolute);
+    }
+  }
+
+  function flushExternalViolations() {
+    if (!externalViolations.length) return;
+    softDeny(root, 'external-scope', `${externalViolations.join(', ')} outside this project and not declared in scope.json external_repos. Fix: add {"root": "../<repo>", "include": ["<glob>"], "reason": "..."} to external_repos for change ${change || '<active>'}, or create an external-scope override.`);
+  }
+
+  if (!productionPaths.length) {
+    flushExternalViolations();
+    allow(root, 'openspec-edit');
+  }
   if (legacyEntrypoints.length) {
-    lib.event(root, 'hook.deny', {
-      reason: 'legacy-openspec-workflow',
-      paths: productionPaths,
-      legacy_entrypoints: legacyEntrypoints
-    });
-    deny('legacy-openspec-workflow', `legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Fix: disable them or replace them with SpecNav disabled stubs before production edits.`);
+    softDeny(root, 'legacy-openspec-workflow', `legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Fix: disable them or replace them with SpecNav disabled stubs before production edits.`);
   }
   if (!change || !dir) {
     const blockers = changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change'];
-    lib.event(root, 'hook.deny', { reason: blockers[0], paths: productionPaths, candidates: changeState.candidates || [] });
-    deny(blockers[0], `production edits require an explicit SpecNav change (${blockers.join(', ')}). Fix: set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
+    softDeny(root, blockers[0], `production edits require an explicit SpecNav change (${blockers.join(', ')}). Fix: set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
   }
 
-  if (!lib.fileExists(path.join(dir, 'tasks.md'))) {
+  const lightChange = lib.readLightChange(dir);
+  if (!lib.fileExists(path.join(dir, 'tasks.md')) && !(lightChange.present && lightChange.ok)) {
     const overridden = productionPaths.every((rel) => pathOverrideAllows(root, 'missing-tasks', rel, change));
     if (overridden) {
       allow(root, 'override-missing-tasks');
     }
-    lib.event(root, 'hook.deny', { reason: 'missing-tasks', paths: productionPaths });
-    deny('missing-tasks', 'production edits require an active OpenSpec change with tasks.md. Fix: create tasks.md for the active change before editing production files.');
+    softDeny(root, 'missing-tasks', 'production edits require an active OpenSpec change with tasks.md (or a light-change.json). Fix: create tasks.md for the active change before editing production files.');
   }
 
   const lightGateBlockers = validateLightEntryGate(dir, change);
   if (lightGateBlockers.length) {
-    lib.event(root, 'hook.deny', { reason: lightGateBlockers[0], blockers: lightGateBlockers, paths: productionPaths });
-    deny(lightGateBlockers[0], `light lane production edits require a valid light-gate.json (${lightGateBlockers.join(', ')}). Fix: use the specnav-light-change skill to create the compact entry gate before implementation.`);
+    softDeny(root, lightGateBlockers[0], `light lane production edits require a valid light-change.json or light-gate.json (${lightGateBlockers.join(', ')}). Fix: use the specnav-light-change skill to create the compact entry gate before implementation.`);
   }
 
   const scope = lib.readFileScope(dir);
   if (!scope.ok) {
-    lib.event(root, 'hook.deny', {
-      reason: 'invalid-scope',
-      blockers: scope.blockers || [],
-      paths: productionPaths,
-      scope_source: scope.source
-    });
-    deny('invalid-scope', `production edits require a valid scope.json (${(scope.blockers || []).join(', ') || 'invalid-scope'}). Fix: repair ${scope.source} for the active change.`);
+    softDeny(root, 'invalid-scope', `production edits require a valid scope.json (${(scope.blockers || []).join(', ') || 'invalid-scope'}). Fix: repair ${scope.source} for the active change.`);
   }
 
   const frozenTestPaths = collectFrozenTestPaths(dir);
   const promotedCheckRules = collectPromotedCheckRules(root);
   const reviewHits = [];
+  const softScopeHits = [];
   for (const rel of productionPaths) {
+    // Hard gates: contract freezes and explicitly admitted promoted checks.
     if (/^tests\/acceptance\//.test(rel)) {
       if (pathOverrideAllows(root, 'frozen-acceptance', rel, change)) continue;
       lib.event(root, 'hook.deny', { reason: 'frozen-acceptance', path: rel });
@@ -382,27 +512,6 @@ function main() {
       }
       continue;
     }
-    const scopeResult = pathAllowedByScope(scope, rel);
-    if (!scopeResult.ok) {
-      if (pathOverrideAllows(root, 'scope', rel, change)) continue;
-      lib.event(root, 'hook.deny', {
-        reason: 'scope',
-        scope_reason: scopeResult.reason,
-        path: rel,
-        paths: productionPaths,
-        include: scope.include,
-        exclude: scope.exclude,
-        scope_source: scope.source
-      });
-      deny('scope', `${rel} is outside declared SpecNav file scope from ${scope.source} (allowed: ${scope.include.join(', ') || 'none'}). Fix: extend scope.json allowed_roots or create a scope override.`);
-    }
-    if (scope.operations) {
-      const operation = fs.existsSync(path.resolve(root, rel)) ? 'modify' : 'create';
-      if (scope.operations[operation] === false && !pathOverrideAllows(root, 'operation', rel, change)) {
-        lib.event(root, 'hook.deny', { reason: 'operation', operation, path: rel });
-        deny('operation', `${operation} of ${rel} is blocked by scope.json allowed_operations. Fix: enable the operation in scope.json or create an operation override.`);
-      }
-    }
     for (const rule of promotedCheckRules) {
       if (rule.deny_globs.some((pattern) => lib.globLikeMatch(pattern, rel))) {
         if (pathOverrideAllows(root, 'promoted-check', rel, change)) continue;
@@ -410,14 +519,39 @@ function main() {
         deny(`promoted-check:${rule.id}`, `${rel} matches admitted promoted check ${rule.id}${rule.reason ? ` (${rule.reason})` : ''}. Fix: address the checked risk, or create a promoted-check override with a reason.`);
       }
     }
+    // Soft gates: scope and operation drift are recorded and surfaced, not blocked.
+    const scopeResult = pathAllowedByScope(scope, rel);
+    if (!scopeResult.ok) {
+      if (!pathOverrideAllows(root, 'scope', rel, change)) {
+        lib.event(root, 'hook.scope-drift', {
+          scope_reason: scopeResult.reason,
+          path: rel,
+          include: scope.include,
+          scope_source: scope.source,
+          active_change: change
+        });
+        softScopeHits.push(rel);
+      }
+    }
+    if (scope.operations) {
+      const operation = fs.existsSync(path.resolve(root, rel)) ? 'modify' : 'create';
+      if (scope.operations[operation] === false && !pathOverrideAllows(root, 'operation', rel, change)) {
+        softDeny(root, 'operation', `${operation} of ${rel} is blocked by scope.json allowed_operations. Fix: enable the operation in scope.json or create an operation override.`);
+      }
+    }
     if (Array.isArray(scope.reviewRequired) && scope.reviewRequired.some((pattern) => lib.globLikeMatch(pattern, rel))) {
       reviewHits.push(rel);
     }
   }
 
+  flushExternalViolations();
+
+  if (softScopeHits.length) {
+    softDeny(root, 'scope', `${softScopeHits.join(', ')} outside declared SpecNav file scope from ${scope.source} (allowed: ${scope.include.join(', ') || 'none'}). Recorded as scope drift; extend scope.json allowed_roots or add a scope override to silence this.`);
+  }
+
   if (reviewHits.length && !reviewHits.every((rel) => pathOverrideAllows(root, 'review', rel, change))) {
-    lib.event(root, 'hook.warn', { reason: 'requires-review', paths: reviewHits });
-    warn(root, `${reviewHits.join(', ')} match requires_review_on; escalate review (shared/dependency/migration) then add a review override.`);
+    warn(root, `${reviewHits.join(', ')} match requires_review_on; escalate review (shared/dependency/migration) then add a review override.`, 'requires-review');
   }
 
   allow(root, 'within-scope');
