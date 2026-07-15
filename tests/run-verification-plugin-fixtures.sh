@@ -807,7 +807,11 @@ jq -e '.artifacts[] | select(.name == "domain-case-matrix.json" and .ok == true)
 jq -e '.artifacts[] | select(.name == "runtime-evidence.json" and .ok == true)' "$TMP_DIR/valid-verify.json" >/dev/null
 jq -e '.artifacts[] | select(.name == "diff-traceability" and .ok == true)' "$TMP_DIR/valid-verify.json" >/dev/null
 jq -e '.artifacts[] | select(.name == "facticity/report.json" and .ok == true)' "$TMP_DIR/valid-verify.json" >/dev/null
-run_json "$PROJECT" aggregate "$TMP_DIR/aggregate-green.json" 0
+set +e
+PROJECT_DIR="$PROJECT" node "$VERIFY/scripts/verify-domains.js" aggregate --json --render >"$TMP_DIR/aggregate-green.json"
+AGG_STATUS=$?
+set -e
+[[ "$AGG_STATUS" == "0" ]] || { echo "aggregate --render expected 0, got $AGG_STATUS" >&2; cat "$TMP_DIR/aggregate-green.json" >&2; exit 1; }
 jq -e '.verdict == "green"' "$TMP_DIR/aggregate-green.json" >/dev/null
 jq -e '.html_report == "verify/aggregate-report.html"' "$TMP_DIR/aggregate-green.json" >/dev/null
 jq -e '.review_style == "claude-warm-editorial"' "$TMP_DIR/aggregate-green.json" >/dev/null

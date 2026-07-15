@@ -199,10 +199,14 @@ high-risk path/surface.
 
 | Hook | Purpose |
 | --- | --- |
-| `SessionStart` | Surface current SpecNav/OpenSpec state at the start of a session |
+| `SessionStart` | Surface current SpecNav/OpenSpec state; announce sibling repos with a CodeGraph index |
 | `UserPromptSubmit` | Inject the legal next actions and blockers for each user request |
-| `PreToolUse` | Block unsafe writes when OpenSpec or stage gates are missing |
-| `PostToolUse` | Mark verification reports stale after relevant edits |
+| `PreToolUse` | Gate writes (soft by default, `SPECNAV_STRICT=1` blocks); redirect cross-repo Bash searches to `codegraph explore -p` |
+| `PostToolUse` | Mark verification reports stale after relevant edits (idempotent) |
+
+The cross-repo scripts (`cross-repo-announce.js`, `cross-repo-guard.js`) live
+in `specnav-core/scripts/` because only `specnav-core` may ship hooks; Codex
+has no standalone Grep tool, so the search redirect matches `Bash` only.
 
 Hook commands must use `PLUGIN_ROOT`:
 

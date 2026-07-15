@@ -19,21 +19,28 @@ mkdir -p "$PROJECT/openspec/.specnav" "$CHANGE_DIR"
 printf '%s\n' "$CHANGE" >"$PROJECT/openspec/.specnav/active-change"
 printf '# Fixture\n' >"$PROJECT/README.md"
 
+# This suite covers the LEGACY v1 packet flow end to end (v2 single-file flow
+# is covered by run-light-change-v2-fixtures.sh).
 PROJECT_DIR="$PROJECT" SPECNAV_CHANGE="$CHANGE" \
   node "$DEV/skills/specnav-light-change/scripts/create-light-change.js" \
-  --intent "fix typo in README copy" --paths README.md --json >"$TMP_DIR/light-create.json"
+  --intent "fix typo in README copy" --paths README.md --format packet --json >"$TMP_DIR/light-create.json"
 jq -e '.ok == true and (.files[] | select(.path == "openspec/changes/light-readme-copy/light-gate.json"))' "$TMP_DIR/light-create.json" >/dev/null
 test -f "$CHANGE_DIR/light-gate.json"
 test -f "$VERIFY_DIR/user-test-case-signoff.json"
 
 PROJECT_DIR="$PROJECT" SPECNAV_CHANGE="$CHANGE" \
-  node "$DEV/scripts/development-contract.js" --mode entry --json >"$TMP_DIR/light-entry.json"
+  node "$DEV/scripts/development-contract.js" --mode entry --json --verbose >"$TMP_DIR/light-entry.json"
 jq -e '.ok == true and .lane == "light" and (.artifacts[] | select(.name == "light-gate.json" and .ok == true))' "$TMP_DIR/light-entry.json" >/dev/null
 
 mv "$CHANGE_DIR/light-gate.json" "$CHANGE_DIR/light-gate.json.bak"
+# Accounting-first default records the missing gate as a warning...
+printf '%s' '{"tool_name":"Write","tool_input":{"file_path":"README.md","content":"# Fixture\n"}}' | \
+  PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" >"$TMP_DIR/guard.out" 2>"$TMP_DIR/guard.err"
+grep -q 'light-entry:missing' "$TMP_DIR/guard.out"
+# ...and SPECNAV_STRICT=1 blocks on it.
 if printf '%s' '{"tool_name":"Write","tool_input":{"file_path":"README.md","content":"# Fixture\n"}}' | \
-  PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" >"$TMP_DIR/guard.out" 2>"$TMP_DIR/guard.err"; then
-  echo "expected light entry gate denial" >&2
+  SPECNAV_STRICT=1 PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" >"$TMP_DIR/guard.out" 2>"$TMP_DIR/guard.err"; then
+  echo "expected light entry gate denial under SPECNAV_STRICT=1" >&2
   exit 1
 fi
 grep -q 'light-entry:missing' "$TMP_DIR/guard.err"

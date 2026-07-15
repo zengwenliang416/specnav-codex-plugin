@@ -13,7 +13,7 @@ run_json() {
   local expected_status="$3"
   local mode="${4:-}"
   local status
-  local command=(node "$DEV/scripts/development-contract.js" --json)
+  local command=(node "$DEV/scripts/development-contract.js" --json --verbose)
 
   if [[ -n "$mode" ]]; then
     command+=(--mode "$mode")

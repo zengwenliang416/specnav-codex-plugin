@@ -19,7 +19,7 @@ Generate the stakeholder-facing HTML report for the six-domain verification resu
 2. Confirm an active OpenSpec change exists.
 3. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json`.
 4. If validation reports blockers, report the exact blockers and stop.
-5. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json`.
+5. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json --render` (md/html renders are only written with `--render`).
 6. Report the generated HTML paths and the aggregate verdict.
 
 ## Required Outputs

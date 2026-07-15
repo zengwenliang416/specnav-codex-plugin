@@ -993,6 +993,54 @@ function validateTaskContextLog(developmentDir, activeChange) {
   return artifactResult(activeChange, name, unique(result.blockers), true, { entries: result.entries.length });
 }
 
+// D2 consolidation: development/manifest.json replaces the 6 one-shot entry
+// planning JSONs with sections in one file. Append-only ledgers stay separate.
+const MANIFEST_SECTIONS = {
+  before_dev_check: 'before-dev-check.json',
+  promotion_map: 'prototype-promotion-map.json',
+  complexity_budget: 'complexity-budget.json',
+  task_graph: 'task-graph.json',
+  code_owner_map: 'code-owner-map.json',
+  extraction_map: 'extraction-map.json'
+};
+
+function readDevelopmentManifest(developmentDir) {
+  const parsed = readJsonFile(path.join(developmentDir, 'manifest.json'));
+  if (!parsed.ok) return { present: parsed.status !== 'missing', ok: false, value: null, status: parsed.status };
+  if (!isPlainObject(parsed.value)) return { present: true, ok: false, value: null, status: 'invalid-shape' };
+  return { present: true, ok: true, value: parsed.value, status: 'ok' };
+}
+
+function validateManifestSections(developmentDir, activeChange, manifest) {
+  const name = 'manifest.json';
+  const blockers = [];
+  if (!manifest.ok) {
+    blockers.push(manifest.status === 'invalid-json' ? `invalid-json:${name}` : `invalid-json-shape:${name}`);
+    return artifactResult(activeChange, name, blockers, true);
+  }
+  const value = manifest.value;
+  if (value.schema_version !== 1) blockers.push('invalid-development-manifest:schema_version');
+  for (const [section, legacyName] of Object.entries(MANIFEST_SECTIONS)) {
+    const body = value[section];
+    if (!isPlainObject(body)) {
+      blockers.push(`invalid-development-manifest:missing-section:${section}`);
+      continue;
+    }
+    if (section === 'before_dev_check') {
+      const passed = body.ok === true || body.pass === true
+        || ['ok', 'pass', 'passed'].includes(String(body.status || '').toLowerCase());
+      if (!passed) blockers.push('invalid-before-dev-check:status');
+      continue;
+    }
+    if (section === 'promotion_map') {
+      if (body.promotion_policy !== 'reimplement_under_development_gate') blockers.push('invalid-promotion-map:promotion_policy');
+      continue;
+    }
+    if (!hasObjectSubstance(body)) blockers.push(`empty-object-contract:${legacyName}`);
+  }
+  return artifactResult(activeChange, name, unique(blockers), true);
+}
+
 function validateLaneEscalation(projectRoot, changeDir) {
   // Anti-gaming: a light-lane change whose cumulative production diff grows
   // beyond escalation_threshold files must re-classify. Splitting a big
@@ -1134,7 +1182,55 @@ function validateAcceptanceAssertions(changeDir, activeChange) {
   });
 }
 
+// Light lane v2: the single light-change.json IS the contract. Entry needs a
+// ready gate; handoff needs every task done and every assertion passing with
+// evidence. The v1 14-artifact packet path below remains for in-flight changes.
+function validateLightChangeV2(projectRoot, mode, prototype, activeChange, changeDir, developmentDir, lightChange) {
+  const blockers = [...lightChange.blockers];
+  const value = lightChange.value || {};
+  if (value.change_id && value.change_id !== activeChange) blockers.push('light-change:change-mismatch');
+
+  if (mode === 'handoff' && !blockers.length) {
+    for (const task of value.tasks || []) {
+      if (task && task.done !== true) blockers.push(`light-change:task-incomplete:${task.id || task.text || 'unknown'}`);
+    }
+    for (const assertion of value.acceptance || []) {
+      if (!assertion) continue;
+      if (assertion.status !== 'passing') blockers.push(`acceptance:non-passing:${assertion.id || 'unknown'}`);
+      if (!(typeof assertion.evidence_ref === 'string' && assertion.evidence_ref.trim())) {
+        blockers.push(`acceptance:missing-evidence:${assertion.id || 'unknown'}`);
+      }
+    }
+  }
+  blockers.push(...validateLaneEscalation(projectRoot, changeDir));
+
+  const codegraph = codegraphStageGuard(projectRoot, activeChange, 'development');
+  blockers.push(...codegraphBlockers(codegraph));
+
+  return {
+    ok: blockers.length === 0,
+    project_root: projectRoot,
+    mode,
+    lane: 'light',
+    light_format: 'v2',
+    active_change: activeChange,
+    change_dir: changeDir,
+    development_dir: developmentDir,
+    blockers: unique(blockers),
+    warnings: unique(codegraphWarnings(codegraph)),
+    loops: [],
+    codegraph,
+    prototype,
+    artifacts: [artifactResult(activeChange, 'light-change.json', unique(blockers))],
+    tasks: []
+  };
+}
+
 function validateLightDevelopment(projectRoot, mode, prototype, activeChange, changeDir, developmentDir) {
+  const lightChange = lib.readLightChange(changeDir);
+  if (lightChange.present) {
+    return validateLightChangeV2(projectRoot, mode, prototype, activeChange, changeDir, developmentDir, lightChange);
+  }
   const artifacts = [];
   const blockers = [];
   const tasks = [];
@@ -1556,12 +1652,23 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   artifacts.push(approvalBinding.artifact);
   artifacts.push(validateScope(projectRoot, changeDir, activeChange, approvalBinding));
   artifacts.push(validateTasksMarkdown(changeDir, activeChange, mode));
-  artifacts.push(validateBeforeDevCheck(developmentDir, activeChange));
-  artifacts.push(validateBasis(developmentDir, activeChange, requiredReferences));
-  artifacts.push(validatePromotionMap(developmentDir, activeChange));
 
-  for (const name of ['complexity-budget.json', 'task-graph.json', 'code-owner-map.json', 'extraction-map.json']) {
-    artifacts.push(validateSubstantiveObjectArtifact(developmentDir, activeChange, name));
+  // development/manifest.json may carry the entry planning sections
+  // (before_dev_check, promotion_map, complexity_budget, task_graph,
+  // code_owner_map, extraction_map) in ONE file; the legacy per-file set
+  // remains accepted for in-flight changes.
+  const manifest = readDevelopmentManifest(developmentDir);
+  if (manifest.present) {
+    artifacts.push(validateManifestSections(developmentDir, activeChange, manifest));
+    artifacts.push(validateBasis(developmentDir, activeChange, requiredReferences));
+  } else {
+    artifacts.push(validateBeforeDevCheck(developmentDir, activeChange));
+    artifacts.push(validateBasis(developmentDir, activeChange, requiredReferences));
+    artifacts.push(validatePromotionMap(developmentDir, activeChange));
+
+    for (const name of ['complexity-budget.json', 'task-graph.json', 'code-owner-map.json', 'extraction-map.json']) {
+      artifacts.push(validateSubstantiveObjectArtifact(developmentDir, activeChange, name));
+    }
   }
 
   const taskDirs = listTaskDirs(developmentDir);
@@ -1602,7 +1709,10 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
       artifacts.push(artifactResult(activeChange, name, [`missing-development-artifact:${name}`]));
     }
   }
-  const requiredDevelopmentArtifacts = mode === 'entry' ? DEVELOPMENT_ENTRY_ARTIFACTS : DEVELOPMENT_HANDOFF_ARTIFACTS;
+  // manifest.json subsumes the per-file entry planning set.
+  const manifestCovered = manifest.present ? new Set(Object.values(MANIFEST_SECTIONS)) : new Set();
+  const requiredDevelopmentArtifacts = (mode === 'entry' ? DEVELOPMENT_ENTRY_ARTIFACTS : DEVELOPMENT_HANDOFF_ARTIFACTS)
+    .filter((name) => !manifestCovered.has(name));
   for (const name of requiredDevelopmentArtifacts) {
     if (!artifacts.some((artifact) => artifact.name === name)) {
       artifacts.push(artifactResult(activeChange, name, [`missing-development-artifact:${name}`], true));
@@ -1659,9 +1769,24 @@ function markdown(result) {
   return `${lines.join('\n')}\n`;
 }
 
+// Context is a budget: default output is the decision (ok/blockers), the full
+// artifact table stays behind --verbose. Blockers are already self-locating
+// (`invalid-x:file:detail`), so the compact form loses no repair information.
+function toCompact(result) {
+  return {
+    ok: result.ok,
+    mode: result.mode,
+    lane: result.lane || 'standard',
+    ...(result.light_format ? { light_format: result.light_format } : {}),
+    active_change: result.active_change,
+    blockers: result.blockers,
+    warnings: result.warnings || []
+  };
+}
+
 function parseArgs(argv) {
   const args = argv.slice(2);
-  const parsed = { json: args.includes('--json'), mode: DEFAULT_MODE, error: null };
+  const parsed = { json: args.includes('--json'), verbose: args.includes('--verbose'), mode: DEFAULT_MODE, error: null };
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -1705,12 +1830,16 @@ function main() {
       artifacts: [],
       tasks: []
     };
-    process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : markdown(result));
+    process.stdout.write(args.json
+      ? (args.verbose ? `${JSON.stringify(result, null, 2)}\n` : `${JSON.stringify(toCompact(result))}\n`)
+      : markdown(result));
     process.exit(2);
   }
 
   const result = validateDevelopment(lib.projectRoot(), { mode: args.mode });
-  process.stdout.write(args.json ? `${JSON.stringify(result, null, 2)}\n` : markdown(result));
+  process.stdout.write(args.json
+    ? (args.verbose ? `${JSON.stringify(result, null, 2)}\n` : `${JSON.stringify(toCompact(result))}\n`)
+    : markdown(result));
   process.exit(result.ok ? 0 : 2);
 }
 

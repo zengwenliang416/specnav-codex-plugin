@@ -40,8 +40,8 @@ jq -e '.ok == true and .lane == "light" and .foundation_required == false' "$TMP
   || { echo "lane fixture failed: light requirements contract"; jq '.blockers' "$TMP_DIR/light-req.json"; exit 1; }
 
 PROJECT_DIR="$LIGHT_WORK" SPECNAV_CHANGE="$LIGHT_CHANGE" \
-  node "$DEV/scripts/development-contract.js" --mode entry --json >"$TMP_DIR/light-dev.json"
-jq -e '.ok == true and .lane == "light" and (.artifacts[] | select(.name == "tasks.md" and .ok == true))' "$TMP_DIR/light-dev.json" >/dev/null \
+  node "$DEV/scripts/development-contract.js" --mode entry --json --verbose >"$TMP_DIR/light-dev.json"
+jq -e '.ok == true and .lane == "light" and .light_format == "v2" and (.artifacts[] | select(.name == "light-change.json" and .ok == true))' "$TMP_DIR/light-dev.json" >/dev/null \
   || { echo "lane fixture failed: light development entry"; jq '.blockers' "$TMP_DIR/light-dev.json"; exit 1; }
 
 PROJECT_DIR="$LIGHT_WORK" SPECNAV_MARKETPLACE_ROOT="$ROOT" SPECNAV_CHANGE="$LIGHT_CHANGE" SPECNAV_DISABLE_OPENSPEC=1 \

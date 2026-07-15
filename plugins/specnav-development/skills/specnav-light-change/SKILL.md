@@ -15,7 +15,7 @@ Create and validate the minimum legal SpecNav artifacts for a simple change.
 Light lane is for low-risk changes such as docs, copy, labels, comments,
 README edits, and very small styling/config adjustments.
 
-## Workflow
+## Workflow (v2, default)
 
 1. Run the shared triage:
 
@@ -25,12 +25,17 @@ node "$SPECNAV_CORE_ROOT/scripts/change-triage.js" --intent "$INTENT" --json
 
 2. If `lane` is not `light`, stop and route to the reported standard or full lane. Do not force light mode.
 3. Require an existing OpenSpec project and a clean active change. Do not call an OpenSpec native skill.
-4. Create the light artifacts. This also creates `light-gate.json` and a
-   pending user test case signoff under `verify/`:
+4. Create the single-file light change:
 
 ```bash
 node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-light-change/scripts/create-light-change.js" --intent "$INTENT" --paths "$PATHS" --json
 ```
+
+This writes ONE file — `openspec/changes/<change>/light-change.json` — that
+carries the lane, editable paths, acceptance assertions, tasks, and a pending
+user test in one place. Paths starting with `../` (sibling repositories) are
+accepted and recorded as `external_repos` declarations so the guard allows
+those edits.
 
 5. Run the entry gate:
 
@@ -38,35 +43,28 @@ node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-light-change/scripts/create-light
 node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode entry --json
 ```
 
-6. Only edit files listed by the generated `scope.json`. SpecNav guards block
-   light-lane production edits when `light-gate.json` is missing or not ready.
-7. Before verification handoff, update `tasks.md` to `[x]` and update each
-   `acceptance.json` assertion to `passing` with an `evidence_ref`, then run:
+6. Only edit files listed in `light-change.json` `entry.editable_paths` (and
+   declared `external_repos`). Codex hooks record scope drift as
+   warnings by default and block under `SPECNAV_STRICT=1`.
+7. Before verification handoff, inside `light-change.json`: set each task
+   `done: true`, set each acceptance assertion to `passing` with an
+   `evidence_ref`, then run:
 
 ```bash
 node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json
 ```
 
-8. Do not fabricate user testing. Before SpecNav verification can go green, the
-   pending light test case must be approved in
-   `verify/user-test-case-signoff.json`.
+8. Do not fabricate user testing. Before `$specnav-verify` can go green, ask
+   the user to confirm the change works, then record their words in
+   `light-change.json` `user_test` (`status: "approved"`, `user_decision`).
 
 ## Required Light Artifacts
 
-- `openspec/changes/<change>/risk-tier.json`
-- `openspec/changes/<change>/light-gate.json`
-- `openspec/changes/<change>/requirements.md`
-- `openspec/changes/<change>/acceptance.md`
-- `openspec/changes/<change>/acceptance.json`
-- `openspec/changes/<change>/spec-map.json`
-- `openspec/changes/<change>/component-impact-map.json`
-- `openspec/changes/<change>/prototype/decision.json`
-- `openspec/changes/<change>/scope.json`
-- `openspec/changes/<change>/tasks.md`
-- `openspec/changes/<change>/verify/user-test-cases.md`
-- `openspec/changes/<change>/verify/user-test-cases.json`
-- `openspec/changes/<change>/verify/user-test-case-signoff.json`
-- `openspec/changes/<change>/verify/domain-case-matrix.json`
+- `openspec/changes/<change>/light-change.json` — the only file.
+
+Legacy packet mode (`--format packet`) still writes the v1 14-artifact set
+(`light-gate.json`, `scope.json`, `tasks.md`, `acceptance.*`, `verify/*` …)
+for projects that depend on it; in-flight v1 changes keep validating.
 
 ## Escalation
 

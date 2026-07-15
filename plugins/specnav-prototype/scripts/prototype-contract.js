@@ -1089,6 +1089,28 @@ function validatePrototype(root = lib.projectRoot()) {
   let verifier = null;
   let decision = null;
 
+  // Light lane v2: a valid light-change.json implies prototype not_required —
+  // no prototype/ directory is expected at all.
+  {
+    const lightChangeV2 = lib.readLightChange(changeDir);
+    if (lightChangeV2.present && lightChangeV2.ok) {
+      return {
+        ok: true,
+        project_root: projectRoot,
+        active_change: activeChange,
+        prototype_dir: prototypeDir,
+        lane: 'light',
+        light_format: 'v2',
+        blockers: [],
+        requirements,
+        artifacts: [],
+        manifest: null,
+        verifier: null,
+        decision: { status: 'not_required', prototype_type: null }
+      };
+    }
+  }
+
   if (statKind(prototypeDir) !== 'directory') {
     blockers.push('missing-prototype-dir');
     artifacts = APPROVED_CORE_ARTIFACTS.map((name) => artifactResult(activeChange, name, [`missing-prototype-artifact:${name}`]));

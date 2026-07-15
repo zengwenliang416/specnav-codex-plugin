@@ -208,8 +208,8 @@ function validateVerification(changeDir, change, hasSignoff, lane = 'standard') 
   else if (aggregate.value.active_change && aggregate.value.active_change !== change) aggregateBlockers.push('verification-change-mismatch');
   artifacts.push(verifyArtifact(change, 'aggregate-report.json', aggregateBlockers));
 
-  const aggregateMd = readTextFile(path.join(verifyDir, 'aggregate-report.md'));
-  artifacts.push(verifyArtifact(change, 'aggregate-report.md', aggregateMd.ok && aggregateMd.value.trim() !== '' ? [] : ['missing-verify-artifact:aggregate-report.md']));
+  // aggregate-report.json is the machine contract; the md/html renders are
+  // optional human views (verify-domains aggregate --render) and never gate.
 
   const receipt = readJsonFile(path.join(verifyDir, 'receipt.json'));
   const receiptBlockers = [];
@@ -522,6 +522,48 @@ function validateLightOperations(projectRoot, change, changeDir, risk) {
   const blockers = [];
   const warnings = [];
   const signoff = fs.existsSync(path.join(opsDir, 'signoff.yaml')) || fs.existsSync(path.join(changeDir, 'signoff.yaml'));
+
+  // Light lane v2: aggregate-report.json green + the single-file contract
+  // (tasks done, assertions passing, user test approved) is the whole gate.
+  const lightChange = lib.readLightChange(changeDir);
+  if (lightChange.present) {
+    const lightBlockers = [...lightChange.blockers];
+    const value = lightChange.value || {};
+    if (lightChange.ok) {
+      for (const task of value.tasks || []) {
+        if (task && task.done !== true) lightBlockers.push(`light-change:task-incomplete:${task.id || 'unknown'}`);
+      }
+      for (const assertion of value.acceptance || []) {
+        if (assertion && assertion.status !== 'passing') lightBlockers.push(`acceptance:non-passing:${assertion.id || 'unknown'}`);
+      }
+      if (!value.user_test || value.user_test.status !== 'approved') lightBlockers.push('verify:user-test-cases-unapproved');
+    }
+    const aggregate = readJsonFile(path.join(changeDir, 'verify', 'aggregate-report.json'));
+    if (!aggregate.ok) lightBlockers.push('missing-verify-artifact:aggregate-report.json');
+    else if (!isPlainObject(aggregate.value) || aggregate.value.verdict !== 'green') lightBlockers.push('verification-not-green');
+    if (fs.existsSync(path.join(changeDir, 'verify-report.stale'))) lightBlockers.push('fresh-verify');
+    artifacts.push(changeArtifact(change, 'light-change.json', unique(lightBlockers)));
+    blockers.push(...lightBlockers);
+    const codegraphV2 = codegraphStageGuard(projectRoot, change, 'operations');
+    blockers.push(...codegraphBlockers(codegraphV2));
+    warnings.push(...codegraphWarnings(codegraphV2));
+    return {
+      ok: unique(blockers).length === 0,
+      project_root: projectRoot,
+      active_change: change,
+      change_resolution: { source: 'active-change', candidates: [change], blockers: [] },
+      change_dir: changeDir,
+      operations_dir: opsDir,
+      release_target: 'local-only',
+      risk_tier: risk.tier || 'lite',
+      lane: 'light',
+      light_format: 'v2',
+      blockers: unique(blockers),
+      warnings: unique(warnings),
+      codegraph: codegraphV2,
+      artifacts
+    };
+  }
 
   const verification = validateVerification(changeDir, change, signoff, 'light');
   artifacts.push(...verification.artifacts);

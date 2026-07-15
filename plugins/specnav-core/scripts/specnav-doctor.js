@@ -116,11 +116,9 @@ function doctor(options = {}) {
     checks.push(check('target-openspec', hasOpenSpec, targetRoot));
     if (hasOpenSpec) {
       checks.push(check('workflow-state-file', fs.existsSync(path.join(specnavDir, 'workflow-state.json')), 'openspec/.specnav/workflow-state.json'));
-      const contextOk = workflow.CONTEXT_MANIFESTS.every(([, fileName]) => {
-        const file = path.join(specnavDir, 'context', fileName);
-        return fs.existsSync(file) && fs.readFileSync(file, 'utf8').trim() !== '';
-      });
-      checks.push(check('context-manifests', contextOk, 'openspec/.specnav/context/*.jsonl'));
+      const contextFile = path.join(specnavDir, 'context', workflow.CONTEXT_SNAPSHOT);
+      const contextOk = fs.existsSync(contextFile) && fs.readFileSync(contextFile, 'utf8').trim() !== '';
+      checks.push(check('context-manifests', contextOk, `openspec/.specnav/context/${workflow.CONTEXT_SNAPSHOT}`));
       checks.push(check('journal', fs.existsSync(path.join(specnavDir, 'journal', 'index.md')), 'openspec/.specnav/journal/index.md'));
     }
   }

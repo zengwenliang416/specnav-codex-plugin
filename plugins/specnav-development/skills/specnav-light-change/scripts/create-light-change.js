@@ -22,6 +22,7 @@ function parseArgs(argv = process.argv.slice(2)) {
     change: null,
     intent: '',
     paths: [],
+    format: 'v2',
     force: false,
     dryRun: false,
     json: false,
@@ -47,7 +48,7 @@ function parseArgs(argv = process.argv.slice(2)) {
       options.dryRun = true;
       continue;
     }
-    if (['--project', '--change', '--intent', '--paths'].includes(arg)) {
+    if (['--project', '--change', '--intent', '--paths', '--format'].includes(arg)) {
       const value = argv[index + 1];
       if (!isNonEmpty(value) || value.startsWith('--')) {
         options.blockers.push(`missing-option-value:${arg}`);
@@ -56,7 +57,10 @@ function parseArgs(argv = process.argv.slice(2)) {
       if (arg === '--project') options.project = value;
       else if (arg === '--change') options.change = value;
       else if (arg === '--intent') options.intent = value;
-      else options.paths.push(...splitPaths(value));
+      else if (arg === '--format') {
+        if (!['v2', 'packet'].includes(value)) options.blockers.push(`invalid-option-value:--format:${value}`);
+        else options.format = value;
+      } else options.paths.push(...splitPaths(value));
       index += 1;
       continue;
     }
@@ -122,6 +126,58 @@ function writeJson(file, value, options, files) {
 
 function firstPath(paths) {
   return paths[0] || '<path>';
+}
+
+// Light lane v2 (default): ONE light-change.json carries lane, scope,
+// acceptance, tasks, and the pending user-signoff — replacing the
+// 14-artifact packet. The packet writer below stays for --format packet.
+function buildLightChangeV2(root, change, changeDir, options, triage) {
+  const files = [];
+  const paths = options.paths.map(safePath).filter(Boolean);
+  const now = new Date().toISOString();
+  const subject = firstPath(paths);
+  const taskText = `User can see the requested light change reflected in ${subject}.`;
+  const lightOptions = { ...options, root };
+  const externalRepos = Array.isArray(options.externalRepos) ? options.externalRepos : [];
+
+  writeJson(path.join(changeDir, 'light-change.json'), {
+    schema: 'specnav.lightChange.v2',
+    change_id: change,
+    lane: 'light',
+    intent: options.intent || 'Light change',
+    created_at: now,
+    triage: {
+      reason: triage.reason,
+      confidence: triage.confidence,
+      escalation_threshold: 10,
+      escalation_triggers: triage.escalation_triggers
+    },
+    entry: {
+      status: 'ready',
+      editable_paths: paths
+    },
+    ...(externalRepos.length ? { external_repos: externalRepos } : {}),
+    acceptance: [
+      {
+        id: 'LIGHT-001',
+        statement: taskText,
+        verify_via: 'static',
+        status: 'failing',
+        evidence_ref: ''
+      }
+    ],
+    tasks: [
+      { id: 'T1', text: taskText, done: false }
+    ],
+    user_test: {
+      status: 'pending',
+      case: taskText,
+      user_decision: null
+    },
+    verification_domains: ['static', 'unit']
+  }, lightOptions, files);
+
+  return files;
 }
 
 function buildArtifacts(root, change, changeDir, options, triage) {
@@ -368,8 +424,15 @@ function main(argv = process.argv.slice(2)) {
   const blockers = [...options.blockers];
   if (!isNonEmpty(options.intent)) blockers.push('light-change:intent-required');
   if (!options.paths.length) blockers.push('light-change:paths-required');
-  const cleanPaths = options.paths.map(safePath).filter(Boolean);
-  if (cleanPaths.length !== options.paths.length) blockers.push('light-change:invalid-path');
+  // Cross-repo targets (../repo/... ) are legal in v2: they become an
+  // external_repos declaration instead of failing path validation.
+  const externalPaths = options.format === 'v2'
+    ? options.paths.filter((value) => typeof value === 'string' && value.startsWith('../') && !value.includes('/../'))
+    : [];
+  const projectPaths = options.paths.filter((value) => !externalPaths.includes(value));
+  const cleanPaths = projectPaths.map(safePath).filter(Boolean);
+  if (cleanPaths.length !== projectPaths.length) blockers.push('light-change:invalid-path');
+  if (!cleanPaths.length && !externalPaths.length) blockers.push('light-change:paths-required');
   if (!openSpec.ok) blockers.push(...openSpec.blockers);
 
   if (blockers.length) {
@@ -403,7 +466,14 @@ function main(argv = process.argv.slice(2)) {
     return 2;
   }
 
-  const files = buildArtifacts(root, active.change, active.dir, { ...options, paths: cleanPaths }, triage);
+  const externalRepos = externalPaths.map((value) => {
+    const segments = value.split('/');
+    const repoRoot = segments.slice(0, 2).join('/');
+    const include = segments.slice(2).join('/') || '**';
+    return { root: repoRoot, include: [include], reason: options.intent || 'light change cross-repo edit' };
+  });
+  const build = options.format === 'packet' ? buildArtifacts : buildLightChangeV2;
+  const files = build(root, active.change, active.dir, { ...options, paths: cleanPaths, externalRepos }, triage);
   emit({
     ok: true,
     project_root: root,

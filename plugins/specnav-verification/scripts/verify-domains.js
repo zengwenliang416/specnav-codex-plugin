@@ -1044,6 +1044,47 @@ function validateVerify(root = lib.projectRoot()) {
   const lane = changeDir ? lib.readLane(changeDir).lane : 'standard';
   const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
 
+  // Light lane v2: the single light-change.json is the verification contract —
+  // assertions passing with evidence, tasks done, user test approved. No
+  // verify/ packet is required.
+  const lightChange = changeDir ? lib.readLightChange(changeDir) : { present: false };
+  if (lane === 'light' && lightChange.present) {
+    const lightBlockers = [...blockers, ...lightChange.blockers];
+    const value = lightChange.value || {};
+    if (lightChange.ok) {
+      const userTest = value.user_test || {};
+      if (userTest.status !== 'approved') lightBlockers.push('verify:user-test-cases-unapproved');
+      else if (!(typeof userTest.user_decision === 'string' && userTest.user_decision.trim())) {
+        lightBlockers.push('invalid-user-test-case-signoff:user_decision');
+      }
+      for (const task of value.tasks || []) {
+        if (task && task.done !== true) lightBlockers.push(`light-change:task-incomplete:${task.id || 'unknown'}`);
+      }
+    }
+    if (staleMarkerUnresolved(changeDir, verifyDir)) lightBlockers.push('stale-verify-report');
+    const lightCodegraph = codegraphStageGuard(projectRoot, change, 'verification');
+    lightBlockers.push(...codegraphBlockers(lightCodegraph));
+    return {
+      ok: unique(lightBlockers).length === 0,
+      project_root: projectRoot,
+      active_change: change || null,
+      change_resolution: {
+        source: changeState.source,
+        candidates: changeState.candidates || [],
+        blockers: changeState.blockers || []
+      },
+      change_dir: changeDir,
+      verify_dir: verifyDir,
+      lane,
+      light_format: 'v2',
+      blockers: unique(lightBlockers),
+      warnings: unique([...warnings, ...codegraphWarnings(lightCodegraph)]),
+      codegraph: lightCodegraph,
+      development,
+      artifacts: [artifactResult(change, 'light-change.json', unique(lightChange.blockers))]
+    };
+  }
+
   if (verifyDir) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
     artifacts.push(validatePlan(verifyDir, change, laneDomains, { runtimeEvidenceRequired: lane !== 'light' }));
@@ -1099,7 +1140,7 @@ function validateVerify(root = lib.projectRoot()) {
   };
 }
 
-function writeAggregate(root = lib.projectRoot()) {
+function writeAggregate(root = lib.projectRoot(), options = {}) {
   const projectRoot = path.resolve(root);
   const validation = validateVerify(projectRoot);
   const verifyDir = validation.verify_dir;
@@ -1109,6 +1150,12 @@ function writeAggregate(root = lib.projectRoot()) {
   const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
   const domains = {};
   for (const domain of laneDomains) {
+    // Light v2 has no per-domain report files: the domain verdict IS the
+    // contract verdict (the single-file gate already covers static+unit).
+    if (validation.light_format === 'v2') {
+      domains[domain] = verdict;
+      continue;
+    }
     const artifact = validation.artifacts.find((item) => item.name === `${domain}/report.json`);
     domains[domain] = artifact && VERDICTS.has(artifact.verdict) ? artifact.verdict : 'blocked';
   }
@@ -1141,21 +1188,6 @@ function writeAggregate(root = lib.projectRoot()) {
 
   if (verifyDir) {
     lib.writeJson(path.join(verifyDir, 'aggregate-report.json'), report);
-    const lines = [
-      '# SpecNav Aggregate Verification Report',
-      '',
-      `- active_change: ${report.active_change || 'none'}`,
-      `- verdict: ${report.verdict}`,
-      `- blockers: ${report.blockers.join(', ') || '-'}`,
-      `- codegraph: ${report.codegraph && report.codegraph.decision ? report.codegraph.decision.result : 'not-evaluated'}`,
-      `- codegraph artifacts: ${report.codegraph && report.codegraph.artifacts ? report.codegraph.artifacts.guard_report : '-'}`,
-      '',
-      '| Artifact | Status | Blockers |',
-      '| --- | --- | --- |',
-      ...report.artifacts.map((artifact) => `| ${artifact.name} | ${artifact.ok ? 'pass' : 'blocked'} | ${artifact.blockers.join('<br>') || '-'} |`)
-    ];
-    fs.writeFileSync(path.join(verifyDir, 'aggregate-report.md'), `${lines.join('\n')}\n`);
-    fs.writeFileSync(path.join(verifyDir, 'aggregate-report.html'), renderAggregateHtml(report));
     lib.writeJson(path.join(validation.change_dir, 'verify-report.json'), {
       schema_version: 1,
       generated_at: report.generated_at,
@@ -1165,8 +1197,27 @@ function writeAggregate(root = lib.projectRoot()) {
       html_report: 'verify-report.html',
       review_style: report.review_style
     });
-    fs.writeFileSync(path.join(validation.change_dir, 'verify-report.md'), `${lines.join('\n')}\n`);
-    fs.writeFileSync(path.join(validation.change_dir, 'verify-report.html'), renderAggregateHtml(report));
+    // JSON is the single source of truth; md/html are human render targets,
+    // generated only on request (--render) instead of 3x per aggregate run.
+    if (options.render) {
+      const lines = [
+        '# SpecNav Aggregate Verification Report',
+        '',
+        `- active_change: ${report.active_change || 'none'}`,
+        `- verdict: ${report.verdict}`,
+        `- blockers: ${report.blockers.join(', ') || '-'}`,
+        `- codegraph: ${report.codegraph && report.codegraph.decision ? report.codegraph.decision.result : 'not-evaluated'}`,
+        `- codegraph artifacts: ${report.codegraph && report.codegraph.artifacts ? report.codegraph.artifacts.guard_report : '-'}`,
+        '',
+        '| Artifact | Status | Blockers |',
+        '| --- | --- | --- |',
+        ...report.artifacts.map((artifact) => `| ${artifact.name} | ${artifact.ok ? 'pass' : 'blocked'} | ${artifact.blockers.join('<br>') || '-'} |`)
+      ];
+      fs.writeFileSync(path.join(verifyDir, 'aggregate-report.md'), `${lines.join('\n')}\n`);
+      fs.writeFileSync(path.join(verifyDir, 'aggregate-report.html'), renderAggregateHtml(report));
+      fs.writeFileSync(path.join(validation.change_dir, 'verify-report.md'), `${lines.join('\n')}\n`);
+      fs.writeFileSync(path.join(validation.change_dir, 'verify-report.html'), renderAggregateHtml(report));
+    }
     if (verdict === 'green') {
       try {
         fs.unlinkSync(path.join(validation.change_dir, 'verify-report.stale'));
@@ -1214,7 +1265,9 @@ function main() {
     process.stdout.write(args.includes('--json') ? `${JSON.stringify(result, null, 2)}\n` : markdown(result));
     process.exit(2);
   }
-  const result = command === 'aggregate' ? writeAggregate() : validateVerify();
+  const result = command === 'aggregate'
+    ? writeAggregate(lib.projectRoot(), { render: args.includes('--render') })
+    : validateVerify();
   process.stdout.write(args.includes('--json') ? `${JSON.stringify(result, null, 2)}\n` : (command === 'aggregate' ? `${JSON.stringify(result, null, 2)}\n` : markdown(result)));
   process.exit((result.ok === false || result.verdict === 'red') ? 2 : 0);
 }

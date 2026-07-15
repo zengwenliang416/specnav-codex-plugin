@@ -7,13 +7,11 @@ const lib = require('./specnav-lib');
 const affordances = require('./affordances');
 const suite = require('./plugin-suite');
 
-const CONTEXT_MANIFESTS = [
-  ['requirements', 'requirements-context.jsonl'],
-  ['prototype', 'prototype-context.jsonl'],
-  ['implement', 'implement-context.jsonl'],
-  ['verify', 'verify-context.jsonl'],
-  ['ops', 'ops-context.jsonl']
-];
+// Stage manifests collapsed into one overwrite-in-place snapshot
+// (context/current.json). The old per-stage append-only *.jsonl files grew
+// unbounded (5 appends per --write) and carried the same five identical rows.
+const CONTEXT_SNAPSHOT = 'current.json';
+const MAX_JOURNAL_SESSIONS = 10;
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -50,34 +48,64 @@ function workflowState(root = lib.projectRoot(), options = {}) {
   };
 }
 
-function appendJsonl(file, entry) {
-  lib.ensureDir(path.dirname(file));
-  fs.appendFileSync(file, `${JSON.stringify(entry)}\n`);
-}
-
 function journalSessionName(date = new Date()) {
   return `session-${date.toISOString().replace(/[:.]/g, '-')}.md`;
+}
+
+function pruneJournal(journalDir) {
+  let sessions = [];
+  try {
+    sessions = fs.readdirSync(journalDir)
+      .filter((name) => /^session-.*\.md$/.test(name))
+      .sort();
+  } catch {
+    return;
+  }
+  for (const name of sessions.slice(0, Math.max(0, sessions.length - MAX_JOURNAL_SESSIONS))) {
+    try {
+      fs.unlinkSync(path.join(journalDir, name));
+    } catch {}
+  }
+}
+
+const RUNTIME_GITIGNORE = [
+  '# SpecNav session-local runtime state — never version this.',
+  'events.jsonl',
+  'workflow-state.json',
+  'session-lock',
+  'journal/',
+  'context/',
+  ''
+].join('\n');
+
+function ensureRuntimeGitignore(specnavDir) {
+  const file = path.join(specnavDir, '.gitignore');
+  try {
+    if (!fs.existsSync(file)) fs.writeFileSync(file, RUNTIME_GITIGNORE);
+  } catch {}
 }
 
 function writeRuntimeArtifacts(root, result = workflowState(root)) {
   lib.ensureSpecNavMarker(root);
   const specnavDir = lib.specnavDir(root);
+  lib.ensureDir(specnavDir);
+  ensureRuntimeGitignore(specnavDir);
   lib.writeJson(path.join(specnavDir, 'workflow-state.json'), result);
+  const registry = result.change_registry || lib.buildChangeRegistry(root);
+  registry.current_focus = result.active_change || registry.current_focus || null;
+  lib.writeChangeRegistry(root, registry);
 
-  for (const [stage, fileName] of CONTEXT_MANIFESTS) {
-    appendJsonl(path.join(specnavDir, 'context', fileName), {
-      schema: 'specnav.contextManifest.v1',
-      generated_at: result.generated_at,
-      stage,
-      project_root: result.project_root,
-      active_change: result.active_change,
-      status: result.status,
-      blockers: result.blockers,
-      ready_actions: result.actions
-        .filter((action) => action.state === 'ready')
-        .map((action) => action.id)
-    });
-  }
+  lib.writeJson(path.join(specnavDir, 'context', CONTEXT_SNAPSHOT), {
+    schema: 'specnav.contextManifest.v2',
+    generated_at: result.generated_at,
+    project_root: result.project_root,
+    active_change: result.active_change,
+    status: result.status,
+    blockers: result.blockers,
+    ready_actions: result.actions
+      .filter((action) => action.state === 'ready')
+      .map((action) => action.id)
+  });
 
   const journalDir = path.join(specnavDir, 'journal');
   lib.ensureDir(journalDir);
@@ -101,11 +129,12 @@ function writeRuntimeArtifacts(root, result = workflowState(root)) {
     `- status: ${result.status}`,
     ''
   ].join('\n'));
+  pruneJournal(journalDir);
 
   lib.event(root, 'workflow-state.write', {
     active_change: result.active_change,
     status: result.status,
-    context_manifests: CONTEXT_MANIFESTS.map(([, fileName]) => `openspec/.specnav/context/${fileName}`),
+    context_manifest: `openspec/.specnav/context/${CONTEXT_SNAPSHOT}`,
     journal: `openspec/.specnav/journal/${sessionName}`
   });
 
@@ -130,6 +159,21 @@ function toText(result) {
   return `${lines.join('\n')}\n`;
 }
 
+// Context is a budget: default stdout is a one-line decision summary. The
+// full affordance table is on disk (workflow-state.json) and behind --verbose.
+function toCompact(result) {
+  return {
+    ok: result.ok,
+    status: result.status,
+    active_change: result.active_change,
+    blockers: result.blockers,
+    ready_actions: result.actions
+      .filter((action) => action.state === 'ready')
+      .map((action) => action.id),
+    detail: 'openspec/.specnav/workflow-state.json'
+  };
+}
+
 function main() {
   const args = process.argv.slice(2);
   const root = lib.projectRoot(process.argv);
@@ -139,11 +183,18 @@ function main() {
   if (args.includes('--write')) {
     writeRuntimeArtifacts(root, result);
   }
-  if (args.includes('--json')) process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-  else process.stdout.write(toText(result));
+  const verbose = args.includes('--verbose');
+  if (args.includes('--json')) {
+    process.stdout.write(verbose ? `${JSON.stringify(result, null, 2)}\n` : `${JSON.stringify(toCompact(result))}\n`);
+  } else if (verbose) {
+    process.stdout.write(toText(result));
+  } else {
+    const compact = toCompact(result);
+    process.stdout.write(`SpecNav: ${compact.status} change=${compact.active_change || 'none'} ready=[${compact.ready_actions.join(', ')}] blockers=[${compact.blockers.join(', ')}] (--verbose for the full table)\n`);
+  }
   process.exit(result.ok ? 0 : 2);
 }
 
 if (require.main === module) main();
 
-module.exports = { CONTEXT_MANIFESTS, workflowState, writeRuntimeArtifacts, toText };
+module.exports = { CONTEXT_SNAPSHOT, MAX_JOURNAL_SESSIONS, workflowState, writeRuntimeArtifacts, toText };

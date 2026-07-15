@@ -232,6 +232,31 @@ function validateRequirements(root = lib.projectRoot()) {
   if (!foundation.ok && lane !== 'light') blockers.push(...foundation.blockers);
   if (!activeChangeOk) blockers.push('active-change');
 
+  // Light lane v2: light-change.json carries intent + acceptance inline; the
+  // per-artifact requirements packet is not required.
+  if (activeChangeOk && lane === 'light') {
+    const lightChange = lib.readLightChange(dir);
+    if (lightChange.present) {
+      const lightBlockers = unique([...blockers, ...lightChange.blockers]);
+      return {
+        ok: lightBlockers.length === 0,
+        project_root: projectRoot,
+        active_change: change,
+        lane,
+        light_format: 'v2',
+        foundation_required: false,
+        foundation,
+        blockers: lightBlockers,
+        artifacts: [{
+          name: 'light-change.json',
+          path: artifactPath(change, 'light-change.json'),
+          ok: lightChange.ok,
+          blockers: lightChange.blockers
+        }]
+      };
+    }
+  }
+
   // Optional L3 annotation policy: absent is legal; present-but-malformed blocks
   // so a broken opt-in config surfaces early. Does not add a required artifact.
   const annotationPolicy = foundationSpecs.validateAnnotationPolicy(projectRoot);

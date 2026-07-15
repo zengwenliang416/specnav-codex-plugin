@@ -38,7 +38,7 @@ Create shared verification plan and evidence contracts.
 - `verify/user-test-cases.md`, `user-test-cases.json`, `user-test-case-signoff.json`, and `domain-case-matrix.json`.
 - `verify/runtime-evidence.json` with runtime, browser, and any required database evidence for standard/full lanes.
 - `codegraph/claims-map.json` and `codegraph/evidence-query-plan.json` with verification traceability claims.
-- `verify/aggregate-report.html` and change-level `verify-report.html` for stakeholder review.
+- `verify/aggregate-report.json` (machine contract); md/html stakeholder renders come from `aggregate --render` or the specnav-html-report skill on demand.
 - Shared shells: `assets/plan.md`, `assets/plan.json`, `assets/user-test-cases.md`, `assets/user-test-cases.json`, `assets/user-test-case-signoff.json`, `assets/domain-case-matrix.json`, `assets/runtime-evidence.json`, `assets/evidence-index.jsonl`, `assets/traceability-matrix.json`, `assets/blocker-classification.jsonl`, `assets/root-cause-checks.jsonl`, `assets/receipt.md`, `assets/receipt.json`, `assets/behavior-evals/scenarios.json`, `assets/behavior-evals/report.md`, `assets/behavior-evals/report.json`, and `assets/behavior-evals/transcripts/verify-runs-six-domains.md`.
 
 ## Stop Conditions
