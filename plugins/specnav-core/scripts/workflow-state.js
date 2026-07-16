@@ -73,6 +73,7 @@ const RUNTIME_GITIGNORE = [
   'events.jsonl',
   'workflow-state.json',
   'session-lock',
+  'warned.json',
   'journal/',
   'context/',
   ''

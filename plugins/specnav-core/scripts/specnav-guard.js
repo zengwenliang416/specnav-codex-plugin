@@ -106,13 +106,41 @@ function deny(blockerId, message) {
   process.exit(2);
 }
 
-function warn(root, message, reason = 'warn') {
+// Warning dedup: the same (reason, change) pair speaks ONCE per session.
+// Observed failure mode without this: one missing-tasks warning repeated 154
+// times in a single session (~93KB of context) and was tuned out entirely.
+// The hook.warn event is still recorded every time for accounting; only the
+// model/user-facing systemMessage is deduplicated. Session id comes from the
+// hook payload; without one, fall back to the session-lock holder.
+function warnDedupFile(root) {
+  return path.join(lib.specnavDir(root), 'warned.json');
+}
+
+function warnAlreadySent(root, sessionId, reason, change) {
+  if (!sessionId) return false;
+  const key = `${reason}:${change || ''}`;
+  try {
+    const state = lib.readJson(warnDedupFile(root), null);
+    if (state && state.session_id === sessionId && Array.isArray(state.warned) && state.warned.includes(key)) {
+      return true;
+    }
+    const warned = state && state.session_id === sessionId && Array.isArray(state.warned) ? state.warned : [];
+    warned.push(key);
+    lib.writeJson(warnDedupFile(root), { session_id: sessionId, warned: warned.slice(-100) });
+  } catch {}
+  return false;
+}
+
+function warn(root, message, reason = 'warn', context = {}) {
   // Non-blocking advisory. Exit 0 + structured JSON is the Claude Code
   // contract for "allow with a message"; exit 1 renders as a hook ERROR
   // banner ("Failed with non-blocking status code") even though nothing is
   // blocked, which reads as breakage to the user. The warning still reaches
   // the model via systemMessage and stays auditable via the hook.warn event.
   lib.event(root, 'hook.warn', { reason, message });
+  if (warnAlreadySent(root, context.sessionId, reason, context.change)) {
+    process.exit(0);
+  }
   process.stdout.write(`${JSON.stringify({
     systemMessage: `SpecNav gate warning: ${message}`,
     hookSpecificOutput: {
@@ -126,12 +154,26 @@ function warn(root, message, reason = 'warn') {
 
 // Soft gate: accounting-first default records a warning and lets the edit
 // proceed; SPECNAV_STRICT=1 restores the historical blocking behavior.
-function softDeny(root, blockerId, message) {
+function softDeny(root, blockerId, message, context = {}) {
   if (strictMode()) {
     lib.event(root, 'hook.deny', { reason: blockerId });
     deny(blockerId, message);
   }
-  warn(root, `[${blockerId}] ${message}`, blockerId);
+  warn(root, `[${blockerId}] ${message}`, blockerId, context);
+}
+
+// Requirements-stage awareness: while a change has requirements artifacts but
+// no tasks.md / light-change.json yet, editing docs and spec material IS the
+// legal work of that stage — warning about missing tasks on those paths is
+// pure noise. Production-source edits still warn.
+const REQUIREMENTS_STAGE_PATHS = [/^docs\//, /^README/i, /\.md$/];
+
+function isRequirementsStageEdit(dir, productionPaths) {
+  if (!dir) return false;
+  if (!lib.fileExists(path.join(dir, 'requirements.md'))) return false;
+  return productionPaths.length > 0 && productionPaths.every(
+    (rel) => REQUIREMENTS_STAGE_PATHS.some((pattern) => pattern.test(rel))
+  );
 }
 
 function allow(root, reason = 'allow') {
@@ -370,6 +412,9 @@ function main() {
   const root = lib.projectRoot();
   const payload = readStdinJson();
   const normalized = normalizePayload(payload);
+  const sessionId = typeof payload.session_id === 'string' && payload.session_id
+    ? payload.session_id
+    : (process.env.CLAUDE_SESSION_ID || null);
   if (normalized.fallback_fields.length) {
     lib.event(root, 'guard.unknown-payload-shape', {
       tool: normalized.tool,
@@ -414,7 +459,7 @@ function main() {
     if (isBashTool(normalized.tool) && isOpenSpecRepairCommand(normalized.command)) {
       allow(root, 'openspec-command-without-openspec');
     }
-    softDeny(root, 'missing-openspec', 'missing openspec/ blocks production work. Fix: use $specnav-bootstrap to initialize or repair OpenSpec first.');
+    softDeny(root, 'missing-openspec', 'missing openspec/ blocks production work. Fix: use $specnav-bootstrap to initialize or repair OpenSpec first.', { sessionId });
   }
 
   if (!normalized.paths.length) {
@@ -460,7 +505,7 @@ function main() {
 
   function flushExternalViolations() {
     if (!externalViolations.length) return;
-    softDeny(root, 'external-scope', `${externalViolations.join(', ')} outside this project and not declared in scope.json external_repos. Fix: add {"root": "../<repo>", "include": ["<glob>"], "reason": "..."} to external_repos for change ${change || '<active>'}, or create an external-scope override.`);
+    softDeny(root, 'external-scope', `${externalViolations.join(', ')} outside this project and not declared in scope.json external_repos. Fix: add {"root": "../<repo>", "include": ["<glob>"], "reason": "..."} to external_repos for change ${change || '<active>'}, or create an external-scope override.`, { sessionId, change });
   }
 
   if (!productionPaths.length) {
@@ -468,11 +513,11 @@ function main() {
     allow(root, 'openspec-edit');
   }
   if (legacyEntrypoints.length) {
-    softDeny(root, 'legacy-openspec-workflow', `legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Fix: disable them or replace them with SpecNav disabled stubs before production edits.`);
+    softDeny(root, 'legacy-openspec-workflow', `legacy OpenSpec workflow entrypoints are present: ${legacyEntrypoints.map((entry) => entry.name).join(', ')}. Fix: disable them or replace them with SpecNav disabled stubs before production edits.`, { sessionId });
   }
   if (!change || !dir) {
     const blockers = changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change'];
-    softDeny(root, blockers[0], `production edits require an explicit SpecNav change (${blockers.join(', ')}). Fix: set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`);
+    softDeny(root, blockers[0], `production edits require an explicit SpecNav change (${blockers.join(', ')}). Fix: set SPECNAV_CHANGE or repair openspec/.specnav/change-registry.json.`, { sessionId });
   }
 
   const lightChange = lib.readLightChange(dir);
@@ -481,17 +526,22 @@ function main() {
     if (overridden) {
       allow(root, 'override-missing-tasks');
     }
-    softDeny(root, 'missing-tasks', 'production edits require an active OpenSpec change with tasks.md (or a light-change.json). Fix: create tasks.md for the active change before editing production files.');
+    // Requirements-stage edits (docs, specs, markdown) are the legal work of
+    // a change that has requirements.md but no tasks yet — stay silent.
+    if (isRequirementsStageEdit(dir, productionPaths)) {
+      allow(root, 'requirements-stage-doc-edit');
+    }
+    softDeny(root, 'missing-tasks', 'production edits require an active OpenSpec change with tasks.md (or a light-change.json). Fix: create tasks.md for the active change before editing production files.', { sessionId, change });
   }
 
   const lightGateBlockers = validateLightEntryGate(dir, change);
   if (lightGateBlockers.length) {
-    softDeny(root, lightGateBlockers[0], `light lane production edits require a valid light-change.json or light-gate.json (${lightGateBlockers.join(', ')}). Fix: use the specnav-light-change skill to create the compact entry gate before implementation.`);
+    softDeny(root, lightGateBlockers[0], `light lane production edits require a valid light-change.json or light-gate.json (${lightGateBlockers.join(', ')}). Fix: use the specnav-light-change skill to create the compact entry gate before implementation.`, { sessionId, change });
   }
 
   const scope = lib.readFileScope(dir);
   if (!scope.ok) {
-    softDeny(root, 'invalid-scope', `production edits require a valid scope.json (${(scope.blockers || []).join(', ') || 'invalid-scope'}). Fix: repair ${scope.source} for the active change.`);
+    softDeny(root, 'invalid-scope', `production edits require a valid scope.json (${(scope.blockers || []).join(', ') || 'invalid-scope'}). Fix: repair ${scope.source} for the active change.`, { sessionId, change });
   }
 
   const frozenTestPaths = collectFrozenTestPaths(dir);
@@ -547,7 +597,7 @@ function main() {
   flushExternalViolations();
 
   if (softScopeHits.length) {
-    softDeny(root, 'scope', `${softScopeHits.join(', ')} outside declared SpecNav file scope from ${scope.source} (allowed: ${scope.include.join(', ') || 'none'}). Recorded as scope drift; extend scope.json allowed_roots or add a scope override to silence this.`);
+    softDeny(root, 'scope', `${softScopeHits.join(', ')} outside declared SpecNav file scope from ${scope.source} (allowed: ${scope.include.join(', ') || 'none'}). Recorded as scope drift; extend scope.json allowed_roots or add a scope override to silence this. (This warning appears once per session; further drift is recorded in events.jsonl.)`, { sessionId, change });
   }
 
   if (reviewHits.length && !reviewHits.every((rel) => pathOverrideAllows(root, 'review', rel, change))) {
