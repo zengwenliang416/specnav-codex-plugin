@@ -88,20 +88,34 @@ jq -e '.legacy_openspec_entrypoints[] | select(.name == "opsx/propose")' "$TMP_D
 jq -e '.actions[] | select(.id == "requirements" and (.blocked_by | index("legacy-openspec-workflow")))' "$TMP_DIR/legacy-affordances.json" >/dev/null
 
 
-# Warning dedup: same (reason, change) warns once per session; a new session
-# id resets. Events keep recording every occurrence.
+# Graduated enforcement: hit 1 warns, hit 2 is silent, hit 3 denies.
 DEDUP_PROJECT="$TMP_DIR/dedup-project"
 mkdir -p "$DEDUP_PROJECT/openspec/.specnav" "$DEDUP_PROJECT/openspec/changes/d"
 printf 'd\n' >"$DEDUP_PROJECT/openspec/.specnav/active-change"
 DEDUP_PAYLOAD='{"session_id":"s-dedup-1","tool_name":"Write","tool_input":{"file_path":"src/app.ts","content":"x"}}'
 OUT1="$(printf '%s' "$DEDUP_PAYLOAD" | PROJECT_DIR="$DEDUP_PROJECT" node "$CORE/scripts/specnav-guard.js")"
-echo "$OUT1" | grep -q "SpecNav gate warning" || { echo "dedup: first warn missing"; exit 1; }
+echo "$OUT1" | grep -q "SpecNav gate warning" || { echo "escalation: first warn missing"; exit 1; }
 OUT2="$(printf '%s' "$DEDUP_PAYLOAD" | PROJECT_DIR="$DEDUP_PROJECT" node "$CORE/scripts/specnav-guard.js")"
 if echo "$OUT2" | grep -q "SpecNav gate warning"; then
-  echo "dedup: second identical warn should be silent"; exit 1
+  echo "escalation: second identical warn should be silent"; exit 1
 fi
-OUT3="$(printf '%s' "${DEDUP_PAYLOAD/s-dedup-1/s-dedup-2}" | PROJECT_DIR="$DEDUP_PROJECT" node "$CORE/scripts/specnav-guard.js")"
-echo "$OUT3" | grep -q "SpecNav gate warning" || { echo "dedup: new session should warn again"; exit 1; }
+set +e
+printf '%s' "$DEDUP_PAYLOAD" | PROJECT_DIR="$DEDUP_PROJECT" node "$CORE/scripts/specnav-guard.js" >/dev/null 2>&1
+ESC_STATUS=$?
+set -e
+[[ "$ESC_STATUS" == "2" ]] || { echo "escalation: third hit should deny, got $ESC_STATUS"; exit 1; }
+OUT4="$(printf '%s' "${DEDUP_PAYLOAD/s-dedup-1/s-dedup-2}" | PROJECT_DIR="$DEDUP_PROJECT" node "$CORE/scripts/specnav-guard.js")"
+echo "$OUT4" | grep -q "SpecNav gate warning" || { echo "escalation: new session should warn again"; exit 1; }
+
+# Repo suitability: bootstrap refuses tooling-shaped repos unless --force.
+TOOLING_REPO="$TMP_DIR/tooling-repo"
+mkdir -p "$TOOLING_REPO/plugins/x" "$TOOLING_REPO/.codex-plugin"
+set +e
+PROJECT_DIR="$TOOLING_REPO" node "$CORE/scripts/specnav-bootstrap.js" --json "$TOOLING_REPO" >"$TMP_DIR/boot-tooling.json" 2>/dev/null
+BOOT_STATUS=$?
+set -e
+[[ "$BOOT_STATUS" == "2" ]] || { echo "suitability: tooling repo should be refused, got $BOOT_STATUS"; exit 1; }
+grep -q "repo-profile:tooling" "$TMP_DIR/boot-tooling.json" || { echo "suitability: blocker id missing"; exit 1; }
 
 # Requirements-stage awareness: docs/markdown edits under a change that has
 # requirements.md but no tasks.md yet are silent; source edits still warn.

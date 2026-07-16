@@ -106,29 +106,44 @@ function deny(blockerId, message) {
   process.exit(2);
 }
 
-// Warning dedup: the same (reason, change) pair speaks ONCE per session.
-// Observed failure mode without this: one missing-tasks warning repeated 154
-// times in a single session (~93KB of context) and was tuned out entirely.
-// The hook.warn event is still recorded every time for accounting; only the
-// model/user-facing systemMessage is deduplicated. Session id comes from the
-// hook payload; without one, fall back to the session-lock holder.
-function warnDedupFile(root) {
+// Graduated enforcement: the same (reason, change) gate escalates within a
+// session instead of being purely soft or purely hard.
+//
+//   hit 1  -> warn once, with the full repair command
+//   hit 2  -> silent (already told; event still recorded)
+//   hit 3+ -> deny ("warned and ignored" is now a decision, not an accident)
+//
+// Field data behind this: pure-hard misfired on ~50% of denies (pre-0.6),
+// pure-soft was ignored 154 times in one session (0.6.0). Escalation keeps
+// the first-touch cost at zero and makes sustained drift expensive.
+// Repair or an override resets the counter path naturally (the gate stops
+// firing). SPECNAV_STRICT=1 denies from hit 1; SPECNAV_SOFT=1 never denies.
+const ESCALATION_THRESHOLD = Number(process.env.SPECNAV_GATE_ESCALATION || 3);
+
+function softMode() {
+  return process.env.SPECNAV_SOFT === '1';
+}
+
+function gateStateFile(root) {
   return path.join(lib.specnavDir(root), 'warned.json');
 }
 
-function warnAlreadySent(root, sessionId, reason, change) {
-  if (!sessionId) return false;
+// Returns the hit count for this (session, reason, change), incrementing it.
+function recordGateHit(root, sessionId, reason, change) {
+  if (!sessionId) return 1;
   const key = `${reason}:${change || ''}`;
   try {
-    const state = lib.readJson(warnDedupFile(root), null);
-    if (state && state.session_id === sessionId && Array.isArray(state.warned) && state.warned.includes(key)) {
-      return true;
-    }
-    const warned = state && state.session_id === sessionId && Array.isArray(state.warned) ? state.warned : [];
-    warned.push(key);
-    lib.writeJson(warnDedupFile(root), { session_id: sessionId, warned: warned.slice(-100) });
-  } catch {}
-  return false;
+    const state = lib.readJson(gateStateFile(root), null);
+    const hits = state && state.session_id === sessionId && state.hits && typeof state.hits === 'object'
+      ? state.hits
+      : {};
+    hits[key] = (hits[key] || 0) + 1;
+    const entries = Object.entries(hits).slice(-100);
+    lib.writeJson(gateStateFile(root), { session_id: sessionId, hits: Object.fromEntries(entries) });
+    return hits[key];
+  } catch {
+    return 1;
+  }
 }
 
 function warn(root, message, reason = 'warn', context = {}) {
@@ -138,9 +153,7 @@ function warn(root, message, reason = 'warn', context = {}) {
   // blocked, which reads as breakage to the user. The warning still reaches
   // the model via systemMessage and stays auditable via the hook.warn event.
   lib.event(root, 'hook.warn', { reason, message });
-  if (warnAlreadySent(root, context.sessionId, reason, context.change)) {
-    process.exit(0);
-  }
+  if (context.silent) process.exit(0);
   process.stdout.write(`${JSON.stringify({
     systemMessage: `SpecNav gate warning: ${message}`,
     hookSpecificOutput: {
@@ -152,14 +165,18 @@ function warn(root, message, reason = 'warn', context = {}) {
   process.exit(0);
 }
 
-// Soft gate: accounting-first default records a warning and lets the edit
-// proceed; SPECNAV_STRICT=1 restores the historical blocking behavior.
+// Graduated gate: warn once, stay silent once, then deny.
 function softDeny(root, blockerId, message, context = {}) {
   if (strictMode()) {
     lib.event(root, 'hook.deny', { reason: blockerId });
     deny(blockerId, message);
   }
-  warn(root, `[${blockerId}] ${message}`, blockerId, context);
+  const hitCount = recordGateHit(root, context.sessionId, blockerId, context.change);
+  if (!softMode() && hitCount >= ESCALATION_THRESHOLD) {
+    lib.event(root, 'hook.deny', { reason: blockerId, escalated: true, hits: hitCount });
+    deny(blockerId, `${message} — this gate has fired ${hitCount} times in this session without being repaired. Fix it now, or create a ${blockerId} override to accept the drift explicitly.`);
+  }
+  warn(root, `[${blockerId}] ${message}${hitCount === 1 ? ` (Unrepaired, this gate BLOCKS after ${ESCALATION_THRESHOLD} occurrences this session.)` : ''}`, blockerId, { silent: hitCount > 1 });
 }
 
 // Requirements-stage awareness: while a change has requirements artifacts but

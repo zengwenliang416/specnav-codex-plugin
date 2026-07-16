@@ -17,9 +17,10 @@ function hasFlag(args, name) {
 
 function usage() {
   return [
-    'Usage: node scripts/specnav-bootstrap.js [--tools <tools>] [--json] [project-dir]',
+    'Usage: node scripts/specnav-bootstrap.js [--tools <tools>] [--force] [--json] [project-dir]',
     '',
     'Initialize OpenSpec for the target project and write SpecNav runtime state.',
+    'Refuses tool/library/plugin repositories (repo-profile:tooling) unless --force.',
     'Default tools: claude,codex'
   ].join('\n');
 }
@@ -29,14 +30,64 @@ function resultBase(root) {
     schema_version: 1,
     generated_at: new Date().toISOString(),
     project_root: root,
-    command: '$specnav-bootstrap',
-    next_actions: ['$specnav-status', '$specnav-requirements']
+    command: '/specnav-bootstrap',
+    next_actions: ['/specnav-status', '/specnav-requirements']
   };
+}
+
+// Repo suitability: SpecNav's foundation specs (ui-design, data-flow,
+// component-architecture) and vertical-slice grammar ("user can ...") assume
+// a full-stack product application. Tool/library/infra repositories cannot
+// honestly produce those artifacts, and forcing them yields empty-shell
+// specs and permanent blockers. Detect the mismatch at bootstrap and refuse
+// with an explanation instead of failing slowly — overridable with --force.
+function detectRepoProfile(root) {
+  const exists = (rel) => fs.existsSync(require('path').join(root, rel));
+  const signals = { app: [], nonApp: [] };
+
+  if (exists('plugins') && (exists('.claude-plugin') || exists('.codex-plugin') || exists('.agents'))) {
+    signals.nonApp.push('plugin-marketplace-layout');
+  }
+  const pkg = lib.readJson(require('path').join(root, 'package.json'), null);
+  if (pkg) {
+    const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+    const uiDeps = ['react', 'vue', 'next', 'nuxt', 'svelte', '@angular/core', 'uni-app'];
+    if (uiDeps.some((d) => deps[d])) signals.app.push('ui-framework-dependency');
+    const serverDeps = ['express', 'koa', 'fastify', 'nest', '@nestjs/core'];
+    if (serverDeps.some((d) => deps[d])) signals.app.push('server-framework-dependency');
+    if (pkg.main && !pkg.private && !signals.app.length) signals.nonApp.push('published-library-shape');
+  }
+  if (exists('pom.xml') || exists('build.gradle')) signals.app.push('jvm-application-build');
+  if (exists('pages') || exists('src/pages') || exists('app/api') || exists('src/views')) signals.app.push('page-or-route-directory');
+  if (exists('Skills') || exists('skills') || exists('SKILL.md')) signals.nonApp.push('skill-repository-layout');
+
+  const profile = signals.app.length ? 'application'
+    : signals.nonApp.length ? 'tooling'
+      : 'unknown';
+  return { profile, signals };
 }
 
 function bootstrap(root = lib.projectRoot(process.argv), options = {}) {
   const tools = options.tools || 'claude,codex';
   const base = resultBase(root);
+
+  if (!options.force && !fs.existsSync(lib.openspecDir(root))) {
+    const detection = detectRepoProfile(root);
+    if (detection.profile === 'tooling') {
+      return {
+        ...base,
+        ok: false,
+        status: 'unsuitable-repository',
+        blockers: ['repo-profile:tooling'],
+        repo_profile: detection,
+        detail: 'This repository looks like a tool/library/plugin repo, not a product application. '
+          + 'SpecNav\'s foundation specs and vertical-slice grammar assume user-facing features; '
+          + 'they would produce empty-shell artifacts here. Re-run with --force if you are sure, '
+          + 'or skip SpecNav for this repository.'
+      };
+    }
+  }
+
   if (fs.existsSync(lib.openspecDir(root))) {
     const state = workflow.writeRuntimeArtifacts(root);
     return {
@@ -128,7 +179,8 @@ function main() {
   }
   const root = lib.projectRoot(process.argv);
   const result = bootstrap(root, {
-    tools: argValue(args, '--tools', process.env.SPECNAV_BOOTSTRAP_TOOLS || 'claude,codex')
+    tools: argValue(args, '--tools', process.env.SPECNAV_BOOTSTRAP_TOOLS || 'claude,codex'),
+    force: hasFlag(args, '--force')
   });
   if (hasFlag(args, '--json')) process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   else process.stdout.write(toText(result));
@@ -137,4 +189,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { bootstrap, toText };
+module.exports = { bootstrap, detectRepoProfile, toText };
