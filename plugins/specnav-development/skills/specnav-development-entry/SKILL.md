@@ -21,10 +21,15 @@ Validate upstream requirements and prototype gates, then record the basis for pr
 4. Read `references/development-entry.md` before writing entry artifacts.
 5. If entry artifacts are missing, run `node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-development-entry/scripts/create-development-entry.js" --json`.
 6. Write or repair `development/before-dev-check.json` and `development/basis.md` with exact relative path references.
-7. Keep `tasks.md` in standard checkbox form. Entry allows `- [ ]` pending
+7. For the standard lane, require a Git `HEAD` that already tracks the approved
+   `tasks.md`. This commit is the development and task-preservation baseline.
+8. Keep `tasks.md` in standard checkbox form. Entry allows `- [ ]` pending
    vertical slices; do not mark them `- [x]` until direct implementation and
    validation evidence exists.
-8. Do not start production edits until entry passes.
+9. Preserve every baseline task. Rewording and additional tasks are allowed,
+   but removal, merging, or renumbering requires
+   `development/task-change-approval.json` with explicit user approval.
+10. Do not start production edits until entry passes.
 
 ## Required Outputs
 
@@ -35,7 +40,11 @@ Validate upstream requirements and prototype gates, then record the basis for pr
 ## Stop Conditions
 
 - Any upstream artifact is missing or invalid.
+- The standard lane has no Git `HEAD`, or the baseline commit does not track
+  the active change's `tasks.md`.
 - `tasks.md` lacks standard checkbox syntax.
+- A baseline task was removed, merged, or renumbered without explicit user
+  approval.
 - Approved prototype source is unclear.
 - The implementation needs a new product, architecture, data-flow, or component-boundary decision.
 

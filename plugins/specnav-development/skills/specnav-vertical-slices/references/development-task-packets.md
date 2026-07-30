@@ -2,8 +2,38 @@
 
 Read this before creating vertical slice tasks.
 
-Each task must be a user-visible vertical slice. Do not create layer-only tasks
-such as "build API" or "build database".
+Each milestone must describe a user-visible vertical slice. Put a substantive
+`User outcome:` or `用户结果：` statement in the milestone section, then preserve
+the complete engineering checkbox checklist beneath it. Engineering subtasks
+may describe models, parsers, APIs, tests, migrations, refactors, or documentation;
+do not delete them merely because each line is not independently user-facing.
+
+Do not create vague layer-only tasks such as "build API" or "build database".
+
+## Task Preservation
+
+Standard-lane development uses the committed Git `HEAD` version of `tasks.md` as
+the task baseline.
+
+- Adding tasks and rewording tasks without changing their numbered identity are
+  allowed.
+- Removing, merging, or renumbering a baseline task is blocked.
+- Explicitly approved removal requires
+  `development/task-change-approval.json`:
+
+```json
+{
+  "schema_version": 1,
+  "approved_by": "user",
+  "approved_at": "2026-07-30T00:00:00Z",
+  "reason": "The user explicitly approved this scope reduction.",
+  "removed_task_ids": ["2.4"]
+}
+```
+
+Task packet directories always use `NNN-kebab-case`, for example
+`001-dashboard-summary`. The generator and development contract enforce the
+same format before any scaffold is written.
 
 ## Packet Files
 

@@ -7,6 +7,7 @@ const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { validatePrototype } = runtime.requirePluginScript('specnav-prototype', 'scripts/prototype-contract');
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
+const { isValidTaskId } = require('./task-id');
 
 const CHANGE_ARTIFACTS = ['scope.json', 'tasks.md'];
 
@@ -161,7 +162,11 @@ const LAYER_ONLY_TASKS = new Set([
   'ui layer'
 ]);
 
-const VERTICAL_SLICE_PATTERN = /\b(?:user|users|customer|customers|admin|operator|visitor|can|view|views|see|sees|submit|submits|create|creates|update|updates|edit|edits|delete|deletes|open|opens|select|selects|search|searches|filter|filters|download|downloads|upload|uploads|receive|receives|complete|completes|checkout|login|log in|sign in|shows|display|displays|render|renders)\b/i;
+const USER_ACTOR_PATTERN = /\b(?:user|users|customer|customers|admin|administrator|administrators|operator|operators|visitor|visitors|employee|employees|hr|director|directors)\b/i;
+const USER_ACTION_PATTERN = /\b(?:can|view|views|see|sees|submit|submits|create|creates|update|updates|edit|edits|delete|deletes|open|opens|select|selects|search|searches|filter|filters|download|downloads|upload|uploads|receive|receives|complete|completes|checkout|login|log in|sign in|shows|display|displays|render|renders)\b/i;
+const CHINESE_USER_VISIBLE_PATTERN = /(?:用户|客户|管理员|操作员|访客|员工|人力资源|董事).*(?:可以|能够|查看|看到|提交|创建|更新|编辑|删除|打开|选择|搜索|筛选|下载|上传|接收|完成|登录|显示)/i;
+const USER_OUTCOME_LABEL_PATTERN = /(?:\buser\s+outcome\b|用户(?:结果|目标|成果|可见结果))\s*[:：]/i;
+const TASK_NUMBER_PATTERN = /^([0-9]+(?:\.[0-9]+)+)\b/;
 
 function unique(values) {
   return Array.from(new Set(values.filter(Boolean)));
@@ -656,6 +661,61 @@ function normalizeTaskBullet(value) {
   return normalizeContractText(value).replace(/\bthe\b/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function parseTaskItems(text) {
+  return text
+    .split(/\r?\n/)
+    .map((line, lineIndex) => {
+      const match = line.match(/^\s*(?:[-*+]|\d+[.)])\s+(?:\[([ xX])\]\s+)?(.+?)\s*$/);
+      if (!match) return null;
+      const taskText = stripListMarker(match[2]);
+      if (!taskText) return null;
+      const taskNumber = taskText.match(TASK_NUMBER_PATTERN);
+      return {
+        checked: match[1] ? match[1].toLowerCase() === 'x' : null,
+        text: taskText,
+        task_id: taskNumber ? taskNumber[1] : null,
+        line: lineIndex + 1
+      };
+    })
+    .filter(Boolean);
+}
+
+function isUserVisibleTask(value) {
+  return (USER_ACTOR_PATTERN.test(value) && USER_ACTION_PATTERN.test(value))
+    || CHINESE_USER_VISIBLE_PATTERN.test(value);
+}
+
+function taskSections(text, taskItems) {
+  const lines = text.split(/\r?\n/);
+  const sections = [];
+  let current = { heading: 'Development Tasks', start: 0, lines: [] };
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const heading = lines[index].match(/^##\s+(.+?)\s*$/);
+    if (heading) {
+      if (current.lines.length > 0 || sections.length > 0) sections.push(current);
+      current = { heading: heading[1], start: index + 1, lines: [] };
+      continue;
+    }
+    current.lines.push(lines[index]);
+  }
+  sections.push(current);
+
+  return sections
+    .map((section) => {
+      const end = section.start + section.lines.length;
+      const items = taskItems.filter((item) => item.line > section.start && item.line <= end);
+      const body = section.lines.join('\n');
+      return {
+        ...section,
+        items,
+        has_user_outcome: USER_OUTCOME_LABEL_PATTERN.test(body)
+          || items.some((item) => isUserVisibleTask(item.text))
+      };
+    })
+    .filter((section) => section.items.length > 0);
+}
+
 function validateTasksMarkdown(changeDir, activeChange, mode = DEFAULT_MODE) {
   const name = 'tasks.md';
   const file = path.join(changeDir, name);
@@ -668,15 +728,7 @@ function validateTasksMarkdown(changeDir, activeChange, mode = DEFAULT_MODE) {
   }
   if (text.value.trim() === '') blockers.push(`empty-development-artifact:${name}`);
 
-  const taskItems = text.value
-    .split(/\r?\n/)
-    .map((line) => line.match(/^\s*(?:[-*+]|\d+[.)])\s+(?:\[([ xX])\]\s+)?(.+?)\s*$/))
-    .filter(Boolean)
-    .map((match) => ({
-      checked: match[1] ? match[1].toLowerCase() === 'x' : null,
-      text: stripListMarker(match[2])
-    }))
-    .filter((item) => item.text);
+  const taskItems = parseTaskItems(text.value);
   const bullets = taskItems.map((item) => item.text);
   const checkboxItems = taskItems.filter((item) => item.checked !== null);
   const completedItems = checkboxItems.filter((item) => item.checked);
@@ -690,27 +742,126 @@ function validateTasksMarkdown(changeDir, activeChange, mode = DEFAULT_MODE) {
     if (checkboxItems.length > 0 && completedItems.length === 0) blockers.push('tasks-md:no-completed-checkboxes');
   }
 
-  let verticalSlices = 0;
   for (const bullet of bullets) {
     const normalized = normalizeTaskBullet(bullet);
     if (LAYER_ONLY_TASKS.has(normalized)) {
       blockers.push(`tasks-md:layer-only:${normalized}`);
-      continue;
     }
-    if (!VERTICAL_SLICE_PATTERN.test(bullet)) {
-      blockers.push(`tasks-md:not-user-visible:${normalized}`);
-      continue;
-    }
-    verticalSlices += 1;
   }
 
-  if (verticalSlices === 0) blockers.push('tasks-md:no-vertical-slice');
+  const sections = taskSections(text.value, taskItems);
+  for (const section of sections) {
+    if (!section.has_user_outcome) {
+      blockers.push(`tasks-md:section-missing-user-outcome:${normalizeTaskBullet(section.heading)}`);
+    }
+  }
+  if (sections.length === 0 || sections.every((section) => !section.has_user_outcome)) {
+    blockers.push('tasks-md:no-vertical-slice');
+  }
 
   return artifactResult(activeChange, name, unique(blockers), false, {
     bullet_count: bullets.length,
     checkbox_count: checkboxItems.length,
     completed_count: completedItems.length,
-    incomplete_count: incompleteItems.length
+    incomplete_count: incompleteItems.length,
+    section_count: sections.length
+  });
+}
+
+function readTaskChangeApproval(developmentDir) {
+  const name = 'task-change-approval.json';
+  const file = path.join(developmentDir, name);
+  if (!fs.existsSync(file)) {
+    return { present: false, ok: true, name, approved_task_ids: new Set(), blockers: [] };
+  }
+
+  const parsed = readJsonFile(file);
+  const blockers = [];
+  if (!parsed.ok || !isPlainObject(parsed.value)) {
+    blockers.push(parsed.status === 'invalid-json' ? `invalid-json:${name}` : `invalid-json-shape:${name}`);
+    return { present: true, ok: false, name, approved_task_ids: new Set(), blockers };
+  }
+
+  const value = parsed.value;
+  if (value.schema_version !== 1) blockers.push('invalid-task-change-approval:schema_version');
+  if (value.approved_by !== 'user') blockers.push('invalid-task-change-approval:approved_by');
+  if (!isCleanString(value.approved_at) || Number.isNaN(Date.parse(value.approved_at))) {
+    blockers.push('invalid-task-change-approval:approved_at');
+  }
+  if (!isCleanString(value.reason)) blockers.push('invalid-task-change-approval:reason');
+  if (!Array.isArray(value.removed_task_ids) || value.removed_task_ids.length === 0) {
+    blockers.push('invalid-task-change-approval:removed_task_ids');
+  } else if (hasInvalidStringArrayMembers(value.removed_task_ids, false)) {
+    blockers.push('invalid-task-change-approval:removed_task_ids');
+  }
+
+  return {
+    present: true,
+    ok: blockers.length === 0,
+    name,
+    approved_task_ids: new Set(Array.isArray(value.removed_task_ids) ? value.removed_task_ids : []),
+    blockers: unique(blockers)
+  };
+}
+
+function validateGitBaseline(projectRoot, changeDir, developmentDir, activeChange) {
+  const name = 'git-baseline';
+  const blockers = [];
+  const head = lib.runCommand('git rev-parse --verify HEAD', { cwd: projectRoot });
+  if (!head.ok) {
+    blockers.push('git-baseline:missing-head');
+    return artifactResult(activeChange, name, blockers, false, {
+      baseline_task_count: 0,
+      current_task_count: 0
+    });
+  }
+
+  const tasksFile = path.join(changeDir, 'tasks.md');
+  const relativeTasksFile = path.relative(projectRoot, tasksFile).split(path.sep).join('/');
+  const baseline = lib.runCommand(`git show ${lib.shellQuote(`HEAD:${relativeTasksFile}`)}`, { cwd: projectRoot });
+  if (!baseline.ok) {
+    blockers.push('git-baseline:tasks-not-tracked');
+    return artifactResult(activeChange, name, blockers, false, {
+      head: head.stdout.trim(),
+      tasks_path: relativeTasksFile,
+      baseline_task_count: 0,
+      current_task_count: parseTaskItems(readTextFile(tasksFile).value || '').length
+    });
+  }
+
+  const baselineTasks = parseTaskItems(baseline.stdout).filter((item) => item.checked !== null);
+  const currentText = readTextFile(tasksFile);
+  const currentTasks = currentText.ok
+    ? parseTaskItems(currentText.value).filter((item) => item.checked !== null)
+    : [];
+  const currentIds = new Set(currentTasks.map((item) => item.task_id).filter(Boolean));
+  const missingIds = baselineTasks
+    .map((item) => item.task_id)
+    .filter((taskId) => taskId && !currentIds.has(taskId));
+  const approval = readTaskChangeApproval(developmentDir);
+  blockers.push(...approval.blockers);
+
+  let approvedMissingCount = 0;
+  for (const taskId of missingIds) {
+    if (approval.ok && approval.approved_task_ids.has(taskId)) {
+      approvedMissingCount += 1;
+      continue;
+    }
+    blockers.push(`tasks-md:baseline-task-removed:${taskId}`);
+  }
+
+  const unexplainedReduction = baselineTasks.length - currentTasks.length - approvedMissingCount;
+  if (unexplainedReduction > 0) {
+    blockers.push(`tasks-md:baseline-task-count-reduced:${unexplainedReduction}`);
+  }
+
+  return artifactResult(activeChange, name, unique(blockers), false, {
+    head: head.stdout.trim(),
+    tasks_path: relativeTasksFile,
+    baseline_task_count: baselineTasks.length,
+    current_task_count: currentTasks.length,
+    approved_removal_count: approvedMissingCount,
+    approval_file: approval.present ? artifactPath(activeChange, path.join('development', approval.name), true) : null
   });
 }
 
@@ -1560,7 +1711,7 @@ function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMu
   const blockers = [];
   const artifacts = [];
 
-  if (!/^[0-9]{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(dirName)) {
+  if (!isValidTaskId(dirName)) {
     blockers.push(`invalid-task-dir-name:${dirName}`);
   }
 
@@ -1652,6 +1803,7 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   artifacts.push(approvalBinding.artifact);
   artifacts.push(validateScope(projectRoot, changeDir, activeChange, approvalBinding));
   artifacts.push(validateTasksMarkdown(changeDir, activeChange, mode));
+  artifacts.push(validateGitBaseline(projectRoot, changeDir, developmentDir, activeChange));
 
   // development/manifest.json may carry the entry planning sections
   // (before_dev_check, promotion_map, complexity_budget, task_graph,

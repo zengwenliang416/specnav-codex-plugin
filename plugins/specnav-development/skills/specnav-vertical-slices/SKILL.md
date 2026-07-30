@@ -19,14 +19,23 @@ Plan, dispatch, review, and close production implementation through file-backed 
 2. Read `references/development-task-packets.md` before creating task packets.
 3. Read `references/development-review.md` before closing tasks or preparing handoff.
 4. If task artifacts are missing, run `node "$SPECNAV_DEVELOPMENT_ROOT/skills/specnav-vertical-slices/scripts/create-vertical-slice.js" --task-id=<task-id> --json`.
-5. Write user-visible tracer-bullet slices in `tasks.md` as checkbox tasks only: `- [ ]` before implementation, `- [x]` only after direct implementation and validation evidence exists. Avoid layer-only tasks.
+5. Organize `tasks.md` as user-visible milestone sections with a substantive
+   `User outcome:` (or `用户结果：`) followed by the complete engineering
+   checkbox checklist. Individual engineering tasks do not need to be rewritten
+   as user stories. Avoid vague layer-only tasks.
 6. After creating or editing `tasks.md`, run `node "$SPECNAV_CORE_ROOT/scripts/tasks-md.js" normalize --json`. Plain bullets must be converted to standard OpenSpec checkbox syntax instead of left for archive-time interpretation.
-7. Create each task packet with `brief.md` and `context.json`.
-8. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` contain development claims for the task. The `create-vertical-slice.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage development --write --json` after manual task restructuring.
-9. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review. Replace every scaffold marker with direct evidence before closing a task.
-10. If any task, report, requirement, or handoff mentions SQL, DDL, DML, seed data, menus, permissions, or migrations, write executable SQL under `development/migrations/`, set `development/migrations/manifest.json` to `required=true`, and document execution, validation, and rollback in `development/migrations/README.md`.
-11. No fallback around failed task review is allowed.
-12. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
+7. Compare the edited task list with the committed Git baseline. Never delete,
+   merge, or renumber baseline tasks to satisfy a contract. Explicit removals
+   require `development/task-change-approval.json` with `approved_by: "user"`,
+   an approval timestamp, a reason, and the removed task IDs.
+8. Create each task packet with `brief.md` and `context.json`. Task packet IDs
+   must use canonical `NNN-kebab-case`, for example
+   `001-dashboard-summary`.
+9. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` contain development claims for the task. The `create-vertical-slice.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage development --write --json` after manual task restructuring.
+10. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review. Replace every scaffold marker with direct evidence before closing a task.
+11. If any task, report, requirement, or handoff mentions SQL, DDL, DML, seed data, menus, permissions, or migrations, write executable SQL under `development/migrations/`, set `development/migrations/manifest.json` to `required=true`, and document execution, validation, and rollback in `development/migrations/README.md`.
+12. No fallback around failed task review is allowed.
+13. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
 
 ## Required Outputs
 
@@ -40,8 +49,12 @@ Plan, dispatch, review, and close production implementation through file-backed 
 ## Stop Conditions
 
 - Entry blockers remain.
+- The standard lane lacks a committed Git baseline for `tasks.md`.
 - Scope is insufficient.
 - `tasks.md` has plain bullets, mixed checkbox/plain bullets, or any unchecked item during handoff.
+- A baseline task is removed, merged, or renumbered without explicit user
+  approval.
+- A task packet ID does not use `NNN-kebab-case`.
 - Any task report, review file, ledger, drift check, validation log, or handoff file still contains `<decision-required>`, "Replace this scaffold", `development-entry-scaffold`, `vertical-slice-scaffold`, or `pending-vertical-slices`.
 - A task lacks allowed files.
 - A task duplicates component logic that should be extracted under the component architecture spec.

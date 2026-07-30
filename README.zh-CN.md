@@ -202,7 +202,7 @@ claims-map.json
 | 规范发现 | `$specnav-repository-discovery` | 只读仓库证据和 context manifest | 可以创建或修复 foundation specs |
 | 需求 | `$specnav-foundation-specs`、`$specnav-requirements` | 四类 foundation specs、requirements、acceptance、spec map、component impact map | 允许进入原型 |
 | 原型 | `$specnav-prototype`、`$specnav-prototype-verify`、`$specnav-prototype-handoff` | 可运行原型、验证报告、批准/交接说明 | 允许进入开发 |
-| 开发 | `$specnav-development-entry`、`$specnav-scope-lock`、`$specnav-vertical-slices` | scope lock、checkbox tasks、实现证据、review/fix loop | 允许进入验证 |
+| 开发 | `$specnav-development-entry`、`$specnav-scope-lock`、`$specnav-vertical-slices` | 已提交的 Git/任务基线、scope lock、完整 checkbox tasks、实现证据、review/fix loop | 允许进入验证 |
 | 验证 | `$specnav-verify-plan` 加六个 domain skills | 真实性、静态、单元、红队、E2E、体感证据，聚合报告，HTML 报告 | 允许进入发布计划 |
 | 运维 | `$specnav-ops-readiness`、`$specnav-release-plan`、deploy/rollback/archive skills | release target、readiness、rollback、monitor、archive receipt | 允许归档 change |
 
@@ -217,6 +217,11 @@ README，以及极小范围的低风险样式或配置调整，会进入 `light`
 Light lane 仍然要求目标项目已有 OpenSpec、存在明确 active change、使用标准 checkbox `tasks.md`、写出有边界的 `scope.json`，并提供机器可检查的 `acceptance.json`。它可以跳过 foundation spec 阻塞、可运行原型批准、逐切片评审包和完整六域验证。验证范围降为 static + unit。
 
 如果请求触碰 auth、permission、billing、security、database、API route、deployment、package manifest、SpecNav 内部文件，或者预计超过三个路径、实际超过十个生产文件，必须升级回 standard 或 full lane。如果预计修改路径不清楚，SpecNav 需要先问清范围，再创建 light 制品。
+
+Standard lane 开发必须先存在一个已跟踪批准版 `tasks.md` 的 Git `HEAD`。
+每个里程碑负责表达用户可见结果，其下的完整工程 checkbox 不得为了通过合同而删除、
+合并或改号。确需缩减任务时，必须把用户的显式批准记录到
+`development/task-change-approval.json`，否则开发入口直接阻塞。
 
 ## Foundation Spec Gate
 

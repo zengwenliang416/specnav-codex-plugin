@@ -6,13 +6,10 @@ const path = require('path');
 const runtime = require('../../../scripts/plugin-runtime');
 const scaffold = runtime.requirePluginScript('specnav-core', 'scripts/scaffold-lib');
 const codegraphPlan = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-plan');
+const { isValidTaskId } = require('../../../scripts/task-id');
 
 const skillRoot = path.resolve(__dirname, '..');
 const assetsRoot = path.join(skillRoot, 'assets');
-
-function invalidTaskId(value) {
-  return !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value || '');
-}
 
 function fileItem(sourceFile, targetFile) {
   return {
@@ -93,8 +90,8 @@ process.exit(scaffold.runScaffold({
       error.blocker = 'missing-task-id';
       throw error;
     }
-    if (invalidTaskId(taskId)) {
-      const error = new Error('Task id must be lowercase kebab-case with letters, digits, and hyphens only.');
+    if (!isValidTaskId(taskId)) {
+      const error = new Error('Task id must use the canonical 3-digit kebab-case format, for example 001-dashboard-summary.');
       error.blocker = 'invalid-task-id';
       throw error;
     }

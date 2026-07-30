@@ -37,6 +37,16 @@ assert_blocker() {
   jq -e --arg blocker "$blocker" '.blockers[] | select(. == $blocker)' "$output" >/dev/null
 }
 
+init_git_baseline() {
+  local project="$1"
+
+  git -C "$project" init -q
+  git -C "$project" config user.name "SpecNav Fixture"
+  git -C "$project" config user.email "specnav-fixture@example.com"
+  git -C "$project" add .
+  git -C "$project" commit -qm "test: establish development baseline"
+}
+
 write_requirements_project() {
   local project="$1"
   local change="add-dashboard"
@@ -816,6 +826,8 @@ Backend field naming remains a verification watch item.
 
 Six-domain verification must check user-visible states, data flow, and component boundaries.
 MD
+
+  init_git_baseline "$project"
 }
 
 test -f "$DEV/scripts/development-contract.js"
@@ -857,6 +869,81 @@ jq -e '.tasks[] | select(.task_id == "001-dashboard-summary" and .ok == true)' "
 run_json "$HAPPY_PROJECT" "$TMP_DIR/happy-entry.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/happy-entry.json" >/dev/null
 
+HIERARCHICAL_TASK_PROJECT="$TMP_DIR/hierarchical-task-project"
+cp -R "$HAPPY_PROJECT" "$HIERARCHICAL_TASK_PROJECT"
+cat >"$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'
+# Development Tasks
+
+## 1. Dashboard Summary
+
+**User outcome:** An administrator can inspect the dashboard summary and understand
+loading, empty, and failure states.
+
+- [x] 1.1 Introduce a typed dashboard summary response model.
+- [x] 1.2 Add deterministic state transition tests.
+- [x] 1.3 Refactor the service adapter behind the existing view contract.
+MD
+run_json "$HIERARCHICAL_TASK_PROJECT" "$TMP_DIR/hierarchical-task.json" 0 entry
+jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/hierarchical-task.json" >/dev/null
+
+TECHNICAL_ONLY_TASK_PROJECT="$TMP_DIR/technical-only-task-project"
+cp -R "$HAPPY_PROJECT" "$TECHNICAL_ONLY_TASK_PROJECT"
+cat >"$TECHNICAL_ONLY_TASK_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'
+# Development Tasks
+
+## 1. Parser Work
+
+- [x] 1.1 Update the dashboard parser.
+- [x] 1.2 Create parser regression tests.
+MD
+run_json "$TECHNICAL_ONLY_TASK_PROJECT" "$TMP_DIR/technical-only-task.json" 2 entry
+assert_blocker "$TMP_DIR/technical-only-task.json" 'tasks-md:section-missing-user-outcome:1 parser work'
+assert_blocker "$TMP_DIR/technical-only-task.json" 'tasks-md:no-vertical-slice'
+
+TASK_REMOVAL_PROJECT="$TMP_DIR/task-removal-project"
+cp -R "$HAPPY_PROJECT" "$TASK_REMOVAL_PROJECT"
+cat >"$TASK_REMOVAL_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'
+# Development Tasks
+
+## 1. Dashboard Summary
+
+**User outcome:** A user can view the dashboard summary.
+
+- [x] 1.1 User can view dashboard summary with loading empty and error states.
+- [x] 1.2 Contributor can verify deterministic dashboard state transitions.
+MD
+git -C "$TASK_REMOVAL_PROJECT" add openspec/changes/add-dashboard/tasks.md
+git -C "$TASK_REMOVAL_PROJECT" commit -qm "test: record complete task baseline"
+cat >"$TASK_REMOVAL_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'
+# Development Tasks
+
+## 1. Dashboard Summary
+
+**User outcome:** A user can view the dashboard summary.
+
+- [x] 1.1 User can view dashboard summary with loading empty and error states.
+MD
+run_json "$TASK_REMOVAL_PROJECT" "$TMP_DIR/task-removal.json" 2 entry
+assert_blocker "$TMP_DIR/task-removal.json" 'tasks-md:baseline-task-removed:1.2'
+
+cat >"$TASK_REMOVAL_PROJECT/openspec/changes/add-dashboard/development/task-change-approval.json" <<'JSON'
+{
+  "schema_version": 1,
+  "approved_by": "user",
+  "approved_at": "2026-07-30T00:00:00Z",
+  "reason": "The user explicitly removed the duplicate verification task.",
+  "removed_task_ids": ["1.2"]
+}
+JSON
+run_json "$TASK_REMOVAL_PROJECT" "$TMP_DIR/task-removal-approved.json" 0 entry
+jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/task-removal-approved.json" >/dev/null
+
+NO_GIT_BASELINE_PROJECT="$TMP_DIR/no-git-baseline-project"
+cp -R "$HAPPY_PROJECT" "$NO_GIT_BASELINE_PROJECT"
+rm -rf "$NO_GIT_BASELINE_PROJECT/.git"
+run_json "$NO_GIT_BASELINE_PROJECT" "$TMP_DIR/no-git-baseline.json" 2 entry
+assert_blocker "$TMP_DIR/no-git-baseline.json" 'git-baseline:missing-head'
+
 SLICE_SCRIPT_PROJECT="$TMP_DIR/slice-script-project"
 cp -R "$HAPPY_PROJECT" "$SLICE_SCRIPT_PROJECT"
 cat >"$SLICE_SCRIPT_PROJECT/openspec/changes/add-dashboard/development/task-context.jsonl" <<'JSONL'
@@ -881,6 +968,27 @@ if jq -e '.blockers[] | select(. == "scaffold-placeholder:task-context.jsonl:dev
   exit 1
 fi
 assert_blocker "$TMP_DIR/slice-script-entry.json" 'scaffold-placeholder:brief.md:decision-required'
+
+INVALID_SLICE_SCRIPT_PROJECT="$TMP_DIR/invalid-slice-script-project"
+cp -R "$HAPPY_PROJECT" "$INVALID_SLICE_SCRIPT_PROJECT"
+set +e
+PROJECT_DIR="$INVALID_SLICE_SCRIPT_PROJECT" node "$DEV/skills/specnav-vertical-slices/scripts/create-vertical-slice.js" --task-id=dashboard-detail --json >"$TMP_DIR/invalid-slice-script.json"
+INVALID_SLICE_STATUS=$?
+set -e
+if [[ "$INVALID_SLICE_STATUS" != "2" ]]; then
+  echo "expected invalid task id status 2, got $INVALID_SLICE_STATUS" >&2
+  cat "$TMP_DIR/invalid-slice-script.json" >&2
+  exit 1
+fi
+assert_blocker "$TMP_DIR/invalid-slice-script.json" 'invalid-task-id'
+if [[ -e "$INVALID_SLICE_SCRIPT_PROJECT/openspec/changes/add-dashboard/development/tasks/dashboard-detail" ]]; then
+  echo "invalid task id created a partial task packet" >&2
+  exit 1
+fi
+if grep -Fq '"task_id":"dashboard-detail"' "$INVALID_SLICE_SCRIPT_PROJECT/openspec/changes/add-dashboard/development/task-context.jsonl"; then
+  echo "invalid task id left task-context evidence" >&2
+  exit 1
+fi
 
 ENTRY_ONLY_PROJECT="$TMP_DIR/entry-only-project"
 cp -R "$HAPPY_PROJECT" "$ENTRY_ONLY_PROJECT"

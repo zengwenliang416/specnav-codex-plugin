@@ -213,7 +213,7 @@ no fallback evidence for code-backed claims.
 | Discovery | `$specnav-repository-discovery` | read-only repo evidence and context manifest | foundation specs can be created or repaired |
 | Requirements | `$specnav-foundation-specs`, `$specnav-requirements` | four foundation specs, requirements, acceptance criteria, spec map, component impact map | prototype is allowed |
 | Prototype | `$specnav-prototype`, `$specnav-prototype-verify`, `$specnav-prototype-handoff` | runnable prototype, verification report, approval/handoff notes | development is allowed |
-| Development | `$specnav-development-entry`, `$specnav-scope-lock`, `$specnav-vertical-slices` | scope lock, checkbox tasks, implementation evidence, review/fix loop | verification is allowed |
+| Development | `$specnav-development-entry`, `$specnav-scope-lock`, `$specnav-vertical-slices` | committed Git/task baseline, scope lock, complete checkbox tasks, implementation evidence, review/fix loop | verification is allowed |
 | Verification | `$specnav-verify-plan` plus six domain skills | facticity, static, unit, redteam, E2E, sensory evidence, aggregate report, HTML report | release planning is allowed |
 | Operations | `$specnav-ops-readiness`, `$specnav-release-plan`, deploy/rollback/archive skills | release target, readiness, rollback, monitor, archive receipt | change can be archived |
 
@@ -236,6 +236,12 @@ permissions, billing, security, database, API routes, deployment, package
 manifests, SpecNav internals, more than three intended paths, or more than ten
 production files after edits. If the intended paths are unclear, SpecNav should
 ask for the edit scope before creating light artifacts.
+
+Standard-lane development requires a Git `HEAD` that tracks the approved
+`tasks.md`. Milestone sections carry the user-visible outcome while their full
+engineering checklists remain intact. Removing, merging, or renumbering a
+baseline task blocks development unless an explicit user approval is recorded
+in `development/task-change-approval.json`.
 
 ## Foundation Spec Gate
 
