@@ -36,8 +36,14 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Files Allowed
 
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/kernel/execution/**
 - plugins/specnav-verification/kernel/adapters/command-adapter.js
+- plugins/specnav-verification/schemas/test-case.schema.json
+- tests/verification-v2/contracts/fixtures/positive/test-case.json
+- tests/verification-v2/contracts/fixtures/positive/case-snapshot.json
+- tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json
+- tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json
 - tests/verification-v2/execution/**
 
 ## Interfaces / Seams
@@ -61,8 +67,11 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-14`, `AC-18`, `AC-31`.
-- Approved case starts an attempt, command events are captured, and a terminal attempt references immutable logs.
+- Acceptance assertion: `AC-14`.
+- An approved command contract binds exact argv, project-relative cwd, and
+  environment keys before execution. Attempts preserve immutable execution
+  identity and append-only retry history while raw logs remain available for
+  the downstream evidence store.
 
 ## State / Error / Empty / Loading Behavior
 

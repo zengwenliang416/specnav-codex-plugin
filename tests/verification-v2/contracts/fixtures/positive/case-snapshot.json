@@ -90,6 +90,12 @@
       "runner": {
         "kind": "command",
         "timeout_ms": 1000,
+        "entrypoint": "node",
+        "args": [
+          "--test"
+        ],
+        "cwd": ".",
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {

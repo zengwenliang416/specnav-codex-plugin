@@ -6,7 +6,7 @@
 {"task_id":"006-runtime-lock-manifest","status":"ready","source":"development/tasks/006-runtime-lock-manifest/context.json","dependencies":["002-kernel-package-boundary"],"acceptance":["AC-04","AC-05"]}
 {"task_id":"007-runtime-installer","status":"ready","source":"development/tasks/007-runtime-installer/context.json","dependencies":["006-runtime-lock-manifest"],"acceptance":["AC-04","AC-05"]}
 {"task_id":"008-runtime-doctor","status":"ready","source":"development/tasks/008-runtime-doctor/context.json","dependencies":["006-runtime-lock-manifest","007-runtime-installer"],"acceptance":["AC-05"]}
-{"task_id":"009-command-runner","status":"ready","source":"development/tasks/009-command-runner/context.json","dependencies":["004-contract-cross-references","008-runtime-doctor"],"acceptance":["AC-14","AC-18","AC-31"]}
+{"task_id":"009-command-runner","status":"complete","source":"development/tasks/009-command-runner/context.json","dependencies":["004-contract-cross-references","008-runtime-doctor"],"acceptance":["AC-14"]}
 {"task_id":"010-playwright-runner","status":"ready","source":"development/tasks/010-playwright-runner/context.json","dependencies":["007-runtime-installer","008-runtime-doctor","009-command-runner"],"acceptance":["AC-04","AC-06","AC-16","AC-31"]}
 {"task_id":"011-midscene-runner","status":"ready","source":"development/tasks/011-midscene-runner/context.json","dependencies":["007-runtime-installer","008-runtime-doctor","010-playwright-runner"],"acceptance":["AC-05","AC-16","AC-30"]}
 {"task_id":"012-evidence-store","status":"ready","source":"development/tasks/012-evidence-store/context.json","dependencies":["003-contract-schemas","009-command-runner"],"acceptance":["AC-22","AC-31","AC-32"]}

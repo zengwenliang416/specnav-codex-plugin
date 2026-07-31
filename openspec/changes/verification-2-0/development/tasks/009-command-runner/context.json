@@ -19,6 +19,12 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/execution/**",
     "plugins/specnav-verification/kernel/adapters/command-adapter.js",
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/schemas/test-case.schema.json",
+    "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+    "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+    "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+    "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
     "tests/verification-v2/execution/**"
   ],
   "test_paths": [
@@ -29,9 +35,7 @@
     "008-runtime-doctor"
   ],
   "acceptance_assertions": [
-    "AC-14",
-    "AC-18",
-    "AC-31"
+    "AC-14"
   ],
   "external_targets": [],
   "non_goals": [
@@ -44,7 +48,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-14, AC-18, AC-31"
+    "Direct evidence for AC-14"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

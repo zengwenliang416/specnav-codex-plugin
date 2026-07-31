@@ -206,13 +206,79 @@
         "entrypoint": {
           "$ref": "common.schema.json#/$defs/nonEmptyString"
         },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "env_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
         "browser_project": {
           "$ref": "common.schema.json#/$defs/nonEmptyString"
         },
         "requires_midscene": {
           "type": "boolean"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "command"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "entrypoint",
+              "args",
+              "cwd",
+              "env_keys"
+            ],
+            "properties": {
+              "entrypoint": {
+                "$ref": "common.schema.json#/$defs/nonEmptyString"
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cwd": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+              },
+              "env_keys": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/nonEmptyString"
+                },
+                "uniqueItems": true
+              },
+              "requires_midscene": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
     },
     "evidence_policy": {
       "type": "object",

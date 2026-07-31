@@ -27,7 +27,7 @@ User Outcome: Verification operators can install and diagnose one exact managed 
 
 User Outcome: Reviewers can execute command, Playwright, and Midscene cases with trustworthy evidence.
 
-- [ ] 4.1 Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence.
+- [x] 4.1 Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence.
 - [ ] 4.2 Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence.
 - [ ] 4.3 Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.
 

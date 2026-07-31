@@ -1,0 +1,23 @@
+# command: node --test tests/verification-v2/execution/command-adapter.test.js
+# exit_status: 1
+
+Task 009 quality-fix RED run:
+
+- tests: 25
+- passed: 19
+- failed: 6
+
+Expected failures reproduced:
+
+1. Late cancellation after child `exit` but before `close` returned
+   `canceled: true`.
+2. Late timeout after child `exit` but before `close` returned
+   `timed_out: true`.
+3. Approved cwd symlink resolving outside the project executed instead of
+   returning `verification-execution:command-cwd-outside-project`.
+4. Caller-owned prior attempt became frozen after a retry result was returned.
+5. Post-execution terminal contract rejection returned `run.status: running`.
+6. Post-execution terminal contract rejection returned
+   `attempt.status: running`.
+
+This failure is preserved before the production repair.

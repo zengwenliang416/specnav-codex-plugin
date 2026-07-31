@@ -1,0 +1,89 @@
+# command: for i in 1 2 3 4 5; do node --test --test-name-pattern="timeout remains the terminal cause when abort arrives before close" tests/verification-v2/execution/command-adapter.test.js || exit 1; done # task009-review6-isolated-repeat
+# exit_status: 0
+# duration_ms: 5753
+
+## stdout
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 1948.527833
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2054.572875
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 1063.890084
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1185.529958
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 698.042792
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 761.230916
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 788.606917
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 848.442583
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 626.016667
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 686.283083
+
+
+## stderr
+(empty)

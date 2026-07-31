@@ -1,0 +1,43 @@
+# command: node --test --test-name-pattern="timeout remains the terminal cause when abort arrives before close" tests/verification-v2/execution/command-adapter.test.js # task009-review6-red
+# exit_status: 1
+# duration_ms: 1244
+
+## stdout
+TAP version 13
+# Subtest: timeout remains the terminal cause when abort arrives before close
+not ok 1 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 1106.717959
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:407:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'canceled'
+    - 'failed'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'failed'
+  actual: 'canceled'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:441:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1202.641417
+
+
+## stderr
+(empty)

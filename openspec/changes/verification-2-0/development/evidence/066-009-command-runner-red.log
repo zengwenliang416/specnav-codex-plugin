@@ -1,0 +1,445 @@
+$ node --test tests/verification-v2/execution/command-adapter.test.js
+TAP version 13
+# Subtest: command adapter passes explicit argv, cwd, and env without a shell fallback
+ok 1 - command adapter passes explicit argv, cwd, and env without a shell fallback
+  ---
+  duration_ms: 3.085792
+  type: 'test'
+  ...
+# Subtest: orchestrator blocks before spawn unless Task 005 approval succeeds
+not ok 2 - orchestrator blocks before spawn unless Task 005 approval succeeds
+  ---
+  duration_ms: 924.147875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:116:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:117:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: orchestrator blocks before spawn unless runtime doctor is ready
+not ok 3 - orchestrator blocks before spawn unless runtime doctor is ready
+  ---
+  duration_ms: 0.601666
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:157:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:158:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: orchestrator rejects a run that is not bound to the approved snapshot
+not ok 4 - orchestrator rejects a run that is not bound to the approved snapshot
+  ---
+  duration_ms: 0.360667
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:197:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:198:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: successful command emits structured run and attempt states with raw logs
+not ok 5 - successful command emits structured run and attempt states with raw logs
+  ---
+  duration_ms: 1.440083
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:231:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:237:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: timeout escalates to SIGKILL when the child ignores SIGTERM
+ok 6 - timeout escalates to SIGKILL when the child ignores SIGTERM
+  ---
+  duration_ms: 24.06925
+  type: 'test'
+  ...
+# Subtest: empty argv is a stable blocker and never starts an attempt
+not ok 7 - empty argv is a stable blocker and never starts an attempt
+  ---
+  duration_ms: 0.988458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:338:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:340:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: approved command binds argv, project-relative cwd, and env keys
+not ok 8 - approved command binds argv, project-relative cwd, and env keys
+  ---
+  duration_ms: 0.384125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:359:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:361:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: command case schema requires the complete approved command contract
+not ok 9 - command case schema requires the complete approved command contract
+  ---
+  duration_ms: 0.443292
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:410:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:423:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: kernel public entry exports command execution factories
+not ok 10 - kernel public entry exports command execution factories
+  ---
+  duration_ms: 2.103875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:433:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:436:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: nonzero, signal, timeout, and cancellation produce terminal attempts
+    # Subtest: nonzero exit
+    not ok 1 - nonzero exit
+      ---
+      duration_ms: 0.547958
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:501:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      ...
+    # Subtest: process signal
+    not ok 2 - process signal
+      ---
+      duration_ms: 0.216375
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:501:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: timeout
+    not ok 3 - timeout
+      ---
+      duration_ms: 0.325791
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:501:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cancellation
+    not ok 4 - cancellation
+      ---
+      duration_ms: 0.193083
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:501:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:500:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 11 - nonzero, signal, timeout, and cancellation produce terminal attempts
+  ---
+  duration_ms: 1.632958
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:440:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: a later passing attempt retains the earlier failed attempt unchanged
+not ok 12 - a later passing attempt retains the earlier failed attempt unchanged
+  ---
+  duration_ms: 0.433542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:532:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:546:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: retry identity is validated before command execution
+not ok 13 - retry identity is validated before command execution
+  ---
+  duration_ms: 0.210792
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:593:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:595:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: post-execution contract failure preserves raw logs and command events
+not ok 14 - post-execution contract failure preserves raw logs and command events
+  ---
+  duration_ms: 3.144041
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:653:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    executionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/test-helpers.js:87:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/execution/command-adapter.test.js:656:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..14
+# tests 18
+# suites 0
+# pass 2
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1213.711041
+zsh:5: read-only variable: status
