@@ -1,0 +1,152 @@
+# command: node --test tests/verification-v2/browser/browser-access-policy.test.js tests/verification-v2/browser/playwright-adapter.test.js # task010-ipc-nonce-final-focused
+# exit_status: 0
+# duration_ms: 23661
+
+## stdout
+TAP version 13
+# Subtest: browser access policy allows only exact approved HTTP origins
+ok 1 - browser access policy allows only exact approved HTTP origins
+  ---
+  duration_ms: 0.60925
+  type: 'test'
+  ...
+# Subtest: browser access policy rejects malformed or unsafe approved origins
+ok 2 - browser access policy rejects malformed or unsafe approved origins
+  ---
+  duration_ms: 0.708875
+  type: 'test'
+  ...
+# Subtest: playwright case schema requires scenario, browser, and access identity
+ok 3 - playwright case schema requires scenario, browser, and access identity
+  ---
+  duration_ms: 735.964833
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 4 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 57.041584
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 5 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 54.353208
+  type: 'test'
+  ...
+# Subtest: playwright preflight binds source and attempt hashes to the approved scenario
+ok 6 - playwright preflight binds source and attempt hashes to the approved scenario
+  ---
+  duration_ms: 53.004709
+  type: 'test'
+  ...
+# Subtest: playwright adapter independently verifies the approved scenario hash
+ok 7 - playwright adapter independently verifies the approved scenario hash
+  ---
+  duration_ms: 58.567833
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 8 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 1430.556625
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 9 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 999.867042
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 10 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 1020.411208
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 11 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 50.855
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 103.057166
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 100.622
+      type: 'test'
+      ...
+    1..2
+ok 12 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 204.620542
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 13 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 108.843834
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 14 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 101.498834
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 15 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 1147.682583
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 16 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1844.632625
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, network, and detached children
+ok 17 - process confinement blocks host reads, writes, network, and detached children
+  ---
+  duration_ms: 910.165417
+  type: 'test'
+  ...
+# Subtest: scenario cannot forge authenticated worker events or terminal results
+ok 18 - scenario cannot forge authenticated worker events or terminal results
+  ---
+  duration_ms: 943.487333
+  type: 'test'
+  ...
+# Subtest: browser access violations block a caught scenario success
+ok 19 - browser access violations block a caught scenario success
+  ---
+  duration_ms: 1896.122875
+  type: 'test'
+  ...
+# Subtest: scenario cannot remove policy routes or create an unguarded context
+ok 20 - scenario cannot remove policy routes or create an unguarded context
+  ---
+  duration_ms: 11502.377875
+  type: 'test'
+  ...
+1..20
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23621.607709
+
+
+## stderr
+(empty)

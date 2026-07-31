@@ -1,7 +1,16 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const { deepFreeze } = require('../contracts/schema-registry');
 const { validateApprovedCommand } = require('./command-contract');
+const {
+  createBrowserAccessPolicy
+} = require('./browser-access-policy');
+const {
+  serializePlaywrightScenario
+} = require('./playwright-scenario');
 
 function executionBlocker(id, artifact, detail = null) {
   return { id, artifact, detail };
@@ -102,7 +111,7 @@ function validateReferenceGraph(validator, values) {
   return result.ok ? null : result.blockers;
 }
 
-function runPreflight(input, dependencies) {
+function initializePreflight(input, dependencies) {
   const previousAttempts = Array.isArray(input.previousAttempts)
     ? structuredClone(input.previousAttempts)
     : [];
@@ -144,14 +153,6 @@ function runPreflight(input, dependencies) {
       result: blockedResult(previousAttempts, [runtimeProblem])
     };
   }
-
-  const commandValidation = dependencies.commandAdapter.validate(input.command);
-  if (!commandValidation.ok) {
-    return {
-      ok: false,
-      result: blockedResult(previousAttempts, commandValidation.blockers)
-    };
-  }
   const testCase = approvalResult.snapshot.cases.find((entry) => (
     entry.id === input.caseId
   ));
@@ -162,6 +163,61 @@ function runPreflight(input, dependencies) {
         'verification-execution:approved-case-missing',
         'case-snapshot'
       )])
+    };
+  }
+  return {
+    ok: true,
+    approvalResult,
+    testCase,
+    run,
+    previousAttempts
+  };
+}
+
+function completePreflight(base, dependencies, input) {
+  const {
+    approvalResult,
+    testCase,
+    run,
+    previousAttempts
+  } = base;
+  const runProblem = validateRunApproval(run, approvalResult, input.caseId);
+  if (runProblem) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [runProblem])
+    };
+  }
+  const graphProblems = validateReferenceGraph(
+    dependencies.crossReferenceValidator,
+    {
+      run,
+      snapshot: approvalResult.snapshot,
+      attempts: previousAttempts
+    }
+  );
+  if (graphProblems) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, graphProblems)
+    };
+  }
+  return base;
+}
+
+function runPreflight(input, dependencies) {
+  const base = initializePreflight(input, dependencies);
+  if (!base.ok) return base;
+  const {
+    testCase,
+    previousAttempts
+  } = base;
+
+  const commandValidation = dependencies.commandAdapter.validate(input.command);
+  if (!commandValidation.ok) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, commandValidation.blockers)
     };
   }
   if (testCase.runner.kind !== 'command') {
@@ -185,41 +241,207 @@ function runPreflight(input, dependencies) {
       result: blockedResult(previousAttempts, [commandProblem])
     };
   }
-  const runProblem = validateRunApproval(run, approvalResult, input.caseId);
-  if (runProblem) {
-    return {
-      ok: false,
-      result: blockedResult(previousAttempts, [runProblem])
-    };
+  return completePreflight(base, dependencies, input);
+}
+
+function nearestExistingAncestor(value) {
+  let current = path.resolve(value);
+  while (!fs.existsSync(current)) {
+    const parent = path.dirname(current);
+    if (parent === current) return null;
+    current = parent;
   }
-  const graphProblems = validateReferenceGraph(
-    dependencies.crossReferenceValidator,
-    {
-      run,
-      snapshot: approvalResult.snapshot,
-      attempts: previousAttempts
-    }
-  );
-  if (graphProblems) {
-    return {
-      ok: false,
-      result: blockedResult(previousAttempts, graphProblems)
-    };
+  try {
+    return fs.realpathSync(current);
+  } catch {
+    return null;
   }
-  return {
-    ok: true,
-    approvalResult,
+}
+
+function isContained(root, candidate) {
+  const relative = path.relative(root, candidate);
+  return relative === ''
+    || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
+
+function sameStrings(left, right) {
+  return Array.isArray(left)
+    && Array.isArray(right)
+    && left.length === right.length
+    && left.every((entry, index) => entry === right[index]);
+}
+
+function validatePlaywrightRequest(testCase, request, attempt, projectRoot) {
+  if (!request || typeof request !== 'object' || Array.isArray(request)) {
+    return executionBlocker(
+      'verification-execution:playwright-request-invalid',
+      testCase.id
+    );
+  }
+  if (request.scenario_id !== testCase.runner.scenario_id) {
+    return executionBlocker(
+      'verification-execution:playwright-scenario-mismatch',
+      testCase.id,
+      request.scenario_id || null
+    );
+  }
+  if (request.browser_project !== testCase.runner.browser_project) {
+    return executionBlocker(
+      'verification-execution:playwright-browser-project-mismatch',
+      testCase.id,
+      request.browser_project || null
+    );
+  }
+  if (typeof request.scenario !== 'function') {
+    return executionBlocker(
+      'verification-execution:playwright-scenario-required',
+      testCase.id
+    );
+  }
+  const serialized = serializePlaywrightScenario(request.scenario);
+  if (serialized.blocker) return serialized.blocker;
+  if (serialized.hash !== testCase.runner.scenario_hash) {
+    return executionBlocker(
+      'verification-execution:playwright-scenario-hash-mismatch',
+      testCase.id,
+      serialized.hash
+    );
+  }
+  if (request.scenario_hash !== testCase.runner.scenario_hash) {
+    return executionBlocker(
+      'verification-execution:playwright-scenario-hash-mismatch',
+      testCase.id,
+      request.scenario_hash || null
+    );
+  }
+  if (attempt?.scenario_hash !== testCase.runner.scenario_hash) {
+    return executionBlocker(
+      'verification-execution:playwright-attempt-scenario-hash-mismatch',
+      attempt?.id || testCase.id,
+      attempt?.scenario_hash || null
+    );
+  }
+  if (!sameStrings(request.allowed_origins, testCase.runner.allowed_origins)) {
+    return executionBlocker(
+      'verification-execution:playwright-allowed-origins-mismatch',
+      testCase.id
+    );
+  }
+  try {
+    createBrowserAccessPolicy(request.allowed_origins);
+  } catch {
+    return executionBlocker(
+      'verification-execution:playwright-allowed-origins-invalid',
+      testCase.id
+    );
+  }
+  if (
+    typeof request.artifact_root !== 'string'
+    || !path.isAbsolute(request.artifact_root)
+  ) {
+    return executionBlocker(
+      'verification-execution:playwright-artifact-root-invalid',
+      testCase.id
+    );
+  }
+  const resolvedProject = path.resolve(projectRoot);
+  const resolvedArtifact = path.resolve(request.artifact_root);
+  if (
+    resolvedArtifact === resolvedProject
+    || !isContained(resolvedProject, resolvedArtifact)
+  ) {
+    return executionBlocker(
+      'verification-execution:playwright-artifact-root-outside-project',
+      testCase.id,
+      resolvedArtifact
+    );
+  }
+  let canonicalProject;
+  try {
+    canonicalProject = fs.realpathSync(resolvedProject);
+  } catch {
+    return executionBlocker(
+      'verification-execution:playwright-project-root-unresolvable',
+      testCase.id,
+      resolvedProject
+    );
+  }
+  const canonicalAncestor = nearestExistingAncestor(resolvedArtifact);
+  if (!canonicalAncestor || !isContained(canonicalProject, canonicalAncestor)) {
+    return executionBlocker(
+      'verification-execution:playwright-artifact-root-outside-project',
+      testCase.id,
+      canonicalAncestor || resolvedArtifact
+    );
+  }
+  return null;
+}
+
+function runPlaywrightPreflight(input, dependencies) {
+  const base = initializePreflight(input, dependencies);
+  if (!base.ok) return base;
+  const {
     testCase,
-    run,
     previousAttempts
-  };
+  } = base;
+  if (testCase.runner.kind !== 'playwright') {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:runner-kind-mismatch',
+        testCase.id,
+        testCase.runner.kind
+      )])
+    };
+  }
+  const requestProblem = validatePlaywrightRequest(
+    testCase,
+    input.playwright,
+    input.attempt,
+    dependencies.projectRoot
+  );
+  if (requestProblem) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [requestProblem])
+    };
+  }
+  const browserReady = input.runtimeStatus.checks?.browsers?.some((entry) => (
+    entry.name === testCase.runner.browser_project
+    && entry.executable_exists === true
+    && entry.executable_allowed === true
+    && entry.probe_ok === true
+  ));
+  if (!browserReady) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:playwright-browser-not-ready',
+        testCase.runner.browser_project
+      )])
+    };
+  }
+  const adapterValidation = dependencies.playwrightAdapter.validate(
+    input.playwright
+  );
+  if (!adapterValidation.ok) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, adapterValidation.blockers)
+    };
+  }
+  return completePreflight(base, dependencies, input);
 }
 
 module.exports = {
   blockedResult,
+  completePreflight,
   executionBlocker,
+  initializePreflight,
   runPreflight,
+  runPlaywrightPreflight,
   validateArtifact,
+  validatePlaywrightRequest,
   validateReferenceGraph,
   validateRunApproval,
   validateRuntime

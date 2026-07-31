@@ -144,7 +144,10 @@ function registerCaseInternalSuite() {
         const result = validateGraph(changedGraph((graph) => {
           const testCase = graph.caseSnapshot.cases[0];
           testCase.runner.kind = 'playwright';
+          testCase.runner.scenario_id = 'scenario-main';
+          testCase.runner.scenario_hash = 'e'.repeat(64);
           testCase.runner.browser_project = 'chromium';
+          testCase.runner.allowed_origins = ['https://example.invalid'];
           graph.attempts[0].runner = 'playwright';
           graph.attempts[0].browser_project = 'webkit';
         }));

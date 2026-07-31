@@ -8,7 +8,13 @@ function createRunningLifecycle(options) {
     run,
     testCase,
     attempt,
-    startedAt
+    startedAt,
+    runnerKind = testCase.runner.kind,
+    browserProject = (
+      testCase.runner.kind === 'command'
+        ? 'none'
+        : testCase.runner.browser_project
+    )
   } = options;
   const runningRun = validateArtifact(schemaRegistry, 'verification-run', {
     ...run,
@@ -27,12 +33,12 @@ function createRunningLifecycle(options) {
     case_snapshot_hash: run.case_snapshot_hash,
     kind: attempt?.kind,
     sequence: attempt?.sequence,
-    runner: 'command',
+    runner: runnerKind,
     code_sha: run.code_sha,
     test_sha: run.test_sha,
     scenario_hash: attempt?.scenario_hash,
     environment_hash: run.environment_hash,
-    browser_project: attempt?.browser_project,
+    browser_project: browserProject,
     test_data_snapshot: attempt?.test_data_snapshot,
     runtime_version: run.runtime_version,
     kernel_version: run.kernel_version,

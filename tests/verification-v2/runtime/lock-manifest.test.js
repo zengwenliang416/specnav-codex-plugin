@@ -59,13 +59,19 @@ test('runtime lock pins every required package and browser artifact', () => {
   }
   assert.deepEqual(
     lock.browsers.map((browser) => browser.name),
-    ['chromium', 'chromium-headless-shell']
+    ['chromium', 'chromium-headless-shell', 'ffmpeg']
   );
-  assert.ok(lock.browsers.every((browser) => browser.revision === '1234'));
+  assert.deepEqual(
+    lock.browsers.map((browser) => browser.revision),
+    ['1234', '1234', '1011']
+  );
   for (const browser of lock.browsers) {
     const artifact = browser.artifacts['darwin-arm64'];
     assert.equal(artifact.host_platform, 'mac26-arm64');
-    assert.match(artifact.url, /^https:\/\/cdn\.playwright\.dev\/builds\/cft\//);
+    assert.match(
+      artifact.url,
+      /^https:\/\/cdn\.playwright\.dev\/builds\/(?:cft|ffmpeg)\//
+    );
     assert.match(artifact.sha256, /^[a-f0-9]{64}$/);
     assert.ok(Number.isSafeInteger(artifact.size_bytes));
     assert.ok(artifact.size_bytes > 0);

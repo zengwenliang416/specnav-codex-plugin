@@ -2,32 +2,67 @@
 
 ## Verdict
 
-blocked
+approved
+
+## Findings
+
+No blocking findings.
 
 ## Separation Of Concerns
 
-- Replace this scaffold with direct review.
+- `playwright-adapter.js` owns adapter validation and result normalization.
+- `playwright-worker.js` owns the isolated browser process and authenticated
+  IPC protocol.
+- The adapter remains below the EvidenceStore, Reading, aggregation, report,
+  and release-gate layers.
 
 ## Component Cohesion / Coupling
 
-- Confirm high cohesion, low coupling, and required extraction.
+- `browser-access-policy.js` owns approved-origin normalization and matching.
+- `playwright-api-guard.js` owns the capability membrane exposed to scenarios.
+- The implementation emits raw assertion observations and artifact candidates;
+  it does not persist EvidenceStore records or derive Reading/domain verdicts.
 
 ## Test Quality
 
-- Replace this scaffold with direct review.
+- Focused browser validation passed 22/22 after the final IPC nonce repair.
+- The suite covers scenario/source/request/attempt identity, real browser
+  artifacts, deterministic assertions, timeout/cancel races, symlink escapes,
+  process confinement, exact-origin policy, API reflection/callback escapes,
+  and forged IPC result/event messages.
+- Full Verification V2 regression passed 218/218.
 
 ## Error Handling
 
-- Replace this scaffold with direct review.
+- Runtime, identity, browser access, artifact path, timeout, cancellation, and
+  policy failures return exact blockers and preserve the first terminal cause.
+- A caught browser-policy violation cannot be converted into a successful
+  attempt by scenario code.
+- Unauthenticated child-process messages are ignored.
 
 ## Reuse / Duplication
 
-- Replace this scaffold with direct review.
+- Reuses the shared execution lifecycle, orchestrator, preflight, runtime
+  doctor, and managed runtime resolver.
+- Browser policy and API guarding are extracted once rather than duplicated
+  across the adapter and scenario runner.
 
 ## Complexity Delta
 
-- Replace this scaffold with direct review.
+- The added isolation and capability membrane are justified by executing
+  approved but still untrusted scenario modules.
+- Parent/worker authentication adds one private nonce handshake without
+  changing the public adapter contract.
+
+## Validation Results
+
+- Browser policy plus Playwright adapter: 22/22 passed.
+- Full Verification V2: 218/218 passed.
+- Verification plugin fixtures: passed.
+- Development plugin fixtures: passed.
+- Managed runtime doctor: ready, no fallback used.
+- Static syntax and diff checks: passed.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+None.

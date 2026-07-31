@@ -70,11 +70,26 @@
           "size_bytes": 99275008
         }
       }
+    },
+    {
+      "name": "ffmpeg",
+      "revision": "1011",
+      "browser_version": "7.1",
+      "install_by_default": true,
+      "artifacts": {
+        "darwin-arm64": {
+          "host_platform": "mac26-arm64",
+          "url": "https://cdn.playwright.dev/builds/ffmpeg/1011/ffmpeg-mac-arm64.zip",
+          "sha256": "7d77eb0d44b59acc4065faa2476c0df1a242cc904c346f820626818c953c5277",
+          "size_bytes": 1097141
+        }
+      }
     }
   ],
   "browser_policy": {
     "install": [
-      "chromium"
+      "chromium",
+      "ffmpeg"
     ],
     "allow_system_browser": false,
     "allow_channel_fallback": false,

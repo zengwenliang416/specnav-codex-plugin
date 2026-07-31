@@ -119,6 +119,9 @@ function browserExecutableRelativePath(browser, platformKey) {
       'chrome-headless-shell'
     );
   }
+  if (browser.name === 'ffmpeg') {
+    return 'ffmpeg-mac';
+  }
   throw new Error(`verification-runtime:unsupported-browser:${browser.name}`);
 }
 

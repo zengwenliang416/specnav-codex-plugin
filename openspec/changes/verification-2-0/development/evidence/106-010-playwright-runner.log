@@ -1,0 +1,196 @@
+# command: node --test tests/verification-v2/execution/command-adapter.test.js # task010-command-regression
+# exit_status: 0
+# duration_ms: 1684
+
+## stdout
+TAP version 13
+# Subtest: command adapter passes explicit argv, cwd, and env without a shell fallback
+ok 1 - command adapter passes explicit argv, cwd, and env without a shell fallback
+  ---
+  duration_ms: 2.955875
+  type: 'test'
+  ...
+# Subtest: orchestrator blocks before spawn unless Task 005 approval succeeds
+ok 2 - orchestrator blocks before spawn unless Task 005 approval succeeds
+  ---
+  duration_ms: 1046.778208
+  type: 'test'
+  ...
+# Subtest: orchestrator blocks before spawn unless runtime doctor is ready
+ok 3 - orchestrator blocks before spawn unless runtime doctor is ready
+  ---
+  duration_ms: 3.111375
+  type: 'test'
+  ...
+# Subtest: orchestrator rejects a run that is not bound to the approved snapshot
+ok 4 - orchestrator rejects a run that is not bound to the approved snapshot
+  ---
+  duration_ms: 1.050417
+  type: 'test'
+  ...
+# Subtest: successful command emits structured run and attempt states with raw logs
+ok 5 - successful command emits structured run and attempt states with raw logs
+  ---
+  duration_ms: 36.026708
+  type: 'test'
+  ...
+# Subtest: timeout escalates to SIGKILL when the child ignores SIGTERM
+ok 6 - timeout escalates to SIGKILL when the child ignores SIGTERM
+  ---
+  duration_ms: 21.824667
+  type: 'test'
+  ...
+# Subtest: exit before close cannot be reclassified by late cancellation or timeout
+    # Subtest: late cancellation
+    ok 1 - late cancellation
+      ---
+      duration_ms: 20.718
+      type: 'test'
+      ...
+    # Subtest: late timeout
+    ok 2 - late timeout
+      ---
+      duration_ms: 26.609208
+      type: 'test'
+      ...
+    1..2
+ok 7 - exit before close cannot be reclassified by late cancellation or timeout
+  ---
+  duration_ms: 47.800375
+  type: 'test'
+  ...
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 8 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 35.306125
+  type: 'test'
+  ...
+# Subtest: empty argv is a stable blocker and never starts an attempt
+ok 9 - empty argv is a stable blocker and never starts an attempt
+  ---
+  duration_ms: 0.904458
+  type: 'test'
+  ...
+# Subtest: approved command binds argv, project-relative cwd, and env keys
+    # Subtest: argv mismatch
+    ok 1 - argv mismatch
+      ---
+      duration_ms: 0.447625
+      type: 'test'
+      ...
+    # Subtest: cwd mismatch
+    ok 2 - cwd mismatch
+      ---
+      duration_ms: 0.181458
+      type: 'test'
+      ...
+    # Subtest: env key mismatch
+    ok 3 - env key mismatch
+      ---
+      duration_ms: 0.275791
+      type: 'test'
+      ...
+    1..3
+ok 10 - approved command binds argv, project-relative cwd, and env keys
+  ---
+  duration_ms: 1.395042
+  type: 'test'
+  ...
+# Subtest: approved cwd cannot escape project root through a directory symlink
+ok 11 - approved cwd cannot escape project root through a directory symlink
+  ---
+  duration_ms: 1.675
+  type: 'test'
+  ...
+# Subtest: approved cwd must resolve before an attempt can start
+ok 12 - approved cwd must resolve before an attempt can start
+  ---
+  duration_ms: 1.161834
+  type: 'test'
+  ...
+# Subtest: command case schema requires the complete approved command contract
+ok 13 - command case schema requires the complete approved command contract
+  ---
+  duration_ms: 0.364
+  type: 'test'
+  ...
+# Subtest: kernel public entry exports command execution factories
+ok 14 - kernel public entry exports command execution factories
+  ---
+  duration_ms: 1.1125
+  type: 'test'
+  ...
+# Subtest: nonzero, signal, timeout, and cancellation produce terminal attempts
+    # Subtest: nonzero exit
+    ok 1 - nonzero exit
+      ---
+      duration_ms: 33.5995
+      type: 'test'
+      ...
+    # Subtest: process signal
+    ok 2 - process signal
+      ---
+      duration_ms: 30.072667
+      type: 'test'
+      ...
+    # Subtest: timeout
+    ok 3 - timeout
+      ---
+      duration_ms: 54.164542
+      type: 'test'
+      ...
+    # Subtest: cancellation
+    ok 4 - cancellation
+      ---
+      duration_ms: 54.178458
+      type: 'test'
+      ...
+    1..4
+ok 15 - nonzero, signal, timeout, and cancellation produce terminal attempts
+  ---
+  duration_ms: 172.406042
+  type: 'test'
+  ...
+# Subtest: a later passing attempt retains the earlier failed attempt unchanged
+ok 16 - a later passing attempt retains the earlier failed attempt unchanged
+  ---
+  duration_ms: 66.356416
+  type: 'test'
+  ...
+# Subtest: retry identity is validated before command execution
+ok 17 - retry identity is validated before command execution
+  ---
+  duration_ms: 31.770917
+  type: 'test'
+  ...
+# Subtest: post-execution contract failure preserves raw logs and command events
+ok 18 - post-execution contract failure preserves raw logs and command events
+  ---
+  duration_ms: 31.133416
+  type: 'test'
+  ...
+# Subtest: blocked terminal fallback retains the original execution blocker
+ok 19 - blocked terminal fallback retains the original execution blocker
+  ---
+  duration_ms: 31.043833
+  type: 'test'
+  ...
+# Subtest: double terminal rejection preserves execution history without fake terminal artifacts
+ok 20 - double terminal rejection preserves execution history without fake terminal artifacts
+  ---
+  duration_ms: 32.890334
+  type: 'test'
+  ...
+1..20
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1642.393458
+
+
+## stderr
+(empty)

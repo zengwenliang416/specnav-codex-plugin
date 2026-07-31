@@ -84,7 +84,9 @@ function defaultAccessPath({ file, kind }) {
 }
 
 function defaultLoadPackage({ runtimeRoot, name, expectedVersion }) {
+  const previousBrowsersPath = process.env.PLAYWRIGHT_BROWSERS_PATH;
   try {
+    process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(runtimeRoot, 'browsers');
     const packageFile = path.join(
       runtimeRoot,
       'node_modules',
@@ -109,11 +111,20 @@ function defaultLoadPackage({ runtimeRoot, name, expectedVersion }) {
       version: null,
       error: error instanceof Error ? error.message : String(error)
     };
+  } finally {
+    if (previousBrowsersPath === undefined) {
+      delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+    } else {
+      process.env.PLAYWRIGHT_BROWSERS_PATH = previousBrowsersPath;
+    }
   }
 }
 
-function defaultProbeBrowser({ executable }) {
-  const run = spawnSync(executable, ['--version'], {
+function defaultProbeBrowser({ browser, executable, spawn = spawnSync }) {
+  const versionArgument = browser?.name === 'ffmpeg'
+    ? '-version'
+    : '--version';
+  const run = spawn(executable, [versionArgument], {
     encoding: 'utf8',
     timeout: 20000
   });

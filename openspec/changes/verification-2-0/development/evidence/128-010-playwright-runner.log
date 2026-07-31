@@ -1,0 +1,140 @@
+# command: node --test tests/verification-v2/browser/browser-access-policy.test.js tests/verification-v2/browser/playwright-adapter.test.js # task010-approved-browser-contract-focused
+# exit_status: 0
+# duration_ms: 11810
+
+## stdout
+TAP version 13
+# Subtest: browser access policy allows only exact approved HTTP origins
+ok 1 - browser access policy allows only exact approved HTTP origins
+  ---
+  duration_ms: 0.54925
+  type: 'test'
+  ...
+# Subtest: browser access policy rejects malformed or unsafe approved origins
+ok 2 - browser access policy rejects malformed or unsafe approved origins
+  ---
+  duration_ms: 0.364
+  type: 'test'
+  ...
+# Subtest: playwright case schema requires scenario, browser, and access identity
+ok 3 - playwright case schema requires scenario, browser, and access identity
+  ---
+  duration_ms: 873.039459
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 4 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 58.288334
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 5 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 53.521334
+  type: 'test'
+  ...
+# Subtest: playwright preflight binds source and attempt hashes to the approved scenario
+ok 6 - playwright preflight binds source and attempt hashes to the approved scenario
+  ---
+  duration_ms: 51.983083
+  type: 'test'
+  ...
+# Subtest: playwright adapter independently verifies the approved scenario hash
+ok 7 - playwright adapter independently verifies the approved scenario hash
+  ---
+  duration_ms: 52.543916
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 8 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 1720.51475
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 9 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 1078.797834
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 10 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 984.006125
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 11 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 54.788542
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 110.617125
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 106.469
+      type: 'test'
+      ...
+    1..2
+ok 12 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 218.022584
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 13 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 118.890584
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 14 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 92.987667
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 15 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 1200.240833
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 16 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1816.090959
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, network, and detached children
+ok 17 - process confinement blocks host reads, writes, network, and detached children
+  ---
+  duration_ms: 926.940125
+  type: 'test'
+  ...
+# Subtest: browser access violations block a caught scenario success
+ok 18 - browser access violations block a caught scenario success
+  ---
+  duration_ms: 1968.761375
+  type: 'test'
+  ...
+1..18
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11773.724417
+
+
+## stderr
+(empty)

@@ -168,12 +168,24 @@ test('installer writes a complete side-by-side runtime and leaves the project un
   assert.equal(fs.readFileSync(path.join(projectRoot, 'package.json'), 'utf8'), projectPackage);
   assert.equal(fs.readFileSync(path.join(projectRoot, 'package-lock.json'), 'utf8'), projectLock);
 
-  assert.deepEqual(calls.downloads, ['chromium', 'chromium-headless-shell']);
-  assert.deepEqual(calls.extractions, ['chromium', 'chromium-headless-shell']);
+  assert.deepEqual(calls.downloads, [
+    'chromium',
+    'chromium-headless-shell',
+    'ffmpeg'
+  ]);
+  assert.deepEqual(calls.extractions, [
+    'chromium',
+    'chromium-headless-shell',
+    'ffmpeg'
+  ]);
   assert.deepEqual(events, [
     'install-started',
     'package-install-started',
     'package-install-verified',
+    'browser-download-started',
+    'browser-download-verified',
+    'browser-extract-started',
+    'browser-ready',
     'browser-download-started',
     'browser-download-verified',
     'browser-extract-started',
@@ -203,7 +215,7 @@ test('installer writes a complete side-by-side runtime and leaves the project un
   assert.equal(receipt.runtime_version, lock.runtime_version);
   assert.equal(receipt.kernel.contract_digest, metadata.contractDigest);
   assert.equal(receipt.packages.length, Object.keys(lock.packages).length);
-  assert.equal(receipt.browsers.length, 2);
+  assert.equal(receipt.browsers.length, 3);
   assert.ok(receipt.browsers.every((browser) => browser.integrity_verified === true));
   assert.ok(receipt.project_manifests.every((manifest) => manifest.unchanged === true));
 

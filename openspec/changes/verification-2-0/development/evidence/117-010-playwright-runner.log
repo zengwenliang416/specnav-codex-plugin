@@ -1,0 +1,110 @@
+# command: node --test tests/verification-v2/browser/playwright-adapter.test.js # task010-security-final-focused
+# exit_status: 0
+# duration_ms: 11737
+
+## stdout
+TAP version 13
+# Subtest: playwright case schema requires scenario and browser identity
+ok 1 - playwright case schema requires scenario and browser identity
+  ---
+  duration_ms: 816.08375
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 2 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 56.92
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 3 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 51.100042
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 4 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 1702.260583
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 5 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 1050.346125
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 6 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 1012.899666
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 7 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 48.9605
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 104.687667
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 100.888833
+      type: 'test'
+      ...
+    1..2
+ok 8 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 206.536708
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 9 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 105.786
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 10 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 71.620375
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 11 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 1906.350833
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 12 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1953.680292
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, and detached children
+ok 13 - process confinement blocks host reads, writes, and detached children
+  ---
+  duration_ms: 2651.678667
+  type: 'test'
+  ...
+1..13
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11701.125209
+
+
+## stderr
+(empty)

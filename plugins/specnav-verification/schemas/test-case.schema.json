@@ -227,6 +227,21 @@
         "browser_project": {
           "$ref": "common.schema.json#/$defs/nonEmptyString"
         },
+        "scenario_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "scenario_hash": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "allowed_origins": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^https?://[^/?#]+$"
+          },
+          "uniqueItems": true
+        },
         "requires_midscene": {
           "type": "boolean"
         }
@@ -269,6 +284,49 @@
                 "type": "array",
                 "items": {
                   "$ref": "common.schema.json#/$defs/nonEmptyString"
+                },
+                "uniqueItems": true
+              },
+              "requires_midscene": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "playwright"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "scenario_id",
+              "scenario_hash",
+              "browser_project",
+              "allowed_origins"
+            ],
+            "properties": {
+              "scenario_id": {
+                "$ref": "common.schema.json#/$defs/stableId"
+              },
+              "scenario_hash": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              },
+              "browser_project": {
+                "$ref": "common.schema.json#/$defs/nonEmptyString"
+              },
+              "allowed_origins": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^https?://[^/?#]+$"
                 },
                 "uniqueItems": true
               },

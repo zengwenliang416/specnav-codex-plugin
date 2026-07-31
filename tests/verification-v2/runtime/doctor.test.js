@@ -23,7 +23,10 @@ const {
   ROOT,
   'plugins/specnav-verification/kernel/runtime/installer'
 ));
-const { doctorRuntime } = require(path.join(
+const {
+  defaultProbeBrowser,
+  doctorRuntime
+} = require(path.join(
   ROOT,
   'plugins/specnav-verification/kernel/runtime/doctor'
 ));
@@ -31,6 +34,21 @@ const { repairRuntime } = require(path.join(
   ROOT,
   'plugins/specnav-verification/kernel/runtime/repair'
 ));
+
+test('doctor probes FFmpeg with its supported version argument', () => {
+  const calls = [];
+  const result = defaultProbeBrowser({
+    browser: { name: 'ffmpeg' },
+    executable: '/managed/ffmpeg',
+    spawn(command, args, options) {
+      calls.push({ command, args, options });
+      return { status: 0, stdout: 'ffmpeg version', stderr: '' };
+    }
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(calls[0].args, ['-version']);
+});
 
 function environment() {
   return {

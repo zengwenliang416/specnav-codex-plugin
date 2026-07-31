@@ -1,0 +1,197 @@
+# command: node --test tests/verification-v2/browser/playwright-adapter.test.js # task010-red
+# exit_status: 1
+# duration_ms: 1580
+
+## stdout
+TAP version 13
+# Subtest: playwright case schema requires scenario and browser identity
+not ok 1 - playwright case schema requires scenario and browser identity
+  ---
+  duration_ms: 1400.032416
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:66:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:77:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+not ok 2 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 12.350375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:87:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:89:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+not ok 3 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 0.453375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:107:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:108:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+not ok 4 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 6.124375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:146:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:148:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+not ok 5 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 1.929542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:207:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:209:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+not ok 6 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 0.928041
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:243:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:245:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+not ok 7 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 0.395459
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:278:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-cases:plan-blocked","artifact":"case-snapshot","field":"/plan"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    browserExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/test-helpers.js:116:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:279:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1520.189917
+
+
+## stderr
+(empty)

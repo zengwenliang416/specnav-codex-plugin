@@ -1,0 +1,64 @@
+# command: node --test --test-name-pattern="runtime artifact-root symlink escape|cancellation stops scenario side effects" tests/verification-v2/browser/playwright-adapter.test.js # task010-review-red
+# exit_status: 1
+# duration_ms: 3590
+
+## stdout
+TAP version 13
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+not ok 1 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 2471.031916
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:431:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'assertions.json',
+    +   'console.json',
+    +   'network.json',
+    +   'page@3a66449e0b31287b37a689e1370383b7.webm',
+    +   'screenshot.png',
+    +   'trace.zip',
+    +   'video.webm'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'assertions.json'
+    1: 'console.json'
+    2: 'network.json'
+    3: 'page@3a66449e0b31287b37a689e1370383b7.webm'
+    4: 'screenshot.png'
+    5: 'trace.zip'
+    6: 'video.webm'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/browser/playwright-adapter.test.js:460:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 2 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1002.889291
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3553.54325
+
+
+## stderr
+(empty)
