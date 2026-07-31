@@ -38,16 +38,31 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/evidence/**
 - plugins/specnav-verification/kernel/reporting/**
+- plugins/specnav-verification/kernel/index.js
 - tests/verification-v2/security/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/014-evidence-redaction/**
 
 ## Interfaces / Seams
 
-- Evidence capture redacts before persistence; report rendering escapes already-redacted content again.
+- `createSecretRedactor()` returns safe text or structured values plus
+  schema-compatible redaction metadata before persistence.
+- `renderSafeHtmlText()` composes the redactor with HTML escaping for report
+  projection and never accepts unredacted content as trusted.
+- These are concrete Kernel utilities. They do not alter the frozen service
+  contract digest or implement the later report-renderer service.
 
 ## Components To Create
 
 - Secret redactor
 - Redaction metadata contract
+- Safe HTML text projector
 
 ## Components To Reuse
 
@@ -63,6 +78,9 @@ listed verification commands and must preserve all earlier artifacts.
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
 - Acceptance assertions: `AC-30`.
 - Captured output passes redaction, records redaction status, and remains safe for report projection.
+- Task 014 provides the host-neutral redaction boundary. Command, Playwright,
+  and Midscene capture integration remains with their owning adapters and
+  report-page composition remains Tasks 023 through 026.
 
 ## State / Error / Empty / Loading Behavior
 

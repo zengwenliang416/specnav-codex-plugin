@@ -1,0 +1,255 @@
+# command: node --test tests/verification-v2/security/redaction.test.js tests/verification-v2/kernel/package-boundary.test.js # task014-security-red
+# exit_status: 1
+# duration_ms: 123
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.721875
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 17.304292
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.295583
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.807166
+  type: 'test'
+  ...
+# Subtest: public redactor removes exact configured secrets from stdout and stderr
+ok 5 - public redactor removes exact configured secrets from stdout and stderr
+  ---
+  duration_ms: 2.060625
+  type: 'test'
+  ...
+# Subtest: credential-shaped text is redacted even when the value is not configured
+ok 6 - credential-shaped text is redacted even when the value is not configured
+  ---
+  duration_ms: 0.307375
+  type: 'test'
+  ...
+# Subtest: structured provider metadata is cloned, recursively redacted, and path-labeled
+ok 7 - structured provider metadata is cloned, recursively redacted, and path-labeled
+  ---
+  duration_ms: 9.229625
+  type: 'test'
+  ...
+# Subtest: Markdown structure remains inspectable while secrets are removed
+ok 8 - Markdown structure remains inspectable while secrets are removed
+  ---
+  duration_ms: 0.157708
+  type: 'test'
+  ...
+# Subtest: JSON text keeps its shape while quoted credential fields are redacted
+ok 9 - JSON text keeps its shape while quoted credential fields are redacted
+  ---
+  duration_ms: 0.1345
+  type: 'test'
+  ...
+# Subtest: HTML projection redacts first and escapes hostile artifact content
+ok 10 - HTML projection redacts first and escapes hostile artifact content
+  ---
+  duration_ms: 0.170875
+  type: 'test'
+  ...
+# Subtest: clean text remains not_required but detected credentials never do
+ok 11 - clean text remains not_required but detected credentials never do
+  ---
+  duration_ms: 0.1355
+  type: 'test'
+  ...
+# Subtest: duplicate and overlapping configured secrets produce deterministic metadata
+ok 12 - duplicate and overlapping configured secrets produce deterministic metadata
+  ---
+  duration_ms: 0.151208
+  type: 'test'
+  ...
+# Subtest: invalid secret configuration fails closed without embedding secret values
+ok 13 - invalid secret configuration fails closed without embedding secret values
+  ---
+  duration_ms: 0.543709
+  type: 'test'
+  ...
+# Subtest: cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+ok 14 - cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+  ---
+  duration_ms: 0.487708
+  type: 'test'
+  ...
+# Subtest: structured redaction treats __proto__ as data without prototype mutation
+ok 15 - structured redaction treats __proto__ as data without prototype mutation
+  ---
+  duration_ms: 0.16025
+  type: 'test'
+  ...
+# Subtest: HTML projection rejects forged or hostile redactor collaborators
+ok 16 - HTML projection rejects forged or hostile redactor collaborators
+  ---
+  duration_ms: 0.061666
+  type: 'test'
+  ...
+# Subtest: redaction metadata contains paths and counts but no reversible secret material
+ok 17 - redaction metadata contains paths and counts but no reversible secret material
+  ---
+  duration_ms: 0.124334
+  type: 'test'
+  ...
+# Subtest: raw JSON authorization and cookie variants never reach HTML
+not ok 18 - raw JSON authorization and cookie variants never reach HTML
+  ---
+  duration_ms: 1.424584
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:326:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input was expected to not match the regular expression /json-auth-secret/. Input:
+    
+    '{"ok":true,"value":"{\\"authorization\\":\\"Bearer json-auth-secret\\",\\"proxyAuthorization\\":\\"Basic json-proxy-secret\\",\\"cookie\\":\\"session=json-cookie-secret\\",\\"setCookie\\":\\"session=json-set-cookie-secret\\"}","redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '{"ok":true,"value":"{\\"authorization\\":\\"Bearer json-auth-secret\\",\\"proxyAuthorization\\":\\"Basic json-proxy-secret\\",\\"cookie\\":\\"session=json-cookie-secret\\",\\"setCookie\\":\\"session=json-set-cookie-secret\\"}","redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+  operator: 'doesNotMatch'
+  stack: |-
+    assertSafe (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:16:12)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:340:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: authorization schemes redact credentials without a scheme allowlist
+not ok 19 - authorization schemes redact credentials without a scheme allowlist
+  ---
+  duration_ms: 0.173125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:356:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input was expected to not match the regular expression /digest-secret/. Input:
+    
+    '{"ok":true,"value":"Authorization: Digest username=\\"u\\", response=\\"digest-secret\\"\\nAuthorization: ApiKey api-key-secret\\nProxy-Authorization=Custom proxy-secret","redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '{"ok":true,"value":"Authorization: Digest username=\\"u\\", response=\\"digest-secret\\"\\nAuthorization: ApiKey api-key-secret\\nProxy-Authorization=Custom proxy-secret","redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+  operator: 'doesNotMatch'
+  stack: |-
+    assertSafe (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:16:12)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:366:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: lowercase environment values, CLI flags, and prefixed keys are redacted
+not ok 20 - lowercase environment values, CLI flags, and prefixed keys are redacted
+  ---
+  duration_ms: 0.184916
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:372:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input was expected to not match the regular expression /lower-secret/. Input:
+    
+    '{"ok":true,"value":"midscene_model_api_key=lower-secret\\nOPENAI_API_KEY: colon-secret\\ntool --api-key cli-secret --token=[REDACTED] --model ui","redaction":{"status":"redacted","redacted_fields":["command_output"]},"redaction_count":1,"blockers":[]}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '{"ok":true,"value":"midscene_model_api_key=lower-secret\\nOPENAI_API_KEY: colon-secret\\ntool --api-key cli-secret --token=[REDACTED] --model ui","redaction":{"status":"redacted","redacted_fields":["command_output"]},"redaction_count":1,"blockers":[]}'
+  operator: 'doesNotMatch'
+  stack: |-
+    assertSafe (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:16:12)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:382:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: structured sensitive keys are normalized across naming conventions
+not ok 21 - structured sensitive keys are normalized across naming conventions
+  ---
+  duration_ms: 0.228542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:395:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input was expected to not match the regular expression /camel-auth-secret/. Input:
+    
+    '{"ok":true,"value":{"apiToken":"camel-token-secret","aws_secret_access_key":"camel-aws-secret","privateKey":"camel-private-secret","proxyAuthorization":"Basic camel-auth-secret","sessionCookie":"session=camel-session-secret","setCookie":"session=camel-cookie-secret","xApiKey":"camel-api-secret"},"redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '{"ok":true,"value":{"apiToken":"camel-token-secret","aws_secret_access_key":"camel-aws-secret","privateKey":"camel-private-secret","proxyAuthorization":"Basic camel-auth-secret","sessionCookie":"session=camel-session-secret","setCookie":"session=camel-cookie-secret","xApiKey":"camel-api-secret"},"redaction":{"status":"not_required","redacted_fields":[]},"redaction_count":0,"blockers":[]}'
+  operator: 'doesNotMatch'
+  stack: |-
+    assertSafe (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:16:12)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:409:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: caller field labels and object keys cannot smuggle configured secrets
+not ok 22 - caller field labels and object keys cannot smuggle configured secrets
+  ---
+  duration_ms: 0.38675
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:427:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:437:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 17
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.026209
+
+
+## stderr
+(empty)

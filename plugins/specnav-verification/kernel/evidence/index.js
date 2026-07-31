@@ -6,8 +6,12 @@ const {
 const {
   createEvidenceIntegrityChecker
 } = require('./integrity-checker');
+const {
+  createSecretRedactor
+} = require('./secret-redactor');
 
 module.exports = {
   createEvidenceStore,
-  createEvidenceIntegrityChecker
+  createEvidenceIntegrityChecker,
+  createSecretRedactor
 };

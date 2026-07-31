@@ -37,7 +37,7 @@ User Outcome: Reviewers can inspect append-only, integrity-checked, redacted evi
 
 - [x] 5.1 Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts.
 - [x] 5.2 Release owner can see missing, tampered, stale, or incorrectly bound evidence block green.
-- [ ] 5.3 Reviewer can inspect redacted logs and HTML without provider secrets leaking.
+- [x] 5.3 Reviewer can inspect redacted logs and HTML without provider secrets leaking.
 - [ ] 5.4 Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading.
 
 ## 6. Six-Domain Evaluation

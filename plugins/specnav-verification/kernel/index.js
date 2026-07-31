@@ -17,8 +17,12 @@ const {
 } = require('./execution');
 const {
   createEvidenceStore,
-  createEvidenceIntegrityChecker
+  createEvidenceIntegrityChecker,
+  createSecretRedactor
 } = require('./evidence');
+const {
+  renderSafeHtmlText
+} = require('./reporting');
 
 module.exports = Object.freeze({
   metadata,
@@ -30,5 +34,7 @@ module.exports = Object.freeze({
   createPlaywrightAdapter,
   createExecutionOrchestrator,
   createEvidenceStore,
-  createEvidenceIntegrityChecker
+  createEvidenceIntegrityChecker,
+  createSecretRedactor,
+  renderSafeHtmlText
 });

@@ -1,0 +1,273 @@
+# command: node --test tests/verification-v2/security/redaction.test.js tests/verification-v2/kernel/package-boundary.test.js # task014-red
+# exit_status: 1
+# duration_ms: 105
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.704
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 14.012791
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:38:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.293875
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.508958
+  type: 'test'
+  ...
+# Subtest: public redactor removes exact configured secrets from stdout and stderr
+not ok 5 - public redactor removes exact configured secrets from stdout and stderr
+  ---
+  duration_ms: 0.539917
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:22:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:24:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: credential-shaped text is redacted even when the value is not configured
+not ok 6 - credential-shaped text is redacted even when the value is not configured
+  ---
+  duration_ms: 0.157042
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:46:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:47:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: structured provider metadata is cloned, recursively redacted, and path-labeled
+not ok 7 - structured provider metadata is cloned, recursively redacted, and path-labeled
+  ---
+  duration_ms: 0.11775
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:76:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:94:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Markdown structure remains inspectable while secrets are removed
+not ok 8 - Markdown structure remains inspectable while secrets are removed
+  ---
+  duration_ms: 0.0735
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:116:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:118:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: HTML projection redacts first and escapes hostile artifact content
+not ok 9 - HTML projection redacts first and escapes hostile artifact content
+  ---
+  duration_ms: 0.075458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:139:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:141:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clean text remains not_required but detected credentials never do
+not ok 10 - clean text remains not_required but detected credentials never do
+  ---
+  duration_ms: 0.054667
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:160:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:161:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: duplicate and overlapping configured secrets produce deterministic metadata
+not ok 11 - duplicate and overlapping configured secrets produce deterministic metadata
+  ---
+  duration_ms: 0.115417
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:180:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:181:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: invalid secret configuration fails closed without embedding secret values
+not ok 12 - invalid secret configuration fails closed without embedding secret values
+  ---
+  duration_ms: 0.524958
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:194:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /verification-redaction:config-invalid/. Input:
+    
+    'TypeError: kernel.createSecretRedactor is not a function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'kernel.createSecretRedactor is not a function'
+  name: 'TypeError'
+  stack: |-
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:197:20
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:196:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:196:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+not ok 13 - cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+  ---
+  duration_ms: 0.423166
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:203:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:204:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: redaction metadata contains paths and counts but no reversible secret material
+not ok 14 - redaction metadata contains paths and counts but no reversible secret material
+  ---
+  duration_ms: 0.310583
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:237:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createSecretRedactor is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:239:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 3
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68.570541
+
+
+## stderr
+(empty)

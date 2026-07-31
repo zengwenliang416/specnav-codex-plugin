@@ -19,7 +19,16 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/evidence/**",
     "plugins/specnav-verification/kernel/reporting/**",
-    "tests/verification-v2/security/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "tests/verification-v2/security/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "openspec/changes/verification-2-0/tasks.md",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/drift-check.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/development/tasks/014-evidence-redaction/**"
   ],
   "test_paths": [
     "node --test tests/verification-v2/security/redaction.test.js"
@@ -41,7 +50,8 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-30"
+    "Direct evidence for AC-30",
+    "Public createSecretRedactor and renderSafeHtmlText utilities without changing the frozen service contract digest"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

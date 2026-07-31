@@ -1,0 +1,211 @@
+# command: node --test tests/verification-v2/security/redaction.test.js tests/verification-v2/kernel/package-boundary.test.js # task014-configured-query-red
+# exit_status: 1
+# duration_ms: 127
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.824833
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 16.989542
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.300875
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.9235
+  type: 'test'
+  ...
+# Subtest: public redactor removes exact configured secrets from stdout and stderr
+ok 5 - public redactor removes exact configured secrets from stdout and stderr
+  ---
+  duration_ms: 2.533375
+  type: 'test'
+  ...
+# Subtest: credential-shaped text is redacted even when the value is not configured
+ok 6 - credential-shaped text is redacted even when the value is not configured
+  ---
+  duration_ms: 0.384708
+  type: 'test'
+  ...
+# Subtest: structured provider metadata is cloned, recursively redacted, and path-labeled
+ok 7 - structured provider metadata is cloned, recursively redacted, and path-labeled
+  ---
+  duration_ms: 8.4635
+  type: 'test'
+  ...
+# Subtest: Markdown structure remains inspectable while secrets are removed
+ok 8 - Markdown structure remains inspectable while secrets are removed
+  ---
+  duration_ms: 0.145958
+  type: 'test'
+  ...
+# Subtest: JSON text keeps its shape while quoted credential fields are redacted
+ok 9 - JSON text keeps its shape while quoted credential fields are redacted
+  ---
+  duration_ms: 0.129625
+  type: 'test'
+  ...
+# Subtest: HTML projection redacts first and escapes hostile artifact content
+ok 10 - HTML projection redacts first and escapes hostile artifact content
+  ---
+  duration_ms: 0.192583
+  type: 'test'
+  ...
+# Subtest: clean text remains not_required but detected credentials never do
+ok 11 - clean text remains not_required but detected credentials never do
+  ---
+  duration_ms: 0.601334
+  type: 'test'
+  ...
+# Subtest: duplicate and overlapping configured secrets produce deterministic metadata
+ok 12 - duplicate and overlapping configured secrets produce deterministic metadata
+  ---
+  duration_ms: 0.234292
+  type: 'test'
+  ...
+# Subtest: invalid secret configuration fails closed without embedding secret values
+ok 13 - invalid secret configuration fails closed without embedding secret values
+  ---
+  duration_ms: 0.545917
+  type: 'test'
+  ...
+# Subtest: configured secrets that overlap the default marker use a safe marker
+ok 14 - configured secrets that overlap the default marker use a safe marker
+  ---
+  duration_ms: 1.502875
+  type: 'test'
+  ...
+# Subtest: cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+ok 15 - cyclic, accessor, symbol-keyed, and hostile Proxy values fail closed
+  ---
+  duration_ms: 0.291084
+  type: 'test'
+  ...
+# Subtest: structured redaction treats __proto__ as data without prototype mutation
+ok 16 - structured redaction treats __proto__ as data without prototype mutation
+  ---
+  duration_ms: 0.114167
+  type: 'test'
+  ...
+# Subtest: HTML projection rejects forged or hostile redactor collaborators
+ok 17 - HTML projection rejects forged or hostile redactor collaborators
+  ---
+  duration_ms: 0.056792
+  type: 'test'
+  ...
+# Subtest: redaction metadata contains paths and counts but no reversible secret material
+ok 18 - redaction metadata contains paths and counts but no reversible secret material
+  ---
+  duration_ms: 0.105125
+  type: 'test'
+  ...
+# Subtest: raw JSON authorization and cookie variants never reach HTML
+ok 19 - raw JSON authorization and cookie variants never reach HTML
+  ---
+  duration_ms: 0.116875
+  type: 'test'
+  ...
+# Subtest: authorization schemes redact credentials without a scheme allowlist
+ok 20 - authorization schemes redact credentials without a scheme allowlist
+  ---
+  duration_ms: 0.078458
+  type: 'test'
+  ...
+# Subtest: lowercase environment values, CLI flags, and prefixed keys are redacted
+ok 21 - lowercase environment values, CLI flags, and prefixed keys are redacted
+  ---
+  duration_ms: 0.103708
+  type: 'test'
+  ...
+# Subtest: configured secrets in URL query values use the encoded redaction marker
+not ok 22 - configured secrets in URL query values use the encoded redaction marker
+  ---
+  duration_ms: 0.716291
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:417:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /openai_api_key=%5BREDACTED%5D&ok=1/. Input:
+    
+    'https://provider.test/run?openai_api_key=[REDACTED]&ok=1'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'https://provider.test/run?openai_api_key=[REDACTED]&ok=1'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:426:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: configured encoded marker text in URL query values is normalized safely
+not ok 23 - configured encoded marker text in URL query values is normalized safely
+  ---
+  duration_ms: 0.458542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:432:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'https://provider.test/run?api_key=[REDACTED]&ok=1'
+    - 'https://provider.test/run?api_key=%5BREDACTED%5D&ok=1'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'https://provider.test/run?api_key=%5BREDACTED%5D&ok=1'
+  actual: 'https://provider.test/run?api_key=[REDACTED]&ok=1'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/security/redaction.test.js:440:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: structured sensitive keys are normalized across naming conventions
+ok 24 - structured sensitive keys are normalized across naming conventions
+  ---
+  duration_ms: 0.216042
+  type: 'test'
+  ...
+# Subtest: caller field labels and object keys cannot smuggle configured secrets
+ok 25 - caller field labels and object keys cannot smuggle configured secrets
+  ---
+  duration_ms: 0.107875
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 23
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.201625
+
+
+## stderr
+(empty)
