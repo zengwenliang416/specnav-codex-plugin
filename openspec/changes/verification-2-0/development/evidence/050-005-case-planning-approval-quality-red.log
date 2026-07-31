@@ -1,0 +1,329 @@
+# Task 005 quality RED evidence
+# command: node --test tests/verification-v2/cases/*.test.js && bash tests/run-verification-v2-case-approval.sh
+
+TAP version 13
+# Subtest: execution is legal only for an exact explicit human approval
+ok 1 - execution is legal only for an exact explicit human approval
+  ---
+  duration_ms: 986.324958
+  type: 'test'
+  ...
+# Subtest: rejected, service, mismatched, and stale approvals block execution
+    # Subtest: missing approval
+    ok 1 - missing approval
+      ---
+      duration_ms: 0.6865
+      type: 'test'
+      ...
+    # Subtest: rejected approval
+    ok 2 - rejected approval
+      ---
+      duration_ms: 0.349083
+      type: 'test'
+      ...
+    # Subtest: service approval
+    ok 3 - service approval
+      ---
+      duration_ms: 0.443792
+      type: 'test'
+      ...
+    # Subtest: snapshot id mismatch
+    ok 4 - snapshot id mismatch
+      ---
+      duration_ms: 0.207167
+      type: 'test'
+      ...
+    # Subtest: snapshot hash mismatch
+    ok 5 - snapshot hash mismatch
+      ---
+      duration_ms: 0.251875
+      type: 'test'
+      ...
+    # Subtest: snapshot content changed after approval
+    ok 6 - snapshot content changed after approval
+      ---
+      duration_ms: 0.1875
+      type: 'test'
+      ...
+    # Subtest: requirements changed after approval
+    not ok 7 - requirements changed after approval
+      ---
+      duration_ms: 0.681792
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"execution_allowed":true,"status":"approved-current","snapshot":{"schema":"specnav.verification.case-snapshot.v1","id":"snapshot-89450bdcc57b9421c2e3d3d9","change_id":"verification-2-0","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","cases":[{"schema":"specnav.verification.test-case.v1","id":"case-primary","change_id":"verification-2-0","requirement_ids":["REQ-01"],"acceptance_ids":["AC-01","AC-02"],"title":"Validate the V2 contract","goal":"Prove the contract accepts a valid entity","actor":"plugin-author","priority":"P1","preconditions":[],"steps":[{"id":"step-1","action":"Validate the fixture","expected":"The fixture is accepted","assertion_ids":["assertion-1"]}],"assertions":[{"id":"assertion-1","statement":"The schema accepts the fixture","expected":true,"oracle":{"type":"structured_comparison","human_signoff_allowed":false},"evidence_kinds":["structured_comparison"]}],"domains":{"facticity":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"static":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"unit":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"redteam":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"e2e":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"sensory":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"}},"runner":{"kind":"command","timeout_ms":1000,"requires_midscene":false},"evidence_policy":{"allowed_kinds":["structured_comparison"],"required_kinds":["structured_comparison"],"retain_on_failure":true,"content_addressed":true},"status":"ready","created_at":"2026-07-31T00:00:00Z"}],"created_at":"2026-07-31T00:00:00Z","created_by":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"requirements_hash":"456b8a130552ee201da9727eafe0a7068802f975731110a58b0c2119069fe7e0","acceptance_hash":"f58a7a91e26bcfc53a7b63cfb1476605d20957d15a2ed454438d4123fea7ece7"},"approval":{"schema":"specnav.verification.case-approval.v1","id":"approval-primary","change_id":"verification-2-0","snapshot_id":"snapshot-89450bdcc57b9421c2e3d3d9","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","decision":"approved","reviewer":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"decided_at":"2026-07-31T00:01:00Z"},"blockers":[]}
+
+        true !== false
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:187:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: acceptance changed after approval
+    not ok 8 - acceptance changed after approval
+      ---
+      duration_ms: 0.321041
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"execution_allowed":true,"status":"approved-current","snapshot":{"schema":"specnav.verification.case-snapshot.v1","id":"snapshot-89450bdcc57b9421c2e3d3d9","change_id":"verification-2-0","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","cases":[{"schema":"specnav.verification.test-case.v1","id":"case-primary","change_id":"verification-2-0","requirement_ids":["REQ-01"],"acceptance_ids":["AC-01","AC-02"],"title":"Validate the V2 contract","goal":"Prove the contract accepts a valid entity","actor":"plugin-author","priority":"P1","preconditions":[],"steps":[{"id":"step-1","action":"Validate the fixture","expected":"The fixture is accepted","assertion_ids":["assertion-1"]}],"assertions":[{"id":"assertion-1","statement":"The schema accepts the fixture","expected":true,"oracle":{"type":"structured_comparison","human_signoff_allowed":false},"evidence_kinds":["structured_comparison"]}],"domains":{"facticity":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"static":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"unit":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"redteam":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"e2e":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"sensory":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"}},"runner":{"kind":"command","timeout_ms":1000,"requires_midscene":false},"evidence_policy":{"allowed_kinds":["structured_comparison"],"required_kinds":["structured_comparison"],"retain_on_failure":true,"content_addressed":true},"status":"ready","created_at":"2026-07-31T00:00:00Z"}],"created_at":"2026-07-31T00:00:00Z","created_by":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"requirements_hash":"456b8a130552ee201da9727eafe0a7068802f975731110a58b0c2119069fe7e0","acceptance_hash":"f58a7a91e26bcfc53a7b63cfb1476605d20957d15a2ed454438d4123fea7ece7"},"approval":{"schema":"specnav.verification.case-approval.v1","id":"approval-primary","change_id":"verification-2-0","snapshot_id":"snapshot-89450bdcc57b9421c2e3d3d9","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","decision":"approved","reviewer":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"decided_at":"2026-07-31T00:01:00Z"},"blockers":[]}
+
+        true !== false
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:187:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: reviewer identity mismatch
+    not ok 9 - reviewer identity mismatch
+      ---
+      duration_ms: 0.272208
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"execution_allowed":true,"status":"approved-current","snapshot":{"schema":"specnav.verification.case-snapshot.v1","id":"snapshot-89450bdcc57b9421c2e3d3d9","change_id":"verification-2-0","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","cases":[{"schema":"specnav.verification.test-case.v1","id":"case-primary","change_id":"verification-2-0","requirement_ids":["REQ-01"],"acceptance_ids":["AC-01","AC-02"],"title":"Validate the V2 contract","goal":"Prove the contract accepts a valid entity","actor":"plugin-author","priority":"P1","preconditions":[],"steps":[{"id":"step-1","action":"Validate the fixture","expected":"The fixture is accepted","assertion_ids":["assertion-1"]}],"assertions":[{"id":"assertion-1","statement":"The schema accepts the fixture","expected":true,"oracle":{"type":"structured_comparison","human_signoff_allowed":false},"evidence_kinds":["structured_comparison"]}],"domains":{"facticity":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"static":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"unit":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"redteam":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"e2e":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"sensory":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"}},"runner":{"kind":"command","timeout_ms":1000,"requires_midscene":false},"evidence_policy":{"allowed_kinds":["structured_comparison"],"required_kinds":["structured_comparison"],"retain_on_failure":true,"content_addressed":true},"status":"ready","created_at":"2026-07-31T00:00:00Z"}],"created_at":"2026-07-31T00:00:00Z","created_by":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"requirements_hash":"456b8a130552ee201da9727eafe0a7068802f975731110a58b0c2119069fe7e0","acceptance_hash":"f58a7a91e26bcfc53a7b63cfb1476605d20957d15a2ed454438d4123fea7ece7"},"approval":{"schema":"specnav.verification.case-approval.v1","id":"approval-primary","change_id":"verification-2-0","snapshot_id":"snapshot-89450bdcc57b9421c2e3d3d9","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","decision":"approved","reviewer":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"decided_at":"2026-07-31T00:01:00Z"},"blockers":[]}
+
+        true !== false
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:187:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: approval predates snapshot
+    not ok 10 - approval predates snapshot
+      ---
+      duration_ms: 0.279042
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"execution_allowed":true,"status":"approved-current","snapshot":{"schema":"specnav.verification.case-snapshot.v1","id":"snapshot-89450bdcc57b9421c2e3d3d9","change_id":"verification-2-0","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","cases":[{"schema":"specnav.verification.test-case.v1","id":"case-primary","change_id":"verification-2-0","requirement_ids":["REQ-01"],"acceptance_ids":["AC-01","AC-02"],"title":"Validate the V2 contract","goal":"Prove the contract accepts a valid entity","actor":"plugin-author","priority":"P1","preconditions":[],"steps":[{"id":"step-1","action":"Validate the fixture","expected":"The fixture is accepted","assertion_ids":["assertion-1"]}],"assertions":[{"id":"assertion-1","statement":"The schema accepts the fixture","expected":true,"oracle":{"type":"structured_comparison","human_signoff_allowed":false},"evidence_kinds":["structured_comparison"]}],"domains":{"facticity":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"static":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"unit":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"redteam":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"e2e":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"sensory":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"}},"runner":{"kind":"command","timeout_ms":1000,"requires_midscene":false},"evidence_policy":{"allowed_kinds":["structured_comparison"],"required_kinds":["structured_comparison"],"retain_on_failure":true,"content_addressed":true},"status":"ready","created_at":"2026-07-31T00:00:00Z"}],"created_at":"2026-07-31T00:00:00Z","created_by":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"requirements_hash":"456b8a130552ee201da9727eafe0a7068802f975731110a58b0c2119069fe7e0","acceptance_hash":"f58a7a91e26bcfc53a7b63cfb1476605d20957d15a2ed454438d4123fea7ece7"},"approval":{"schema":"specnav.verification.case-approval.v1","id":"approval-primary","change_id":"verification-2-0","snapshot_id":"snapshot-89450bdcc57b9421c2e3d3d9","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","decision":"approved","reviewer":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"decided_at":"2026-07-30T23:59:59Z"},"blockers":[]}
+
+        true !== false
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:187:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: snapshot provenance changed after approval
+    not ok 11 - snapshot provenance changed after approval
+      ---
+      duration_ms: 0.220542
+      type: 'test'
+      location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"execution_allowed":true,"status":"approved-current","snapshot":{"schema":"specnav.verification.case-snapshot.v1","id":"snapshot-89450bdcc57b9421c2e3d3d9","change_id":"verification-2-0","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","cases":[{"schema":"specnav.verification.test-case.v1","id":"case-primary","change_id":"verification-2-0","requirement_ids":["REQ-01"],"acceptance_ids":["AC-01","AC-02"],"title":"Validate the V2 contract","goal":"Prove the contract accepts a valid entity","actor":"plugin-author","priority":"P1","preconditions":[],"steps":[{"id":"step-1","action":"Validate the fixture","expected":"The fixture is accepted","assertion_ids":["assertion-1"]}],"assertions":[{"id":"assertion-1","statement":"The schema accepts the fixture","expected":true,"oracle":{"type":"structured_comparison","human_signoff_allowed":false},"evidence_kinds":["structured_comparison"]}],"domains":{"facticity":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"static":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"unit":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"redteam":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"e2e":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"},"sensory":{"mode":"required","assertion_ids":["assertion-1"],"runner":"command"}},"runner":{"kind":"command","timeout_ms":1000,"requires_midscene":false},"evidence_policy":{"allowed_kinds":["structured_comparison"],"required_kinds":["structured_comparison"],"retain_on_failure":true,"content_addressed":true},"status":"ready","created_at":"2026-07-31T00:00:00Z"}],"created_at":"2026-07-31T00:00:00Z","created_by":{"id":"reviewer-other","kind":"human","display_name":"Verification reviewer"},"requirements_hash":"456b8a130552ee201da9727eafe0a7068802f975731110a58b0c2119069fe7e0","acceptance_hash":"f58a7a91e26bcfc53a7b63cfb1476605d20957d15a2ed454438d4123fea7ece7"},"approval":{"schema":"specnav.verification.case-approval.v1","id":"approval-primary","change_id":"verification-2-0","snapshot_id":"snapshot-89450bdcc57b9421c2e3d3d9","snapshot_hash":"89450bdcc57b9421c2e3d3d9cfb2e72b0fb5ffc6c1cc7cbfccf92426d1a03b67","decision":"approved","reviewer":{"id":"reviewer-1","kind":"human","display_name":"Verification reviewer"},"decided_at":"2026-07-31T00:01:00Z"},"blockers":[]}
+
+        true !== false
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:187:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        TestContext.test (node:internal/test_runner/test:373:20)
+        TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:185:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..11
+not ok 2 - rejected, service, mismatched, and stale approvals block execution
+  ---
+  duration_ms: 6.134208
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:67:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: case planner requires validated sources and complete behavior coverage
+ok 3 - case planner requires validated sources and complete behavior coverage
+  ---
+  duration_ms: 984.007583
+  type: 'test'
+  ...
+# Subtest: case planner fails closed for empty plans and unresolved source references
+ok 4 - case planner fails closed for empty plans and unresolved source references
+  ---
+  duration_ms: 0.6015
+  type: 'test'
+  ...
+# Subtest: case planner rejects uncovered requirements or acceptance assertions
+ok 5 - case planner rejects uncovered requirements or acceptance assertions
+  ---
+  duration_ms: 0.250917
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+not ok 6 - case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+  ---
+  duration_ms: 0.873375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:143:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: case planner rejects unknown assertion references and non-ready cases
+not ok 7 - case planner rejects unknown assertion references and non-ready cases
+  ---
+  duration_ms: 1.108542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:159:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    verification-cases:unknown-step-assertion: [{"id":"verification-cases:case-not-ready","artifact":"case-plan","field":"/cases/0/status","case_id":"case-primary","detail":"draft"}]
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:179:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: canonical JSON and case normalization are deterministic and immutable
+not ok 8 - canonical JSON and case normalization are deterministic and immutable
+  ---
+  duration_ms: 3.822
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'ccf6452e3c2e7f06b2916d70d717a847a1fb0932323174e678a956ac37ab362d'
+    - '88628cdc99c4be00024f7224b12954116bc11a525f90b61588d18dd9652edd33'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '88628cdc99c4be00024f7224b12954116bc11a525f90b61588d18dd9652edd33'
+  actual: 'ccf6452e3c2e7f06b2916d70d717a847a1fb0932323174e678a956ac37ab362d'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: snapshot hash is stable for equivalent input and changes with contract content
+not ok 9 - snapshot hash is stable for equivalent input and changes with contract content
+  ---
+  duration_ms: 988.665875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+
+    '666f694a4c46c795e66080b1df4061ca640465ba891603a55811e0f9fdae4813'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '666f694a4c46c795e66080b1df4061ca640465ba891603a55811e0f9fdae4813'
+  actual: '666f694a4c46c795e66080b1df4061ca640465ba891603a55811e0f9fdae4813'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:126:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: snapshot writer rejects a failed plan instead of inferring a fallback
+ok 10 - snapshot writer rejects a failed plan instead of inferring a fallback
+  ---
+  duration_ms: 0.123917
+  type: 'test'
+  ...
+1..10
+# tests 21
+# suites 0
+# pass 11
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1073.57125
+verification v2 case approval cli ok

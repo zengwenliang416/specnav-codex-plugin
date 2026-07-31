@@ -2,7 +2,7 @@
 {"task_id":"002-kernel-package-boundary","status":"ready","source":"development/tasks/002-kernel-package-boundary/context.json","dependencies":["001-baseline-fake-green"],"acceptance":["AC-36","AC-37","AC-39","AC-40"]}
 {"task_id":"003-contract-schemas","status":"ready","source":"development/tasks/003-contract-schemas/context.json","dependencies":["002-kernel-package-boundary","008-runtime-doctor"],"acceptance":["AC-13","AC-31","AC-35"]}
 {"task_id":"004-contract-cross-references","status":"ready","source":"development/tasks/004-contract-cross-references/context.json","dependencies":["003-contract-schemas"],"acceptance":["AC-14","AC-15","AC-17","AC-31"]}
-{"task_id":"005-case-planning-approval","status":"ready","source":"development/tasks/005-case-planning-approval/context.json","dependencies":["003-contract-schemas","004-contract-cross-references"],"acceptance":["AC-01","AC-02","AC-19","AC-20"]}
+{"task_id":"005-case-planning-approval","status":"ready","source":"development/tasks/005-case-planning-approval/context.json","dependencies":["003-contract-schemas","004-contract-cross-references"],"acceptance":["AC-01","AC-02"]}
 {"task_id":"006-runtime-lock-manifest","status":"ready","source":"development/tasks/006-runtime-lock-manifest/context.json","dependencies":["002-kernel-package-boundary"],"acceptance":["AC-04","AC-05"]}
 {"task_id":"007-runtime-installer","status":"ready","source":"development/tasks/007-runtime-installer/context.json","dependencies":["006-runtime-lock-manifest"],"acceptance":["AC-04","AC-05"]}
 {"task_id":"008-runtime-doctor","status":"ready","source":"development/tasks/008-runtime-doctor/context.json","dependencies":["006-runtime-lock-manifest","007-runtime-installer"],"acceptance":["AC-05"]}

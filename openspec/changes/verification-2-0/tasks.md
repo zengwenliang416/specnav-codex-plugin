@@ -13,7 +13,7 @@ User Outcome: Reviewers can validate immutable, internally consistent test contr
 
 - [x] 2.1 Plugin author can validate every V2 entity through versioned JSON Schemas.
 - [x] 2.2 Reviewer can reject artifacts whose run, case, attempt, step, or SHA references disagree.
-- [ ] 2.3 Reviewer can approve an immutable test-case snapshot before execution starts.
+- [x] 2.3 Reviewer can approve an immutable test-case snapshot before execution starts.
 
 ## 3. Managed Verification Runtime
 

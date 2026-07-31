@@ -1,0 +1,261 @@
+# Task 005 RED evidence
+# command: node --test tests/verification-v2/cases/*.test.js && bash tests/run-verification-v2-case-approval.sh
+
+TAP version 13
+# Subtest: execution is legal only for an exact explicit human approval
+not ok 1 - execution is legal only for an exact explicit human approval
+  ---
+  duration_ms: 0.954333
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:48:43)
+  ...
+# Subtest: rejected, service, mismatched, and stale approvals block execution
+not ok 2 - rejected, service, mismatched, and stale approvals block execution
+  ---
+  duration_ms: 0.243917
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:64:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:65:43)
+  ...
+# Subtest: case planner requires validated sources and complete behavior coverage
+not ok 3 - case planner requires validated sources and complete behavior coverage
+  ---
+  duration_ms: 1.247666
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:13:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:14:33)
+  ...
+# Subtest: case planner fails closed for empty plans and unresolved source references
+not ok 4 - case planner fails closed for empty plans and unresolved source references
+  ---
+  duration_ms: 0.202959
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:39:33)
+  ...
+# Subtest: case planner rejects uncovered requirements or acceptance assertions
+not ok 5 - case planner rejects uncovered requirements or acceptance assertions
+  ---
+  duration_ms: 0.09525
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:82:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:83:33)
+  ...
+# Subtest: canonical JSON and case normalization are deterministic and immutable
+not ok 6 - canonical JSON and case normalization are deterministic and immutable
+  ---
+  duration_ms: 1.247125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:30:7)
+  ...
+# Subtest: snapshot hash is stable for equivalent input and changes with contract content
+not ok 7 - snapshot hash is stable for equivalent input and changes with contract content
+  ---
+  duration_ms: 0.22
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:57:40)
+  ...
+# Subtest: snapshot writer rejects a failed plan instead of inferring a fallback
+not ok 8 - snapshot writer rejects a failed plan instead of inferring a fallback
+  ---
+  duration_ms: 0.087542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:106:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    requireCasesModule (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/test-helpers.js:61:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/snapshot.test.js:107:40)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 178.830917
+node:assert:150
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: snapshot failed
+stdout:
+
+stderr:
+node:internal/modules/cjs/loader:1386
+  throw err;
+  ^
+
+Error: Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/skills/specnav-verify-plan/scripts/case-contract.js'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v22.19.0
+
+
+1 !== 0
+
+    at Object.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/cli-integration.js:38:10)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.19.0

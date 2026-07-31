@@ -38,6 +38,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/cases/**
 - plugins/specnav-verification/skills/specnav-verify-plan/**
+- tests/run-verification-v2-case-approval.sh
 - tests/verification-v2/cases/**
 
 ## Interfaces / Seams
@@ -62,7 +63,7 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/verification-contract-v2/spec.md`.
-- Acceptance assertions: `AC-01`, `AC-02`, `AC-19`, `AC-20`.
+- Acceptance assertions: `AC-01`, `AC-02`.
 - Requirements and acceptance become proposed cases, reviewer approval binds a snapshot hash, and execution becomes legal.
 
 ## State / Error / Empty / Loading Behavior

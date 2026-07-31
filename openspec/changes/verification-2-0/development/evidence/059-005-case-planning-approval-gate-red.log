@@ -1,0 +1,265 @@
+$ node --test tests/verification-v2/cases/*.test.js
+TAP version 13
+# Subtest: execution is legal only for an exact explicit human approval
+ok 1 - execution is legal only for an exact explicit human approval
+  ---
+  duration_ms: 984.399292
+  type: 'test'
+  ...
+# Subtest: missing or null snapshot always blocks execution
+not ok 2 - missing or null snapshot always blocks execution
+  ---
+  duration_ms: 1.768166
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:67:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/approval.test.js:79:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: rejected, service, mismatched, and stale approvals block execution
+    # Subtest: missing approval
+    ok 1 - missing approval
+      ---
+      duration_ms: 0.753666
+      type: 'test'
+      ...
+    # Subtest: rejected approval
+    ok 2 - rejected approval
+      ---
+      duration_ms: 0.49025
+      type: 'test'
+      ...
+    # Subtest: service approval
+    ok 3 - service approval
+      ---
+      duration_ms: 0.713417
+      type: 'test'
+      ...
+    # Subtest: snapshot id mismatch
+    ok 4 - snapshot id mismatch
+      ---
+      duration_ms: 0.364666
+      type: 'test'
+      ...
+    # Subtest: snapshot hash mismatch
+    ok 5 - snapshot hash mismatch
+      ---
+      duration_ms: 0.268917
+      type: 'test'
+      ...
+    # Subtest: snapshot content changed after approval
+    ok 6 - snapshot content changed after approval
+      ---
+      duration_ms: 0.392958
+      type: 'test'
+      ...
+    # Subtest: snapshot id is stale
+    ok 7 - snapshot id is stale
+      ---
+      duration_ms: 0.394708
+      type: 'test'
+      ...
+    # Subtest: current requirements are missing
+    ok 8 - current requirements are missing
+      ---
+      duration_ms: 0.319125
+      type: 'test'
+      ...
+    # Subtest: current acceptance is missing
+    ok 9 - current acceptance is missing
+      ---
+      duration_ms: 0.288
+      type: 'test'
+      ...
+    # Subtest: requirements changed after approval
+    ok 10 - requirements changed after approval
+      ---
+      duration_ms: 0.219583
+      type: 'test'
+      ...
+    # Subtest: acceptance changed after approval
+    ok 11 - acceptance changed after approval
+      ---
+      duration_ms: 0.215416
+      type: 'test'
+      ...
+    # Subtest: reviewer identity mismatch
+    ok 12 - reviewer identity mismatch
+      ---
+      duration_ms: 0.209292
+      type: 'test'
+      ...
+    # Subtest: expected reviewer identity is missing
+    ok 13 - expected reviewer identity is missing
+      ---
+      duration_ms: 0.188083
+      type: 'test'
+      ...
+    # Subtest: approval predates snapshot
+    ok 14 - approval predates snapshot
+      ---
+      duration_ms: 0.181792
+      type: 'test'
+      ...
+    # Subtest: snapshot provenance changed after approval
+    ok 15 - snapshot provenance changed after approval
+      ---
+      duration_ms: 0.178875
+      type: 'test'
+      ...
+    1..15
+ok 3 - rejected, service, mismatched, and stale approvals block execution
+  ---
+  duration_ms: 6.671458
+  type: 'test'
+  ...
+# Subtest: case planner requires validated sources and complete behavior coverage
+ok 4 - case planner requires validated sources and complete behavior coverage
+  ---
+  duration_ms: 969.4035
+  type: 'test'
+  ...
+# Subtest: case planner fails closed for empty plans and unresolved source references
+ok 5 - case planner fails closed for empty plans and unresolved source references
+  ---
+  duration_ms: 1.373083
+  type: 'test'
+  ...
+# Subtest: case planner rejects uncovered requirements or acceptance assertions
+ok 6 - case planner rejects uncovered requirements or acceptance assertions
+  ---
+  duration_ms: 0.488541
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+ok 7 - case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+  ---
+  duration_ms: 0.478834
+  type: 'test'
+  ...
+# Subtest: case planner rejects unknown assertion references and non-ready cases
+ok 8 - case planner rejects unknown assertion references and non-ready cases
+  ---
+  duration_ms: 1.126708
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate cases and cases from another change
+ok 9 - case planner rejects duplicate cases and cases from another change
+  ---
+  duration_ms: 0.404541
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate and invalid source ids
+ok 10 - case planner rejects duplicate and invalid source ids
+  ---
+  duration_ms: 0.244542
+  type: 'test'
+  ...
+# Subtest: case planner returns stable blockers for malformed case records
+not ok 11 - case planner returns stable blockers for malformed case records
+  ---
+  duration_ms: 0.584167
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:251:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Cannot read properties of null (reading 'requirement_ids')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of null (reading 'requirement_ids')"
+  name: 'TypeError'
+  stack: |-
+    normalizeCase (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases/normalize.js:21:33)
+    validateCaseRecord (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases/case-validation.js:176:59)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases/case-validation.js:217:30
+    Array.map (<anonymous>)
+    validateCases (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases/case-validation.js:217:6)
+    Object.plan (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/cases/planner.js:37:19)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:258:39
+    getActual (node:assert:609:5)
+    Function.doesNotThrow (node:assert:777:32)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:258:12)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/planning.test.js:258:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: canonical JSON and case normalization are deterministic and immutable
+ok 12 - canonical JSON and case normalization are deterministic and immutable
+  ---
+  duration_ms: 13.851041
+  type: 'test'
+  ...
+# Subtest: snapshot hash is stable for equivalent input and changes with contract content
+ok 13 - snapshot hash is stable for equivalent input and changes with contract content
+  ---
+  duration_ms: 951.748375
+  type: 'test'
+  ...
+# Subtest: snapshot writer rejects a failed plan instead of inferring a fallback
+ok 14 - snapshot writer rejects a failed plan instead of inferring a fallback
+  ---
+  duration_ms: 0.11225
+  type: 'test'
+  ...
+1..14
+# tests 29
+# suites 0
+# pass 27
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1060.2185
+focused_exit_status=1
+$ bash tests/run-verification-v2-case-approval.sh
+node:assert:150
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+0 !== 2
+
+    at Object.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cases/cli-integration.js:283:10)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 2,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.19.0
+cli_exit_status=1

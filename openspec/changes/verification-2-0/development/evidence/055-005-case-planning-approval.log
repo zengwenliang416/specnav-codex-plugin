@@ -1,0 +1,182 @@
+# command: node --test tests/verification-v2/cases/*.test.js # task005-review2
+# exit_status: 0
+# duration_ms: 1060
+
+## stdout
+TAP version 13
+# Subtest: execution is legal only for an exact explicit human approval
+ok 1 - execution is legal only for an exact explicit human approval
+  ---
+  duration_ms: 949.5315
+  type: 'test'
+  ...
+# Subtest: rejected, service, mismatched, and stale approvals block execution
+    # Subtest: missing approval
+    ok 1 - missing approval
+      ---
+      duration_ms: 0.855959
+      type: 'test'
+      ...
+    # Subtest: rejected approval
+    ok 2 - rejected approval
+      ---
+      duration_ms: 0.405792
+      type: 'test'
+      ...
+    # Subtest: service approval
+    ok 3 - service approval
+      ---
+      duration_ms: 0.554291
+      type: 'test'
+      ...
+    # Subtest: snapshot id mismatch
+    ok 4 - snapshot id mismatch
+      ---
+      duration_ms: 0.334666
+      type: 'test'
+      ...
+    # Subtest: snapshot hash mismatch
+    ok 5 - snapshot hash mismatch
+      ---
+      duration_ms: 0.41175
+      type: 'test'
+      ...
+    # Subtest: snapshot content changed after approval
+    ok 6 - snapshot content changed after approval
+      ---
+      duration_ms: 0.333083
+      type: 'test'
+      ...
+    # Subtest: snapshot id is stale
+    ok 7 - snapshot id is stale
+      ---
+      duration_ms: 0.41875
+      type: 'test'
+      ...
+    # Subtest: current requirements are missing
+    ok 8 - current requirements are missing
+      ---
+      duration_ms: 0.403334
+      type: 'test'
+      ...
+    # Subtest: current acceptance is missing
+    ok 9 - current acceptance is missing
+      ---
+      duration_ms: 0.368042
+      type: 'test'
+      ...
+    # Subtest: requirements changed after approval
+    ok 10 - requirements changed after approval
+      ---
+      duration_ms: 0.232875
+      type: 'test'
+      ...
+    # Subtest: acceptance changed after approval
+    ok 11 - acceptance changed after approval
+      ---
+      duration_ms: 0.223167
+      type: 'test'
+      ...
+    # Subtest: reviewer identity mismatch
+    ok 12 - reviewer identity mismatch
+      ---
+      duration_ms: 0.209834
+      type: 'test'
+      ...
+    # Subtest: expected reviewer identity is missing
+    ok 13 - expected reviewer identity is missing
+      ---
+      duration_ms: 0.215709
+      type: 'test'
+      ...
+    # Subtest: approval predates snapshot
+    ok 14 - approval predates snapshot
+      ---
+      duration_ms: 0.223209
+      type: 'test'
+      ...
+    # Subtest: snapshot provenance changed after approval
+    ok 15 - snapshot provenance changed after approval
+      ---
+      duration_ms: 0.235959
+      type: 'test'
+      ...
+    1..15
+ok 2 - rejected, service, mismatched, and stale approvals block execution
+  ---
+  duration_ms: 7.964041
+  type: 'test'
+  ...
+# Subtest: case planner requires validated sources and complete behavior coverage
+ok 3 - case planner requires validated sources and complete behavior coverage
+  ---
+  duration_ms: 946.656584
+  type: 'test'
+  ...
+# Subtest: case planner fails closed for empty plans and unresolved source references
+ok 4 - case planner fails closed for empty plans and unresolved source references
+  ---
+  duration_ms: 0.703708
+  type: 'test'
+  ...
+# Subtest: case planner rejects uncovered requirements or acceptance assertions
+ok 5 - case planner rejects uncovered requirements or acceptance assertions
+  ---
+  duration_ms: 0.36825
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+ok 6 - case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+  ---
+  duration_ms: 0.43475
+  type: 'test'
+  ...
+# Subtest: case planner rejects unknown assertion references and non-ready cases
+ok 7 - case planner rejects unknown assertion references and non-ready cases
+  ---
+  duration_ms: 1.113416
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate cases and cases from another change
+ok 8 - case planner rejects duplicate cases and cases from another change
+  ---
+  duration_ms: 0.389167
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate and invalid source ids
+ok 9 - case planner rejects duplicate and invalid source ids
+  ---
+  duration_ms: 0.458292
+  type: 'test'
+  ...
+# Subtest: canonical JSON and case normalization are deterministic and immutable
+ok 10 - canonical JSON and case normalization are deterministic and immutable
+  ---
+  duration_ms: 11.285209
+  type: 'test'
+  ...
+# Subtest: snapshot hash is stable for equivalent input and changes with contract content
+ok 11 - snapshot hash is stable for equivalent input and changes with contract content
+  ---
+  duration_ms: 936.768708
+  type: 'test'
+  ...
+# Subtest: snapshot writer rejects a failed plan instead of inferring a fallback
+ok 12 - snapshot writer rejects a failed plan instead of inferring a fallback
+  ---
+  duration_ms: 0.101833
+  type: 'test'
+  ...
+1..12
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1022.342333
+
+
+## stderr
+(empty)

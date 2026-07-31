@@ -1,6 +1,6 @@
 ---
 name: specnav-verify-plan
-description: Use this skill when SpecNav development is complete and the user wants a verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, receipt shell, or light-lane static/unit verification.
+description: Use this skill when SpecNav development is complete and the user wants the full Verification 2.0 case contract, explicit case approval, evidence plan, traceability, six-domain execution plan, or report inputs.
 ---
 
 ## Runtime Paths
@@ -21,14 +21,35 @@ Create shared verification plan and evidence contracts.
 4. Read `references/domain-report-schema.md` before creating report shells.
 5. Read `references/review-report-style.md` before final aggregate reporting.
 6. If shared verification artifacts are missing, run `node "$SPECNAV_VERIFICATION_ROOT/skills/specnav-verify-plan/scripts/create-verify-plan.js" --json`.
-7. For `lane: "light"`, generate verification scope and user test cases from `requirements.md`, `acceptance.md`, `acceptance.json`, `prototype/decision.json`, `scope.json`, `tasks.md`, and CodeGraph claims. Require only static and unit domains.
-8. For standard/full lanes, generate `verify/user-test-cases.md` and `verify/user-test-cases.json` from requirements, acceptance, prototype handoff, development tasks, development handoff, and CodeGraph claims.
-9. Ask the user to approve, edit, add, or remove the test cases. Freeze approval in `verify/user-test-case-signoff.json`; verification is blocked until its status is `approved`.
-10. Map every approved test case across the required domains in `verify/domain-case-matrix.json`.
+7. Generate behavior-facing V2 cases from requirements, acceptance, prototype handoff, development tasks, development handoff, and CodeGraph claims. Every case must include steps, assertions, all six domain mappings, runner choice, and evidence policy.
+8. Create the immutable case snapshot with:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/skills/specnav-verify-plan/scripts/case-contract.js" snapshot \
+     --input "<case-plan-request.json>" \
+     --output "<case-snapshot.json>" \
+     --json
+   ```
+
+9. Ask the user to inspect, edit, add, or remove cases before approval. Approval must be an explicit human decision bound to the current snapshot id and SHA-256 hash.
+10. Validate the approval before any execution:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/skills/specnav-verify-plan/scripts/case-contract.js" check \
+     --snapshot "<case-snapshot.json>" \
+     --approval "<case-approval.json>" \
+     --requirements "<current-requirements.json>" \
+     --acceptance "<current-acceptance.json>" \
+     --reviewer-id "<authenticated-reviewer-id>" \
+     --json
+   ```
+
+   A changed case, step, assertion, six-domain mapping, runner, source contract, or evidence policy makes the prior approval stale and blocks execution.
+11. Map every approved test case across facticity, static, unit, redteam, e2e, and sensory in `verify/domain-case-matrix.json`.
 11. Require `verify/runtime-evidence.json` to prove runtime and browser execution for standard/full lanes. If `development/migrations/manifest.json` has `required=true`, require database evidence too.
 12. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` include verification traceability claims. The `create-verify-plan.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage verification --write --json` after changing development handoff or verify scope.
 13. Write verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, and receipt shell.
-14. Require all six domains for standard/full lanes: facticity, static, unit, redteam, e2e, and sensory. Require only static and unit for light lane.
+15. Require all six domains for every change: facticity, static, unit, redteam, e2e, and sensory. Verification 2.0 has no light, compact, or simplified lane.
 15. Every file in `plan.changed_files` must appear in `traceability-matrix.json`; do not mark verification green from stale reports that are not tied to the diff.
 16. After all required domain reports exist, run aggregate and make sure HTML review reports are written.
 
@@ -45,10 +66,10 @@ Create shared verification plan and evidence contracts.
 
 - Development handoff is blocked.
 - Active change is unclear.
-- User-aligned test cases are missing or not approved by the user.
+- User-aligned V2 test cases are missing, schema-invalid, incompletely mapped, or not explicitly approved by a human for the current snapshot hash.
 - `verify/runtime-evidence.json` is missing, blocked, or lacks the runtime, browser, or database surfaces required by a standard/full change.
 - `plan.changed_files` is empty or not mapped in `traceability-matrix.json`.
-- Any required domain is omitted. For light lane, required domains are static and unit only.
+- Any of the six required domains is omitted.
 
 ## Validation
 
