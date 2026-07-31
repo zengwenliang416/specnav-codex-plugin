@@ -1,0 +1,217 @@
+# command: node --test tests/verification-v2/evidence/evidence-store.test.js tests/verification-v2/kernel/package-boundary.test.js tests/verification-v2/contracts/schema-registry.test.js # task012-final-focused
+# exit_status: 0
+# duration_ms: 1743
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 1122.633041
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 183.580833
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 93.234125
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 4 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 93.2725
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 5 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 94.351042
+  type: 'test'
+  ...
+# Subtest: append writes one immutable raw record, content object, index, and cache metadata
+ok 6 - append writes one immutable raw record, content object, index, and cache metadata
+  ---
+  duration_ms: 26.718792
+  type: 'test'
+  ...
+# Subtest: persisted evidence and index pass the managed AJV schema registry
+ok 7 - persisted evidence and index pass the managed AJV schema registry
+  ---
+  duration_ms: 1097.601208
+  type: 'test'
+  ...
+# Subtest: append does not mutate caller-owned evidence or content
+ok 8 - append does not mutate caller-owned evidence or content
+  ---
+  duration_ms: 30.191958
+  type: 'test'
+  ...
+# Subtest: failed evidence remains after a later passing attempt and cache deletion
+ok 9 - failed evidence remains after a later passing attempt and cache deletion
+  ---
+  duration_ms: 113.381666
+  type: 'test'
+  ...
+# Subtest: index bytes are deterministic across rebuild and ignore mtime changes
+ok 10 - index bytes are deterministic across rebuild and ignore mtime changes
+  ---
+  duration_ms: 38.348208
+  type: 'test'
+  ...
+# Subtest: an exact duplicate append is idempotent and adds no raw record
+ok 11 - an exact duplicate append is idempotent and adds no raw record
+  ---
+  duration_ms: 29.29475
+  type: 'test'
+  ...
+# Subtest: an idempotent append restores deleted derived and object files
+ok 12 - an idempotent append restores deleted derived and object files
+  ---
+  duration_ms: 41.315583
+  type: 'test'
+  ...
+# Subtest: the same bytes under different attempts reuse the object but keep distinct records
+ok 13 - the same bytes under different attempts reuse the object but keep distinct records
+  ---
+  duration_ms: 33.895584
+  type: 'test'
+  ...
+# Subtest: store rejects caller-supplied managed identity and object fields
+ok 14 - store rejects caller-supplied managed identity and object fields
+  ---
+  duration_ms: 1.033
+  type: 'test'
+  ...
+# Subtest: source files must resolve inside the approved source root
+ok 15 - source files must resolve inside the approved source root
+  ---
+  duration_ms: 1.142208
+  type: 'test'
+  ...
+# Subtest: a raw JSONL symlink cannot redirect append outside the store
+ok 16 - a raw JSONL symlink cannot redirect append outside the store
+  ---
+  duration_ms: 1.879958
+  type: 'test'
+  ...
+# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index
+ok 17 - corrupt raw JSON blocks rebuild and preserves the last valid index
+  ---
+  duration_ms: 24.75125
+  type: 'test'
+  ...
+# Subtest: duplicate raw ids block rebuild and ID lookup
+ok 18 - duplicate raw ids block rebuild and ID lookup
+  ---
+  duration_ms: 22.943084
+  type: 'test'
+  ...
+# Subtest: an existing content-addressed object with different bytes blocks append
+ok 19 - an existing content-addressed object with different bytes blocks append
+  ---
+  duration_ms: 0.968958
+  type: 'test'
+  ...
+# Subtest: content object publication failure returns an exact blocker without throwing
+ok 20 - content object publication failure returns an exact blocker without throwing
+  ---
+  duration_ms: 5.961667
+  type: 'test'
+  ...
+# Subtest: resolve refuses a content object replaced by a symlink
+ok 21 - resolve refuses a content object replaced by a symlink
+  ---
+  duration_ms: 24.707375
+  type: 'test'
+  ...
+# Subtest: schema rejection blocks raw append and index publication
+ok 22 - schema rejection blocks raw append and index publication
+  ---
+  duration_ms: 0.544459
+  type: 'test'
+  ...
+# Subtest: store root must remain inside the approved change root
+ok 23 - store root must remain inside the approved change root
+  ---
+  duration_ms: 0.360916
+  type: 'test'
+  ...
+# Subtest: a symlinked change root cannot redirect the complete store
+ok 24 - a symlinked change root cannot redirect the complete store
+  ---
+  duration_ms: 0.376042
+  type: 'test'
+  ...
+# Subtest: cache publication failure restores the previous index and preserves raw truth
+ok 25 - cache publication failure restores the previous index and preserves raw truth
+  ---
+  duration_ms: 57.724667
+  type: 'test'
+  ...
+# Subtest: raw writer completes short writes instead of committing a partial line
+ok 26 - raw writer completes short writes instead of committing a partial line
+  ---
+  duration_ms: 0.323542
+  type: 'test'
+  ...
+# Subtest: an occupied raw lock fails closed without creating a raw claim
+ok 27 - an occupied raw lock fails closed without creating a raw claim
+  ---
+  duration_ms: 7.805375
+  type: 'test'
+  ...
+# Subtest: lookup requires a valid summary index and never scans raw as fallback
+ok 28 - lookup requires a valid summary index and never scans raw as fallback
+  ---
+  duration_ms: 36.52075
+  type: 'test'
+  ...
+# Subtest: non-JSON evidence candidates return a blocker instead of throwing
+ok 29 - non-JSON evidence candidates return a blocker instead of throwing
+  ---
+  duration_ms: 1.416375
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 30 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.775
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 31 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 14.106167
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 32 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.294834
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 33 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 5.95125
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1694.090333
+
+
+## stderr
+(empty)

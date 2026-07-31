@@ -15,6 +15,9 @@ const {
 const {
   createExecutionOrchestrator
 } = require('./execution');
+const {
+  createEvidenceStore
+} = require('./evidence');
 
 module.exports = Object.freeze({
   metadata,
@@ -24,5 +27,6 @@ module.exports = Object.freeze({
   createSchemaRegistry,
   createCommandAdapter,
   createPlaywrightAdapter,
-  createExecutionOrchestrator
+  createExecutionOrchestrator,
+  createEvidenceStore
 });

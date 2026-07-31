@@ -33,6 +33,11 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(kernel.metadata.apiVersion, 'specnav.verification.kernel.v1');
   assert.match(kernel.metadata.contractDigest, /^[a-f0-9]{64}$/);
   assert.equal(Object.isFrozen(kernel.metadata), true);
+  assert.equal(typeof kernel.createEvidenceStore, 'function');
+  assert.deepEqual(
+    kernel.serviceContracts.evidenceStore.methods,
+    ['append', 'rebuildIndex']
+  );
 
   assert.deepEqual(Object.keys(kernel.serviceContracts).sort(), [
     'commandRunner',
@@ -56,7 +61,10 @@ test('service creation requires every adapter and never falls back', () => {
     commandRunner: { execute() {} },
     playwrightRunner: { execute() {} },
     midsceneRunner: { interact() {} },
-    evidenceStore: { append() {}, rebuildIndex() {} },
+    evidenceStore: {
+      append() {},
+      rebuildIndex() {}
+    },
     failureClassifier: { classify() {} },
     reportRenderer: { render() {} }
   };

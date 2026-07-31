@@ -37,11 +37,26 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/evidence/**
+- plugins/specnav-verification/kernel/index.js
+- plugins/specnav-verification/kernel/contracts.js
 - tests/verification-v2/evidence/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/012-evidence-store/**
 
 ## Interfaces / Seams
 
-- Adapters submit typed evidence; consumers query ids through EvidenceStore instead of arbitrary paths.
+- Adapters submit typed evidence with explicit step or assertion binding.
+- The frozen Kernel service contract remains `append` and `rebuildIndex`.
+- The concrete object returned by `createEvidenceStore()` additionally exposes
+  `getById` and `resolve` for current in-process consumers. Promoting those
+  methods into the service contract requires an explicit API and contract
+  version upgrade.
 
 ## Components To Create
 
@@ -57,12 +72,20 @@ listed verification commands and must preserve all earlier artifacts.
 ## Components To Extract
 
 - Atomic append and content-addressed object writer
+- Stable evidence identity and strict raw JSONL parser
 
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-22`, `AC-31`, `AC-32`.
+- Direct acceptance assertions: `AC-22`, `AC-31`.
+- Acceptance contribution: `AC-32:evidence-store-retention`.
 - Runner output becomes immutable evidence, raw records remain source truth, and indexes rebuild deterministically.
+- Exact duplicate append requests are idempotent and do not add another raw
+  line. The same bytes under a different attempt produce a distinct evidence
+  id while reusing the same content-addressed object.
+- Task 012 never invents a step or assertion binding for an adapter candidate.
+- Full `AC-32` closure remains with migration, report, release, and archive
+  tasks that prove the same failed evidence survives those lifecycle steps.
 
 ## State / Error / Empty / Loading Behavior
 

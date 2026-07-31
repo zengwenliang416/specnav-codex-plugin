@@ -18,7 +18,17 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/evidence/**",
-    "tests/verification-v2/evidence/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/kernel/contracts.js",
+    "tests/verification-v2/evidence/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "openspec/changes/verification-2-0/tasks.md",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/drift-check.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/development/tasks/012-evidence-store/**"
   ],
   "test_paths": [
     "node --test tests/verification-v2/evidence/evidence-store.test.js"
@@ -32,6 +42,17 @@
     "AC-31",
     "AC-32"
   ],
+  "acceptance_role": "mixed",
+  "acceptance_primary": [
+    "AC-22",
+    "AC-31"
+  ],
+  "acceptance_subclaims": [
+    "AC-32:evidence-store-retention"
+  ],
+  "acceptance_contributes": [
+    "AC-32"
+  ],
   "external_targets": [],
   "non_goals": [
     "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
@@ -43,7 +64,10 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-22, AC-31, AC-32"
+    "Direct evidence for AC-22 and AC-31",
+    "Contribution evidence for AC-32:evidence-store-retention without full AC-32 closure",
+    "Public Kernel export, frozen append/rebuildIndex service contract, and concrete getById/resolve read API",
+    "Explicit step or assertion binding with no inferred adapter identity"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

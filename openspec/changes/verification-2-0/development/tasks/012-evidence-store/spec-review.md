@@ -2,28 +2,44 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+None for the Task 012 slice.
 
 ## Extra Behavior
 
-- None recorded.
+- No integrity verdict, redaction, Reading, six-domain aggregation, report,
+  host integration, release, archive, fallback, or simplified mode was added.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- The original packet incorrectly described concrete `getById/resolve`
+  methods as part of the frozen service contract. The packet now preserves the
+  versioned `append/rebuildIndex` contract and documents the concrete read API.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Full AC-32 lifecycle retention remains assigned to migration, report,
+  release, and archive tasks.
+- Evidence integrity and freshness remain Task 013.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-22`
+- `AC-31`
+- `AC-32:evidence-store-retention`
+
+## Verified Behavior
+
+- Storage matches the frozen parent design layout.
+- Raw records are append-only and failed attempts survive later passes.
+- Content objects are addressable by hash and safely published.
+- Index rebuild is deterministic and validates source identity.
+- Lookup blocks missing, invalid, or stale indexes without raw-scan fallback.
+- Invalid non-JSON candidates return exact blockers without throwing.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+None.
