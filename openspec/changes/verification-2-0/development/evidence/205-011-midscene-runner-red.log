@@ -1,0 +1,329 @@
+TAP version 13
+# Subtest: midscene case schema requires prompt, scenario, and oracle linkage
+not ok 1 - midscene case schema requires prompt, scenario, and oracle linkage
+  ---
+  duration_ms: 1015.364084
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:26:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: kernel exports Midscene adapter and unified execution method
+not ok 2 - kernel exports Midscene adapter and unified execution method
+  ---
+  duration_ms: 51.77025
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:52:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: missing provider configuration blocks before Midscene interaction
+not ok 3 - missing provider configuration blocks before Midscene interaction
+  ---
+  duration_ms: 46.406458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:69:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:72:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: adapter redacts configured secrets and never returns credential values
+not ok 4 - adapter redacts configured secrets and never returns credential values
+  ---
+  duration_ms: 0.984584
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:98:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: adapter fails closed for exceptions, timeout, cancellation, and screenshots
+not ok 5 - adapter fails closed for exceptions, timeout, cancellation, and screenshots
+  ---
+  duration_ms: 1.835875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:154:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:204:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: adapter rejects malformed responses without Playwright-only fallback
+not ok 6 - adapter rejects malformed responses without Playwright-only fallback
+  ---
+  duration_ms: 0.515375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:239:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/midscene-adapter.test.js:240:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: model-only success remains blocked without an independent oracle
+not ok 7 - model-only success remains blocked without an independent oracle
+  ---
+  duration_ms: 1023.055459
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:48:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: a deterministic structured oracle can authorize PASS
+not ok 8 - a deterministic structured oracle can authorize PASS
+  ---
+  duration_ms: 1.432
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:65:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:66:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: failed deterministic oracle produces a failed terminal attempt
+not ok 9 - failed deterministic oracle produces a failed terminal attempt
+  ---
+  duration_ms: 0.788375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:81:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: human signoff passes only when the approved case contract permits it
+not ok 10 - human signoff passes only when the approved case contract permits it
+  ---
+  duration_ms: 0.630875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:99:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:101:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: oracle assertion ids must match the approved case contract
+not ok 11 - oracle assertion ids must match the approved case contract
+  ---
+  duration_ms: 1.923958
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:137:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:138:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: adapter failure and missing screenshots cannot reach the oracle
+not ok 12 - adapter failure and missing screenshots cannot reach the oracle
+  ---
+  duration_ms: 0.439083
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:154:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/oracle_assertion_ids","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_hash","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-contract:schema-invalid","artifact_path":"memory://case-plan/cases/0","entity_type":"test-case","field":"/runner/prompt_id","keyword":"additionalProperties","schema_path":"#/properties/runner/additionalProperties","message":"must NOT have additional properties"},{"id":"verification-cases:requirement-uncovered","artifact":"case-plan","field":"/cases","related_id":"REQ-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-01"},{"id":"verification-cases:acceptance-uncovered","artifact":"case-plan","field":"/cases","related_id":"AC-02"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    midsceneExecutionFixture (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/test-helpers.js:123:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/midscene/oracle-boundary.test.js:168:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 0
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1224.384375

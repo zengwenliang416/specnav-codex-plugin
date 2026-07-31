@@ -23,6 +23,10 @@ function blocker(id, artifact = 'playwright', detail = null) {
   return { id, artifact, detail };
 }
 
+function runnerKind(payload) {
+  return payload?.mode === 'midscene' ? 'midscene' : 'playwright';
+}
+
 function isContained(root, candidate) {
   const relative = path.relative(root, candidate);
   return relative === ''
@@ -202,6 +206,7 @@ function workerResult(state, overrides = {}) {
     console: state.console,
     network: state.network,
     browser: state.browser,
+    observation: state.observation || null,
     exit_status: null,
     signal: null,
     timed_out: false,
@@ -214,13 +219,63 @@ function workerResult(state, overrides = {}) {
   };
 }
 
+function loadManagedMidscene(payload) {
+  const runtimeRoot = fs.realpathSync(payload.runtime_root);
+  const packageRoot = path.join(
+    runtimeRoot,
+    'node_modules',
+    '@midscene',
+    'web'
+  );
+  const packageFile = fs.realpathSync(path.join(packageRoot, 'package.json'));
+  if (!isContained(runtimeRoot, packageFile)) {
+    throw new Error('managed Midscene package escapes the runtime root');
+  }
+  const packageJson = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
+  if (packageJson.version !== payload.midscene_version) {
+    throw new Error(
+      `managed Midscene version mismatch: ${packageJson.version}`
+    );
+  }
+  const runtimeRequire = createRequire(packageFile);
+  const resolved = fs.realpathSync(
+    runtimeRequire.resolve('@midscene/web/playwright')
+  );
+  if (!isContained(packageRoot, resolved)) {
+    throw new Error('managed Midscene entrypoint escapes its package root');
+  }
+  const moduleValue = runtimeRequire(resolved);
+  if (typeof moduleValue?.PlaywrightAgent !== 'function') {
+    throw new Error('managed Midscene PlaywrightAgent is unavailable');
+  }
+  return moduleValue;
+}
+
+async function invokeMidsceneAgent(agent, payload, signal) {
+  const options = { abortSignal: signal };
+  if (payload.interaction.kind === 'tap') {
+    return agent.aiTap(payload.prompt, options);
+  }
+  if (payload.interaction.kind === 'input') {
+    return agent.aiInput(payload.prompt, {
+      value: payload.interaction.value,
+      abortSignal: signal
+    });
+  }
+  if (payload.interaction.kind === 'query') {
+    return agent.aiQuery(payload.prompt, options);
+  }
+  return agent.aiAct(payload.prompt, options);
+}
+
 async function executeWorker(payload, options = {}) {
   const state = {
     artifacts: [],
     assertions: [],
     console: [],
     network: [],
-    browser: payload.browser
+    browser: payload.browser,
+    observation: null
   };
   if (typeof options.send !== 'function') {
     throw new Error('authenticated Playwright worker sender is required');
@@ -247,6 +302,8 @@ async function executeWorker(payload, options = {}) {
   let rejectStop;
   let accessPolicy = null;
   const accessViolations = [];
+  const oracleViolations = [];
+  let observationScreenshotCaptured = false;
   const scenarioController = new AbortController();
   const cleanupErrors = [];
   const stopPromise = new Promise((_resolve, reject) => {
@@ -300,7 +357,16 @@ async function executeWorker(payload, options = {}) {
     const managed = loadManagedPlaywright(payload, {
       validateExecutable: false
     });
-    const scenario = compileScenario(payload.scenario_source);
+    const scenario = (
+      payload.mode === 'midscene'
+      && payload.oracle_mode === 'human_signoff'
+    )
+      ? null
+      : compileScenario(
+        payload.mode === 'midscene'
+          ? payload.oracle_scenario_source
+          : payload.scenario_source
+      );
     if (!stopCause) {
       try {
         browser = await Promise.race([
@@ -431,16 +497,62 @@ async function executeWorker(payload, options = {}) {
           }
         }
       });
-      const scenarioPromise = Promise.resolve().then(() => scenario({
-        page: guarded.page,
-        context: guarded.context,
-        browser: guarded.browser,
-        assertion,
-        data: payload.scenario_data,
-        signal: scenarioController.signal,
-        scenario_id: payload.scenario_id,
-        browser_project: payload.browser_project
-      }));
+      const oracleGuarded = payload.mode === 'midscene'
+        ? createPlaywrightApiGuard({
+          browser,
+          context,
+          page,
+          readOnly: true,
+          onDenied(detail) {
+            if (!oracleViolations.includes(detail)) {
+              oracleViolations.push(detail);
+            }
+          }
+        })
+        : guarded;
+      const scenarioPromise = Promise.resolve().then(async () => {
+        if (payload.mode === 'midscene') {
+          await page.goto(payload.start_url);
+          const { PlaywrightAgent } = loadManagedMidscene(payload);
+          const agent = new PlaywrightAgent(page, {
+            testId: payload.scenario_id,
+            groupName: payload.prompt_id,
+            generateReport: false,
+            persistExecutionDump: false,
+            autoPrintReportMsg: false
+          });
+          try {
+            const response = await invokeMidsceneAgent(
+              agent,
+              payload,
+              scenarioController.signal
+            );
+            state.observation = jsonSafe({
+              description: typeof response === 'string' ? response : null,
+              response: response === undefined ? null : response
+            });
+          } finally {
+            if (typeof agent.destroy === 'function') await agent.destroy();
+          }
+          await page.screenshot({
+            path: screenshotPath,
+            fullPage: true
+          });
+          registerArtifact('screenshot', screenshotPath);
+          observationScreenshotCaptured = true;
+          if (payload.oracle_mode === 'human_signoff') return;
+        }
+        return scenario({
+          page: oracleGuarded.page,
+          context: oracleGuarded.context,
+          browser: oracleGuarded.browser,
+          assertion,
+          data: payload.scenario_data,
+          signal: scenarioController.signal,
+          scenario_id: payload.scenario_id,
+          browser_project: payload.browser_project
+        });
+      });
       try {
         await Promise.race([scenarioPromise, stopPromise]);
       } catch (error) {
@@ -451,7 +563,7 @@ async function executeWorker(payload, options = {}) {
   } catch (error) {
     if (!(error instanceof StopError)) scenarioError = error;
   } finally {
-    if (page && !page.isClosed()) {
+    if (page && !page.isClosed() && !observationScreenshotCaptured) {
       try {
         await page.screenshot({
           path: screenshotPath,
@@ -526,19 +638,24 @@ async function executeWorker(payload, options = {}) {
   }
 
   if (stopCause === 'canceled') {
+    const runner = runnerKind(payload);
     return workerResult(state, {
       status: 'canceled',
       canceled: true,
-      blockers: [blocker('verification-execution:playwright-canceled')]
+      blockers: [blocker(
+        `verification-execution:${runner}-canceled`,
+        runner
+      )]
     });
   }
   if (stopCause === 'timeout') {
+    const runner = runnerKind(payload);
     return workerResult(state, {
       status: 'failed',
       timed_out: true,
       blockers: [blocker(
-        'verification-execution:playwright-timeout',
-        'playwright',
+        `verification-execution:${runner}-timeout`,
+        runner,
         String(payload.timeout_ms)
       )]
     });
@@ -568,6 +685,17 @@ async function executeWorker(payload, options = {}) {
       )]
     });
   }
+  if (oracleViolations.length > 0) {
+    return workerResult(state, {
+      status: 'blocked',
+      exit_status: 1,
+      blockers: [blocker(
+        'verification-execution:midscene-oracle-mutation-denied',
+        payload.scenario_id,
+        oracleViolations.join(',')
+      )]
+    });
+  }
   if (scenarioError instanceof AssertionContractError) {
     return workerResult(state, {
       stderr: scenarioError.message,
@@ -578,12 +706,15 @@ async function executeWorker(payload, options = {}) {
     const message = scenarioError instanceof Error
       ? scenarioError.message
       : String(scenarioError);
+    const runner = runnerKind(payload);
     return workerResult(state, {
       status: 'failed',
       exit_status: 1,
       stderr: message,
       blockers: [blocker(
-        'verification-execution:playwright-scenario-failed',
+        `verification-execution:${runner}-${
+          runner === 'midscene' ? 'oracle' : 'scenario'
+        }-failed`,
         payload.scenario_id,
         message
       )]
@@ -601,12 +732,27 @@ async function executeWorker(payload, options = {}) {
       )]
     });
   }
-  if (state.assertions.length === 0) {
+  if (
+    state.assertions.length === 0
+    && (
+      payload.mode !== 'midscene'
+      || payload.oracle_mode === 'deterministic'
+    )
+  ) {
     return workerResult(state, {
       blockers: [blocker(
-        'verification-execution:playwright-assertion-missing',
+        payload.mode === 'midscene'
+          ? 'verification-execution:midscene-oracle-assertion-missing'
+          : 'verification-execution:playwright-assertion-missing',
         payload.scenario_id
       )]
+    });
+  }
+  if (payload.mode === 'midscene') {
+    return workerResult(state, {
+      status: 'observed',
+      exit_status: 0,
+      blockers: []
     });
   }
   const failedAssertions = state.assertions.filter(
@@ -632,13 +778,14 @@ async function executeWorker(payload, options = {}) {
 }
 
 function stoppedResult(payload, partial, kind, detail = null) {
+  const runner = runnerKind(payload);
   return workerResult(partial, {
     status: kind === 'canceled' ? 'canceled' : 'failed',
     canceled: kind === 'canceled',
     timed_out: kind === 'timeout',
     blockers: [blocker(
-      `verification-execution:playwright-${kind}`,
-      'playwright',
+      `verification-execution:${runner}-${kind}`,
+      runner,
       detail || (kind === 'timeout' ? String(payload.timeout_ms) : null)
     )]
   });
@@ -687,6 +834,22 @@ function sandboxNetworkRule(wsEndpoint) {
   return `(allow network-outbound (remote tcp "localhost:${endpoint.port}"))`;
 }
 
+function sandboxProviderNetworkRule(baseUrl) {
+  const endpoint = new URL(baseUrl);
+  if (
+    endpoint.protocol !== 'https:'
+    || endpoint.username !== ''
+    || endpoint.password !== ''
+    || endpoint.hash !== ''
+  ) {
+    throw new Error('Midscene provider base URL must be explicit HTTPS');
+  }
+  const port = endpoint.port || '443';
+  return `(allow network-outbound (remote tcp "${sandboxLiteral(
+    `${endpoint.hostname}:${port}`
+  )}"))`;
+}
+
 function sandboxProfile(payload) {
   const stagingPath = fs.realpathSync(payload.staging_root);
   const runtimePath = fs.realpathSync(payload.runtime_root);
@@ -729,6 +892,9 @@ function sandboxProfile(payload) {
     '  (literal "/dev/tty"))',
     `(allow process-exec (literal "${nodeExecutable}"))`,
     sandboxNetworkRule(payload.ws_endpoint),
+    ...(payload.mode === 'midscene'
+      ? [sandboxProviderNetworkRule(payload.provider_base_url)]
+      : []),
     '(allow sysctl-read)',
     '(allow mach-lookup)'
   ].join('\n');
@@ -817,7 +983,10 @@ function runSandboxedScenario(payload, options = {}) {
           LC_ALL: process.env.LC_ALL || '',
           PATH: '/usr/bin:/bin:/usr/sbin:/sbin',
           SPECNAV_PLAYWRIGHT_CHILD: CHILD_MARKER,
-          TMPDIR: childTmp
+          TMPDIR: childTmp,
+          ...(payload.mode === 'midscene'
+            ? options.providerEnvironment
+            : {})
         },
         stdio: ['ignore', 'pipe', 'pipe', 'ipc']
       });
@@ -1110,7 +1279,8 @@ if (process.env.SPECNAV_PLAYWRIGHT_CHILD === CHILD_MARKER) {
             assertions: [],
             console: [],
             network: [],
-            browser: childPayload.browser
+            browser: childPayload.browser,
+            observation: null
           }, error)
         })
       );

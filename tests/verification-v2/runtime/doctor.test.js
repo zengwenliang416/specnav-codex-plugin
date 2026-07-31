@@ -220,6 +220,8 @@ test('doctor reports a complete ready runtime without exposing provider secrets'
     model_family_present: true,
     credential_source: 'MIDSCENE_MODEL_API_KEY',
     base_url_present: true,
+    configuration_fingerprint:
+      '592ea340dfbe18443d5e739bce9cbb2ef3f42e36680088c4948782ea7fc426ea',
     secret_values_exposed: false
   });
   const serialized = JSON.stringify(result);

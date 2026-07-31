@@ -17,12 +17,31 @@
     "openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md"
   ],
   "allowed_files": [
-    "plugins/specnav-verification/kernel/execution/**",
     "plugins/specnav-verification/kernel/adapters/midscene-adapter.js",
-    "tests/verification-v2/midscene/**"
+    "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+    "plugins/specnav-verification/kernel/execution/midscene-*.js",
+    "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+    "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+    "plugins/specnav-verification/kernel/execution/orchestrator.js",
+    "plugins/specnav-verification/kernel/execution/preflight.js",
+    "plugins/specnav-verification/kernel/execution/index.js",
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/kernel/runtime/doctor.js",
+    "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+    "plugins/specnav-verification/schemas/test-case.schema.json",
+    "tests/verification-v2/midscene/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/verification-v2/runtime/doctor.test.js",
+    "tests/run-verification-v2-midscene-contract.sh",
+    "openspec/changes/verification-2-0/development/tasks/011-midscene-runner/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**"
   ],
   "test_paths": [
-    "node --test tests/verification-v2/midscene/*.test.js",
+    "node --test tests/verification-v2/midscene/*.test.js tests/verification-v2/runtime/doctor.test.js",
     "bash tests/run-verification-v2-midscene-contract.sh"
   ],
   "dependencies": [
@@ -31,9 +50,21 @@
     "010-playwright-runner"
   ],
   "acceptance_assertions": [
+    "AC-16",
+    "AC-39:midscene-adapter-boundary"
+  ],
+  "acceptance_role": "contributor",
+  "acceptance_primary": [
+    "AC-16"
+  ],
+  "acceptance_subclaims": [
+    "AC-39:midscene-adapter-boundary"
+  ],
+  "acceptance_contributes": [
     "AC-05",
     "AC-16",
-    "AC-30"
+    "AC-30",
+    "AC-39"
   ],
   "external_targets": [],
   "non_goals": [
@@ -46,11 +77,12 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-05, AC-16, AC-30"
+    "Direct evidence for AC-16 and AC-39:midscene-adapter-boundary"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",
     "Model interpretation is not a deterministic oracle.",
+    "A caller-supplied HTTPS provider URL is not an approved provider configuration.",
     "Report HTML is not the release gate source.",
     "Legacy V1 status is not V2 proof."
   ],

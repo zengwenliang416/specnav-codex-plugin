@@ -11,6 +11,9 @@ const {
 const {
   serializePlaywrightScenario
 } = require('./playwright-scenario');
+const {
+  serializeMidscenePrompt
+} = require('./midscene-prompt');
 
 function executionBlocker(id, artifact, detail = null) {
   return { id, artifact, detail };
@@ -433,14 +436,225 @@ function runPlaywrightPreflight(input, dependencies) {
   return completePreflight(base, dependencies, input);
 }
 
+function validateMidsceneRequest(testCase, request, attempt, projectRoot) {
+  if (!request || typeof request !== 'object' || Array.isArray(request)) {
+    return executionBlocker(
+      'verification-execution:midscene-request-invalid',
+      testCase.id
+    );
+  }
+  for (const [field, expected] of [
+    ['scenario_id', testCase.runner.scenario_id],
+    ['scenario_hash', testCase.runner.scenario_hash],
+    ['browser_project', testCase.runner.browser_project],
+    ['prompt_id', testCase.runner.prompt_id],
+    ['prompt_hash', testCase.runner.prompt_hash],
+    ['start_url', testCase.runner.start_url],
+    ['oracle_scenario_hash', testCase.runner.oracle_scenario_hash]
+  ]) {
+    if (request[field] !== expected) {
+      return executionBlocker(
+        `verification-execution:midscene-${field.replaceAll('_', '-')}-mismatch`,
+        testCase.id,
+        request[field] || null
+      );
+    }
+  }
+  const serializedPrompt = serializeMidscenePrompt(request.prompt);
+  if (serializedPrompt.blocker) return serializedPrompt.blocker;
+  if (serializedPrompt.hash !== testCase.runner.prompt_hash) {
+    return executionBlocker(
+      'verification-execution:midscene-prompt-hash-mismatch',
+      testCase.id,
+      serializedPrompt.hash
+    );
+  }
+  const serializedOracle = serializePlaywrightScenario(
+    request.oracle_scenario
+  );
+  if (serializedOracle.blocker) return executionBlocker(
+    'verification-execution:midscene-oracle-scenario-invalid',
+    testCase.id,
+    serializedOracle.blocker.detail
+  );
+  if (serializedOracle.hash !== testCase.runner.oracle_scenario_hash) {
+    return executionBlocker(
+      'verification-execution:midscene-oracle-scenario-hash-mismatch',
+      testCase.id,
+      serializedOracle.hash
+    );
+  }
+  if (attempt?.scenario_hash !== testCase.runner.scenario_hash) {
+    return executionBlocker(
+      'verification-execution:midscene-attempt-scenario-hash-mismatch',
+      attempt?.id || testCase.id,
+      attempt?.scenario_hash || null
+    );
+  }
+  if (!sameStrings(request.allowed_origins, testCase.runner.allowed_origins)) {
+    return executionBlocker(
+      'verification-execution:midscene-allowed-origins-mismatch',
+      testCase.id
+    );
+  }
+  try {
+    const policy = createBrowserAccessPolicy(request.allowed_origins);
+    if (!policy.allows(request.start_url)) {
+      return executionBlocker(
+        'verification-execution:midscene-start-url-denied',
+        testCase.id,
+        policy.target(request.start_url)
+      );
+    }
+  } catch {
+    return executionBlocker(
+      'verification-execution:midscene-allowed-origins-invalid',
+      testCase.id
+    );
+  }
+  if (
+    typeof request.artifact_root !== 'string'
+    || !path.isAbsolute(request.artifact_root)
+  ) {
+    return executionBlocker(
+      'verification-execution:midscene-artifact-root-invalid',
+      testCase.id
+    );
+  }
+  const resolvedProject = path.resolve(projectRoot);
+  const resolvedArtifact = path.resolve(request.artifact_root);
+  if (
+    resolvedArtifact === resolvedProject
+    || !isContained(resolvedProject, resolvedArtifact)
+  ) {
+    return executionBlocker(
+      'verification-execution:midscene-artifact-root-outside-project',
+      testCase.id,
+      resolvedArtifact
+    );
+  }
+  let canonicalProject;
+  try {
+    canonicalProject = fs.realpathSync(resolvedProject);
+  } catch {
+    return executionBlocker(
+      'verification-execution:midscene-project-root-unresolvable',
+      testCase.id,
+      resolvedProject
+    );
+  }
+  const canonicalAncestor = nearestExistingAncestor(resolvedArtifact);
+  if (!canonicalAncestor || !isContained(canonicalProject, canonicalAncestor)) {
+    return executionBlocker(
+      'verification-execution:midscene-artifact-root-outside-project',
+      testCase.id,
+      canonicalAncestor || resolvedArtifact
+    );
+  }
+  return null;
+}
+
+function runMidscenePreflight(input, dependencies) {
+  const base = initializePreflight(input, dependencies);
+  if (!base.ok) return base;
+  const {
+    testCase,
+    previousAttempts
+  } = base;
+  if (
+    testCase.runner.kind !== 'midscene'
+    || testCase.runner.requires_midscene !== true
+  ) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:runner-kind-mismatch',
+        testCase.id,
+        testCase.runner.kind
+      )])
+    };
+  }
+  if (input.runtimeStatus.checks?.provider?.configured !== true) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:midscene-provider-not-configured',
+        'environment'
+      )])
+    };
+  }
+  const browserReady = input.runtimeStatus.checks?.browsers?.some((entry) => (
+    entry.name === testCase.runner.browser_project
+    && entry.executable_exists === true
+    && entry.executable_allowed === true
+    && entry.probe_ok === true
+  ));
+  if (!browserReady) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:midscene-browser-not-ready',
+        testCase.runner.browser_project
+      )])
+    };
+  }
+  const requestProblem = validateMidsceneRequest(
+    testCase,
+    input.midscene,
+    input.attempt,
+    dependencies.projectRoot
+  );
+  if (requestProblem) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [requestProblem])
+    };
+  }
+  let adapterValidation;
+  try {
+    adapterValidation = dependencies.midsceneAdapter.validate(input.midscene);
+  } catch (error) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:midscene-adapter-validation-failed',
+        'midscene-adapter',
+        error instanceof Error ? error.message : String(error)
+      )])
+    };
+  }
+  if (
+    !adapterValidation
+    || typeof adapterValidation !== 'object'
+    || !Array.isArray(adapterValidation.blockers)
+  ) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, [executionBlocker(
+        'verification-execution:midscene-adapter-validation-invalid',
+        'midscene-adapter'
+      )])
+    };
+  }
+  if (!adapterValidation.ok) {
+    return {
+      ok: false,
+      result: blockedResult(previousAttempts, adapterValidation.blockers)
+    };
+  }
+  return completePreflight(base, dependencies, input);
+}
+
 module.exports = {
   blockedResult,
   completePreflight,
   executionBlocker,
   initializePreflight,
   runPreflight,
+  runMidscenePreflight,
   runPlaywrightPreflight,
   validateArtifact,
+  validateMidsceneRequest,
   validatePlaywrightRequest,
   validateReferenceGraph,
   validateRunApproval,

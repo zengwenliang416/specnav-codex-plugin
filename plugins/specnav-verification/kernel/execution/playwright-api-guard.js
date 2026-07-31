@@ -23,24 +23,126 @@ const DENIED_METHODS = Object.freeze({
   ])
 });
 
+const READ_ONLY_ALLOWED_METHODS = Object.freeze({
+  browser: new Set(),
+  context: new Set([
+    'browser',
+    'cookies',
+    'isClosed',
+    'pages'
+  ]),
+  page: new Set([
+    '$',
+    '$$',
+    'content',
+    'context',
+    'frame',
+    'frameLocator',
+    'frames',
+    'getByAltText',
+    'getByLabel',
+    'getByPlaceholder',
+    'getByRole',
+    'getByTestId',
+    'getByText',
+    'getByTitle',
+    'isClosed',
+    'locator',
+    'mainFrame',
+    'opener',
+    'title',
+    'url',
+    'viewportSize',
+    'waitForLoadState',
+    'waitForSelector',
+    'waitForTimeout',
+    'waitForURL'
+  ]),
+  playwright: new Set([
+    '$',
+    '$$',
+    'all',
+    'allInnerTexts',
+    'allTextContents',
+    'and',
+    'ariaSnapshot',
+    'asElement',
+    'boundingBox',
+    'content',
+    'count',
+    'elementHandle',
+    'elementHandles',
+    'filter',
+    'first',
+    'frameLocator',
+    'getAttribute',
+    'getByAltText',
+    'getByLabel',
+    'getByPlaceholder',
+    'getByRole',
+    'getByTestId',
+    'getByText',
+    'getByTitle',
+    'headers',
+    'headersArray',
+    'innerHTML',
+    'innerText',
+    'inputValue',
+    'isChecked',
+    'isDisabled',
+    'isEditable',
+    'isEnabled',
+    'isHidden',
+    'isVisible',
+    'json',
+    'jsonValue',
+    'last',
+    'locator',
+    'method',
+    'name',
+    'nth',
+    'ok',
+    'or',
+    'ownerFrame',
+    'request',
+    'response',
+    'status',
+    'statusText',
+    'text',
+    'textContent',
+    'type',
+    'url',
+    'value',
+    'waitFor',
+    'waitForElementState'
+  ])
+});
+
 const PLAYWRIGHT_TYPES = new Set([
   'APIRequestContext',
   'Browser',
   'BrowserContext',
   'BrowserType',
   'CDPSession',
+  'Clock',
   'ConsoleMessage',
+  'Coverage',
   'Dialog',
   'Download',
   'ElementHandle',
   'FileChooser',
   'Frame',
+  'FrameLocator',
   'JSHandle',
+  'Keyboard',
   'Locator',
+  'Mouse',
   'Page',
   'Request',
   'Response',
   'Route',
+  'Touchscreen',
+  'Tracing',
   'Video',
   'WebSocket',
   'WebSocketRoute',
@@ -176,7 +278,16 @@ function createPlaywrightApiGuard(options) {
     if (proxyCache.has(value)) return proxyCache.get(value);
 
     const proxy = new Proxy(value, {
+      defineProperty(target, property, descriptor) {
+        if (options.readOnly === true) {
+          return denied(kind, `defineProperty.${String(property)}`);
+        }
+        return Reflect.defineProperty(target, property, descriptor);
+      },
       deleteProperty(target, property) {
+        if (options.readOnly === true) {
+          return denied(kind, `delete.${String(property)}`);
+        }
         if (typeof property === 'string' && property.startsWith('_')) {
           return denied(kind, 'private');
         }
@@ -195,6 +306,12 @@ function createPlaywrightApiGuard(options) {
         }
         const member = Reflect.get(target, property, target);
         if (typeof member !== 'function') return wrap(member);
+        if (
+          options.readOnly === true
+          && !READ_ONLY_ALLOWED_METHODS[kind]?.has(property)
+        ) {
+          return () => denied(kind, property);
+        }
         return guardFunction((...args) => {
           let guardedArgs = args;
           const eventKind = ['page', 'popup'].includes(args[0])
@@ -240,21 +357,42 @@ function createPlaywrightApiGuard(options) {
         return denied(kind, 'prototype');
       },
       getOwnPropertyDescriptor(target, property) {
+        if (options.readOnly === true) {
+          return denied(kind, `descriptor.${String(property)}`);
+        }
         if (typeof property === 'string' && property.startsWith('_')) {
           return undefined;
         }
         return Reflect.getOwnPropertyDescriptor(target, property);
       },
       ownKeys(target) {
+        if (options.readOnly === true) {
+          return denied(kind, 'ownKeys');
+        }
         return Reflect.ownKeys(target).filter((property) => (
           typeof property !== 'string' || !property.startsWith('_')
         ));
       },
+      preventExtensions(target) {
+        if (options.readOnly === true) {
+          return denied(kind, 'preventExtensions');
+        }
+        return Reflect.preventExtensions(target);
+      },
       set(target, property, value) {
+        if (options.readOnly === true) {
+          return denied(kind, `set.${String(property)}`);
+        }
         if (typeof property === 'string' && property.startsWith('_')) {
           return denied(kind, 'private');
         }
         return Reflect.set(target, property, value, target);
+      },
+      setPrototypeOf(target, prototype) {
+        if (options.readOnly === true) {
+          return denied(kind, 'setPrototypeOf');
+        }
+        return Reflect.setPrototypeOf(target, prototype);
       }
     });
     proxyCache.set(value, proxy);

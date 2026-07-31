@@ -13,6 +13,9 @@ const {
   createPlaywrightAdapter
 } = require('./adapters/playwright-adapter');
 const {
+  createMidsceneAdapter
+} = require('./adapters/midscene-adapter');
+const {
   createExecutionOrchestrator
 } = require('./execution');
 const {
@@ -35,6 +38,7 @@ module.exports = Object.freeze({
   ENTITY_TYPES,
   createSchemaRegistry,
   createCommandAdapter,
+  createMidsceneAdapter,
   createPlaywrightAdapter,
   createExecutionOrchestrator,
   createEvidenceStore,

@@ -12,6 +12,9 @@ const {
   runtimeBaseDefault,
   sha256File
 } = require('./installer');
+const {
+  probeProvider
+} = require('./provider-contract');
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -133,46 +136,6 @@ function defaultProbeBrowser({ browser, executable, spawn = spawnSync }) {
     status: run.status === null ? 1 : run.status,
     stdout: run.stdout || '',
     stderr: run.stderr || run.error?.message || ''
-  };
-}
-
-function probeProvider(providerEnvironment = {}) {
-  const present = (name) => (
-    typeof providerEnvironment[name] === 'string'
-    && providerEnvironment[name].trim() !== ''
-  );
-  const modelNamePresent = present('MIDSCENE_MODEL_NAME');
-  const modelFamilyPresent = present('MIDSCENE_MODEL_FAMILY');
-  let credentialSource = null;
-  for (const name of [
-    'MIDSCENE_MODEL_API_KEY',
-    'MIDSCENE_MODEL_INIT_CONFIG_JSON',
-    'OPENAI_API_KEY',
-    'MIDSCENE_OPENAI_INIT_CONFIG_JSON'
-  ]) {
-    if (present(name)) {
-      credentialSource = name;
-      break;
-    }
-  }
-  const legacyCredential = [
-    'OPENAI_API_KEY',
-    'MIDSCENE_OPENAI_INIT_CONFIG_JSON'
-  ].includes(credentialSource);
-  return {
-    configured: (
-      modelNamePresent
-      && credentialSource !== null
-      && (modelFamilyPresent || legacyCredential)
-    ),
-    model_name_present: modelNamePresent,
-    model_family_present: modelFamilyPresent,
-    credential_source: credentialSource,
-    base_url_present: (
-      present('MIDSCENE_MODEL_BASE_URL')
-      || present('OPENAI_BASE_URL')
-    ),
-    secret_values_exposed: false
   };
 }
 

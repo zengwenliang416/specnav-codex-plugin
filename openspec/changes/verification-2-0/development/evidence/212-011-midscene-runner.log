@@ -1,0 +1,284 @@
+# command: node --test tests/verification-v2/midscene/*.test.js tests/verification-v2/browser/browser-access-policy.test.js tests/verification-v2/browser/playwright-adapter.test.js # 011-readonly-guard-final
+# exit_status: 0
+# duration_ms: 27749
+
+## stdout
+TAP version 13
+# Subtest: browser access policy allows only exact approved HTTP origins
+ok 1 - browser access policy allows only exact approved HTTP origins
+  ---
+  duration_ms: 0.658125
+  type: 'test'
+  ...
+# Subtest: browser access policy rejects malformed or unsafe approved origins
+ok 2 - browser access policy rejects malformed or unsafe approved origins
+  ---
+  duration_ms: 1.279042
+  type: 'test'
+  ...
+# Subtest: playwright case schema requires scenario, browser, and access identity
+ok 3 - playwright case schema requires scenario, browser, and access identity
+  ---
+  duration_ms: 1265.047042
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 4 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 84.853084
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 5 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 58.266666
+  type: 'test'
+  ...
+# Subtest: playwright preflight binds source and attempt hashes to the approved scenario
+ok 6 - playwright preflight binds source and attempt hashes to the approved scenario
+  ---
+  duration_ms: 58.45575
+  type: 'test'
+  ...
+# Subtest: playwright adapter independently verifies the approved scenario hash
+ok 7 - playwright adapter independently verifies the approved scenario hash
+  ---
+  duration_ms: 60.937917
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 8 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 2013.829875
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 9 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 1126.136083
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 10 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 1004.522333
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 11 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 50.900875
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 104.442041
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 103.861292
+      type: 'test'
+      ...
+    1..2
+ok 12 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 209.196791
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 13 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 113.961083
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 14 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 89.342
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 15 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 988.767958
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 16 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1807.858583
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, network, and detached children
+ok 17 - process confinement blocks host reads, writes, network, and detached children
+  ---
+  duration_ms: 906.568542
+  type: 'test'
+  ...
+# Subtest: scenario cannot forge authenticated worker events or terminal results
+ok 18 - scenario cannot forge authenticated worker events or terminal results
+  ---
+  duration_ms: 896.254041
+  type: 'test'
+  ...
+# Subtest: browser access violations block a caught scenario success
+ok 19 - browser access violations block a caught scenario success
+  ---
+  duration_ms: 4357.223625
+  type: 'test'
+  ...
+# Subtest: scenario cannot remove policy routes or create an unguarded context
+ok 20 - scenario cannot remove policy routes or create an unguarded context
+  ---
+  duration_ms: 12070.164959
+  type: 'test'
+  ...
+# Subtest: midscene case schema requires prompt, start URL, scenario, and oracle linkage
+ok 21 - midscene case schema requires prompt, start URL, scenario, and oracle linkage
+  ---
+  duration_ms: 1272.972167
+  type: 'test'
+  ...
+# Subtest: kernel exports Midscene adapter and unified execution method
+ok 22 - kernel exports Midscene adapter and unified execution method
+  ---
+  duration_ms: 76.764834
+  type: 'test'
+  ...
+# Subtest: missing provider configuration blocks before Midscene interaction
+ok 23 - missing provider configuration blocks before Midscene interaction
+  ---
+  duration_ms: 58.907166
+  type: 'test'
+  ...
+# Subtest: adapter redacts prompts, observations, logs, model metadata, and errors
+ok 24 - adapter redacts prompts, observations, logs, model metadata, and errors
+  ---
+  duration_ms: 60.740583
+  type: 'test'
+  ...
+# Subtest: adapter delegates to the sandboxed Playwright worker without a raw Page
+ok 25 - adapter delegates to the sandboxed Playwright worker without a raw Page
+  ---
+  duration_ms: 53.776209
+  type: 'test'
+  ...
+# Subtest: execute-time provider overrides cannot change the approved provider target
+ok 26 - execute-time provider overrides cannot change the approved provider target
+  ---
+  duration_ms: 59.778209
+  type: 'test'
+  ...
+# Subtest: adapter blocks when doctor and adapter provider configurations differ
+ok 27 - adapter blocks when doctor and adapter provider configurations differ
+  ---
+  duration_ms: 68.385667
+  type: 'test'
+  ...
+# Subtest: human signoff mode reaches the worker without requiring assertions
+ok 28 - human signoff mode reaches the worker without requiring assertions
+  ---
+  duration_ms: 73.232875
+  type: 'test'
+  ...
+# Subtest: adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+ok 29 - adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+  ---
+  duration_ms: 256.490917
+  type: 'test'
+  ...
+# Subtest: adapter rejects malformed worker results and occupied artifact roots
+ok 30 - adapter rejects malformed worker results and occupied artifact roots
+  ---
+  duration_ms: 71.819333
+  type: 'test'
+  ...
+# Subtest: model-only success remains blocked without a worker assertion
+ok 31 - model-only success remains blocked without a worker assertion
+  ---
+  duration_ms: 1347.079209
+  type: 'test'
+  ...
+# Subtest: a sandboxed deterministic assertion can authorize PASS
+ok 32 - a sandboxed deterministic assertion can authorize PASS
+  ---
+  duration_ms: 60.363583
+  type: 'test'
+  ...
+# Subtest: kernel recomputes assertion status and rejects a forged PASS
+ok 33 - kernel recomputes assertion status and rejects a forged PASS
+  ---
+  duration_ms: 57.557125
+  type: 'test'
+  ...
+# Subtest: failed deterministic assertion produces a failed terminal attempt
+ok 34 - failed deterministic assertion produces a failed terminal attempt
+  ---
+  duration_ms: 56.633375
+  type: 'test'
+  ...
+# Subtest: human signoff passes only when contract and execution identity permit it
+ok 35 - human signoff passes only when contract and execution identity permit it
+  ---
+  duration_ms: 131.362292
+  type: 'test'
+  ...
+# Subtest: human signoff can be requested only after the retained screenshot exists
+ok 36 - human signoff can be requested only after the retained screenshot exists
+  ---
+  duration_ms: 83.892834
+  type: 'test'
+  ...
+# Subtest: human signoff cannot approve a screenshot modified during review
+ok 37 - human signoff cannot approve a screenshot modified during review
+  ---
+  duration_ms: 58.992125
+  type: 'test'
+  ...
+# Subtest: Midscene result retains every published artifact and execution channel
+ok 38 - Midscene result retains every published artifact and execution channel
+  ---
+  duration_ms: 63.337709
+  type: 'test'
+  ...
+# Subtest: human signoff reviewer and evidence hash must match the approved execution
+ok 39 - human signoff reviewer and evidence hash must match the approved execution
+  ---
+  duration_ms: 185.652625
+  type: 'test'
+  ...
+# Subtest: missing, forged, or tampered screenshots block before oracle evaluation
+ok 40 - missing, forged, or tampered screenshots block before oracle evaluation
+  ---
+  duration_ms: 205.005333
+  type: 'test'
+  ...
+# Subtest: malformed and hostile adapter results fail closed
+ok 41 - malformed and hostile adapter results fail closed
+  ---
+  duration_ms: 151.140291
+  type: 'test'
+  ...
+# Subtest: Midscene oracle guard permits reads and blocks page mutation
+ok 42 - Midscene oracle guard permits reads and blocks page mutation
+  ---
+  duration_ms: 1.538459
+  type: 'test'
+  ...
+1..42
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27698.558959
+
+
+## stderr
+(empty)

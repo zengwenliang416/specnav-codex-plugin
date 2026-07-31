@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
@@ -576,7 +577,12 @@ function prepareArtifactWorkspace(artifactRoot, projectRoot) {
   }
 }
 
-function publishArtifacts(workspace, state, emit) {
+function sha256File(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+}
+
+function publishArtifacts(workspace, state, emit, options = {}) {
+  const producer = options.producer || PRODUCER;
   const jsonArtifacts = [
     ['log', 'console.json', state.console],
     ['log', 'network.json', state.network],
@@ -637,7 +643,9 @@ function publishArtifacts(workspace, state, emit) {
       const artifact = {
         kind,
         path: canonicalFile,
-        producer: PRODUCER
+        producer,
+        sha256: sha256File(canonicalFile),
+        size: info.size
       };
       artifacts.push(artifact);
       emit({ type: 'artifact', artifact });
@@ -808,5 +816,9 @@ function createPlaywrightAdapter(factoryOptions = {}) {
 }
 
 module.exports = {
-  createPlaywrightAdapter
+  createPlaywrightAdapter,
+  prepareArtifactWorkspace,
+  publishArtifacts,
+  resolveManagedRuntime,
+  validateArtifactRoot
 };

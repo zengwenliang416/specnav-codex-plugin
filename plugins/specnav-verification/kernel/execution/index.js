@@ -6,8 +6,12 @@ const {
 const {
   createEventSequence
 } = require('./event-sequence');
+const {
+  evaluateMidsceneOracle
+} = require('./midscene-oracle');
 
 module.exports = Object.freeze({
   createEventSequence,
-  createExecutionOrchestrator
+  createExecutionOrchestrator,
+  evaluateMidsceneOracle
 });

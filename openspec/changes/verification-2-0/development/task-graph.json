@@ -126,10 +126,23 @@
       "group": 4,
       "goal": "Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.",
       "acceptance": [
+        "AC-16",
+        "AC-39"
+      ],
+      "acceptance_role": "contributor",
+      "acceptance_primary": [
+        "AC-16"
+      ],
+      "acceptance_subclaims": [
+        "AC-39:midscene-adapter-boundary"
+      ],
+      "acceptance_contributes": [
         "AC-05",
         "AC-16",
-        "AC-30"
+        "AC-30",
+        "AC-39"
       ],
+      "final_closer": "031-cross-host-drift-ci",
       "packet": "development/tasks/011-midscene-runner"
     },
     {

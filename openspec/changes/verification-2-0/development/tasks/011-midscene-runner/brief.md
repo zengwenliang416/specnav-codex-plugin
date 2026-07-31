@@ -36,9 +36,28 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Files Allowed
 
-- plugins/specnav-verification/kernel/execution/**
 - plugins/specnav-verification/kernel/adapters/midscene-adapter.js
+- plugins/specnav-verification/kernel/adapters/playwright-adapter.js
+- plugins/specnav-verification/kernel/execution/midscene-*.js
+- plugins/specnav-verification/kernel/execution/playwright-api-guard.js
+- plugins/specnav-verification/kernel/execution/playwright-worker.js
+- plugins/specnav-verification/kernel/execution/orchestrator.js
+- plugins/specnav-verification/kernel/execution/preflight.js
+- plugins/specnav-verification/kernel/execution/index.js
+- plugins/specnav-verification/kernel/index.js
+- plugins/specnav-verification/kernel/runtime/doctor.js
+- plugins/specnav-verification/kernel/runtime/provider-contract.js
+- plugins/specnav-verification/schemas/test-case.schema.json
 - tests/verification-v2/midscene/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/verification-v2/runtime/doctor.test.js
+- tests/run-verification-v2-midscene-contract.sh
+- openspec/changes/verification-2-0/development/tasks/011-midscene-runner/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
 
 ## Interfaces / Seams
 
@@ -52,17 +71,28 @@ listed verification commands and must preserve all earlier artifacts.
 ## Components To Reuse
 
 - Playwright adapter
+- Playwright managed-runtime, sandboxed-worker, browser-policy, and atomic
+  artifact-publication infrastructure
 - Runtime provider probe
 
 ## Components To Extract
 
 - Model metadata normalization and secret-safe prompt capture
+- Provider configuration fingerprinting shared by doctor and adapter
+- Read-only Playwright API policy for deterministic Midscene oracles
 
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-05`, `AC-16`, `AC-30`.
+- Direct acceptance assertions: `AC-16`, `AC-39:midscene-adapter-boundary`.
+- Reused constraints: `AC-05`, `AC-30`; their final closure remains with the
+  reading, aggregation, reporting, and release tasks.
 - Midscene performs interaction, emits evidence, and waits for a separate oracle reading before terminal evaluation.
+- Provider credentials come only from the adapter's configured environment and
+  must match the secret-free configuration fingerprint emitted by runtime
+  doctor.
+- Human signoff is requested only after the retained screenshot exists, and
+  screenshot integrity is rechecked after the reviewer callback returns.
 
 ## State / Error / Empty / Loading Behavior
 
@@ -79,7 +109,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Verification Commands
 
-- `node --test tests/verification-v2/midscene/*.test.js`
+- `node --test tests/verification-v2/midscene/*.test.js tests/verification-v2/runtime/doctor.test.js`
 - `bash tests/run-verification-v2-midscene-contract.sh`
 
 ## Stop Conditions

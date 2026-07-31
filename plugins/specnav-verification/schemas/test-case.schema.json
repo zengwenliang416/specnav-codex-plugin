@@ -233,6 +233,27 @@
         "scenario_hash": {
           "$ref": "common.schema.json#/$defs/sha256"
         },
+        "prompt_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "prompt_hash": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "start_url": {
+          "type": "string",
+          "pattern": "^https?://"
+        },
+        "oracle_scenario_hash": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "oracle_assertion_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
         "allowed_origins": {
           "type": "array",
           "minItems": 1,
@@ -332,6 +353,75 @@
               },
               "requires_midscene": {
                 "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "midscene"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "scenario_id",
+              "scenario_hash",
+              "browser_project",
+              "allowed_origins",
+              "prompt_id",
+              "prompt_hash",
+              "start_url",
+              "oracle_scenario_hash",
+              "oracle_assertion_ids"
+            ],
+            "properties": {
+              "scenario_id": {
+                "$ref": "common.schema.json#/$defs/stableId"
+              },
+              "scenario_hash": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              },
+              "browser_project": {
+                "$ref": "common.schema.json#/$defs/nonEmptyString"
+              },
+              "allowed_origins": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^https?://[^/?#]+$"
+                },
+                "uniqueItems": true
+              },
+              "prompt_id": {
+                "$ref": "common.schema.json#/$defs/stableId"
+              },
+              "prompt_hash": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              },
+              "start_url": {
+                "type": "string",
+                "pattern": "^https?://"
+              },
+              "oracle_scenario_hash": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              },
+              "oracle_assertion_ids": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "common.schema.json#/$defs/stableId"
+                },
+                "uniqueItems": true
+              },
+              "requires_midscene": {
+                "const": true
               }
             }
           }
