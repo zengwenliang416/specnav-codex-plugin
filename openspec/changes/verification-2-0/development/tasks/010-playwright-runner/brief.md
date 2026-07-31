@@ -45,7 +45,15 @@ listed verification commands and must preserve all earlier artifacts.
 - plugins/specnav-verification/schemas/test-case.schema.json
 - tests/run-verification-v2-playwright.sh
 - tests/verification-v2/browser/**
+- tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js
 - tests/verification-v2/runtime/**
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/010-playwright-runner/**
 
 ## Interfaces / Seams
 
