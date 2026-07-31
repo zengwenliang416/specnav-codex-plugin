@@ -1,0 +1,52 @@
+{
+  "id": "report-minimal",
+  "change_id": "change-v2",
+  "model_version": 1,
+  "generated_at": "2026-07-31T00:00:04Z",
+  "verdict": "green",
+  "sources": {
+    "case_snapshot_id": "snapshot-minimal",
+    "run_ids": [
+      "run-minimal"
+    ],
+    "reading_ids": [
+      "reading-minimal"
+    ],
+    "evidence_index_version": 1,
+    "gate_decision_id": "gate-minimal"
+  },
+  "summary": {
+    "lifecycle_status": "terminal",
+    "domains": {
+      "facticity": "pass",
+      "static": "pass",
+      "unit": "pass",
+      "redteam": "pass",
+      "e2e": "pass",
+      "sensory": "pass"
+    },
+    "totals": {
+      "cases": 1,
+      "runs": 1,
+      "attempts": 1,
+      "readings": 1,
+      "evidence": 1,
+      "failures": 0,
+      "repairs": 0
+    },
+    "integrity": "intact",
+    "freshness": {
+      "status": "fresh",
+      "checked_at": "2026-07-31T00:00:04Z",
+      "reasons": []
+    },
+    "open_failure_ids": [],
+    "open_repair_ids": [],
+    "runtime_version": "1.0.0",
+    "kernel_version": "2.0.0"
+  },
+  "catalog": [],
+  "results": [],
+  "blockers": [],
+  "warnings": []
+}

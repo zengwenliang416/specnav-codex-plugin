@@ -869,6 +869,45 @@ jq -e '.tasks[] | select(.task_id == "001-dashboard-summary" and .ok == true)' "
 run_json "$HAPPY_PROJECT" "$TMP_DIR/happy-entry.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/happy-entry.json" >/dev/null
 
+ASSERTION_REFERENCE_PROJECT="$TMP_DIR/assertion-reference-project"
+cp -R "$HAPPY_PROJECT" "$ASSERTION_REFERENCE_PROJECT"
+cat >"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/acceptance.json" <<'JSON'
+{
+  "schema_version": 2,
+  "change_id": "add-dashboard",
+  "assertions": [
+    {
+      "id": "AC-01",
+      "statement": "The dashboard summary remains reviewable.",
+      "verify_via": "static",
+      "status": "passing",
+      "evidence_ref": "development/evidence/dashboard-summary.log"
+    }
+  ]
+}
+JSON
+cat >>"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md" <<'MD'
+
+## Acceptance Assertions Verified
+
+- `AC-01`: the SHA-256 fixture identity remains stable.
+MD
+run_json "$ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/assertion-reference.json" 0
+jq -e '.ok == true' "$TMP_DIR/assertion-reference.json" >/dev/null
+if jq -e '.blockers[] | select(. == "review:invalid-reference:SHA-256")' "$TMP_DIR/assertion-reference.json" >/dev/null; then
+  echo "technical SHA-256 text was misclassified as an acceptance assertion id" >&2
+  exit 1
+fi
+
+INVALID_ASSERTION_REFERENCE_PROJECT="$TMP_DIR/invalid-assertion-reference-project"
+cp -R "$ASSERTION_REFERENCE_PROJECT" "$INVALID_ASSERTION_REFERENCE_PROJECT"
+sed -i.bak 's/`AC-01`/`AC-99`/' \
+  "$INVALID_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
+rm "$INVALID_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
+run_json "$INVALID_ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/invalid-assertion-reference.json" 2
+assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:invalid-reference:AC-99'
+assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:unsupported-verdict'
+
 HIERARCHICAL_TASK_PROJECT="$TMP_DIR/hierarchical-task-project"
 cp -R "$HAPPY_PROJECT" "$HIERARCHICAL_TASK_PROJECT"
 cat >"$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'

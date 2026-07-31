@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/common.schema.json",
+  "title": "SpecNav Verification 2.0 Common Definitions",
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stableId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "sourceSha": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+    },
+    "domain": {
+      "enum": [
+        "facticity",
+        "static",
+        "unit",
+        "redteam",
+        "e2e",
+        "sensory"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
+    "runnerKind": {
+      "enum": [
+        "command",
+        "playwright",
+        "midscene"
+      ]
+    },
+    "evidenceKind": {
+      "enum": [
+        "screenshot",
+        "video",
+        "trace",
+        "log",
+        "command_output",
+        "assertion_result",
+        "api_fact",
+        "database_fact",
+        "structured_comparison",
+        "human_signoff",
+        "midscene_observation"
+      ]
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "service"
+          ]
+        },
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detail": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "command"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "command": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "kernelIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "api_version",
+        "contract_version",
+        "contract_digest"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "api_version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "contract_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "contract_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "executionFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_snapshot_hash",
+        "code_sha",
+        "test_sha",
+        "environment_hash",
+        "runtime_version",
+        "kernel_version"
+      ],
+      "properties": {
+        "case_snapshot_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_sha": {
+          "$ref": "#/$defs/sourceSha"
+        },
+        "test_sha": {
+          "$ref": "#/$defs/sourceSha"
+        },
+        "environment_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_version": {
+          "$ref": "#/$defs/semver"
+        },
+        "kernel_version": {
+          "$ref": "#/$defs/semver"
+        }
+      }
+    },
+    "freshnessResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checked_at",
+        "reasons"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "checked_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "redacted_fields"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_required",
+            "redacted",
+            "verified"
+          ]
+        },
+        "redacted_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "owner",
+        "deterministic"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "playwright_assertion",
+            "api_fact",
+            "database_fact",
+            "structured_comparison",
+            "human_signoff",
+            "midscene_observation",
+            "command_result",
+            "none"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/stableId"
+        },
+        "deterministic": {
+          "type": "boolean"
+        }
+      }
+    },
+    "notApplicableDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason",
+        "evidence_ids",
+        "reviewer",
+        "approved_at",
+        "policy_ref"
+      ],
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "reviewer": {
+          "$ref": "#/$defs/reviewer"
+        },
+        "approved_at": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "policy_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "domainAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "assertion_ids",
+        "runner"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "required",
+            "not_applicable"
+          ]
+        },
+        "assertion_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "runner": {
+          "$ref": "#/$defs/runnerKind"
+        },
+        "not_applicable": {
+          "$ref": "#/$defs/notApplicableDecision"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "not_applicable"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "not_applicable": {
+                "$ref": "#/$defs/notApplicableDecision"
+              }
+            },
+            "required": [
+              "not_applicable"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

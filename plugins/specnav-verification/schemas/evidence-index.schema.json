@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/evidence-index.schema.json",
+  "title": "SpecNav Verification 2.0 Evidence Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "index_version",
+    "change_id",
+    "generated_at",
+    "source_raw",
+    "source_digest",
+    "record_count",
+    "entries"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.evidence-index.v1"
+    },
+    "index_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "generated_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "source_raw": {
+      "$ref": "common.schema.json#/$defs/relativePath"
+    },
+    "source_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "record_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "evidence.schema.json"
+      }
+    }
+  }
+}

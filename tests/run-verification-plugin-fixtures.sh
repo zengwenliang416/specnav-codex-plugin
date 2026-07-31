@@ -3,8 +3,10 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VERIFY="$ROOT/plugins/specnav-verification"
-TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
+if [[ "${SPECNAV_FIXTURE_LIBRARY_ONLY:-0}" != "1" ]]; then
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TMP_DIR"' EXIT
+fi
 
 run_json() {
   local project="$1"
@@ -545,6 +547,12 @@ Backend field naming remains a verification watch item.
 ## Items Requiring Six-Domain Verification
 All six domains.
 MD
+
+  git -C "$project" init -q
+  git -C "$project" config user.name "SpecNav Fixture"
+  git -C "$project" config user.email "specnav-fixture@example.invalid"
+  git -C "$project" add .
+  git -C "$project" commit -qm "test: establish development baseline"
 }
 
 write_verify_artifacts() {
@@ -776,6 +784,10 @@ Evidence index.
 None.
 MD
 }
+
+if [[ "${SPECNAV_FIXTURE_LIBRARY_ONLY:-0}" == "1" ]]; then
+  return 0
+fi
 
 test -f "$VERIFY/scripts/verify-domains.js"
 test -f "$VERIFY/skills/specnav-verify-plan/SKILL.md"

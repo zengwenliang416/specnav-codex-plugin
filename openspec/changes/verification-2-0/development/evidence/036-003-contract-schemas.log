@@ -1,0 +1,55 @@
+# command: node --test tests/verification-v2/contracts/*.test.js # task003-review1
+# exit_status: 0
+# duration_ms: 5188
+
+## stdout
+TAP version 13
+# Subtest: published kernel package includes the public entry, registry, and schemas
+ok 1 - published kernel package includes the public entry, registry, and schemas
+  ---
+  duration_ms: 2123.788
+  type: 'test'
+  ...
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 2 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 3886.301792
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 3 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 451.61075
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 4 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 299.182666
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 5 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 103.680417
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 6 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 125.087042
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5017.355167
+
+
+## stderr
+(empty)

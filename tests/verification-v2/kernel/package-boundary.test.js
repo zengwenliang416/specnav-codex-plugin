@@ -1,0 +1,78 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const test = require('node:test');
+
+const ROOT = path.resolve(__dirname, '../../..');
+const PLUGIN_ROOT = path.join(ROOT, 'plugins/specnav-verification');
+
+test('kernel package exposes one versioned public entry and schema-only subpath', () => {
+  const manifest = JSON.parse(fs.readFileSync(
+    path.join(PLUGIN_ROOT, 'package.json'),
+    'utf8'
+  ));
+
+  assert.equal(manifest.name, '@specnav/verification-kernel');
+  assert.equal(manifest.version, '2.0.0-alpha.1');
+  assert.equal(manifest.main, './kernel/index.js');
+  assert.deepEqual(manifest.exports, {
+    '.': './kernel/index.js',
+    './schemas/*': './schemas/*',
+    './package.json': './package.json'
+  });
+  assert.deepEqual(manifest.files, ['kernel/', 'schemas/']);
+});
+
+test('public entry exposes immutable metadata and explicit service contracts', () => {
+  const kernel = require(PLUGIN_ROOT);
+
+  assert.equal(kernel.metadata.name, '@specnav/verification-kernel');
+  assert.equal(kernel.metadata.version, '2.0.0-alpha.1');
+  assert.equal(kernel.metadata.apiVersion, 'specnav.verification.kernel.v1');
+  assert.match(kernel.metadata.contractDigest, /^[a-f0-9]{64}$/);
+  assert.equal(Object.isFrozen(kernel.metadata), true);
+
+  assert.deepEqual(Object.keys(kernel.serviceContracts).sort(), [
+    'commandRunner',
+    'evidenceStore',
+    'failureClassifier',
+    'midsceneRunner',
+    'playwrightRunner',
+    'reportRenderer'
+  ]);
+});
+
+test('service creation requires every adapter and never falls back', () => {
+  const kernel = require(PLUGIN_ROOT);
+
+  assert.throws(
+    () => kernel.createServices({}),
+    /verification-kernel:missing-service:commandRunner/
+  );
+
+  const adapters = {
+    commandRunner: { execute() {} },
+    playwrightRunner: { execute() {} },
+    midsceneRunner: { interact() {} },
+    evidenceStore: { append() {}, rebuildIndex() {} },
+    failureClassifier: { classify() {} },
+    reportRenderer: { render() {} }
+  };
+  const services = kernel.createServices(adapters);
+
+  assert.equal(services.commandRunner, adapters.commandRunner);
+  assert.equal(Object.isFrozen(services), true);
+});
+
+test('kernel source contains no host runtime dependency', () => {
+  const kernelDir = path.join(PLUGIN_ROOT, 'kernel');
+  const files = fs.readdirSync(kernelDir)
+    .filter((name) => name.endsWith('.js'))
+    .map((name) => path.join(kernelDir, name));
+  const source = files.map((file) => fs.readFileSync(file, 'utf8')).join('\n');
+
+  assert.doesNotMatch(source, /\b(?:codex|claude|codefree|opencode)\b/i);
+  assert.doesNotMatch(source, /process\.env\.(?:CODEX|CLAUDE|OPENCODE)/);
+});

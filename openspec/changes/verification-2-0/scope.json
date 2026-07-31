@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "change_id": "verification-2-0",
+  "stage": "development",
+  "allowed_roots": [
+    "plugins/specnav-verification/**",
+    "plugins/specnav-core/**",
+    "plugins/specnav-development/**",
+    "plugins/specnav-operations/**",
+    "plugins/specnav-codegraph/**",
+    "integrations/**",
+    "tests/**",
+    "docs/**",
+    ".github/workflows/**",
+    "README.md",
+    "README.zh-CN.md",
+    "package.json",
+    "openspec/changes/verification-2-0/**"
+  ],
+  "denied_roots": [
+    ".git",
+    "node_modules",
+    "coverage",
+    "dist",
+    ".env",
+    ".env.local",
+    "openspec/changes/archive"
+  ],
+  "requires_review_on": [
+    "package.json",
+    ".github/workflows/ci.yml",
+    "plugins/specnav-core/hooks/hooks.json",
+    "plugins/specnav-operations/scripts/archive-gate.js",
+    "plugins/specnav-operations/scripts/archive-change.js"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  },
+  "prototype_sources": [
+    "openspec/changes/verification-2-0/prototype/artifact/index.html"
+  ],
+  "external_repositories": [
+    {
+      "root": "/Volumes/zwl/AI/ai-coding/specnav-claude-plugin",
+      "rule": "Run a separate status and scope check before Task 029 edits."
+    },
+    {
+      "root": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin",
+      "rule": "Preserve pre-existing README and discovery-test changes before Task 030 edits."
+    }
+  ],
+  "expires_when": "verification_started"
+}

@@ -1,0 +1,67 @@
+# command: node --test tests/verification-v2/runtime/doctor.test.js # task008-quality-fix1
+# exit_status: 0
+# duration_ms: 137
+
+## stdout
+TAP version 13
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 1 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 9.349083
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 2 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 5.185375
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 3 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 1.1265
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 4 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.341125
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 5 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 15.806709
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 6 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 5.866458
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 7 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 4.506875
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 8 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 6.822125
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 101.409958
+
+
+## stderr
+(empty)

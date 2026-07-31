@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/migration-receipt.schema.json",
+  "title": "SpecNav Verification 2.0 Migration Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "from_version",
+    "to_version",
+    "mode",
+    "status",
+    "started_at",
+    "completed_at",
+    "backup_ref",
+    "transformed_artifacts",
+    "validation",
+    "rollback",
+    "fallback_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.migration-receipt.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "from_version": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "to_version": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "mode": {
+      "enum": [
+        "dry_run",
+        "apply",
+        "rollback"
+      ]
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "succeeded",
+        "failed",
+        "rolled_back",
+        "blocked"
+      ]
+    },
+    "started_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "backup_ref": {
+      "$ref": "common.schema.json#/$defs/artifactRef"
+    },
+    "transformed_artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/artifactRef"
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "validated_entities",
+        "blockers"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "validated_entities": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/blocker"
+          }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available",
+        "instructions",
+        "receipt_ref"
+      ],
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "instructions": {
+          "$ref": "common.schema.json#/$defs/nonEmptyString"
+        },
+        "receipt_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/artifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "fallback_used": {
+      "const": false
+    }
+  }
+}

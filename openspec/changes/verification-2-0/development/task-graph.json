@@ -1,0 +1,789 @@
+{
+  "schema_version": 1,
+  "planning_status": "ready",
+  "nodes": [
+    {
+      "id": "001-baseline-fake-green",
+      "group": 1,
+      "goal": "Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures.",
+      "acceptance": [
+        "AC-17",
+        "AC-18",
+        "AC-21",
+        "AC-29"
+      ],
+      "packet": "development/tasks/001-baseline-fake-green"
+    },
+    {
+      "id": "002-kernel-package-boundary",
+      "group": 1,
+      "goal": "Maintainer can install one shared Verification Kernel package without host-specific verdict logic.",
+      "acceptance": [
+        "AC-36",
+        "AC-37",
+        "AC-39",
+        "AC-40"
+      ],
+      "packet": "development/tasks/002-kernel-package-boundary"
+    },
+    {
+      "id": "003-contract-schemas",
+      "group": 2,
+      "goal": "Plugin author can validate every V2 entity through versioned JSON Schemas.",
+      "acceptance": [
+        "AC-13",
+        "AC-31",
+        "AC-35"
+      ],
+      "packet": "development/tasks/003-contract-schemas"
+    },
+    {
+      "id": "004-contract-cross-references",
+      "group": 2,
+      "goal": "Reviewer can reject artifacts whose run, case, attempt, step, or SHA references disagree.",
+      "acceptance": [
+        "AC-14",
+        "AC-15",
+        "AC-17",
+        "AC-31"
+      ],
+      "packet": "development/tasks/004-contract-cross-references"
+    },
+    {
+      "id": "005-case-planning-approval",
+      "group": 2,
+      "goal": "Reviewer can approve an immutable test-case snapshot before execution starts.",
+      "acceptance": [
+        "AC-01",
+        "AC-02",
+        "AC-19",
+        "AC-20"
+      ],
+      "packet": "development/tasks/005-case-planning-approval"
+    },
+    {
+      "id": "006-runtime-lock-manifest",
+      "group": 3,
+      "goal": "Verification operator can resolve an exact runtime version from a committed lock manifest.",
+      "acceptance": [
+        "AC-04",
+        "AC-05"
+      ],
+      "packet": "development/tasks/006-runtime-lock-manifest"
+    },
+    {
+      "id": "007-runtime-installer",
+      "group": 3,
+      "goal": "Verification operator can explicitly install Playwright, browsers, Midscene, and AJV outside the business repository.",
+      "acceptance": [
+        "AC-04",
+        "AC-05"
+      ],
+      "packet": "development/tasks/007-runtime-installer"
+    },
+    {
+      "id": "008-runtime-doctor",
+      "group": 3,
+      "goal": "Verification operator can diagnose runtime readiness and receive exact blockers without fallback.",
+      "acceptance": [
+        "AC-05"
+      ],
+      "packet": "development/tasks/008-runtime-doctor"
+    },
+    {
+      "id": "009-command-runner",
+      "group": 4,
+      "goal": "Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence.",
+      "acceptance": [
+        "AC-14",
+        "AC-18",
+        "AC-31"
+      ],
+      "packet": "development/tasks/009-command-runner"
+    },
+    {
+      "id": "010-playwright-runner",
+      "group": 4,
+      "goal": "Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence.",
+      "acceptance": [
+        "AC-04",
+        "AC-06",
+        "AC-16",
+        "AC-31"
+      ],
+      "packet": "development/tasks/010-playwright-runner"
+    },
+    {
+      "id": "011-midscene-runner",
+      "group": 4,
+      "goal": "Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.",
+      "acceptance": [
+        "AC-05",
+        "AC-16",
+        "AC-30"
+      ],
+      "packet": "development/tasks/011-midscene-runner"
+    },
+    {
+      "id": "012-evidence-store",
+      "group": 5,
+      "goal": "Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts.",
+      "acceptance": [
+        "AC-22",
+        "AC-31",
+        "AC-32"
+      ],
+      "packet": "development/tasks/012-evidence-store"
+    },
+    {
+      "id": "013-evidence-integrity",
+      "group": 5,
+      "goal": "Release owner can see missing, tampered, stale, or incorrectly bound evidence block green.",
+      "acceptance": [
+        "AC-17",
+        "AC-18",
+        "AC-23",
+        "AC-28"
+      ],
+      "packet": "development/tasks/013-evidence-integrity"
+    },
+    {
+      "id": "014-evidence-redaction",
+      "group": 5,
+      "goal": "Reviewer can inspect redacted logs and HTML without provider secrets leaking.",
+      "acceptance": [
+        "AC-30"
+      ],
+      "packet": "development/tasks/014-evidence-redaction"
+    },
+    {
+      "id": "015-reading-model",
+      "group": 5,
+      "goal": "Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading.",
+      "acceptance": [
+        "AC-16",
+        "AC-19",
+        "AC-21",
+        "AC-31"
+      ],
+      "packet": "development/tasks/015-reading-model"
+    },
+    {
+      "id": "016-six-domain-aggregation",
+      "group": 6,
+      "goal": "Release owner can receive six-domain and release verdicts derived only from validated case readings.",
+      "acceptance": [
+        "AC-03",
+        "AC-18",
+        "AC-19",
+        "AC-21",
+        "AC-28"
+      ],
+      "packet": "development/tasks/016-six-domain-aggregation"
+    },
+    {
+      "id": "017-not-applicable-approval",
+      "group": 6,
+      "goal": "Reviewer can approve a domain as not applicable only with reason and evidence.",
+      "acceptance": [
+        "AC-19",
+        "AC-20"
+      ],
+      "packet": "development/tasks/017-not-applicable-approval"
+    },
+    {
+      "id": "018-failure-classification",
+      "group": 7,
+      "goal": "Maintainer can classify failures into product, test, environment, flaky, blocker, or requirement categories.",
+      "acceptance": [
+        "AC-06",
+        "AC-25",
+        "AC-27"
+      ],
+      "packet": "development/tasks/018-failure-classification"
+    },
+    {
+      "id": "019-development-repair-bridge",
+      "group": 7,
+      "goal": "Developer can receive a scoped repair task linked to frozen verification failure evidence.",
+      "acceptance": [
+        "AC-25",
+        "AC-27"
+      ],
+      "packet": "development/tasks/019-development-repair-bridge"
+    },
+    {
+      "id": "020-retest-regression-loop",
+      "group": 7,
+      "goal": "Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes.",
+      "acceptance": [
+        "AC-06",
+        "AC-07",
+        "AC-15",
+        "AC-26",
+        "AC-27"
+      ],
+      "packet": "development/tasks/020-retest-regression-loop"
+    },
+    {
+      "id": "021-case-freshness",
+      "group": 8,
+      "goal": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime.",
+      "acceptance": [
+        "AC-17",
+        "AC-23",
+        "AC-35"
+      ],
+      "packet": "development/tasks/021-case-freshness"
+    },
+    {
+      "id": "022-case-rerun-impact",
+      "group": 8,
+      "goal": "Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence.",
+      "acceptance": [
+        "AC-24",
+        "AC-26"
+      ],
+      "packet": "development/tasks/022-case-rerun-impact"
+    },
+    {
+      "id": "023-report-model",
+      "group": 9,
+      "goal": "Stakeholder can receive one validated report model for all three report pages and every verdict state.",
+      "acceptance": [
+        "AC-08",
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-29"
+      ],
+      "packet": "development/tasks/023-report-model"
+    },
+    {
+      "id": "024-overview-report",
+      "group": 9,
+      "goal": "Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html.",
+      "acceptance": [
+        "AC-08",
+        "AC-11",
+        "AC-12",
+        "AC-29"
+      ],
+      "packet": "development/tasks/024-overview-report"
+    },
+    {
+      "id": "025-case-report-pages",
+      "group": 9,
+      "goal": "Stakeholder can review approved case contracts in test-case-catalog.html and immutable attempt evidence in test-case-results.html.",
+      "acceptance": [
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-29",
+        "AC-38"
+      ],
+      "packet": "development/tasks/025-case-report-pages"
+    },
+    {
+      "id": "026-report-accessibility-security",
+      "group": 9,
+      "goal": "Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages.",
+      "acceptance": [
+        "AC-12",
+        "AC-30"
+      ],
+      "packet": "development/tasks/026-report-accessibility-security"
+    },
+    {
+      "id": "027-v1-v2-migration",
+      "group": 10,
+      "goal": "Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS.",
+      "acceptance": [
+        "AC-32",
+        "AC-33",
+        "AC-34"
+      ],
+      "packet": "development/tasks/027-v1-v2-migration"
+    },
+    {
+      "id": "028-codex-integration",
+      "group": 11,
+      "goal": "Codex user can discover and run Verification 2.0 through the Codex marketplace adapter.",
+      "acceptance": [
+        "AC-03",
+        "AC-37",
+        "AC-40"
+      ],
+      "packet": "development/tasks/028-codex-integration"
+    },
+    {
+      "id": "029-claude-code-integration",
+      "group": 11,
+      "goal": "Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter.",
+      "acceptance": [
+        "AC-37",
+        "AC-40"
+      ],
+      "packet": "development/tasks/029-claude-code-integration"
+    },
+    {
+      "id": "030-codefree-o-integration",
+      "group": 11,
+      "goal": "CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes.",
+      "acceptance": [
+        "AC-37",
+        "AC-40"
+      ],
+      "packet": "development/tasks/030-codefree-o-integration"
+    },
+    {
+      "id": "031-cross-host-drift-ci",
+      "group": 12,
+      "goal": "Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI.",
+      "acceptance": [
+        "AC-37",
+        "AC-39",
+        "AC-40"
+      ],
+      "packet": "development/tasks/031-cross-host-drift-ci"
+    },
+    {
+      "id": "032-docs-install-runtime",
+      "group": 12,
+      "goal": "User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation.",
+      "acceptance": [
+        "AC-04",
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "packet": "development/tasks/032-docs-install-runtime"
+    },
+    {
+      "id": "033-release-archive-proof",
+      "group": 13,
+      "goal": "Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.",
+      "acceptance": [
+        "AC-03",
+        "AC-28",
+        "AC-29",
+        "AC-33",
+        "AC-35",
+        "AC-37"
+      ],
+      "packet": "development/tasks/033-release-archive-proof"
+    }
+  ],
+  "edges": [
+    {
+      "from": "001-baseline-fake-green",
+      "to": "002-kernel-package-boundary",
+      "type": "blocks"
+    },
+    {
+      "from": "008-runtime-doctor",
+      "to": "003-contract-schemas",
+      "type": "blocks"
+    },
+    {
+      "from": "003-contract-schemas",
+      "to": "004-contract-cross-references",
+      "type": "blocks"
+    },
+    {
+      "from": "003-contract-schemas",
+      "to": "005-case-planning-approval",
+      "type": "blocks"
+    },
+    {
+      "from": "004-contract-cross-references",
+      "to": "005-case-planning-approval",
+      "type": "blocks"
+    },
+    {
+      "from": "002-kernel-package-boundary",
+      "to": "006-runtime-lock-manifest",
+      "type": "blocks"
+    },
+    {
+      "from": "006-runtime-lock-manifest",
+      "to": "007-runtime-installer",
+      "type": "blocks"
+    },
+    {
+      "from": "006-runtime-lock-manifest",
+      "to": "008-runtime-doctor",
+      "type": "blocks"
+    },
+    {
+      "from": "007-runtime-installer",
+      "to": "008-runtime-doctor",
+      "type": "blocks"
+    },
+    {
+      "from": "004-contract-cross-references",
+      "to": "009-command-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "008-runtime-doctor",
+      "to": "009-command-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "007-runtime-installer",
+      "to": "010-playwright-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "008-runtime-doctor",
+      "to": "010-playwright-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "009-command-runner",
+      "to": "010-playwright-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "007-runtime-installer",
+      "to": "011-midscene-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "008-runtime-doctor",
+      "to": "011-midscene-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "010-playwright-runner",
+      "to": "011-midscene-runner",
+      "type": "blocks"
+    },
+    {
+      "from": "003-contract-schemas",
+      "to": "012-evidence-store",
+      "type": "blocks"
+    },
+    {
+      "from": "009-command-runner",
+      "to": "012-evidence-store",
+      "type": "blocks"
+    },
+    {
+      "from": "004-contract-cross-references",
+      "to": "013-evidence-integrity",
+      "type": "blocks"
+    },
+    {
+      "from": "012-evidence-store",
+      "to": "013-evidence-integrity",
+      "type": "blocks"
+    },
+    {
+      "from": "012-evidence-store",
+      "to": "014-evidence-redaction",
+      "type": "blocks"
+    },
+    {
+      "from": "004-contract-cross-references",
+      "to": "015-reading-model",
+      "type": "blocks"
+    },
+    {
+      "from": "010-playwright-runner",
+      "to": "015-reading-model",
+      "type": "blocks"
+    },
+    {
+      "from": "012-evidence-store",
+      "to": "015-reading-model",
+      "type": "blocks"
+    },
+    {
+      "from": "013-evidence-integrity",
+      "to": "015-reading-model",
+      "type": "blocks"
+    },
+    {
+      "from": "005-case-planning-approval",
+      "to": "016-six-domain-aggregation",
+      "type": "blocks"
+    },
+    {
+      "from": "013-evidence-integrity",
+      "to": "016-six-domain-aggregation",
+      "type": "blocks"
+    },
+    {
+      "from": "015-reading-model",
+      "to": "016-six-domain-aggregation",
+      "type": "blocks"
+    },
+    {
+      "from": "005-case-planning-approval",
+      "to": "017-not-applicable-approval",
+      "type": "blocks"
+    },
+    {
+      "from": "016-six-domain-aggregation",
+      "to": "017-not-applicable-approval",
+      "type": "blocks"
+    },
+    {
+      "from": "015-reading-model",
+      "to": "018-failure-classification",
+      "type": "blocks"
+    },
+    {
+      "from": "016-six-domain-aggregation",
+      "to": "018-failure-classification",
+      "type": "blocks"
+    },
+    {
+      "from": "018-failure-classification",
+      "to": "019-development-repair-bridge",
+      "type": "blocks"
+    },
+    {
+      "from": "018-failure-classification",
+      "to": "020-retest-regression-loop",
+      "type": "blocks"
+    },
+    {
+      "from": "019-development-repair-bridge",
+      "to": "020-retest-regression-loop",
+      "type": "blocks"
+    },
+    {
+      "from": "022-case-rerun-impact",
+      "to": "020-retest-regression-loop",
+      "type": "blocks"
+    },
+    {
+      "from": "004-contract-cross-references",
+      "to": "021-case-freshness",
+      "type": "blocks"
+    },
+    {
+      "from": "013-evidence-integrity",
+      "to": "021-case-freshness",
+      "type": "blocks"
+    },
+    {
+      "from": "005-case-planning-approval",
+      "to": "022-case-rerun-impact",
+      "type": "blocks"
+    },
+    {
+      "from": "021-case-freshness",
+      "to": "022-case-rerun-impact",
+      "type": "blocks"
+    },
+    {
+      "from": "016-six-domain-aggregation",
+      "to": "023-report-model",
+      "type": "blocks"
+    },
+    {
+      "from": "018-failure-classification",
+      "to": "023-report-model",
+      "type": "blocks"
+    },
+    {
+      "from": "021-case-freshness",
+      "to": "023-report-model",
+      "type": "blocks"
+    },
+    {
+      "from": "023-report-model",
+      "to": "024-overview-report",
+      "type": "blocks"
+    },
+    {
+      "from": "023-report-model",
+      "to": "025-case-report-pages",
+      "type": "blocks"
+    },
+    {
+      "from": "024-overview-report",
+      "to": "025-case-report-pages",
+      "type": "blocks"
+    },
+    {
+      "from": "014-evidence-redaction",
+      "to": "026-report-accessibility-security",
+      "type": "blocks"
+    },
+    {
+      "from": "024-overview-report",
+      "to": "026-report-accessibility-security",
+      "type": "blocks"
+    },
+    {
+      "from": "025-case-report-pages",
+      "to": "026-report-accessibility-security",
+      "type": "blocks"
+    },
+    {
+      "from": "003-contract-schemas",
+      "to": "027-v1-v2-migration",
+      "type": "blocks"
+    },
+    {
+      "from": "013-evidence-integrity",
+      "to": "027-v1-v2-migration",
+      "type": "blocks"
+    },
+    {
+      "from": "016-six-domain-aggregation",
+      "to": "027-v1-v2-migration",
+      "type": "blocks"
+    },
+    {
+      "from": "016-six-domain-aggregation",
+      "to": "028-codex-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "020-retest-regression-loop",
+      "to": "028-codex-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "025-case-report-pages",
+      "to": "028-codex-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "027-v1-v2-migration",
+      "to": "028-codex-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "028-codex-integration",
+      "to": "029-claude-code-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "028-codex-integration",
+      "to": "030-codefree-o-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "028-codex-integration",
+      "to": "031-cross-host-drift-ci",
+      "type": "blocks"
+    },
+    {
+      "from": "029-claude-code-integration",
+      "to": "031-cross-host-drift-ci",
+      "type": "blocks"
+    },
+    {
+      "from": "030-codefree-o-integration",
+      "to": "031-cross-host-drift-ci",
+      "type": "blocks"
+    },
+    {
+      "from": "008-runtime-doctor",
+      "to": "032-docs-install-runtime",
+      "type": "blocks"
+    },
+    {
+      "from": "025-case-report-pages",
+      "to": "032-docs-install-runtime",
+      "type": "blocks"
+    },
+    {
+      "from": "028-codex-integration",
+      "to": "032-docs-install-runtime",
+      "type": "blocks"
+    },
+    {
+      "from": "029-claude-code-integration",
+      "to": "032-docs-install-runtime",
+      "type": "blocks"
+    },
+    {
+      "from": "030-codefree-o-integration",
+      "to": "032-docs-install-runtime",
+      "type": "blocks"
+    },
+    {
+      "from": "020-retest-regression-loop",
+      "to": "033-release-archive-proof",
+      "type": "blocks"
+    },
+    {
+      "from": "026-report-accessibility-security",
+      "to": "033-release-archive-proof",
+      "type": "blocks"
+    },
+    {
+      "from": "027-v1-v2-migration",
+      "to": "033-release-archive-proof",
+      "type": "blocks"
+    },
+    {
+      "from": "031-cross-host-drift-ci",
+      "to": "033-release-archive-proof",
+      "type": "blocks"
+    },
+    {
+      "from": "032-docs-install-runtime",
+      "to": "033-release-archive-proof",
+      "type": "blocks"
+    }
+  ],
+  "parallelism_policy": {
+    "allowed": "Tasks may run in parallel only when no dependency edge exists and allowed files do not overlap.",
+    "forbidden": "Schema, evidence, aggregation, gate, migration, or shared report-model changes may not be independently forked across hosts."
+  },
+  "execution_waves": [
+    ["001-baseline-fake-green"],
+    ["002-kernel-package-boundary"],
+    ["006-runtime-lock-manifest"],
+    ["007-runtime-installer"],
+    ["008-runtime-doctor"],
+    ["003-contract-schemas"],
+    ["004-contract-cross-references"],
+    ["005-case-planning-approval"],
+    ["009-command-runner"],
+    ["010-playwright-runner", "012-evidence-store"],
+    ["011-midscene-runner", "013-evidence-integrity", "014-evidence-redaction"],
+    ["015-reading-model", "021-case-freshness"],
+    ["016-six-domain-aggregation", "022-case-rerun-impact"],
+    ["017-not-applicable-approval", "018-failure-classification", "027-v1-v2-migration"],
+    ["019-development-repair-bridge", "023-report-model"],
+    ["020-retest-regression-loop", "024-overview-report"],
+    ["025-case-report-pages"],
+    ["026-report-accessibility-security", "028-codex-integration"],
+    ["029-claude-code-integration", "030-codefree-o-integration"],
+    ["031-cross-host-drift-ci", "032-docs-install-runtime"],
+    ["033-release-archive-proof"]
+  ],
+  "critical_path": [
+    "001-baseline-fake-green",
+    "002-kernel-package-boundary",
+    "006-runtime-lock-manifest",
+    "007-runtime-installer",
+    "008-runtime-doctor",
+    "003-contract-schemas",
+    "004-contract-cross-references",
+    "009-command-runner",
+    "012-evidence-store",
+    "013-evidence-integrity",
+    "015-reading-model",
+    "016-six-domain-aggregation",
+    "018-failure-classification",
+    "023-report-model",
+    "024-overview-report",
+    "025-case-report-pages",
+    "028-codex-integration",
+    "029-claude-code-integration",
+    "031-cross-host-drift-ci",
+    "033-release-archive-proof"
+  ]
+}

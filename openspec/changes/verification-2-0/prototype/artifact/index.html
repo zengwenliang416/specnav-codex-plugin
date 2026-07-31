@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SpecNav Verification 2.0 Report Prototype</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main
+      class="report-shell"
+      data-specnav-project-shell="specnav-verification-report"
+      data-specnav-screen="verification-overview"
+      data-specnav-variant="blocked"
+      data-specnav-state="populated"
+    >
+      <span hidden data-specnav-variant="three-page-verification-report-workspace"></span>
+      <header class="topbar" data-specnav-component="report-header">
+        <a class="brand" href="#" aria-label="SpecNav verification home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>
+            <strong>SpecNav</strong>
+            <small>Verification 2.0</small>
+          </span>
+        </a>
+        <div class="run-meta">
+          <span>Change <code>verification-2-0</code></span>
+          <span>Run <code>run-0042</code></span>
+          <span>Kernel <code>2.0.0-alpha.1</code></span>
+        </div>
+      </header>
+
+      <nav class="view-tabs" aria-label="Verification reports" data-specnav-component="report-navigation">
+        <button data-view="overview" aria-pressed="true">Overview</button>
+        <button data-view="catalog">Test case catalog</button>
+        <button data-view="results">Case results</button>
+      </nav>
+
+      <section class="control-strip" data-specnav-component="prototype-controls">
+        <div>
+          <span class="control-label">Review state</span>
+          <div class="segmented" aria-label="Review state">
+            <button data-variant="green">Green</button>
+            <button data-variant="red">Red</button>
+            <button data-variant="blocked" aria-pressed="true">Blocked</button>
+            <button data-variant="flaky">Flaky</button>
+            <button data-variant="pass-after-fix">After fix</button>
+          </div>
+        </div>
+        <div>
+          <span class="control-label">Content state</span>
+          <select id="content-state" aria-label="Content state">
+            <option value="populated">Populated</option>
+            <option value="loading">Loading</option>
+            <option value="empty">Empty</option>
+            <option value="error">Error</option>
+            <option value="disabled">Disabled</option>
+            <option value="permission">Permission</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="state-message state-loading" data-specnav-state="loading">
+        <span class="spinner" aria-hidden="true"></span>
+        Loading verified case readings and evidence index.
+      </section>
+      <section class="state-message state-empty" data-specnav-state="empty">
+        <strong>No approved test cases.</strong>
+        Case execution remains blocked until the reviewer approves a case snapshot.
+      </section>
+      <section class="state-message state-error" data-specnav-state="error">
+        <strong>Report model failed validation.</strong>
+        <code>invalid-evidence-index:sha256</code>
+      </section>
+      <section class="state-message state-disabled" data-specnav-state="disabled">
+        <strong>Verification cannot be disabled.</strong>
+        Every change must complete the Verification 2.0 gate.
+      </section>
+      <section class="state-message state-permission" data-specnav-state="permission">
+        <strong>Reviewer approval required.</strong>
+        The active case snapshot has changed since the last signoff.
+      </section>
+
+      <div class="report-content" data-specnav-state="populated">
+        <section class="view view-overview" data-view-panel="overview">
+          <div class="verdict-band" data-specnav-component="aggregate-verdict">
+            <div>
+              <p class="eyebrow">Release decision</p>
+              <h1><span data-verdict-title>Blocked</span> verification</h1>
+              <p data-verdict-copy>
+                Runtime is ready, but two cases have missing integrity evidence.
+              </p>
+            </div>
+            <div class="verdict-score">
+              <span data-verdict-score>32</span><small>/ 40 criteria</small>
+            </div>
+          </div>
+
+          <section class="metrics" aria-label="Verification metrics">
+            <div><span>Approved cases</span><strong>18</strong><small>snapshot a91c7f</small></div>
+            <div><span>Attempts</span><strong>24</strong><small>3 retained failures</small></div>
+            <div><span>Evidence</span><strong>126</strong><small>124 intact</small></div>
+            <div><span>Open repairs</span><strong data-open-repairs>2</strong><small>release blocking</small></div>
+          </section>
+
+          <div class="overview-grid">
+            <section class="domain-section" data-specnav-component="six-domain-table">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Coverage</p>
+                  <h2>Six-domain status</h2>
+                </div>
+                <span class="status-badge blocked" data-summary-badge>2 blocked</span>
+              </div>
+              <div class="domain-table" role="table" aria-label="Six-domain status">
+                <div class="domain-row" role="row"><span>Facticity</span><b class="pass">PASS</b><small>18/18 cases</small></div>
+                <div class="domain-row" role="row"><span>Static</span><b class="pass">PASS</b><small>42 commands</small></div>
+                <div class="domain-row" role="row"><span>Unit</span><b class="pass">PASS</b><small>268 assertions</small></div>
+                <div class="domain-row" role="row"><span>Redteam</span><b class="blocked">BLOCKED</b><small>evidence hash</small></div>
+                <div class="domain-row" role="row"><span>E2E</span><b class="blocked">BLOCKED</b><small>browser trace</small></div>
+                <div class="domain-row" role="row"><span>Sensory</span><b class="pass">PASS</b><small>desktop/mobile</small></div>
+              </div>
+            </section>
+
+            <aside class="blockers" data-specnav-component="blocker-panel">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Required action</p>
+                  <h2>Release blockers</h2>
+                </div>
+              </div>
+              <ol>
+                <li>
+                  <strong>CASE-014 evidence hash mismatch</strong>
+                  <span><code>ev-trace-104</code> no longer matches the recorded SHA-256.</span>
+                </li>
+                <li>
+                  <strong>CASE-017 regression not run</strong>
+                  <span>Repair <code>FIX-006</code> passed retest but has no baseline regression run.</span>
+                </li>
+              </ol>
+            </aside>
+          </div>
+
+          <section class="timeline-section" data-specnav-component="repair-loop-timeline">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Lifecycle</p>
+                <h2>Repair loop</h2>
+              </div>
+              <span class="mono">CASE-017</span>
+            </div>
+            <div class="timeline">
+              <div class="done"><b>Initial</b><span>FAIL</span><small>10:14</small></div>
+              <div class="done"><b>Classified</b><span>product defect</span><small>10:19</small></div>
+              <div class="done"><b>Repair</b><span>FIX-006 reviewed</span><small>11:02</small></div>
+              <div class="done"><b>Retest</b><span>PASS AFTER FIX</span><small>11:17</small></div>
+              <div class="current"><b>Regression</b><span>required</span><small>pending</small></div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view view-catalog" data-view-panel="catalog" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Approved snapshot a91c7f</p>
+              <h1>Test case catalog</h1>
+              <p>18 behavior contracts mapped across all six verification domains.</p>
+            </div>
+            <span class="status-badge pass">Approved · Wenliang · 09:42</span>
+          </div>
+
+          <div class="filter-row" data-specnav-component="case-filters">
+            <label>Search <input value="evidence" aria-label="Search cases"></label>
+            <label>Priority
+              <select><option>All priorities</option><option>P0</option><option>P1</option></select>
+            </label>
+            <label>Domain
+              <select><option>All domains</option><option>E2E</option><option>Redteam</option></select>
+            </label>
+          </div>
+
+          <div class="case-table" role="table" data-specnav-component="case-catalog-table">
+            <div class="table-head" role="row">
+              <span>Case</span><span>Goal and assertions</span><span>Domains</span><span>Runner</span><span>Evidence policy</span>
+            </div>
+            <article class="case-row" role="row">
+              <div><strong>CASE-014</strong><small>P0 · integrity</small></div>
+              <div><strong>Tampered browser evidence cannot pass.</strong><small>Hash and size mismatch block reading and release.</small></div>
+              <div class="domain-dots" aria-label="All six domains"><i>F</i><i>S</i><i>U</i><i>R</i><i>E</i><i>V</i></div>
+              <div><code>command + Playwright</code></div>
+              <div><small>trace · log · assertion · hash</small></div>
+            </article>
+            <article class="case-row" role="row">
+              <div><strong>CASE-017</strong><small>P0 · repair loop</small></div>
+              <div><strong>Product defect closes only after regression.</strong><small>Retest pass preserves failure and starts baseline regression.</small></div>
+              <div class="domain-dots" aria-label="All six domains"><i>F</i><i>S</i><i>U</i><i>R</i><i>E</i><i>V</i></div>
+              <div><code>Playwright</code></div>
+              <div><small>trace · video · failure packet</small></div>
+            </article>
+            <article class="case-row" role="row">
+              <div><strong>CASE-021</strong><small>P1 · Midscene</small></div>
+              <div><strong>AI interaction needs a deterministic oracle.</strong><small>Midscene description alone leaves the reading blocked.</small></div>
+              <div class="domain-dots" aria-label="All six domains"><i>F</i><i>S</i><i>U</i><i>R</i><i>E</i><i>V</i></div>
+              <div><code>Midscene + Playwright</code></div>
+              <div><small>screenshot · assertion · model metadata</small></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view view-results" data-view-panel="results" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Run run-0042 · code 6f2c7a1 · tests 90a42e0</p>
+              <h1>Test case results</h1>
+              <p>Attempts remain immutable across retry, repair, retest, and regression.</p>
+            </div>
+            <span class="status-badge blocked">2 blockers</span>
+          </div>
+
+          <div class="result-layout">
+            <aside class="case-index" data-specnav-component="result-case-index">
+              <button class="selected"><span>CASE-017</span><b>After fix</b><small>regression pending</small></button>
+              <button><span>CASE-014</span><b>Blocked</b><small>evidence integrity</small></button>
+              <button><span>CASE-021</span><b>Pass</b><small>deterministic oracle</small></button>
+            </aside>
+
+            <section class="result-detail" data-specnav-component="case-result-detail">
+              <div class="result-title">
+                <div>
+                  <span class="status-badge after-fix">PASS AFTER FIX</span>
+                  <h2>Product defect closes only after regression</h2>
+                </div>
+                <code>failure FIX-006</code>
+              </div>
+
+              <div class="attempts" data-specnav-component="attempt-timeline">
+                <article>
+                  <header><strong>Attempt 1 · initial</strong><span class="fail">FAIL</span></header>
+                  <p>Expected the release gate to reject a missing regression run.</p>
+                  <dl>
+                    <div><dt>Expected</dt><dd><code>gate=blocked</code></dd></div>
+                    <div><dt>Actual</dt><dd><code>gate=green</code></dd></div>
+                    <div><dt>Evidence</dt><dd><a href="#">ev-log-088</a> <a href="#">ev-trace-089</a></dd></div>
+                  </dl>
+                </article>
+                <article>
+                  <header><strong>Attempt 2 · retest</strong><span class="after-fix">PASS AFTER FIX</span></header>
+                  <p>Gate rejects the repaired case until the regression baseline completes.</p>
+                  <dl>
+                    <div><dt>Expected</dt><dd><code>gate=blocked</code></dd></div>
+                    <div><dt>Actual</dt><dd><code>gate=blocked</code></dd></div>
+                    <div><dt>Evidence</dt><dd><a href="#">ev-log-122</a> <a href="#">ev-assert-123</a></dd></div>
+                  </dl>
+                </article>
+              </div>
+
+              <section class="evidence-panel" data-specnav-component="evidence-viewer">
+                <div>
+                  <span class="integrity pass">Integrity verified</span>
+                  <strong>ev-assert-123</strong>
+                  <small>Playwright assertion · 1.8 KB</small>
+                </div>
+                <dl>
+                  <div><dt>SHA-256</dt><dd><code>4a35c92e…81b0</code></dd></div>
+                  <div><dt>Binding</dt><dd><code>run-0042 / CASE-017 / attempt-2 / assertion-4</code></dd></div>
+                  <div><dt>Freshness</dt><dd><span class="pass">fresh</span> for code <code>6f2c7a1</code></dd></div>
+                </dl>
+              </section>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <span>Source: validated Verification 2.0 artifacts</span>
+        <span>HTML is a projection, not the gate source of truth.</span>
+      </footer>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

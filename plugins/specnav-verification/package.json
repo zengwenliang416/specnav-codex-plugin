@@ -1,0 +1,19 @@
+{
+  "name": "@specnav/verification-kernel",
+  "version": "2.0.0-alpha.1",
+  "description": "Host-neutral contracts and runtime boundary for SpecNav Verification 2.0.",
+  "main": "./kernel/index.js",
+  "exports": {
+    ".": "./kernel/index.js",
+    "./schemas/*": "./schemas/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "kernel/",
+    "schemas/"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

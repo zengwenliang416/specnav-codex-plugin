@@ -1,0 +1,25 @@
+# command: node --test tests/verification-v2/baseline/*.test.js # task001-review4
+# exit_status: 0
+# duration_ms: 108
+
+## stdout
+TAP version 13
+# Subtest: evidence runner never overwrites a prior system-executed log
+ok 1 - evidence runner never overwrites a prior system-executed log
+  ---
+  duration_ms: 16.494917
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 65.062375
+
+
+## stderr
+(empty)

@@ -1,0 +1,9 @@
+# command: for file in plugins/specnav-verification/kernel/contracts/cross-reference-validator.js plugins/specnav-verification/kernel/contracts/graph-binding-validator.js plugins/specnav-verification/kernel/contracts/case-internal-validator.js plugins/specnav-verification/kernel/contracts/attempt-binding-validator.js plugins/specnav-verification/kernel/contracts/case-member-binding-validator.js plugins/specnav-verification/kernel/contracts/artifact-binding-validator.js plugins/specnav-verification/kernel/contracts/reading-evidence-binding-validator.js plugins/specnav-verification/kernel/contracts/reference-utils.js tests/verification-v2/contracts/cross-reference.test.js tests/verification-v2/contracts/cross-reference/*.suite.js tests/verification-v2/contracts/cross-reference/test-helpers.js; do node --check "$file" || exit 1; done && git diff --check # task004-quality-fix1
+# exit_status: 0
+# duration_ms: 843
+
+## stdout
+(empty)
+
+## stderr
+(empty)

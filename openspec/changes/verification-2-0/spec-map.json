@@ -1,0 +1,91 @@
+{
+  "touched_specs": [
+    "ui-design",
+    "system-architecture",
+    "frontend-backend-data-flow",
+    "component-architecture"
+  ],
+  "ui_rules": [
+    "Three report pages share one light-only report shell and component family.",
+    "Green, red, blocked, running, canceled, stale, flaky, and pass-after-fix states use the same information architecture.",
+    "Evidence paths, ids, hashes, commands, freshness, and integrity remain visible and keyboard accessible.",
+    "Desktop, mobile, and print layouts preserve verdict and evidence semantics."
+  ],
+  "architecture_modules": [
+    "verification-kernel/contracts",
+    "verification-kernel/runtime",
+    "verification-kernel/execution",
+    "verification-kernel/evidence",
+    "verification-kernel/evaluation",
+    "verification-kernel/repair",
+    "verification-kernel/reporting",
+    "verification-kernel/gates",
+    "host-adapters/codex",
+    "host-adapters/claude-code",
+    "host-adapters/codefree-o"
+  ],
+  "api_contracts": [
+    "verification-runtime install",
+    "verification-runtime doctor",
+    "verification plan",
+    "verification approve",
+    "verification run",
+    "verification classify",
+    "verification repair",
+    "verification rerun",
+    "verification aggregate",
+    "verification report",
+    "verification gate",
+    "verification migrate"
+  ],
+  "database_entities": [
+    "No database; file-backed Change",
+    "File-backed TestCase",
+    "File-backed VerificationRun",
+    "File-backed Attempt",
+    "File-backed Reading",
+    "File-backed Evidence",
+    "File-backed FailurePacket",
+    "File-backed GateDecision"
+  ],
+  "permissions": [
+    "User approval before case execution",
+    "User approval for not_applicable",
+    "Explicit user action for managed runtime install",
+    "Explicit prototype approval before development",
+    "Release owner approval for release and archive",
+    "No secret material in artifacts or reports"
+  ],
+  "operational_constraints": [
+    "Node.js 22",
+    "Managed runtime under ~/.specnav/runtime/verification/<version>/",
+    "No business-project package.json mutation",
+    "No fallback",
+    "No verification light mode",
+    "Side-by-side runtime versions",
+    "Explicit V1-to-V2 migration",
+    "Cross-host contract parity before release"
+  ],
+  "data_flows": [
+    "FLOW-VERIFY-PLAN",
+    "FLOW-CASE-APPROVAL",
+    "FLOW-RUNTIME-SETUP",
+    "FLOW-VERIFY-RUN",
+    "FLOW-EVIDENCE-INGEST",
+    "FLOW-FAILURE-REPAIR",
+    "FLOW-RETEST-REGRESSION",
+    "FLOW-REPORT",
+    "FLOW-RELEASE-GATE"
+  ],
+  "theme_modes": [
+    "light-only",
+    "theme-toggle:none"
+  ],
+  "locale_policy": [
+    "i18n:disabled",
+    "locales:none",
+    "default-locale:none",
+    "documentation:en,zh-CN"
+  ],
+  "unresolved_gaps": []
+}

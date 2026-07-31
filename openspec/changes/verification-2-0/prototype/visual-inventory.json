@@ -1,0 +1,119 @@
+{
+  "schema": "specnav.prototype.visualInventory.v1",
+  "version": "1",
+  "discovery_status": "complete",
+  "source_project": "specnav-codex-plugin",
+  "evidence": {
+    "screenshots": [
+      "docs/assets/specnav-logo-readme.png"
+    ],
+    "routes": [
+      "plugins/specnav-verification/skills/specnav-html-report/SKILL.md",
+      "plugins/specnav-verification/scripts/verify-domains.js#renderAggregateHtml"
+    ],
+    "design_specs": [
+      "openspec/specs/ui-design/design.md",
+      "plugins/specnav-verification/skills/specnav-verify-plan/references/review-report-style.md"
+    ],
+    "component_sources": [
+      "openspec/changes/verification-2-0/component-impact-map.json",
+      "openspec/specs/component-architecture/design.md"
+    ],
+    "codegraph_claims": []
+  },
+  "project_shell": {
+    "source": "SpecNav verification report and repository documentation surfaces",
+    "required_elements": [
+      "SpecNav product identity",
+      "active change and generated metadata",
+      "three report views",
+      "aggregate verdict",
+      "six-domain navigation",
+      "case and evidence content region"
+    ],
+    "omitted_elements": [
+      "marketing hero",
+      "dark mode switch",
+      "locale switch",
+      "business-data mutation controls",
+      "generic admin dashboard navigation"
+    ],
+    "theme_policy": "light-only warm editorial report theme from ui-design and review-report-style",
+    "i18n_policy": "runtime i18n disabled; prototype uses concise English engineering labels"
+  },
+  "business_surface": {
+    "screens": [
+      "verification-overview",
+      "test-case-catalog",
+      "test-case-results"
+    ],
+    "fields": [
+      "change id",
+      "run id",
+      "case id",
+      "priority",
+      "domain",
+      "verdict",
+      "attempt kind",
+      "expected",
+      "actual",
+      "evidence id",
+      "hash",
+      "freshness",
+      "integrity",
+      "blocker"
+    ],
+    "actions": [
+      "switch report view",
+      "filter by state",
+      "select a case",
+      "inspect an attempt",
+      "open evidence details",
+      "review repair history"
+    ],
+    "states": [
+      "green",
+      "red",
+      "blocked",
+      "flaky",
+      "pass-after-fix",
+      "loading",
+      "empty",
+      "error",
+      "disabled",
+      "permission",
+      "populated"
+    ]
+  },
+  "verification_matrix": {
+    "viewports": [
+      "desktop-1440x1100",
+      "mobile-390x844"
+    ],
+    "theme_modes": [
+      "light"
+    ],
+    "locales": [
+      "none"
+    ],
+    "states": [
+      "green",
+      "red",
+      "blocked",
+      "flaky",
+      "pass-after-fix",
+      "loading",
+      "empty",
+      "error",
+      "disabled",
+      "permission",
+      "populated"
+    ]
+  },
+  "unsupported_capabilities": [
+    "dark theme",
+    "theme toggle",
+    "runtime locale switching",
+    "real evidence mutation"
+  ]
+}

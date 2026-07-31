@@ -1,0 +1,83 @@
+{
+  "schema": "specnav.verification.runtime-lock.v1",
+  "runtime_version": "2.0.0-alpha.1",
+  "generated_at": "2026-07-31T00:00:00.000Z",
+  "package_manager": {
+    "name": "npm",
+    "lockfile_version": 3
+  },
+  "kernel": {
+    "name": "@specnav/verification-kernel",
+    "version": "2.0.0-alpha.1",
+    "api_version": "specnav.verification.kernel.v1",
+    "contract_version": 1,
+    "contract_digest": "50632dc17096636d4bb766d8ede40721d5d47d92f18241b33cf40f3702245979"
+  },
+  "node": {
+    "minimum_major": 20,
+    "maximum_major": 24
+  },
+  "platforms": [
+    "darwin-arm64"
+  ],
+  "packages": {
+    "@playwright/test": {
+      "version": "1.62.1",
+      "integrity": "sha512-DTcUc8qii+cpHvtOwggMtBRMjKZHXYWdw8syRYu2vtzuq4Wxphqq4NfCs5Zt44L6mA8rfDfj+PHnxFc/FeK6mQ=="
+    },
+    "playwright": {
+      "version": "1.62.1",
+      "integrity": "sha512-0M+L3LAD8/nm554LOla9Ayx0j0tmFZ0FBcoQ7F1VuVHpM/XpiC8RcDzBQB8W5+hA8L22THxELzeF+2WcUzvcLg=="
+    },
+    "@midscene/web": {
+      "version": "1.10.8",
+      "integrity": "sha512-0u+TxGLR5+CFWz088UPagOuh3MhZNXEXq3GTInMsxVXMpe46s4zNrfmWrlEAcvXM47LUaZih4Izm/bST1+gSRQ=="
+    },
+    "ajv": {
+      "version": "8.20.0",
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA=="
+    },
+    "ajv-formats": {
+      "version": "3.0.1",
+      "integrity": "sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ=="
+    }
+  },
+  "browsers": [
+    {
+      "name": "chromium",
+      "revision": "1234",
+      "browser_version": "151.0.7922.34",
+      "install_by_default": true,
+      "artifacts": {
+        "darwin-arm64": {
+          "host_platform": "mac26-arm64",
+          "url": "https://cdn.playwright.dev/builds/cft/151.0.7922.34/mac-arm64/chrome-mac-arm64.zip",
+          "sha256": "01a23ef9501b2745e0c2944c2e583207e6f6132d8d91c3a87ff65b5079e438ef",
+          "size_bytes": 187406357
+        }
+      }
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1234",
+      "browser_version": "151.0.7922.34",
+      "install_by_default": true,
+      "artifacts": {
+        "darwin-arm64": {
+          "host_platform": "mac26-arm64",
+          "url": "https://cdn.playwright.dev/builds/cft/151.0.7922.34/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+          "sha256": "cb46a336dbe3d6f1339c5039c3083e4e5dd8e4379710790e34f8f4a865e2452d",
+          "size_bytes": 99275008
+        }
+      }
+    }
+  ],
+  "browser_policy": {
+    "install": [
+      "chromium"
+    ],
+    "allow_system_browser": false,
+    "allow_channel_fallback": false,
+    "allow_global_cache": false
+  }
+}

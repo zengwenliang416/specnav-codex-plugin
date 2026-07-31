@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/verification-run.schema.json",
+  "title": "SpecNav Verification 2.0 Run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "case_snapshot_id",
+    "case_snapshot_hash",
+    "case_ids",
+    "code_sha",
+    "test_sha",
+    "environment_hash",
+    "runtime_version",
+    "kernel_version",
+    "status",
+    "created_at",
+    "started_at",
+    "completed_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.run.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_snapshot_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_snapshot_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "case_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "code_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "test_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "environment_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "runtime_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "kernel_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "running",
+        "passed",
+        "failed",
+        "blocked",
+        "canceled"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

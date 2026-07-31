@@ -57,6 +57,19 @@ function shouldReplay(entry) {
   return true;
 }
 
+function nextEvidenceSequence(evidenceDir) {
+  let max = 0;
+  try {
+    for (const name of fs.readdirSync(evidenceDir)) {
+      const match = name.match(/^(\d+)-.+\.log$/);
+      if (match) max = Math.max(max, Number(match[1]));
+    }
+  } catch {
+    return 0;
+  }
+  return max;
+}
+
 function runEvidence(projectRoot, options = {}) {
   const changeState = lib.activeChangeState(projectRoot, options.change !== undefined ? { change: options.change } : {});
   const change = changeState.change;
@@ -83,7 +96,7 @@ function runEvidence(projectRoot, options = {}) {
   );
   const seen = new Set();
   const results = [];
-  let sequence = 0;
+  let sequence = nextEvidenceSequence(evidenceDir);
 
   for (const { entry } of parsed) {
     if (!shouldReplay(entry)) continue;
@@ -168,4 +181,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { runEvidence, RUNNER_ID };
+module.exports = { runEvidence, RUNNER_ID, nextEvidenceSequence };

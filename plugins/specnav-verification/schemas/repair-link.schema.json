@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/repair-link.schema.json",
+  "title": "SpecNav Verification 2.0 Repair Link",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "change_id",
+    "development_task_id",
+    "repair_kind",
+    "status",
+    "requested_at",
+    "before_identity"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.repair-link.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "development_task_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "repair_kind": {
+      "enum": [
+        "product_code",
+        "test_code",
+        "environment",
+        "requirement_decision"
+      ]
+    },
+    "status": {
+      "enum": [
+        "requested",
+        "in_progress",
+        "reviewed",
+        "completed",
+        "rejected"
+      ]
+    },
+    "requested_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "before_identity": {
+      "$ref": "common.schema.json#/$defs/executionFingerprint"
+    },
+    "after_identity": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/executionFingerprint"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "review_evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    }
+  }
+}

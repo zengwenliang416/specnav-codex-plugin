@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/reading.schema.json",
+  "title": "SpecNav Verification 2.0 Reading",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "run_id",
+    "case_id",
+    "attempt_id",
+    "domain",
+    "expected",
+    "actual",
+    "oracle",
+    "evidence_ids",
+    "verdict",
+    "recorded_at",
+    "code_sha",
+    "test_sha"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.reading.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "attempt_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "step_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "assertion_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "domain": {
+      "$ref": "common.schema.json#/$defs/domain"
+    },
+    "expected": {},
+    "actual": {},
+    "oracle": {
+      "$ref": "common.schema.json#/$defs/oracle"
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "verdict": {
+      "enum": [
+        "pass",
+        "fail",
+        "blocked",
+        "not_applicable"
+      ]
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "code_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "test_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "step_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        }
+      },
+      "required": [
+        "step_id"
+      ]
+    },
+    {
+      "properties": {
+        "assertion_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        }
+      },
+      "required": [
+        "assertion_id"
+      ]
+    }
+  ]
+}

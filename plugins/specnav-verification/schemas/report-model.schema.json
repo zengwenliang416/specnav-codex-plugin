@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/report-model.schema.json",
+  "title": "SpecNav Verification 2.0 Report Model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "model_version",
+    "generated_at",
+    "verdict",
+    "sources",
+    "summary",
+    "catalog",
+    "results",
+    "blockers",
+    "warnings"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.report-model.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "model_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "generated_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "verdict": {
+      "enum": [
+        "green",
+        "red",
+        "blocked",
+        "running",
+        "canceled",
+        "stale",
+        "flaky",
+        "pass_after_fix"
+      ]
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_snapshot_id",
+        "run_ids",
+        "reading_ids",
+        "evidence_index_version",
+        "gate_decision_id"
+      ],
+      "properties": {
+        "case_snapshot_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "reading_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "evidence_index_version": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "gate_decision_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/stableId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lifecycle_status",
+        "domains",
+        "totals",
+        "integrity",
+        "freshness",
+        "open_failure_ids",
+        "open_repair_ids",
+        "runtime_version",
+        "kernel_version"
+      ],
+      "properties": {
+        "lifecycle_status": {
+          "enum": [
+            "planned",
+            "running",
+            "blocked",
+            "terminal",
+            "released",
+            "archived"
+          ]
+        },
+        "domains": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "facticity",
+            "static",
+            "unit",
+            "redteam",
+            "e2e",
+            "sensory"
+          ],
+          "properties": {
+            "facticity": {
+              "$ref": "#/$defs/domainVerdict"
+            },
+            "static": {
+              "$ref": "#/$defs/domainVerdict"
+            },
+            "unit": {
+              "$ref": "#/$defs/domainVerdict"
+            },
+            "redteam": {
+              "$ref": "#/$defs/domainVerdict"
+            },
+            "e2e": {
+              "$ref": "#/$defs/domainVerdict"
+            },
+            "sensory": {
+              "$ref": "#/$defs/domainVerdict"
+            }
+          }
+        },
+        "totals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cases",
+            "runs",
+            "attempts",
+            "readings",
+            "evidence",
+            "failures",
+            "repairs"
+          ],
+          "properties": {
+            "cases": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "runs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "readings": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "evidence": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "repairs": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "integrity": {
+          "enum": [
+            "intact",
+            "broken",
+            "unknown"
+          ]
+        },
+        "freshness": {
+          "$ref": "common.schema.json#/$defs/freshnessResult"
+        },
+        "open_failure_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "open_repair_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "uniqueItems": true
+        },
+        "runtime_version": {
+          "$ref": "common.schema.json#/$defs/semver"
+        },
+        "kernel_version": {
+          "$ref": "common.schema.json#/$defs/semver"
+        }
+      }
+    },
+    "catalog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "title",
+          "priority",
+          "status"
+        ],
+        "properties": {
+          "case_id": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "priority": {
+            "$ref": "common.schema.json#/$defs/priority"
+          },
+          "status": {
+            "$ref": "#/$defs/domainVerdict"
+          }
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "status",
+          "attempt_ids",
+          "reading_ids",
+          "evidence_ids",
+          "failure_ids",
+          "repair_ids"
+        ],
+        "properties": {
+          "case_id": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "status": {
+            "$ref": "#/$defs/domainVerdict"
+          },
+          "attempt_ids": {
+            "$ref": "#/$defs/idArray"
+          },
+          "reading_ids": {
+            "$ref": "#/$defs/idArray"
+          },
+          "evidence_ids": {
+            "$ref": "#/$defs/idArray"
+          },
+          "failure_ids": {
+            "$ref": "#/$defs/idArray"
+          },
+          "repair_ids": {
+            "$ref": "#/$defs/idArray"
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/blocker"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/blocker"
+      }
+    }
+  },
+  "$defs": {
+    "domainVerdict": {
+      "enum": [
+        "pass",
+        "fail",
+        "blocked",
+        "not_applicable",
+        "running",
+        "stale",
+        "flaky",
+        "pass_after_fix"
+      ]
+    },
+    "idArray": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    }
+  }
+}

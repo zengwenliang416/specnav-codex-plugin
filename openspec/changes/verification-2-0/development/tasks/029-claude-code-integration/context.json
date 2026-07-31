@@ -1,0 +1,57 @@
+{
+  "task_id": "029-claude-code-integration",
+  "goal": "Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter.",
+  "must_read": [
+    "openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/brief.md",
+    "openspec/specs/ui-design/design.md",
+    "openspec/specs/system-architecture/design.md",
+    "openspec/specs/frontend-backend-data-flow/design.md",
+    "openspec/specs/component-architecture/design.md",
+    "openspec/changes/verification-2-0/requirements.md",
+    "openspec/changes/verification-2-0/acceptance.md",
+    "openspec/changes/verification-2-0/spec-map.json",
+    "openspec/changes/verification-2-0/component-impact-map.json",
+    "openspec/changes/verification-2-0/prototype/handoff.md",
+    "openspec/changes/verification-2-0/prototype/decision.json",
+    "openspec/changes/verification-2-0/prototype/artifact/index.html",
+    "openspec/changes/verification-2-0/specs/cross-host-verification-governance/spec.md"
+  ],
+  "allowed_files": [
+    "integrations/claude-code/**",
+    "tests/verification-v2/cross-host/**",
+    "docs/host-integration-claude-code.md"
+  ],
+  "test_paths": [
+    "bash tests/run-verification-v2-claude-adapter.sh",
+    "bash /Volumes/zwl/AI/ai-coding/specnav-claude-plugin/tests/run-smoke.sh"
+  ],
+  "dependencies": [
+    "028-codex-integration"
+  ],
+  "acceptance_assertions": [
+    "AC-37",
+    "AC-40"
+  ],
+  "external_targets": [
+    "/Volumes/zwl/AI/ai-coding/specnav-claude-plugin"
+  ],
+  "non_goals": [
+    "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
+    "Do not add fallback, verification light mode, manual green overrides, or business-project package mutations.",
+    "Do not overwrite failed attempts, raw evidence, or unrelated downstream worktree changes."
+  ],
+  "expected_evidence": [
+    "A focused failing test or fixture before the implementation change",
+    "System-executed command output with exit status",
+    "Changed-file list contained by scope.json",
+    "Task report, spec review, and quality review before checkbox completion",
+    "Direct evidence for AC-37, AC-40"
+  ],
+  "unsafe_assumptions": [
+    "Tool availability is not runtime readiness.",
+    "Model interpretation is not a deterministic oracle.",
+    "Report HTML is not the release gate source.",
+    "Legacy V1 status is not V2 proof."
+  ],
+  "stop_condition": "Stop when dependencies 028-codex-integration are incomplete, scope or contract evidence is missing, a required dependency is unavailable, or shared kernel behavior would be duplicated."
+}

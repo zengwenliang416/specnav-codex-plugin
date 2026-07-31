@@ -1,0 +1,64 @@
+{
+  "schema": "specnav.codegraph.status.v1",
+  "ok": true,
+  "generated_at": "2026-07-31T11:21:00.687Z",
+  "project_root": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+  "active_change": "verification-2-0",
+  "policy": {
+    "enabled": true,
+    "profile": "bootstrap",
+    "mode": "observe",
+    "stage": "development",
+    "required_for_stage": false,
+    "disabled_reason": null
+  },
+  "execution_surface": "cli",
+  "decision": {
+    "stage": "development",
+    "result": "warn",
+    "reason": "CodeGraph policy has advisory warnings for development."
+  },
+  "cli": {
+    "available": true,
+    "version": "1.3.1",
+    "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+    "unsupported": false,
+    "error": null
+  },
+  "mcp": {
+    "configured": true,
+    "visible_in_current_session": false,
+    "restart_required": true,
+    "config_files": [
+      "/Users/wenliang_zeng/.claude.json",
+      "/Users/wenliang_zeng/.codex/config.toml"
+    ]
+  },
+  "index": {
+    "initialized": false,
+    "projectPath": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+    "indexPath": null,
+    "lastIndexed": null,
+    "fileCount": 0,
+    "nodeCount": 0,
+    "edgeCount": 0,
+    "pendingChanges": {
+      "added": 0,
+      "modified": 0,
+      "removed": 0
+    },
+    "reindexRecommended": false,
+    "worktreeMismatch": null
+  },
+  "blockers": [],
+  "warnings": [
+    "codegraph:not-indexed"
+  ],
+  "raw_codegraph_status": {
+    "initialized": false,
+    "version": "1.3.1",
+    "projectPath": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+    "indexPath": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/.codegraph",
+    "lastIndexed": null
+  }
+}

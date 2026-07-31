@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "kernel": [
+    "Versioned schema registry",
+    "Stable identity and fingerprint utilities",
+    "Execution orchestrator and adapter interface",
+    "EvidenceStore and integrity checker",
+    "Reading evaluator and six-domain aggregator",
+    "Failure classifier and repair-loop state machine",
+    "Case freshness and rerun planner",
+    "Report model and shared render components",
+    "Gate DecisionEngine",
+    "V1-to-V2 migrator"
+  ],
+  "host_adapters": [
+    "Codex manifest, skill, hook, and invocation adapter",
+    "Claude Code manifest, MCP/config, hook, and invocation adapter",
+    "CodeFree-O registration, configuration, and invocation adapter"
+  ],
+  "forbidden_duplication": [
+    "Schemas",
+    "Blocker ids",
+    "Verdict lattice",
+    "Evidence integrity",
+    "Freshness",
+    "Aggregation",
+    "Report model",
+    "Migration semantics",
+    "Release and archive gate semantics"
+  ],
+  "component_rules": [
+    "Extract any report component used by two pages.",
+    "Extract any runner lifecycle used by two adapters.",
+    "Extract any schema or validator used by two entities.",
+    "Extract host-neutral behavior before integrating a second host."
+  ]
+}

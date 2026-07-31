@@ -1,0 +1,286 @@
+{
+  "schema_version": 2,
+  "change_id": "verification-2-0",
+  "assertions": [
+    {
+      "id": "AC-01",
+      "statement": "A reviewer can inspect all proposed test cases, steps, assertions, six-domain mappings, runner choices, and evidence requirements before any case executes.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-02",
+      "statement": "Verification is blocked until the current case snapshot has explicit user approval.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-03",
+      "statement": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-04",
+      "statement": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-05",
+      "statement": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-06",
+      "statement": "A reviewer can see first failure, retry, repair, retest, and regression attempts without earlier evidence being overwritten.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-07",
+      "statement": "A retry that passes is labeled FLAKY; a repaired case that passes is labeled PASS AFTER FIX.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-08",
+      "statement": "overview.html shows lifecycle readiness, six-domain status, blocker counts, freshness, integrity, repair-loop state, and release verdict.",
+      "verify_via": "sensory",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-09",
+      "statement": "test-case-catalog.html shows the approved case contract and domain coverage.",
+      "verify_via": "sensory",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-10",
+      "statement": "test-case-results.html shows runs, attempts, readings, commands, evidence, hashes, freshness, and repair history.",
+      "verify_via": "sensory",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-11",
+      "statement": "Green, red, blocked, running, canceled, stale, flaky, and pass-after-fix reports share the same navigation and information hierarchy.",
+      "verify_via": "sensory",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-12",
+      "statement": "Report pages work on desktop and mobile, are keyboard operable, and preserve verdict and evidence information in print output.",
+      "verify_via": "sensory",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-13",
+      "statement": "Versioned schemas validate test cases, approvals, snapshots, runs, attempts, readings, evidence, indexes, failures, runtime, reports, and gates.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-14",
+      "statement": "Every attempt is bound to change id, case id, run id, attempt id, code SHA, test SHA, scenario hash, environment hash, browser project, and test data snapshot.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-15",
+      "statement": "Retry is rejected when any retry identity fingerprint changes.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-16",
+      "statement": "Midscene output cannot produce PASS without a deterministic assertion, structured fact, or explicit human signoff.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-17",
+      "statement": "Missing evidence files, hash mismatch, size mismatch, stale SHA, unrecognized producer, or broken case/step references block green.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-18",
+      "statement": "Empty evidence arrays, empty verification commands, or a manually edited green domain report cannot produce green.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-19",
+      "statement": "All six domains receive a terminal result for every approved case.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-20",
+      "statement": "not_applicable requires a reason, evidence, reviewer identity, approval timestamp, and policy allowance.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-21",
+      "statement": "Domain status and release verdict are derived from case readings; no domain skill or agent prose can override the aggregate.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-22",
+      "statement": "Raw evidence is append-only, the summary index is rebuildable, and cache loss does not lose source truth.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-23",
+      "statement": "Case-level freshness uses SHA and execution fingerprints rather than mtime alone.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-24",
+      "statement": "Rerun scope returns concrete affected case ids and reasons, not only domain names.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-25",
+      "statement": "A failed case creates a frozen failure packet and routes product or test repair to a standard development task packet.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-26",
+      "statement": "Regression scope includes the repaired case, directly impacted cases, and policy-required baseline cases.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-27",
+      "statement": "Repeated no-progress repair attempts route to break-loop governance instead of silently retrying.",
+      "verify_via": "unit",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-28",
+      "statement": "Release and archive block on unapproved cases, incomplete readings, stale or tampered evidence, open failures, missing reports, or red or blocked gates.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-29",
+      "statement": "Reports generate for green, red, and blocked states and never become the source of truth.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-30",
+      "statement": "HTML rendering escapes artifact content and never exposes provider secrets.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-31",
+      "statement": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-32",
+      "statement": "Failed evidence is retained after retry, repair, migration, report regeneration, release, and archive.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-33",
+      "statement": "V1-to-V2 migration provides dry-run output, backup references, migration receipt, validation results, and rollback instructions.",
+      "verify_via": "e2e",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-34",
+      "statement": "Migration never interprets missing V1 evidence as V2 PASS.",
+      "verify_via": "redteam",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-35",
+      "statement": "Gate decisions name source case readings, evidence index version, runtime version, kernel version, and freshness result.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-36",
+      "statement": "One host-neutral Verification Kernel owns schemas, state transitions, evidence integrity, aggregation, freshness, and report model semantics.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-37",
+      "statement": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite.",
+      "verify_via": "facticity",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-38",
+      "statement": "Shared report components are reused across all three HTML pages.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-39",
+      "statement": "Playwright, Midscene, command execution, EvidenceStore, failure classification, and report rendering use explicit adapter or service boundaries.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    },
+    {
+      "id": "AC-40",
+      "statement": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection.",
+      "verify_via": "static",
+      "status": "failing",
+      "evidence_ref": null
+    }
+  ]
+}

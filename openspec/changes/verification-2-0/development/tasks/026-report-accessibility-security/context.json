@@ -1,0 +1,58 @@
+{
+  "task_id": "026-report-accessibility-security",
+  "goal": "Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages.",
+  "must_read": [
+    "openspec/changes/verification-2-0/development/tasks/026-report-accessibility-security/brief.md",
+    "openspec/specs/ui-design/design.md",
+    "openspec/specs/system-architecture/design.md",
+    "openspec/specs/frontend-backend-data-flow/design.md",
+    "openspec/specs/component-architecture/design.md",
+    "openspec/changes/verification-2-0/requirements.md",
+    "openspec/changes/verification-2-0/acceptance.md",
+    "openspec/changes/verification-2-0/spec-map.json",
+    "openspec/changes/verification-2-0/component-impact-map.json",
+    "openspec/changes/verification-2-0/prototype/handoff.md",
+    "openspec/changes/verification-2-0/prototype/decision.json",
+    "openspec/changes/verification-2-0/prototype/artifact/index.html",
+    "openspec/changes/verification-2-0/specs/verification-report-center/spec.md"
+  ],
+  "allowed_files": [
+    "plugins/specnav-verification/kernel/reporting/**",
+    "plugins/specnav-verification/assets/report/**",
+    "tests/verification-v2/reports/**",
+    "tests/verification-v2/security/**"
+  ],
+  "test_paths": [
+    "bash tests/run-verification-v2-report-browser.sh",
+    "node --test tests/verification-v2/security/report-security.test.js"
+  ],
+  "dependencies": [
+    "014-evidence-redaction",
+    "024-overview-report",
+    "025-case-report-pages"
+  ],
+  "acceptance_assertions": [
+    "AC-12",
+    "AC-30"
+  ],
+  "external_targets": [],
+  "non_goals": [
+    "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
+    "Do not add fallback, verification light mode, manual green overrides, or business-project package mutations.",
+    "Do not overwrite failed attempts, raw evidence, or unrelated downstream worktree changes."
+  ],
+  "expected_evidence": [
+    "A focused failing test or fixture before the implementation change",
+    "System-executed command output with exit status",
+    "Changed-file list contained by scope.json",
+    "Task report, spec review, and quality review before checkbox completion",
+    "Direct evidence for AC-12, AC-30"
+  ],
+  "unsafe_assumptions": [
+    "Tool availability is not runtime readiness.",
+    "Model interpretation is not a deterministic oracle.",
+    "Report HTML is not the release gate source.",
+    "Legacy V1 status is not V2 proof."
+  ],
+  "stop_condition": "Stop when dependencies 014-evidence-redaction, 024-overview-report, 025-case-report-pages are incomplete, scope or contract evidence is missing, a required dependency is unavailable, or shared kernel behavior would be duplicated."
+}

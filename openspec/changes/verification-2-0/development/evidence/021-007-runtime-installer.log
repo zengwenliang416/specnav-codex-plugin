@@ -1,0 +1,21 @@
+# command: bash tests/run-verification-runtime-cli-install.sh # task007-quality-fix1
+# exit_status: 2
+# duration_ms: 52011
+
+## stdout
+{
+  "ok": false,
+  "runtime_version": "2.0.0-alpha.1",
+  "runtime_root": "/tmp/specnav-verification-runtime-cli-EjxB8k/2.0.0-alpha.1",
+  "blockers": [
+    "verification-runtime:package-integrity-mismatch:@playwright/test"
+  ],
+  "fallback_used": false
+}
+
+
+## stderr
+{"schema":"specnav.verification.runtime-install-event.v1","event":"install-started","runtime_version":"2.0.0-alpha.1","recorded_at":"2026-07-31T06:05:45.098Z","staging_root":"/tmp/specnav-verification-runtime-cli-EjxB8k/.2.0.0-alpha.1.installing-20260731060545096-15065-fa3e3c11-45aa-49c9-89c2-126978251103","target_root":"/tmp/specnav-verification-runtime-cli-EjxB8k/2.0.0-alpha.1"}
+{"schema":"specnav.verification.runtime-install-event.v1","event":"package-install-started","runtime_version":"2.0.0-alpha.1","recorded_at":"2026-07-31T06:05:45.099Z","packages":["@playwright/test@1.62.1","playwright@1.62.1","@midscene/web@1.10.8","ajv@8.20.0","ajv-formats@3.0.1"]}
+{"schema":"specnav.verification.runtime-install-event.v1","event":"install-failed","runtime_version":"2.0.0-alpha.1","recorded_at":"2026-07-31T06:06:37.014Z","blocker":"verification-runtime:package-integrity-mismatch:@playwright/test","failed_root":"/tmp/specnav-verification-runtime-cli-EjxB8k/.2.0.0-alpha.1.failed-20260731060545096-15065"}
+

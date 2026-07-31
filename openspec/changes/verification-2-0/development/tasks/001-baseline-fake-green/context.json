@@ -1,0 +1,62 @@
+{
+  "task_id": "001-baseline-fake-green",
+  "goal": "Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures.",
+  "must_read": [
+    "openspec/changes/verification-2-0/development/tasks/001-baseline-fake-green/brief.md",
+    "openspec/specs/ui-design/design.md",
+    "openspec/specs/system-architecture/design.md",
+    "openspec/specs/frontend-backend-data-flow/design.md",
+    "openspec/specs/component-architecture/design.md",
+    "openspec/changes/verification-2-0/requirements.md",
+    "openspec/changes/verification-2-0/acceptance.md",
+    "openspec/changes/verification-2-0/spec-map.json",
+    "openspec/changes/verification-2-0/component-impact-map.json",
+    "openspec/changes/verification-2-0/prototype/handoff.md",
+    "openspec/changes/verification-2-0/prototype/decision.json",
+    "openspec/changes/verification-2-0/prototype/artifact/index.html",
+    "openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md"
+  ],
+  "allowed_files": [
+    "plugins/specnav-development/scripts/development-contract.js",
+    "plugins/specnav-verification/scripts/evidence-runner.js",
+    "tests/run-verification-plugin-fixtures.sh",
+    "tests/run-verification-v2-baseline.sh",
+    "tests/verification-v2/baseline/**",
+    "docs/verification-v2-gap-analysis.md",
+    "openspec/changes/verification-2-0/development/**",
+    "openspec/changes/verification-2-0/tasks.md"
+  ],
+  "test_paths": [
+    "node --test tests/verification-v2/baseline/*.test.js",
+    "bash tests/run-verification-plugin-fixtures.sh",
+    "bash tests/run-verification-v2-baseline.sh",
+    "npm test"
+  ],
+  "dependencies": [],
+  "acceptance_assertions": [
+    "AC-17",
+    "AC-18",
+    "AC-21",
+    "AC-29"
+  ],
+  "external_targets": [],
+  "non_goals": [
+    "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
+    "Do not add fallback, verification light mode, manual green overrides, or business-project package mutations.",
+    "Do not overwrite failed attempts, raw evidence, or unrelated downstream worktree changes."
+  ],
+  "expected_evidence": [
+    "A focused failing test or fixture before the implementation change",
+    "System-executed command output with exit status",
+    "Changed-file list contained by scope.json",
+    "Task report, spec review, and quality review before checkbox completion",
+    "Direct evidence for AC-17, AC-18, AC-21, AC-29"
+  ],
+  "unsafe_assumptions": [
+    "Tool availability is not runtime readiness.",
+    "Model interpretation is not a deterministic oracle.",
+    "Report HTML is not the release gate source.",
+    "Legacy V1 status is not V2 proof."
+  ],
+  "stop_condition": "Stop when scope or contract evidence is missing, a required dependency is unavailable, or shared kernel behavior would be duplicated."
+}

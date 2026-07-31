@@ -1,0 +1,61 @@
+{
+  "schema": "specnav.prototype.verifier.v1",
+  "status": "green",
+  "checked_entry": "artifact/index.html",
+  "project_fidelity": {
+    "status": "green",
+    "inventory": "visual-inventory.json",
+    "shell_checked": true,
+    "generic_shell_detected": false,
+    "notes": [
+      "Shell contains SpecNav identity, active change, run and kernel metadata, and the three required report views.",
+      "Warm editorial palette and evidence-first density match the project ui-design and review-report-style sources.",
+      "No dark mode or locale controls are present, matching the approved light-only and i18n-disabled policy.",
+      "The prototype uses verification case, attempt, evidence, integrity, freshness, blocker, and repair-loop vocabulary from the requirements."
+    ]
+  },
+  "visual_matrix": {
+    "viewports": [
+      "desktop-1440x1100",
+      "mobile-390x844"
+    ],
+    "theme_modes": [
+      "light"
+    ],
+    "locales": [
+      "none"
+    ],
+    "states": [
+      "green",
+      "red",
+      "blocked",
+      "flaky",
+      "pass-after-fix",
+      "loading",
+      "empty",
+      "error",
+      "disabled",
+      "permission",
+      "populated"
+    ]
+  },
+  "checks": [
+    "Opened artifact/index.html in headless Google Chrome through Playwright.",
+    "Confirmed data-specnav-project-shell and data-specnav-screen anchors.",
+    "Confirmed overview, test-case catalog, and case-results panels switch successfully.",
+    "Confirmed green/red/blocked/flaky/pass-after-fix variants update the report state.",
+    "Confirmed loading, empty, error, disabled, permission, and populated content states are reachable.",
+    "Confirmed desktop body width equals the 1440px viewport.",
+    "Confirmed mobile body width equals the 390px viewport with no body horizontal overflow.",
+    "Confirmed no mobile text-overflow findings in buttons, labels, ids, hashes, or evidence references.",
+    "Confirmed no browser console errors or page errors on desktop or mobile.",
+    "Confirmed HTML identifies itself as a projection rather than the gate source of truth."
+  ],
+  "evidence": [
+    "prototype/evidence-desktop.png#sha256=7f9c66e457a7e2d522f58c731ce6bcf7454d821c8c0a1fc9579b842143a16261",
+    "prototype/evidence-mobile.png#sha256=47c003d13b1d4a69483ed44fe18674dc54b390ded4aef81e0d83ea25b23714dc",
+    "Google Chrome headless execution: overview/catalog/results visible, variant green applied, error state visible, consoleErrors=[]",
+    "Mobile inspection: bodyWidth=390, viewport=390, shellWidth=370, horizontalOverflow=false, textOverflow=[]"
+  ],
+  "blockers": []
+}

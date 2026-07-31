@@ -1,0 +1,102 @@
+{
+  "new_components": [
+    "Verification Kernel public entry",
+    "Managed Verification Runtime installer and doctor",
+    "Verification state machine",
+    "Execution orchestrator",
+    "Playwright runner adapter",
+    "Midscene runner adapter",
+    "Command runner adapter",
+    "EvidenceStore",
+    "Evidence integrity checker",
+    "Case-level freshness evaluator",
+    "Failure classifier",
+    "Repair bridge",
+    "Case-level rerun planner",
+    "Six-domain aggregator",
+    "Verification DecisionEngine",
+    "Report model builder",
+    "Overview page renderer",
+    "Test-case catalog renderer",
+    "Test-case results renderer",
+    "V1-to-V2 migrator",
+    "Codex host adapter",
+    "Claude Code host adapter",
+    "CodeFree-O host adapter"
+  ],
+  "reused_components": [
+    "SpecNav active-change resolution",
+    "SpecNav task checkbox normalizer",
+    "SpecNav development task packets",
+    "SpecNav break-loop governance",
+    "SpecNav CodeGraph policy and impact artifacts",
+    "Existing six verification domain rubrics",
+    "Existing operations release and archive gates",
+    "Existing warm editorial review-report style"
+  ],
+  "extraction_triggers": [
+    "Existing verify-domains.js logic is duplicated across host repositories.",
+    "Existing evidence-runner.js logic is duplicated across host repositories.",
+    "Existing rerun-scope.js logic is duplicated across host repositories.",
+    "Three HTML pages require shared status, case, evidence, and navigation components.",
+    "Playwright and Midscene share run, attempt, log, evidence, and cancellation lifecycle.",
+    "All hosts require identical schemas, blockers, aggregation, and gate semantics."
+  ],
+  "forbidden_dependencies": [
+    "Verification Kernel importing Codex, Claude Code, or CodeFree-O runtime globals",
+    "Report renderer reading arbitrary raw runner output",
+    "Midscene adapter declaring final PASS",
+    "Host adapter redefining schema or blocker semantics",
+    "Operations mutating verification readings",
+    "Development overwriting failure attempts or evidence",
+    "Managed runtime installer modifying business-project package.json",
+    "Verification code selecting a light or simplified lane"
+  ],
+  "hooks": [
+    "Report filter state selector",
+    "Evidence disclosure selector",
+    "Artifact link resolver",
+    "Print model selector"
+  ],
+  "utilities": [
+    "Stable id generator",
+    "Fingerprint builder",
+    "Content hash verifier",
+    "Path containment validator",
+    "Secret redactor",
+    "HTML escaper",
+    "JSONL reader/writer",
+    "Schema version resolver",
+    "Artifact migration helper",
+    "Cross-host kernel drift detector"
+  ],
+  "services": [
+    "RuntimeManager",
+    "CaseContractService",
+    "ExecutionOrchestrator",
+    "EvidenceStore",
+    "IntegrityService",
+    "EvaluationService",
+    "FailureService",
+    "RepairCoordinationService",
+    "RerunPlanningService",
+    "ReportService",
+    "GateService",
+    "MigrationService"
+  ],
+  "required_component_tests": [
+    "Kernel module unit tests",
+    "Schema positive and negative fixtures",
+    "Runner adapter contract tests",
+    "Evidence tamper and stale-binding tests",
+    "Retry/retest/regression state-machine tests",
+    "Report component state matrix tests",
+    "Desktop/mobile/print Playwright tests",
+    "Accessibility tests",
+    "Cross-host adapter parity tests",
+    "Kernel drift detection tests",
+    "Managed runtime clean-install and doctor tests",
+    "V1-to-V2 migration and rollback tests"
+  ],
+  "unresolved_gaps": []
+}

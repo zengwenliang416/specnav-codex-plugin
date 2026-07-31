@@ -1,0 +1,95 @@
+{
+  "schema": "specnav.verificationV2.fakeGreenBaseline.v1",
+  "cases": [
+    {
+      "id": "missing-acceptance-contract",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "verification-contract:missing-acceptance-snapshot"
+    },
+    {
+      "id": "empty-domain-evidence",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:domain-reading-missing"
+    },
+    {
+      "id": "missing-evidence-file",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:file-missing"
+    },
+    {
+      "id": "evidence-hash-mismatch",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:hash-mismatch"
+    },
+    {
+      "id": "evidence-size-mismatch",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:size-mismatch"
+    },
+    {
+      "id": "stale-code-sha",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:code-sha-mismatch"
+    },
+    {
+      "id": "unrecognized-evidence-producer",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:producer-unrecognized"
+    },
+    {
+      "id": "broken-case-reference",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:case-reference-missing"
+    },
+    {
+      "id": "broken-step-reference",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "evidence:step-reference-missing"
+    },
+    {
+      "id": "missing-runtime-artifacts",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "runtime-evidence:artifact-missing"
+    },
+    {
+      "id": "manual-green-overrides-blocked-reading",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "reading:domain-verdict-mismatch"
+    },
+    {
+      "id": "mtime-only-stale-bypass",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "freshness:fingerprint-mismatch"
+    },
+    {
+      "id": "green-html-from-unverified-data",
+      "kind": "fake-green",
+      "expected_v2": "blocked",
+      "required_blocker": "report:source-model-unverified"
+    },
+    {
+      "id": "red-report-generated",
+      "kind": "report-state",
+      "expected_v2": "three-pages",
+      "required_blocker": "report-center:pages-missing"
+    },
+    {
+      "id": "blocked-domain-report-generated",
+      "kind": "report-state",
+      "expected_v2": "three-pages",
+      "required_blocker": "report-center:pages-missing"
+    }
+  ]
+}

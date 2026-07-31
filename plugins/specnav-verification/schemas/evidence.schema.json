@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/evidence.schema.json",
+  "title": "SpecNav Verification 2.0 Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "kind",
+    "path",
+    "sha256",
+    "size",
+    "producer",
+    "captured_at",
+    "change_id",
+    "run_id",
+    "case_id",
+    "attempt_id",
+    "code_sha",
+    "test_sha",
+    "environment_hash",
+    "runtime_version",
+    "kernel_version",
+    "redaction"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.evidence.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "kind": {
+      "$ref": "common.schema.json#/$defs/evidenceKind"
+    },
+    "path": {
+      "$ref": "common.schema.json#/$defs/relativePath"
+    },
+    "sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "producer": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "captured_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "attempt_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "step_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "assertion_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "code_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "test_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "environment_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "runtime_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "kernel_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "redaction": {
+      "$ref": "common.schema.json#/$defs/redaction"
+    },
+    "domain": {
+      "$ref": "common.schema.json#/$defs/domain"
+    },
+    "content_type": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "result": {
+      "enum": [
+        "pass",
+        "fail",
+        "blocked",
+        "info"
+      ]
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "step_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        }
+      },
+      "required": [
+        "step_id"
+      ]
+    },
+    {
+      "properties": {
+        "assertion_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        }
+      },
+      "required": [
+        "assertion_id"
+      ]
+    }
+  ]
+}

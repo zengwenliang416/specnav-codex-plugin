@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/attempt.schema.json",
+  "title": "SpecNav Verification 2.0 Attempt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "run_id",
+    "change_id",
+    "case_id",
+    "case_snapshot_hash",
+    "kind",
+    "sequence",
+    "runner",
+    "code_sha",
+    "test_sha",
+    "scenario_hash",
+    "environment_hash",
+    "browser_project",
+    "test_data_snapshot",
+    "runtime_version",
+    "kernel_version",
+    "status",
+    "started_at",
+    "completed_at",
+    "exit_status"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.attempt.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_snapshot_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "kind": {
+      "enum": [
+        "initial",
+        "retry",
+        "retest",
+        "regression"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "runner": {
+      "$ref": "common.schema.json#/$defs/runnerKind"
+    },
+    "code_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "test_sha": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "scenario_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "environment_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "browser_project": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "test_data_snapshot": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "runtime_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "kernel_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "passed",
+        "failed",
+        "blocked",
+        "canceled"
+      ]
+    },
+    "started_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "exit_status": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "parent_attempt_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

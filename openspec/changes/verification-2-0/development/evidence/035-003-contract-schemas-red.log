@@ -1,0 +1,44 @@
+TAP version 13
+# node:internal/modules/cjs/loader:1386
+#   throw err;
+#   ^
+# Error: Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/contracts/schema-registry'
+# Require stack:
+# - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+#     at Function._load (node:internal/modules/cjs/loader:1192:37)
+#     at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+#     at Module.require (node:internal/modules/cjs/loader:1463:12)
+#     at require (node:internal/modules/helpers:147:16)
+#     at Object.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js:33:5)
+#     at Module._compile (node:internal/modules/cjs/loader:1706:14) {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: [
+#     '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js'
+#   ]
+# }
+# Node.js v22.19.0
+# Subtest: tests/verification-v2/contracts/schema-registry.test.js
+not ok 1 - tests/verification-v2/contracts/schema-registry.test.js
+  ---
+  duration_ms: 95.513416
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 111.963125

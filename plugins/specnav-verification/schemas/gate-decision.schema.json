@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/gate-decision.schema.json",
+  "title": "SpecNav Verification 2.0 Gate Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "stage",
+    "decision",
+    "source_case_ids",
+    "source_reading_ids",
+    "evidence_index_version",
+    "runtime_version",
+    "kernel_version",
+    "freshness",
+    "integrity_status",
+    "policy_version",
+    "blockers",
+    "warnings",
+    "decided_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.gate-decision.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "stage": {
+      "enum": [
+        "verification",
+        "release",
+        "archive"
+      ]
+    },
+    "decision": {
+      "enum": [
+        "pass",
+        "warn",
+        "block"
+      ]
+    },
+    "source_case_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "source_reading_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "evidence_index_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "runtime_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "kernel_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "freshness": {
+      "$ref": "common.schema.json#/$defs/freshnessResult"
+    },
+    "integrity_status": {
+      "enum": [
+        "intact",
+        "broken",
+        "unknown"
+      ]
+    },
+    "policy_version": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/blocker"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/blocker"
+      }
+    },
+    "decided_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "report_model_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    }
+  }
+}

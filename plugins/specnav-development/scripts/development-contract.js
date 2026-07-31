@@ -1691,7 +1691,16 @@ function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
       blockers.push('review:unsupported-verdict');
     } else {
       const body = headingBodyLines(parsed, assertionsHeading).join('\n');
-      const cited = Array.from(new Set((body.match(/\b[A-Z][A-Z0-9]*\d+\b/g) || [])));
+      const assertionPrefixes = new Set(
+        [...acceptanceIds]
+          .map((id) => String(id).replace(/\d+$/, ''))
+          .filter(Boolean)
+      );
+      const assertionIdPattern = /\b(?:[A-Z][A-Z0-9]*\d+|[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d+)\b/g;
+      const cited = Array.from(new Set(
+        (body.match(assertionIdPattern) || [])
+          .filter((id) => assertionPrefixes.has(id.replace(/\d+$/, '')))
+      ));
       const validCited = cited.filter((id) => acceptanceIds.has(id));
       for (const id of cited) {
         if (!acceptanceIds.has(id)) blockers.push(`review:invalid-reference:${id}`);

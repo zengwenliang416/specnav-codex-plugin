@@ -1,0 +1,23 @@
+{
+  "id": "reading-minimal",
+  "change_id": "change-v2",
+  "run_id": "run-minimal",
+  "case_id": "case-minimal",
+  "attempt_id": "attempt-minimal",
+  "step_id": "step-1",
+  "domain": "facticity",
+  "expected": true,
+  "actual": true,
+  "oracle": {
+    "type": "structured_comparison",
+    "owner": "kernel",
+    "deterministic": true
+  },
+  "evidence_ids": [
+    "evidence-minimal"
+  ],
+  "verdict": "pass",
+  "recorded_at": "2026-07-31T00:00:01Z",
+  "code_sha": "1111111111111111111111111111111111111111",
+  "test_sha": "2222222222222222222222222222222222222222"
+}

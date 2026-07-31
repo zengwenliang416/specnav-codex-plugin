@@ -1,0 +1,324 @@
+{
+  "positive": [
+    {
+      "entity_type": "test-case",
+      "file": "positive/test-case.json"
+    },
+    {
+      "entity_type": "case-approval",
+      "file": "positive/case-approval.json"
+    },
+    {
+      "entity_type": "case-snapshot",
+      "file": "positive/case-snapshot.json"
+    },
+    {
+      "entity_type": "verification-run",
+      "file": "positive/verification-run.json"
+    },
+    {
+      "entity_type": "attempt",
+      "file": "positive/attempt.json"
+    },
+    {
+      "entity_type": "reading",
+      "file": "positive/reading.json"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-baseline.json"
+    },
+    {
+      "entity_type": "evidence-index",
+      "file": "positive/evidence-index.json"
+    },
+    {
+      "entity_type": "failure-packet",
+      "file": "positive/failure-packet.json"
+    },
+    {
+      "entity_type": "repair-link",
+      "file": "positive/repair-link.json"
+    },
+    {
+      "entity_type": "runtime-status",
+      "file": "positive/runtime-status.json"
+    },
+    {
+      "entity_type": "report-model",
+      "file": "positive/report-model.json"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-baseline.json"
+    },
+    {
+      "entity_type": "migration-receipt",
+      "file": "positive/migration-receipt.json"
+    }
+  ],
+  "negative": [
+    {
+      "entity_type": "test-case",
+      "file": "negative/test-case-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "case-approval",
+      "file": "negative/case-approval-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "case-snapshot",
+      "file": "negative/case-snapshot-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "verification-run",
+      "file": "negative/verification-run-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "attempt",
+      "file": "negative/attempt-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "reading",
+      "file": "negative/reading-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence-index",
+      "file": "negative/evidence-index-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "failure-packet",
+      "file": "negative/failure-packet-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "repair-link",
+      "file": "negative/repair-link-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "runtime-status",
+      "file": "negative/runtime-status-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "report-model",
+      "file": "negative/report-model-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "migration-receipt",
+      "file": "negative/migration-receipt-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-id.json",
+      "expected_field": "/id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-kind.json",
+      "expected_field": "/kind"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-path.json",
+      "expected_field": "/path"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-sha256.json",
+      "expected_field": "/sha256"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-size.json",
+      "expected_field": "/size"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-producer.json",
+      "expected_field": "/producer"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-captured-at.json",
+      "expected_field": "/captured_at"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-change-id.json",
+      "expected_field": "/change_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-run-id.json",
+      "expected_field": "/run_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-case-id.json",
+      "expected_field": "/case_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-attempt-id.json",
+      "expected_field": "/attempt_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-step-id.json",
+      "expected_field": "/step_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-code-sha.json",
+      "expected_field": "/code_sha"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-test-sha.json",
+      "expected_field": "/test_sha"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-environment-hash.json",
+      "expected_field": "/environment_hash"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-runtime-version.json",
+      "expected_field": "/runtime_version"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-kernel-version.json",
+      "expected_field": "/kernel_version"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-redaction.json",
+      "expected_field": "/redaction"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-id.json",
+      "expected_field": "/id"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-change-id.json",
+      "expected_field": "/change_id"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-stage.json",
+      "expected_field": "/stage"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-decision.json",
+      "expected_field": "/decision"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-source-case-ids.json",
+      "expected_field": "/source_case_ids"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-source-reading-ids.json",
+      "expected_field": "/source_reading_ids"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-evidence-index-version.json",
+      "expected_field": "/evidence_index_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-runtime-version.json",
+      "expected_field": "/runtime_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-kernel-version.json",
+      "expected_field": "/kernel_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-freshness.json",
+      "expected_field": "/freshness"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-integrity-status.json",
+      "expected_field": "/integrity_status"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-policy-version.json",
+      "expected_field": "/policy_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-blockers.json",
+      "expected_field": "/blockers"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-warnings.json",
+      "expected_field": "/warnings"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-decided-at.json",
+      "expected_field": "/decided_at"
+    }
+  ],
+  "ac31_fixture": "ac31/evidence-baseline.json",
+  "ac31_required_fields": [
+    "id",
+    "kind",
+    "path",
+    "sha256",
+    "size",
+    "producer",
+    "captured_at",
+    "change_id",
+    "run_id",
+    "case_id",
+    "attempt_id",
+    "step_id",
+    "code_sha",
+    "test_sha"
+  ],
+  "ac35_fixture": "ac35/gate-baseline.json",
+  "ac35_required_fields": [
+    "source_case_ids",
+    "source_reading_ids",
+    "evidence_index_version",
+    "runtime_version",
+    "kernel_version",
+    "freshness"
+  ],
+  "unresolved_reference_fixture": "special/attempt-unresolved-references.json"
+}

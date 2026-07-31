@@ -1,0 +1,26 @@
+{
+  "id": "migration-minimal",
+  "change_id": "change-v2",
+  "from_version": "v1",
+  "to_version": "v2",
+  "mode": "dry_run",
+  "status": "succeeded",
+  "started_at": "2026-07-31T00:00:00Z",
+  "completed_at": "2026-07-31T00:00:01Z",
+  "backup_ref": {
+    "id": "backup-minimal",
+    "path": "migration/backups/change-v2.json"
+  },
+  "transformed_artifacts": [],
+  "validation": {
+    "ok": true,
+    "validated_entities": [],
+    "blockers": []
+  },
+  "rollback": {
+    "available": true,
+    "instructions": "Restore the referenced backup",
+    "receipt_ref": null
+  },
+  "fallback_used": false
+}

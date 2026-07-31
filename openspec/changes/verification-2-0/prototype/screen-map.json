@@ -1,0 +1,133 @@
+{
+  "screens": [
+    {
+      "id": "verification-overview",
+      "label": "Verification Overview",
+      "requirements": [
+        "requirements.md#Report Center",
+        "specs/verification-report-center/spec.md"
+      ],
+      "acceptance": [
+        "AC-08",
+        "AC-11",
+        "AC-12",
+        "AC-29"
+      ],
+      "components": [
+        "report shell",
+        "stage summary",
+        "six-domain status table",
+        "blocker panel",
+        "freshness badge",
+        "integrity badge"
+      ],
+      "visual_evidence": [
+        "visual-inventory.json#project_shell",
+        "visual-inventory.json#verification_matrix"
+      ],
+      "data_flows": [
+        "FLOW-REPORT",
+        "FLOW-RELEASE-GATE"
+      ],
+      "theme_modes": [
+        "light"
+      ],
+      "locales": [
+        "none"
+      ],
+      "implementation_files": [
+        "plugins/specnav-verification/kernel/reporting/overview-page.js"
+      ]
+    },
+    {
+      "id": "test-case-catalog",
+      "label": "Test Case Catalog",
+      "requirements": [
+        "requirements.md#Verification Contract V2",
+        "specs/verification-contract-v2/spec.md"
+      ],
+      "acceptance": [
+        "AC-01",
+        "AC-02",
+        "AC-09",
+        "AC-19"
+      ],
+      "components": [
+        "case catalog table",
+        "domain coverage matrix",
+        "approval snapshot",
+        "runner and evidence policy"
+      ],
+      "visual_evidence": [
+        "visual-inventory.json#business_surface"
+      ],
+      "data_flows": [
+        "FLOW-VERIFY-PLAN",
+        "FLOW-CASE-APPROVAL"
+      ],
+      "theme_modes": [
+        "light"
+      ],
+      "locales": [
+        "none"
+      ],
+      "implementation_files": [
+        "plugins/specnav-verification/kernel/reporting/test-case-catalog-page.js"
+      ]
+    },
+    {
+      "id": "test-case-results",
+      "label": "Test Case Results",
+      "requirements": [
+        "requirements.md#Execution and Evidence",
+        "requirements.md#Failure and Repair Loop",
+        "specs/evidence-backed-execution/spec.md",
+        "specs/verification-repair-loop/spec.md"
+      ],
+      "acceptance": [
+        "AC-06",
+        "AC-07",
+        "AC-10",
+        "AC-17",
+        "AC-25"
+      ],
+      "components": [
+        "case result row",
+        "attempt timeline",
+        "reading comparison",
+        "evidence viewer",
+        "repair loop timeline"
+      ],
+      "visual_evidence": [
+        "visual-inventory.json#business_surface"
+      ],
+      "data_flows": [
+        "FLOW-VERIFY-RUN",
+        "FLOW-EVIDENCE-INGEST",
+        "FLOW-FAILURE-REPAIR",
+        "FLOW-RETEST-REGRESSION"
+      ],
+      "theme_modes": [
+        "light"
+      ],
+      "locales": [
+        "none"
+      ],
+      "implementation_files": [
+        "plugins/specnav-verification/kernel/reporting/test-case-results-page.js"
+      ]
+    }
+  ],
+  "variants": [
+    "green",
+    "red",
+    "blocked",
+    "flaky",
+    "pass-after-fix",
+    "loading",
+    "empty",
+    "error",
+    "disabled",
+    "permission"
+  ]
+}

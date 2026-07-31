@@ -1,0 +1,62 @@
+# command: bash tests/run-verification-runtime-install.sh # task007-quality-fix2
+# exit_status: 0
+# duration_ms: 185
+
+## stdout
+TAP version 13
+# Subtest: installer writes a complete side-by-side runtime and leaves the project unchanged
+ok 1 - installer writes a complete side-by-side runtime and leaves the project unchanged
+  ---
+  duration_ms: 12.469875
+  type: 'test'
+  ...
+# Subtest: installer preserves a failed attempt and never promotes invalid browser bytes
+ok 2 - installer preserves a failed attempt and never promotes invalid browser bytes
+  ---
+  duration_ms: 4.529958
+  type: 'test'
+  ...
+# Subtest: installer refuses an occupied runtime root instead of overwriting it
+ok 3 - installer refuses an occupied runtime root instead of overwriting it
+  ---
+  duration_ms: 0.9965
+  type: 'test'
+  ...
+# Subtest: installer blocks when a new business-project lockfile appears
+ok 4 - installer blocks when a new business-project lockfile appears
+  ---
+  duration_ms: 7.133
+  type: 'test'
+  ...
+# Subtest: installer preserves package-manager failure output and affected artifact
+ok 5 - installer preserves package-manager failure output and affected artifact
+  ---
+  duration_ms: 2.299583
+  type: 'test'
+  ...
+# Subtest: installer preserves download and extraction command failures
+ok 6 - installer preserves download and extraction command failures
+  ---
+  duration_ms: 8.472833
+  type: 'test'
+  ...
+# Subtest: installer canonicalizes a symlinked runtime base before invoking npm
+ok 7 - installer canonicalizes a symlinked runtime base before invoking npm
+  ---
+  duration_ms: 5.639375
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91.744542
+verification runtime installer fixture ok
+
+
+## stderr
+(empty)

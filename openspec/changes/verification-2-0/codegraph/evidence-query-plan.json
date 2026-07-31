@@ -1,0 +1,502 @@
+{
+  "schema": "specnav.codegraph.evidence_query_plan.v1",
+  "generated_at": "2026-07-31T04:03:27.947Z",
+  "active_change": "verification-2-0",
+  "queries": [
+    {
+      "id": "development:task-001-baseline-fake-green:evidence",
+      "claim_id": "development:task-001-baseline-fake-green",
+      "stage": "development",
+      "task_id": "001-baseline-fake-green",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-001-baseline-fake-green --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-002-kernel-package-boundary:evidence",
+      "claim_id": "development:task-002-kernel-package-boundary",
+      "stage": "development",
+      "task_id": "002-kernel-package-boundary",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Maintainer can install one shared Verification Kernel package without host-specific verdict logic. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-002-kernel-package-boundary --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-003-contract-schemas:evidence",
+      "claim_id": "development:task-003-contract-schemas",
+      "stage": "development",
+      "task_id": "003-contract-schemas",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Plugin author can validate every V2 entity through versioned JSON Schemas. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-003-contract-schemas --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-004-contract-cross-references:evidence",
+      "claim_id": "development:task-004-contract-cross-references",
+      "stage": "development",
+      "task_id": "004-contract-cross-references",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can reject artifacts whose run, case, attempt, step, or SHA references disagree. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-004-contract-cross-references --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-005-case-planning-approval:evidence",
+      "claim_id": "development:task-005-case-planning-approval",
+      "stage": "development",
+      "task_id": "005-case-planning-approval",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can approve an immutable test-case snapshot before execution starts. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-005-case-planning-approval --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-006-runtime-lock-manifest:evidence",
+      "claim_id": "development:task-006-runtime-lock-manifest",
+      "stage": "development",
+      "task_id": "006-runtime-lock-manifest",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Verification operator can resolve an exact runtime version from a committed lock manifest. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-006-runtime-lock-manifest --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-007-runtime-installer:evidence",
+      "claim_id": "development:task-007-runtime-installer",
+      "stage": "development",
+      "task_id": "007-runtime-installer",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Verification operator can explicitly install Playwright, browsers, Midscene, and AJV outside the business repository. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-007-runtime-installer --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-008-runtime-doctor:evidence",
+      "claim_id": "development:task-008-runtime-doctor",
+      "stage": "development",
+      "task_id": "008-runtime-doctor",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Verification operator can diagnose runtime readiness and receive exact blockers without fallback. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-008-runtime-doctor --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-009-command-runner:evidence",
+      "claim_id": "development:task-009-command-runner",
+      "stage": "development",
+      "task_id": "009-command-runner",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-009-command-runner --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-010-playwright-runner:evidence",
+      "claim_id": "development:task-010-playwright-runner",
+      "stage": "development",
+      "task_id": "010-playwright-runner",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-010-playwright-runner --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-011-midscene-runner:evidence",
+      "claim_id": "development:task-011-midscene-runner",
+      "stage": "development",
+      "task_id": "011-midscene-runner",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-011-midscene-runner --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-012-evidence-store:evidence",
+      "claim_id": "development:task-012-evidence-store",
+      "stage": "development",
+      "task_id": "012-evidence-store",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-012-evidence-store --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-013-evidence-integrity:evidence",
+      "claim_id": "development:task-013-evidence-integrity",
+      "stage": "development",
+      "task_id": "013-evidence-integrity",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Release owner can see missing, tampered, stale, or incorrectly bound evidence block green. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-013-evidence-integrity --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-014-evidence-redaction:evidence",
+      "claim_id": "development:task-014-evidence-redaction",
+      "stage": "development",
+      "task_id": "014-evidence-redaction",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can inspect redacted logs and HTML without provider secrets leaking. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-014-evidence-redaction --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-015-reading-model:evidence",
+      "claim_id": "development:task-015-reading-model",
+      "stage": "development",
+      "task_id": "015-reading-model",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-015-reading-model --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-016-six-domain-aggregation:evidence",
+      "claim_id": "development:task-016-six-domain-aggregation",
+      "stage": "development",
+      "task_id": "016-six-domain-aggregation",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Release owner can receive six-domain and release verdicts derived only from validated case readings. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-016-six-domain-aggregation --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-017-not-applicable-approval:evidence",
+      "claim_id": "development:task-017-not-applicable-approval",
+      "stage": "development",
+      "task_id": "017-not-applicable-approval",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can approve a domain as not applicable only with reason and evidence. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-017-not-applicable-approval --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-018-failure-classification:evidence",
+      "claim_id": "development:task-018-failure-classification",
+      "stage": "development",
+      "task_id": "018-failure-classification",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Maintainer can classify failures into product, test, environment, flaky, blocker, or requirement categories. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-018-failure-classification --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-019-development-repair-bridge:evidence",
+      "claim_id": "development:task-019-development-repair-bridge",
+      "stage": "development",
+      "task_id": "019-development-repair-bridge",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Developer can receive a scoped repair task linked to frozen verification failure evidence. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-019-development-repair-bridge --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-020-retest-regression-loop:evidence",
+      "claim_id": "development:task-020-retest-regression-loop",
+      "stage": "development",
+      "task_id": "020-retest-regression-loop",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-020-retest-regression-loop --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-021-case-freshness:evidence",
+      "claim_id": "development:task-021-case-freshness",
+      "stage": "development",
+      "task_id": "021-case-freshness",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-021-case-freshness --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-022-case-rerun-impact:evidence",
+      "claim_id": "development:task-022-case-rerun-impact",
+      "stage": "development",
+      "task_id": "022-case-rerun-impact",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-022-case-rerun-impact --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-023-report-model:evidence",
+      "claim_id": "development:task-023-report-model",
+      "stage": "development",
+      "task_id": "023-report-model",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Stakeholder can receive one validated report model for all three report pages and every verdict state. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-023-report-model --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-024-overview-report:evidence",
+      "claim_id": "development:task-024-overview-report",
+      "stage": "development",
+      "task_id": "024-overview-report",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-024-overview-report --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-025-case-report-pages:evidence",
+      "claim_id": "development:task-025-case-report-pages",
+      "stage": "development",
+      "task_id": "025-case-report-pages",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Stakeholder can review approved case contracts in test-case-catalog.html and immutable attempt evidence in test-case-results.html. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-025-case-report-pages --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-026-report-accessibility-security:evidence",
+      "claim_id": "development:task-026-report-accessibility-security",
+      "stage": "development",
+      "task_id": "026-report-accessibility-security",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-026-report-accessibility-security --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-027-v1-v2-migration:evidence",
+      "claim_id": "development:task-027-v1-v2-migration",
+      "stage": "development",
+      "task_id": "027-v1-v2-migration",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-027-v1-v2-migration --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-028-codex-integration:evidence",
+      "claim_id": "development:task-028-codex-integration",
+      "stage": "development",
+      "task_id": "028-codex-integration",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Codex user can discover and run Verification 2.0 through the Codex marketplace adapter. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-028-codex-integration --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-029-claude-code-integration:evidence",
+      "claim_id": "development:task-029-claude-code-integration",
+      "stage": "development",
+      "task_id": "029-claude-code-integration",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-029-claude-code-integration --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-030-codefree-o-integration:evidence",
+      "claim_id": "development:task-030-codefree-o-integration",
+      "stage": "development",
+      "task_id": "030-codefree-o-integration",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-030-codefree-o-integration --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-031-cross-host-drift-ci:evidence",
+      "claim_id": "development:task-031-cross-host-drift-ci",
+      "stage": "development",
+      "task_id": "031-cross-host-drift-ci",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-031-cross-host-drift-ci --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-032-docs-install-runtime:evidence",
+      "claim_id": "development:task-032-docs-install-runtime",
+      "stage": "development",
+      "task_id": "032-docs-install-runtime",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-032-docs-install-runtime --query \"<query>\" --write --json"
+    },
+    {
+      "id": "development:task-033-release-archive-proof:evidence",
+      "claim_id": "development:task-033-release-archive-proof",
+      "stage": "development",
+      "task_id": "033-release-archive-proof",
+      "status": "planned",
+      "query": "Find the files, symbols, components, routes, services, data flow, and tests that implement \"Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts. The delivered slice must be directly demonstrable through the\" in change \"verification-2-0\". Return concrete file paths, symbols, relationships, and any missing implementation evidence.",
+      "expected_evidence": [
+        "file paths",
+        "symbols",
+        "call relationships",
+        "tests or verification commands"
+      ],
+      "command": "node \"$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-context.js\" --stage development --claim development:task-033-release-archive-proof --query \"<query>\" --write --json"
+    }
+  ]
+}

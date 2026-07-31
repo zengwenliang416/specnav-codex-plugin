@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "global": {
+    "max_responsibilities_per_module": 1,
+    "max_host_specific_kernel_logic": 0,
+    "max_report_model_sources": 1,
+    "max_duplicate_schema_definitions": 0,
+    "max_direct_business_package_mutations": 0
+  },
+  "budgets": [
+    {
+      "task": "001-baseline-fake-green",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "002-kernel-package-boundary",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "003-contract-schemas",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "004-contract-cross-references",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "005-case-planning-approval",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "006-runtime-lock-manifest",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "007-runtime-installer",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "008-runtime-doctor",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "009-command-runner",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "010-playwright-runner",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "011-midscene-runner",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "012-evidence-store",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "013-evidence-integrity",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "014-evidence-redaction",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "015-reading-model",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "016-six-domain-aggregation",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "017-not-applicable-approval",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "018-failure-classification",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "019-development-repair-bridge",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "020-retest-regression-loop",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "021-case-freshness",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "022-case-rerun-impact",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "023-report-model",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "024-overview-report",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "025-case-report-pages",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "026-report-accessibility-security",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "027-v1-v2-migration",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "028-codex-integration",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "029-claude-code-integration",
+      "max_production_files": 12,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "030-codefree-o-integration",
+      "max_production_files": 12,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "031-cross-host-drift-ci",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "032-docs-install-runtime",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    },
+    {
+      "task": "033-release-archive-proof",
+      "max_production_files": 10,
+      "max_new_public_components": 4,
+      "rule": "Split the task or extract a shared module when the budget is exceeded."
+    }
+  ]
+}

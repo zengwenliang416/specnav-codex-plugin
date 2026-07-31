@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "promotion_policy": "reimplement_under_development_gate",
+  "approved_variant": "three-page-verification-report-workspace",
+  "allowed_to_copy": [
+    "Approved user-visible report labels and status vocabulary",
+    "Approved design token names and semantic color roles",
+    "Approved data-specnav review anchors",
+    "Approved page names and information hierarchy"
+  ],
+  "must_reimplement": [
+    "Report model, renderers, shared components, filters, links, responsive behavior, print behavior, and accessibility under production tests",
+    "All runtime, execution, evidence, evaluation, repair, migration, and gate behavior from kernel contracts",
+    "All browser interactions against validated source artifacts instead of prototype fixtures"
+  ],
+  "blocked_direct_copies": [
+    "Prototype mock counts, ids, hashes, timestamps, evidence links, and failure data",
+    "Prototype-only JavaScript state switches",
+    "Review-only fixture content and static verdicts",
+    "Any HTML-derived release decision"
+  ]
+}

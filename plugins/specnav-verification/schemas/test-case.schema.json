@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/test-case.schema.json",
+  "title": "SpecNav Verification 2.0 Test Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "requirement_ids",
+    "acceptance_ids",
+    "title",
+    "goal",
+    "actor",
+    "priority",
+    "preconditions",
+    "steps",
+    "assertions",
+    "domains",
+    "runner",
+    "evidence_policy",
+    "status",
+    "created_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.test-case.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "requirement_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "acceptance_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "title": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "goal": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "actor": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "priority": {
+      "$ref": "common.schema.json#/$defs/priority"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "action",
+          "expected",
+          "assertion_ids"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "action": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "expected": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "assertion_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "common.schema.json#/$defs/stableId"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "expected",
+          "oracle",
+          "evidence_kinds"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/stableId"
+          },
+          "statement": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "expected": {},
+          "oracle": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "human_signoff_allowed"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "playwright_assertion",
+                  "api_fact",
+                  "database_fact",
+                  "structured_comparison",
+                  "human_signoff"
+                ]
+              },
+              "human_signoff_allowed": {
+                "type": "boolean"
+              }
+            }
+          },
+          "evidence_kinds": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "common.schema.json#/$defs/evidenceKind"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "domains": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "facticity",
+        "static",
+        "unit",
+        "redteam",
+        "e2e",
+        "sensory"
+      ],
+      "properties": {
+        "facticity": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        },
+        "static": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        },
+        "unit": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        },
+        "redteam": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        },
+        "e2e": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        },
+        "sensory": {
+          "$ref": "common.schema.json#/$defs/domainAssignment"
+        }
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "timeout_ms",
+        "requires_midscene"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "common.schema.json#/$defs/runnerKind"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "entrypoint": {
+          "$ref": "common.schema.json#/$defs/nonEmptyString"
+        },
+        "browser_project": {
+          "$ref": "common.schema.json#/$defs/nonEmptyString"
+        },
+        "requires_midscene": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_kinds",
+        "required_kinds",
+        "retain_on_failure",
+        "content_addressed"
+      ],
+      "properties": {
+        "allowed_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidenceKind"
+          },
+          "uniqueItems": true
+        },
+        "required_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidenceKind"
+          },
+          "uniqueItems": true
+        },
+        "retain_on_failure": {
+          "const": true
+        },
+        "content_addressed": {
+          "const": true
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "ready",
+        "retired"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}
