@@ -83,7 +83,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Stop Conditions
 
-- Stop if a dependency task is incomplete: `028-codex-integration`.
+- Stop if a dependency task is incomplete: `028-codex-integration`, `029-claude-code-integration`.
 - Stop if the task requires files outside `scope.json` or a downstream repository has unresolved local changes.
 - Stop if a required runtime, browser, provider configuration, schema, evidence object, or user approval is missing.
 - Stop if implementation would duplicate host-neutral kernel behavior.

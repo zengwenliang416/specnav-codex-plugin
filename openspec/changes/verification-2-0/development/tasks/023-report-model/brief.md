@@ -83,7 +83,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Stop Conditions
 
-- Stop if a dependency task is incomplete: `016-six-domain-aggregation`, `018-failure-classification`, `021-case-freshness`.
+- Stop if a dependency task is incomplete: `016-six-domain-aggregation`, `017-not-applicable-approval`, `018-failure-classification`, `020-retest-regression-loop`, `021-case-freshness`.
 - Stop if the task requires files outside `scope.json` or a downstream repository has unresolved local changes.
 - Stop if a required runtime, browser, provider configuration, schema, evidence object, or user approval is missing.
 - Stop if implementation would duplicate host-neutral kernel behavior.

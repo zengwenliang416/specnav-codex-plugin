@@ -25,7 +25,9 @@
   ],
   "dependencies": [
     "016-six-domain-aggregation",
+    "017-not-applicable-approval",
     "018-failure-classification",
+    "020-retest-regression-loop",
     "021-case-freshness"
   ],
   "acceptance_assertions": [
@@ -54,5 +56,5 @@
     "Report HTML is not the release gate source.",
     "Legacy V1 status is not V2 proof."
   ],
-  "stop_condition": "Stop when dependencies 016-six-domain-aggregation, 018-failure-classification, 021-case-freshness are incomplete, scope or contract evidence is missing, a required dependency is unavailable, or shared kernel behavior would be duplicated."
+  "stop_condition": "Stop when dependencies 016-six-domain-aggregation, 017-not-applicable-approval, 018-failure-classification, 020-retest-regression-loop, 021-case-freshness are incomplete, scope or contract evidence is missing, a required dependency is unavailable, or shared kernel behavior would be duplicated."
 }

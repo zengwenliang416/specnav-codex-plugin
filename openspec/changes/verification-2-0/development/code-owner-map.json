@@ -22,6 +22,10 @@
       "owner": "specnav-verification-stage"
     },
     {
+      "path": "plugins/specnav-verification/scripts/**",
+      "owner": "verification-runtime-cli"
+    },
+    {
       "path": "plugins/specnav-core/**",
       "owner": "specnav-core"
     },
@@ -40,6 +44,22 @@
     {
       "path": "tests/verification-v2/**",
       "owner": "verification-quality"
+    },
+    {
+      "path": "scripts/**",
+      "owner": "repository-automation"
+    },
+    {
+      "path": ".codex-plugin/**",
+      "owner": "codex-host-integration"
+    },
+    {
+      "path": "integrations/**",
+      "owner": "cross-host-integration"
+    },
+    {
+      "path": ".github/workflows/**",
+      "owner": "release-engineering"
     },
     {
       "path": "docs/**",

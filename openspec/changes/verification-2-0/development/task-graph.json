@@ -623,6 +623,16 @@
       "type": "blocks"
     },
     {
+      "from": "017-not-applicable-approval",
+      "to": "023-report-model",
+      "type": "blocks"
+    },
+    {
+      "from": "020-retest-regression-loop",
+      "to": "023-report-model",
+      "type": "blocks"
+    },
+    {
       "from": "023-report-model",
       "to": "024-overview-report",
       "type": "blocks"
@@ -694,6 +704,11 @@
     },
     {
       "from": "028-codex-integration",
+      "to": "030-codefree-o-integration",
+      "type": "blocks"
+    },
+    {
+      "from": "029-claude-code-integration",
       "to": "030-codefree-o-integration",
       "type": "blocks"
     },
@@ -782,11 +797,14 @@
     ["015-reading-model", "021-case-freshness"],
     ["016-six-domain-aggregation", "022-case-rerun-impact"],
     ["017-not-applicable-approval", "018-failure-classification", "027-v1-v2-migration"],
-    ["019-development-repair-bridge", "023-report-model"],
-    ["020-retest-regression-loop", "024-overview-report"],
+    ["019-development-repair-bridge"],
+    ["020-retest-regression-loop"],
+    ["023-report-model"],
+    ["024-overview-report"],
     ["025-case-report-pages"],
     ["026-report-accessibility-security", "028-codex-integration"],
-    ["029-claude-code-integration", "030-codefree-o-integration"],
+    ["029-claude-code-integration"],
+    ["030-codefree-o-integration"],
     ["031-cross-host-drift-ci", "032-docs-install-runtime"],
     ["033-release-archive-proof"]
   ],
@@ -809,6 +827,7 @@
     "025-case-report-pages",
     "028-codex-integration",
     "029-claude-code-integration",
+    "030-codefree-o-integration",
     "031-cross-host-drift-ci",
     "033-release-archive-proof"
   ]
