@@ -1,6 +1,6 @@
 ---
 name: specnav-verify-rerun
-description: Use this skill when a SpecNav verification report is marked stale after a fix, when verify-report.stale exists, or when the affected verification domain plus its downstream domains must be selectively re-run before the aggregate can go green again.
+description: Use this skill when a SpecNav verification report is stale after a fix and the exact repaired, impacted, stale, and mandatory baseline cases must be selected before retest or regression.
 ---
 
 ## Runtime Paths
@@ -11,24 +11,51 @@ Resolve every `SPECNAV_*_ROOT` variable with the owning SpecNav Codex plugin res
 
 ## Purpose
 
-Selectively re-run the affected verification domain plus downstream domains after a stale marker, then clear it.
+Select exact case-level retest and regression scope after a stale marker or
+repair. Domain names remain compatibility metadata and never replace concrete
+case ids.
 
 ## Workflow
 
 1. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json`; a `stale-verify-report` blocker means re-run is required.
-2. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json` to compute the minimal rerun set deterministically from the git diff and `traceability-matrix.json`. Its `domains_to_rerun` output is authoritative; do not pick domains by judgment. If it reports `full_rerun: true` (unmapped changed files), all six domains rerun and the matrix must be extended to cover the unmapped files.
-3. Re-run each domain in `domains_to_rerun` (affected domain first), writing fresh domain reports so they are newer than `verify-report.stale`. Read `verify/plan.json` and `root-cause-checks.jsonl` for the per-domain evidence requirements.
-4. Do not re-run unaffected domains and do not edit the stale marker by hand; the aggregate clears it only when the rerun reports are fresh.
-5. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json` to recompute the verdict and clear the marker once all required domains are fresh and green.
+2. Require `verify/case-snapshot.json`, `verify/case-approval.json`,
+   `verify/current-requirements.json`, `verify/current-acceptance.json`,
+   `verify/case-freshness.json`, `verify/rerun-policy.json`, and
+   `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
+   valid `codegraph/impact-report.json`.
+3. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json`.
+   `required_cases` and `reasons_by_case` are authoritative. Never replace
+   them with a manually chosen domain list.
+   Pass `--reviewer-id <authenticated-human-id>` so the current approval is
+   revalidated against the current snapshot and source hashes.
+4. If a product or test repair is being verified, pass every repaired case
+   explicitly with `--repaired <case-id,...>`.
+5. If the result is blocked, stop. Unknown references, missing freshness,
+   malformed CodeGraph evidence, and unmapped production changes may expand
+   scope but may never silently shrink it.
+6. Task 020 executes the returned cases as retest or regression attempts.
+   Preserve prior failed attempts and evidence; do not edit the stale marker
+   by hand.
+7. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate
+   --json` only after every `required_cases` member has fresh terminal
+   evidence and the required six-domain readings.
 
 ## Required Outputs
 
-- Refreshed `verify/<domain>/report.md` and `report.json` for the affected domain and downstream domains.
+- A recorded rerun scope containing `required_cases`, `baseline_cases`,
+  `repaired_cases`, `stale_cases`, `reasons_by_case`, CodeGraph refs, and
+  policy refs.
+- Fresh attempts and readings for every required case.
+- Refreshed domain reports derived from those case readings.
 - A recomputed `verify/aggregate-report.json` with `stale` false once the marker is cleared.
 
 ## Stop Conditions
 
-- The plan, root-cause checks, or traceability matrix is missing.
+- The case snapshot, exact human approval, current requirements/acceptance
+  sources, authenticated reviewer identity, freshness facts, rerun policy,
+  plan, root-cause checks, or traceability matrix is missing.
+- CodeGraph is required by policy but impact evidence is missing, stale,
+  blocked, or cannot map affected files to approved cases.
 - A required rerun command cannot run.
 - A re-run domain is not green, so the stale marker must remain.
 

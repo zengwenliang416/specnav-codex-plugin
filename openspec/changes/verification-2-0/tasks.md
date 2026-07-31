@@ -60,7 +60,7 @@ User Outcome: Developers and reviewers can classify, repair, retest, regress, an
 User Outcome: Reviewers can identify stale cases and rerun the exact impacted cases plus mandatory baselines.
 
 - [x] 8.1 Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime.
-- [ ] 8.2 Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence.
+- [x] 8.2 Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence.
 
 ## 9. Report Center
 

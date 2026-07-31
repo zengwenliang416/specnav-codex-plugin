@@ -1,0 +1,9 @@
+# command: for file in plugins/specnav-verification/kernel/repair/*.js plugins/specnav-verification/scripts/rerun-scope.js plugins/specnav-codegraph/core/codegraph-impact-report.js plugins/specnav-codegraph/scripts/codegraph-impact.js tests/verification-v2/rerun/*.js; do node --check "$file" || exit 1; done && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' # task022-final-static
+# exit_status: 0
+# duration_ms: 289
+
+## stdout
+(empty)
+
+## stderr
+(empty)

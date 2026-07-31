@@ -20,13 +20,17 @@ contract as context evidence.
    components, or tests are affected by the changed symbols.
 4. Run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-impact.js" --query
    "impact question" --write --json`.
-5. Include the generated evidence index path in verification or operations
-   handoff.
+5. Require `openspec/changes/<change>/codegraph/impact-report.json`. It must
+   cite the source CodeGraph evidence ids and list every affected file.
+6. Include both the generated impact report and evidence index paths in
+   verification or operations handoff.
 
 ## Stop Conditions
 
 - The project is not indexed and the stage requires CodeGraph.
 - The impact question is missing.
+- The impact report is missing, schema-invalid, blocked, or names an affected
+  file that cannot be mapped to an approved verification case.
 - CodeGraph evidence is stale after final production edits.
 - The script reports wrong-root, missing CLI, or claim-unverified blockers.
 
@@ -34,6 +38,8 @@ contract as context evidence.
 
 - Release and archive may claim CodeGraph impact review only when the evidence
   artifact is fresh.
+- Verification rerun may use an affected file to add concrete cases only
+  through the approved case catalog and traceability matrix.
 - Stale impact evidence must block production operations in required policy
   mode.
 - HTML reports should summarize evidence and link artifacts, not embed long

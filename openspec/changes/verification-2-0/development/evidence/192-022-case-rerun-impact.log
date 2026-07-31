@@ -1,0 +1,139 @@
+# command: node --test tests/verification-v2/rerun/*.test.js tests/verification-v2/kernel/package-boundary.test.js # task022-final-focused
+# exit_status: 0
+# duration_ms: 128
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 1.283542
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 18.812292
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.293708
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.163208
+  type: 'test'
+  ...
+# Subtest: public factory returns concrete deterministic case ids and reasons
+ok 5 - public factory returns concrete deterministic case ids and reasons
+  ---
+  duration_ms: 9.558083
+  type: 'test'
+  ...
+# Subtest: CodeGraph can map an otherwise unmapped changed file to exact cases
+ok 6 - CodeGraph can map an otherwise unmapped changed file to exact cases
+  ---
+  duration_ms: 0.380458
+  type: 'test'
+  ...
+# Subtest: unmapped production changes conservatively select every approved case
+ok 7 - unmapped production changes conservatively select every approved case
+  ---
+  duration_ms: 0.291583
+  type: 'test'
+  ...
+# Subtest: CodeGraph cannot remove repaired or mandatory baseline cases
+ok 8 - CodeGraph cannot remove repaired or mandatory baseline cases
+  ---
+  duration_ms: 0.766
+  type: 'test'
+  ...
+# Subtest: unknown case references fail closed without silently shrinking scope
+ok 9 - unknown case references fail closed without silently shrinking scope
+  ---
+  duration_ms: 0.472875
+  type: 'test'
+  ...
+# Subtest: malformed CodeGraph impact fails closed and selects all approved cases
+ok 10 - malformed CodeGraph impact fails closed and selects all approved cases
+  ---
+  duration_ms: 0.3915
+  type: 'test'
+  ...
+# Subtest: CodeGraph affected files without an approved case mapping fail closed
+ok 11 - CodeGraph affected files without an approved case mapping fail closed
+  ---
+  duration_ms: 0.182042
+  type: 'test'
+  ...
+# Subtest: cross-change or unbound CodeGraph evidence fails closed
+ok 12 - cross-change or unbound CodeGraph evidence fails closed
+  ---
+  duration_ms: 0.2835
+  type: 'test'
+  ...
+# Subtest: missing freshness facts fail closed for the unaccounted approved case
+ok 13 - missing freshness facts fail closed for the unaccounted approved case
+  ---
+  duration_ms: 0.38925
+  type: 'test'
+  ...
+# Subtest: duplicate catalog ids and hostile input are rejected without throwing
+ok 14 - duplicate catalog ids and hostile input are rejected without throwing
+  ---
+  duration_ms: 0.463958
+  type: 'test'
+  ...
+# Subtest: incomplete six-domain assignments fail closed before scope selection
+ok 15 - incomplete six-domain assignments fail closed before scope selection
+  ---
+  duration_ms: 0.246417
+  type: 'test'
+  ...
+# Subtest: missing or rejected case approval blocks and selects all catalog cases
+ok 16 - missing or rejected case approval blocks and selects all catalog cases
+  ---
+  duration_ms: 0.253625
+  type: 'test'
+  ...
+# Subtest: planner requires an approval validator and never assumes approval
+ok 17 - planner requires an approval validator and never assumes approval
+  ---
+  duration_ms: 0.214083
+  type: 'test'
+  ...
+# Subtest: planning never mutates caller-owned artifacts
+ok 18 - planning never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.232458
+  type: 'test'
+  ...
+# Subtest: CodeGraph evidence projects to a deterministic versioned impact report
+ok 19 - CodeGraph evidence projects to a deterministic versioned impact report
+  ---
+  duration_ms: 8.688458
+  type: 'test'
+  ...
+# Subtest: blocked or malformed CodeGraph evidence cannot manufacture usable impact
+ok 20 - blocked or malformed CodeGraph evidence cannot manufacture usable impact
+  ---
+  duration_ms: 0.106042
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.66475
+
+
+## stderr
+(empty)

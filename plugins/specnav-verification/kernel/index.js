@@ -24,6 +24,9 @@ const {
 const {
   renderSafeHtmlText
 } = require('./reporting');
+const {
+  createCaseRerunPlanner
+} = require('./repair');
 
 module.exports = Object.freeze({
   metadata,
@@ -38,5 +41,6 @@ module.exports = Object.freeze({
   createEvidenceIntegrityChecker,
   createSecretRedactor,
   createCaseFreshnessEvaluator,
+  createCaseRerunPlanner,
   renderSafeHtmlText
 });

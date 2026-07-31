@@ -37,12 +37,29 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/repair/**
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/scripts/rerun-scope.js
+- plugins/specnav-verification/skills/specnav-verify-rerun/**
 - plugins/specnav-codegraph/**
 - tests/verification-v2/rerun/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-codegraph-rerun.sh
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/022-case-rerun-impact/**
 
 ## Interfaces / Seams
 
+- `createCaseRerunPlanner()` consumes an approved case catalog, exact changed
+  files, traceability entries, case freshness facts, repaired case ids,
+  mandatory baseline case ids, and optional CodeGraph impact evidence.
+- The planner returns deterministic `cases_to_rerun` entries with exact reasons.
+- The planner computes scope only. Task 020 owns retest and regression
+  execution, lifecycle transitions, and failure closure.
 - CodeGraph may add impact evidence but may not remove mandatory baseline cases.
 
 ## Components To Create
@@ -65,6 +82,10 @@ listed verification commands and must preserve all earlier artifacts.
 - Capability spec: `openspec/changes/verification-2-0/specs/verification-repair-loop/spec.md`.
 - Acceptance assertions: `AC-24`, `AC-26`.
 - Change impact plus stale cases plus policy baselines produce a concrete retest/regression case list.
+- Repaired cases and mandatory baselines are always retained.
+- Unmapped production changes conservatively select every approved case.
+- Unknown case references, malformed impact evidence, and missing required
+  inputs fail closed instead of silently shrinking rerun scope.
 
 ## State / Error / Empty / Loading Behavior
 
@@ -81,7 +102,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Verification Commands
 
-- `node --test tests/verification-v2/rerun/case-scope.test.js`
+- `node --test tests/verification-v2/rerun/*.test.js`
 - `bash tests/run-verification-v2-codegraph-rerun.sh`
 
 ## Stop Conditions

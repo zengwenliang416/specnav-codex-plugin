@@ -1,0 +1,205 @@
+# command: node --test tests/verification-v2/rerun/case-scope.test.js # task022-red
+# exit_status: 1
+# duration_ms: 152
+
+## stdout
+TAP version 13
+# Subtest: public factory returns concrete deterministic case ids and reasons
+not ok 1 - public factory returns concrete deterministic case ids and reasons
+  ---
+  duration_ms: 1.045125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:100:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:101:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: CodeGraph can map an otherwise unmapped changed file to exact cases
+not ok 2 - CodeGraph can map an otherwise unmapped changed file to exact cases
+  ---
+  duration_ms: 0.210625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:148:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:160:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: unmapped production changes conservatively select every approved case
+not ok 3 - unmapped production changes conservatively select every approved case
+  ---
+  duration_ms: 0.080167
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:172:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:176:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CodeGraph cannot remove repaired or mandatory baseline cases
+not ok 4 - CodeGraph cannot remove repaired or mandatory baseline cases
+  ---
+  duration_ms: 0.091083
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:198:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:216:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unknown case references fail closed without silently shrinking scope
+not ok 5 - unknown case references fail closed without silently shrinking scope
+  ---
+  duration_ms: 0.13675
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:226:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:230:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: malformed CodeGraph impact fails closed and selects all approved cases
+not ok 6 - malformed CodeGraph impact fails closed and selects all approved cases
+  ---
+  duration_ms: 0.251458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:247:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:254:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing freshness facts fail closed for the unaccounted approved case
+not ok 7 - missing freshness facts fail closed for the unaccounted approved case
+  ---
+  duration_ms: 0.145708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:269:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:275:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: duplicate catalog ids and hostile input are rejected without throwing
+not ok 8 - duplicate catalog ids and hostile input are rejected without throwing
+  ---
+  duration_ms: 0.120708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:288:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:294:27)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planning never mutates caller-owned artifacts
+not ok 9 - planning never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.419708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:314:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseRerunPlanner is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    planner (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:97:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/rerun/case-scope.test.js:318:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 111.014
+
+
+## stderr
+(empty)

@@ -2,28 +2,48 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- The reviewed Task 022 slice has no missing requirement.
 
 ## Extra Behavior
 
-- None recorded.
+- No retest execution, regression attempt creation, failure closure, aggregate
+  verdict, release, archive, fallback, or simplified verification mode was
+  added.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- The initial implementation trusted unbound CodeGraph impact and a snapshot
+  without revalidating current human approval. Both defects were repaired and
+  remain preserved as failed review evidence.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Retest and regression execution remain Task 020.
+- Final release and archive gate composition remains Task 033.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- AC-24
+- AC-26
+
+## Verified Behavior
+
+- Rerun scope returns deterministic concrete case ids with per-case reasons,
+  while domain names remain compatibility metadata only.
+- Repaired cases, directly impacted cases, stale cases, and mandatory policy
+  baselines are retained in the required scope.
+- CodeGraph may add evidence-backed impact but cannot remove repaired or
+  baseline cases.
+- Missing approval, freshness, traceability, or policy inputs fail closed.
+- Malformed, cross-change, unbound, or unmapped CodeGraph evidence cannot
+  silently narrow the required cases.
+- The CLI revalidates the approved snapshot against current requirements,
+  current acceptance, and the authenticated reviewer identity.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No further specification fix is required for Task 022.

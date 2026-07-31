@@ -18,12 +18,23 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/repair/**",
+    "plugins/specnav-verification/kernel/index.js",
     "plugins/specnav-verification/scripts/rerun-scope.js",
+    "plugins/specnav-verification/skills/specnav-verify-rerun/**",
     "plugins/specnav-codegraph/**",
-    "tests/verification-v2/rerun/**"
+    "tests/verification-v2/rerun/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-codegraph-rerun.sh",
+    "openspec/changes/verification-2-0/tasks.md",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/drift-check.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/development/tasks/022-case-rerun-impact/**"
   ],
   "test_paths": [
-    "node --test tests/verification-v2/rerun/case-scope.test.js",
+    "node --test tests/verification-v2/rerun/*.test.js",
     "bash tests/run-verification-v2-codegraph-rerun.sh"
   ],
   "dependencies": [
@@ -46,6 +57,12 @@
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
     "Direct evidence for AC-24, AC-26"
+  ],
+  "interfaces": [
+    "createCaseRerunPlanner() returns deterministic concrete case ids and reasons.",
+    "The planner reports scope only; Task 020 owns retest and regression execution.",
+    "CodeGraph impact may add cases but cannot remove repaired or mandatory baseline cases.",
+    "Unmapped production changes select all approved cases conservatively."
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",
