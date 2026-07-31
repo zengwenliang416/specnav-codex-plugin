@@ -104,11 +104,21 @@
       "group": 4,
       "goal": "Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence.",
       "acceptance": [
+        "AC-39"
+      ],
+      "acceptance_role": "contributor",
+      "acceptance_primary": [],
+      "acceptance_subclaims": [
+        "AC-39:playwright-adapter-boundary"
+      ],
+      "acceptance_contributes": [
         "AC-04",
         "AC-06",
         "AC-16",
-        "AC-31"
+        "AC-31",
+        "AC-39"
       ],
+      "final_closer": "031-cross-host-drift-ci",
       "packet": "development/tasks/010-playwright-runner"
     },
     {
@@ -491,6 +501,11 @@
     },
     {
       "from": "010-playwright-runner",
+      "to": "015-reading-model",
+      "type": "blocks"
+    },
+    {
+      "from": "011-midscene-runner",
       "to": "015-reading-model",
       "type": "blocks"
     },

@@ -38,11 +38,20 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/execution/**
 - plugins/specnav-verification/kernel/adapters/playwright-adapter.js
+- plugins/specnav-verification/kernel/index.js
+- plugins/specnav-verification/kernel/runtime/doctor.js
+- plugins/specnav-verification/kernel/runtime/installer.js
+- plugins/specnav-verification/assets/runtime/verification-runtime-lock.json
+- plugins/specnav-verification/schemas/test-case.schema.json
+- tests/run-verification-v2-playwright.sh
 - tests/verification-v2/browser/**
+- tests/verification-v2/runtime/**
 
 ## Interfaces / Seams
 
-- Playwright assertions can become final oracles; raw browser artifacts enter EvidenceStore through the adapter contract.
+- Playwright assertions are deterministic execution observations. The adapter
+  returns typed evidence candidates and references; Task 012 persists them and
+  Task 015 converts valid evidence into verdict-bearing readings.
 
 ## Components To Create
 
@@ -61,8 +70,20 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-04`, `AC-06`, `AC-16`, `AC-31`.
-- Approved E2E case launches a verified browser, executes assertions, and emits evidence-bound readings.
+- Acceptance contribution: `AC-39`.
+- Direct full-AC closures: none.
+- Direct subclaim: `AC-39:playwright-adapter-boundary`.
+- Contributes to: `AC-04`, `AC-06`, `AC-16`, `AC-31`, `AC-39`.
+- Approved E2E case binds an exact scenario id and browser project, launches
+  only the doctor-verified managed browser, executes deterministic assertions,
+  and returns typed raw artifact candidates for the downstream EvidenceStore.
+- Task 010 does not close runtime installation (`AC-04`), repair history
+  (`AC-06`), Midscene oracle policy (`AC-16`), or persistent evidence records
+  (`AC-31`).
+- Task 010 stops at terminal attempt state, browser events, deterministic
+  assertion observations, logs, and typed artifact candidates. It does not
+  produce a verdict-bearing Reading, integrity verdict, retry/retest policy,
+  domain aggregation, or release verdict.
 
 ## State / Error / Empty / Loading Behavior
 

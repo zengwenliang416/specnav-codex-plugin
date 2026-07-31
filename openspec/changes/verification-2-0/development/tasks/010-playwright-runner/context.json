@@ -19,7 +19,14 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/execution/**",
     "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
-    "tests/verification-v2/browser/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/kernel/runtime/doctor.js",
+    "plugins/specnav-verification/kernel/runtime/installer.js",
+    "plugins/specnav-verification/assets/runtime/verification-runtime-lock.json",
+    "plugins/specnav-verification/schemas/test-case.schema.json",
+    "tests/run-verification-v2-playwright.sh",
+    "tests/verification-v2/browser/**",
+    "tests/verification-v2/runtime/**"
   ],
   "test_paths": [
     "bash tests/run-verification-v2-playwright.sh",
@@ -31,10 +38,19 @@
     "009-command-runner"
   ],
   "acceptance_assertions": [
+    "AC-39"
+  ],
+  "acceptance_role": "contributor",
+  "acceptance_primary": [],
+  "acceptance_subclaims": [
+    "AC-39:playwright-adapter-boundary"
+  ],
+  "acceptance_contributes": [
     "AC-04",
     "AC-06",
     "AC-16",
-    "AC-31"
+    "AC-31",
+    "AC-39"
   ],
   "external_targets": [],
   "non_goals": [
@@ -47,7 +63,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-04, AC-06, AC-16, AC-31"
+    "Direct task-slice evidence for tasks.md 4.2 and AC-39:playwright-adapter-boundary; no full AC closure"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",
