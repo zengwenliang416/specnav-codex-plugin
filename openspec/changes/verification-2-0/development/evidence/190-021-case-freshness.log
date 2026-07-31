@@ -1,0 +1,9 @@
+# command: for file in plugins/specnav-verification/kernel/evidence/*.js tests/verification-v2/freshness/*.js tests/verification-v2/evidence/integrity.test.js tests/verification-v2/kernel/package-boundary.test.js; do node --check "$file" || exit 1; done && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' # task021-final-static
+# exit_status: 0
+# duration_ms: 578
+
+## stdout
+(empty)
+
+## stderr
+(empty)

@@ -9,9 +9,13 @@ const {
 const {
   createSecretRedactor
 } = require('./secret-redactor');
+const {
+  createCaseFreshnessEvaluator
+} = require('./case-freshness');
 
 module.exports = {
   createEvidenceStore,
   createEvidenceIntegrityChecker,
-  createSecretRedactor
+  createSecretRedactor,
+  createCaseFreshnessEvaluator
 };

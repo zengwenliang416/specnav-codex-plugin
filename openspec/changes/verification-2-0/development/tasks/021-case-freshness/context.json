@@ -18,11 +18,20 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/evidence/**",
+    "plugins/specnav-verification/kernel/index.js",
     "plugins/specnav-verification/scripts/rerun-scope.js",
-    "tests/verification-v2/freshness/**"
+    "tests/verification-v2/freshness/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "openspec/changes/verification-2-0/tasks.md",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/drift-check.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/development/tasks/021-case-freshness/**"
   ],
   "test_paths": [
-    "node --test tests/verification-v2/freshness/freshness.test.js"
+    "node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js"
   ],
   "dependencies": [
     "004-contract-cross-references",
@@ -44,7 +53,8 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-17, AC-23, AC-35"
+    "Direct evidence for AC-17, AC-23, AC-35",
+    "Public createCaseFreshnessEvaluator utility without changing the frozen service contract digest"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

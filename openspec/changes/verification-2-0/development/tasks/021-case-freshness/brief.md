@@ -37,12 +37,25 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/evidence/**
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/scripts/rerun-scope.js
 - tests/verification-v2/freshness/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/021-case-freshness/**
 
 ## Interfaces / Seams
 
+- `createCaseFreshnessEvaluator()` compares the latest attempt for every
+  approved case with explicit current fingerprints.
 - Freshness reports source drift; it does not choose rerun scope by itself.
+- Browser and test-data fingerprints are case-scoped; run identity
+  fingerprints remain shared across the run.
 
 ## Components To Create
 
@@ -52,6 +65,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 - Run identity
 - Evidence integrity checker
+- Shared fingerprint comparator
 
 ## Components To Extract
 
@@ -78,7 +92,7 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## Verification Commands
 
-- `node --test tests/verification-v2/freshness/freshness.test.js`
+- `node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js`
 
 ## Stop Conditions
 

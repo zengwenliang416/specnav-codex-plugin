@@ -1,0 +1,205 @@
+# command: node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js # task021-self-review-red
+# exit_status: 1
+# duration_ms: 122
+
+## stdout
+TAP version 13
+# Subtest: matching run and case fingerprints produce a fresh case fact
+ok 1 - matching run and case fingerprints produce a fresh case fact
+  ---
+  duration_ms: 2.7655
+  type: 'test'
+  ...
+# Subtest: changed case_snapshot_hash makes the concrete case stale
+ok 2 - changed case_snapshot_hash makes the concrete case stale
+  ---
+  duration_ms: 1.236333
+  type: 'test'
+  ...
+# Subtest: changed code_sha makes the concrete case stale
+ok 3 - changed code_sha makes the concrete case stale
+  ---
+  duration_ms: 0.285041
+  type: 'test'
+  ...
+# Subtest: changed test_sha makes the concrete case stale
+ok 4 - changed test_sha makes the concrete case stale
+  ---
+  duration_ms: 0.255708
+  type: 'test'
+  ...
+# Subtest: changed environment_hash makes the concrete case stale
+ok 5 - changed environment_hash makes the concrete case stale
+  ---
+  duration_ms: 0.245917
+  type: 'test'
+  ...
+# Subtest: changed runtime_version makes the concrete case stale
+ok 6 - changed runtime_version makes the concrete case stale
+  ---
+  duration_ms: 0.837291
+  type: 'test'
+  ...
+# Subtest: changed kernel_version makes the concrete case stale
+ok 7 - changed kernel_version makes the concrete case stale
+  ---
+  duration_ms: 0.247125
+  type: 'test'
+  ...
+# Subtest: changed browser_project makes the concrete case stale
+ok 8 - changed browser_project makes the concrete case stale
+  ---
+  duration_ms: 0.158667
+  type: 'test'
+  ...
+# Subtest: changed test_data_snapshot makes the concrete case stale
+ok 9 - changed test_data_snapshot makes the concrete case stale
+  ---
+  duration_ms: 0.46925
+  type: 'test'
+  ...
+# Subtest: missing current case fingerprint is unknown and blocks freshness
+ok 10 - missing current case fingerprint is unknown and blocks freshness
+  ---
+  duration_ms: 0.496291
+  type: 'test'
+  ...
+# Subtest: mtime-only input cannot produce fresh
+ok 11 - mtime-only input cannot produce fresh
+  ---
+  duration_ms: 0.247
+  type: 'test'
+  ...
+# Subtest: latest attempt is selected independently for every approved case
+ok 12 - latest attempt is selected independently for every approved case
+  ---
+  duration_ms: 0.248333
+  type: 'test'
+  ...
+# Subtest: snapshot artifact and run hash mismatch blocks every case
+not ok 13 - snapshot artifact and run hash mismatch blocks every case
+  ---
+  duration_ms: 0.545917
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:200:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:206:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: tied latest attempts are ambiguous instead of selected by id
+not ok 14 - tied latest attempts are ambiguous instead of selected by id
+  ---
+  duration_ms: 7.950083
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:219:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:227:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an empty approved snapshot cannot produce a fresh summary
+not ok 15 - an empty approved snapshot cannot produce a fresh summary
+  ---
+  duration_ms: 0.2855
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:238:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:245:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: evaluation never mutates caller-owned artifacts
+ok 16 - evaluation never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.361875
+  type: 'test'
+  ...
+# Subtest: hostile request values fail closed without throwing
+ok 17 - hostile request values fail closed without throwing
+  ---
+  duration_ms: 0.213625
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 18 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.757875
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 19 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 15.073875
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 20 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.314167
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 21 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.835291
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 18
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 85.828792
+
+
+## stderr
+(empty)

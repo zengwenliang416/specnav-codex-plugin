@@ -1,0 +1,359 @@
+# command: node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js # task021-red
+# exit_status: 1
+# duration_ms: 111
+
+## stdout
+TAP version 13
+# Subtest: matching run and case fingerprints produce a fresh case fact
+not ok 1 - matching run and case fingerprints produce a fresh case fact
+  ---
+  duration_ms: 0.528792
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:64:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:65:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: changed case_snapshot_hash makes the concrete case stale
+not ok 2 - changed case_snapshot_hash makes the concrete case stale
+  ---
+  duration_ms: 1.114875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: changed code_sha makes the concrete case stale
+not ok 3 - changed code_sha makes the concrete case stale
+  ---
+  duration_ms: 0.194667
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed test_sha makes the concrete case stale
+not ok 4 - changed test_sha makes the concrete case stale
+  ---
+  duration_ms: 0.113292
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed environment_hash makes the concrete case stale
+not ok 5 - changed environment_hash makes the concrete case stale
+  ---
+  duration_ms: 0.112875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed runtime_version makes the concrete case stale
+not ok 6 - changed runtime_version makes the concrete case stale
+  ---
+  duration_ms: 0.102875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed kernel_version makes the concrete case stale
+not ok 7 - changed kernel_version makes the concrete case stale
+  ---
+  duration_ms: 0.091958
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed browser_project makes the concrete case stale
+not ok 8 - changed browser_project makes the concrete case stale
+  ---
+  duration_ms: 0.095666
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: changed test_data_snapshot makes the concrete case stale
+not ok 9 - changed test_data_snapshot makes the concrete case stale
+  ---
+  duration_ms: 0.408459
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:86:3'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:100:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing current case fingerprint is unknown and blocks freshness
+not ok 10 - missing current case fingerprint is unknown and blocks freshness
+  ---
+  duration_ms: 0.399833
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:114:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:118:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mtime-only input cannot produce fresh
+not ok 11 - mtime-only input cannot produce fresh
+  ---
+  duration_ms: 0.198458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:133:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:139:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: latest attempt is selected independently for every approved case
+not ok 12 - latest attempt is selected independently for every approved case
+  ---
+  duration_ms: 0.2315
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:152:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:175:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: evaluation never mutates caller-owned artifacts
+not ok 13 - evaluation never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.184042
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:200:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:204:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: hostile request values fail closed without throwing
+not ok 14 - hostile request values fail closed without throwing
+  ---
+  duration_ms: 0.39875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:209:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "kernel.createCaseFreshnessEvaluator is not a function"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'kernel.createCaseFreshnessEvaluator is not a function'
+  name: 'TypeError'
+  stack: |-
+    evaluator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:59:17)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:218:20
+    getActual (node:assert:609:5)
+    Function.doesNotThrow (node:assert:777:32)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:217:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/freshness/freshness.test.js:217:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 15 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.737167
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 16 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 16.072459
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:40:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 17 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.294417
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 18 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.495792
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 3
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.304917
+
+
+## stderr
+(empty)

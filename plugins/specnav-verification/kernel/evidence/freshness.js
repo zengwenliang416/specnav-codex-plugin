@@ -1,6 +1,9 @@
 'use strict';
 
 const { blocked } = require('./blockers');
+const {
+  compareFingerprintSet
+} = require('./fingerprint-comparator');
 
 const FRESHNESS_FIELDS = Object.freeze([
   'case_snapshot_hash',
@@ -22,13 +25,12 @@ function checkedAt(clock) {
 
 function evaluateFreshness(evidence, current, clock) {
   const timestamp = checkedAt(clock);
-  const missing = FRESHNESS_FIELDS.filter((field) => (
-    !current
-    || typeof current !== 'object'
-    || Array.isArray(current)
-    || typeof current[field] !== 'string'
-    || current[field].length === 0
-  ));
+  const comparison = compareFingerprintSet(
+    evidence,
+    current,
+    FRESHNESS_FIELDS
+  );
+  const missing = comparison.currentMissing;
   if (!timestamp || missing.length > 0) {
     const fields = [
       ...missing,
@@ -49,13 +51,7 @@ function evaluateFreshness(evidence, current, clock) {
     };
   }
 
-  const sourceMissing = FRESHNESS_FIELDS.filter((field) => (
-    !evidence
-    || typeof evidence !== 'object'
-    || Array.isArray(evidence)
-    || typeof evidence[field] !== 'string'
-    || evidence[field].length === 0
-  ));
+  const sourceMissing = comparison.sourceMissing;
   if (sourceMissing.length > 0) {
     return {
       ok: false,
@@ -67,14 +63,12 @@ function evaluateFreshness(evidence, current, clock) {
       blockers: blocked(
         'verification-evidence:source-fingerprint-incomplete',
         evidence?.id || 'evidence',
-        sourceMissing.sort().join(',')
+        [...sourceMissing].sort().join(',')
       ).blockers
     };
   }
 
-  const mismatches = FRESHNESS_FIELDS.filter((field) => (
-    evidence[field] !== current[field]
-  ));
+  const mismatches = comparison.mismatches;
   if (mismatches.length === 0) {
     return {
       ok: true,

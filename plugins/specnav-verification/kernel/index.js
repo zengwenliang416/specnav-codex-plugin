@@ -18,7 +18,8 @@ const {
 const {
   createEvidenceStore,
   createEvidenceIntegrityChecker,
-  createSecretRedactor
+  createSecretRedactor,
+  createCaseFreshnessEvaluator
 } = require('./evidence');
 const {
   renderSafeHtmlText
@@ -36,5 +37,6 @@ module.exports = Object.freeze({
   createEvidenceStore,
   createEvidenceIntegrityChecker,
   createSecretRedactor,
+  createCaseFreshnessEvaluator,
   renderSafeHtmlText
 });
