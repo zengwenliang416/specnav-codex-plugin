@@ -40,7 +40,8 @@ approved
 
 ## Required Fixes
 
-- None.
+- No further quality fix is required for Task 006; immutable data, compatibility
+  validation, and downstream installer ownership remain separated.
 
 ## Independent Integrity Check
 

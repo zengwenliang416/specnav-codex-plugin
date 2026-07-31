@@ -1392,6 +1392,29 @@ MD
 run_json "$BAD_BRIEF_PROJECT" "$TMP_DIR/bad-brief.json" 2
 assert_blocker "$TMP_DIR/bad-brief.json" 'invalid-task-brief:missing-heading:Vertical Slice'
 
+ARTIFACT_MIGRATION_PROJECT="$TMP_DIR/artifact-migration-project"
+cp -R "$HAPPY_PROJECT" "$ARTIFACT_MIGRATION_PROJECT"
+cat >>"$ARTIFACT_MIGRATION_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/report.md" <<'MD'
+
+## Artifact Migration Note
+
+- Distinguish legacy V1 artifact migration from database migration and migrate
+  the verification artifacts without changing application storage.
+MD
+run_json "$ARTIFACT_MIGRATION_PROJECT" "$TMP_DIR/artifact-migration.json" 0
+jq -e '.ok == true' "$TMP_DIR/artifact-migration.json" >/dev/null
+
+DATABASE_MIGRATION_FAIL_PROJECT="$TMP_DIR/database-migration-fail-project"
+cp -R "$HAPPY_PROJECT" "$DATABASE_MIGRATION_FAIL_PROJECT"
+cat >>"$DATABASE_MIGRATION_FAIL_PROJECT/openspec/changes/add-dashboard/development/handoff-to-verify.md" <<'MD'
+
+## Storage Change
+
+- Create a database migration for the dashboard review timestamp.
+MD
+run_json "$DATABASE_MIGRATION_FAIL_PROJECT" "$TMP_DIR/database-migration-fail.json" 2
+assert_blocker "$TMP_DIR/database-migration-fail.json" 'migration-manifest-sql-mentioned-but-not-required'
+
 SQL_MIGRATION_FAIL_PROJECT="$TMP_DIR/sql-migration-fail-project"
 cp -R "$HAPPY_PROJECT" "$SQL_MIGRATION_FAIL_PROJECT"
 cat >>"$SQL_MIGRATION_FAIL_PROJECT/openspec/changes/add-dashboard/development/handoff-to-verify.md" <<'MD'
@@ -1452,6 +1475,45 @@ SQL
 run_json "$SQL_MIGRATION_OK_PROJECT" "$TMP_DIR/sql-migration-ok.json" 0
 jq -e '.ok == true' "$TMP_DIR/sql-migration-ok.json" >/dev/null
 
+SUBSTANTIVE_GAP_PROJECT="$TMP_DIR/substantive-gap-project"
+cp -R "$HAPPY_PROJECT" "$SUBSTANTIVE_GAP_PROJECT"
+cat >"$SUBSTANTIVE_GAP_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md" <<'MD'
+# Spec Review
+
+## Verdict
+
+approved
+
+## Missing Requirements
+
+No requirement gap remains after the reviewed implementation and tests.
+
+## Extra Behavior
+
+No extra behavior was introduced.
+
+## Misunderstood Requirements
+
+No misunderstood requirements were found.
+
+## Cannot Verify From Diff
+
+Browser state coverage remains for verification.
+
+## Required Fixes
+
+No required fixes remain.
+MD
+run_json "$SUBSTANTIVE_GAP_PROJECT" "$TMP_DIR/substantive-gap.json" 0
+jq -e '.ok == true' "$TMP_DIR/substantive-gap.json" >/dev/null
+
+PLACEHOLDER_GAP_PROJECT="$TMP_DIR/placeholder-gap-project"
+cp -R "$HAPPY_PROJECT" "$PLACEHOLDER_GAP_PROJECT"
+perl -0pi -e 's/No missing requirements were found\./Gap: controller decision required./' \
+  "$PLACEHOLDER_GAP_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
+run_json "$PLACEHOLDER_GAP_PROJECT" "$TMP_DIR/placeholder-gap.json" 2
+assert_blocker "$TMP_DIR/placeholder-gap.json" 'invalid-spec-review:empty-heading:Missing Requirements'
+
 SPEC_REVIEW_PROJECT="$TMP_DIR/spec-review-project"
 cp -R "$HAPPY_PROJECT" "$SPEC_REVIEW_PROJECT"
 cat >"$SPEC_REVIEW_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md" <<'MD'
@@ -1499,5 +1561,47 @@ cat >"$VALIDATION_FAIL_PROJECT/openspec/changes/add-dashboard/development/valida
 JSONL
 run_json "$VALIDATION_FAIL_PROJECT" "$TMP_DIR/validation-fail.json" 2
 assert_blocker "$TMP_DIR/validation-fail.json" 'validation-log:no-pass'
+
+EXECUTED_FAILURE_PROJECT="$TMP_DIR/executed-failure-project"
+cp -R "$HAPPY_PROJECT" "$EXECUTED_FAILURE_PROJECT"
+cat >>"$EXECUTED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # unresolved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+JSONL
+run_json "$EXECUTED_FAILURE_PROJECT" "$TMP_DIR/executed-failure.json" 2
+assert_blocker "$TMP_DIR/executed-failure.json" 'validation-log:executed-evidence-failed:001-dashboard-summary'
+
+OVERTURNED_FAILURE_PROJECT="$TMP_DIR/overturned-failure-project"
+cp -R "$HAPPY_PROJECT" "$OVERTURNED_FAILURE_PROJECT"
+cat >>"$OVERTURNED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":true}
+JSONL
+run_json "$OVERTURNED_FAILURE_PROJECT" "$TMP_DIR/overturned-failure.json" 2
+assert_blocker "$TMP_DIR/overturned-failure.json" 'validation-log:executed-evidence-failed:001-dashboard-summary'
+
+ADJUDICATED_FAILURE_PROJECT="$TMP_DIR/adjudicated-failure-project"
+cp -R "$HAPPY_PROJECT" "$ADJUDICATED_FAILURE_PROJECT"
+cat >>"$ADJUDICATED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # repaired-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/003-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/002-dashboard-summary.log","superseding_evidence_log":"development/evidence/003-dashboard-summary.log","reason":"A later system-executed repair run and approved reviews supersede this preserved RED attempt.","recorded_at":"2026-07-03T00:03:00.000Z"}
+JSONL
+run_json "$ADJUDICATED_FAILURE_PROJECT" "$TMP_DIR/adjudicated-failure.json" 0
+
+INVALID_ADJUDICATION_PROJECT="$TMP_DIR/invalid-adjudication-project"
+cp -R "$HAPPY_PROJECT" "$INVALID_ADJUDICATION_PROJECT"
+cat >>"$INVALID_ADJUDICATION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/missing.log","superseding_evidence_log":"development/evidence/001-dashboard-summary.log","reason":"This target does not exist.","recorded_at":"2026-07-03T00:02:00.000Z"}
+JSONL
+run_json "$INVALID_ADJUDICATION_PROJECT" "$TMP_DIR/invalid-adjudication.json" 2
+assert_blocker "$TMP_DIR/invalid-adjudication.json" 'validation-log:invalid-overturn-target:001-dashboard-summary'
+
+INVALID_ADJUDICATION_SUCCESSOR_PROJECT="$TMP_DIR/invalid-adjudication-successor-project"
+cp -R "$HAPPY_PROJECT" "$INVALID_ADJUDICATION_SUCCESSOR_PROJECT"
+cat >>"$INVALID_ADJUDICATION_SUCCESSOR_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/002-dashboard-summary.log","superseding_evidence_log":"development/evidence/001-dashboard-summary.log","reason":"The referenced pass predates the preserved RED attempt.","recorded_at":"2026-07-03T00:02:00.000Z"}
+JSONL
+run_json "$INVALID_ADJUDICATION_SUCCESSOR_PROJECT" "$TMP_DIR/invalid-adjudication-successor.json" 2
+assert_blocker "$TMP_DIR/invalid-adjudication-successor.json" 'validation-log:invalid-overturn-successor:001-dashboard-summary'
 
 echo "specnav development plugin fixtures ok"

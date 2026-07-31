@@ -65,4 +65,6 @@ No blocking findings.
 
 ## Required Fixes
 
-None.
+- No further quality fix is required for Task 010 after process confinement,
+  capability guarding, IPC authentication, and browser evidence regression
+  coverage passed.

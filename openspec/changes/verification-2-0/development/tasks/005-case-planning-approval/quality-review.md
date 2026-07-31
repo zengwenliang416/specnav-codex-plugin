@@ -60,7 +60,8 @@ approved
 
 ## Required Fixes
 
-- None.
+- No further quality fix is required for Task 005 after the snapshot, approval,
+  fail-closed input handling, and atomic publication repairs described above.
 
 ## Validation
 

@@ -6,7 +6,8 @@ approved
 
 ## Missing Requirements
 
-None for the Task 010 slice.
+- No requirement is missing from the Task 010 Playwright adapter boundary;
+  persistence, Reading, and six-domain ownership remain assigned downstream.
 
 ## Extra Behavior
 
@@ -45,4 +46,5 @@ None for the Task 010 slice.
 
 ## Required Fixes
 
-None.
+- No further specification fix is required for the Task 010 Playwright adapter
+  boundary; downstream persistence and verdict ownership remain explicit.

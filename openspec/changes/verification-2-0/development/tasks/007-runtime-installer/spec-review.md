@@ -6,7 +6,8 @@ approved
 
 ## Missing Requirements
 
-- None.
+- No requirement is missing from the Task 007 installer boundary; independent
+  runtime readiness diagnosis remains assigned to Task 008.
 
 ## Extra Behavior
 
@@ -14,7 +15,8 @@ approved
 
 ## Misunderstood Requirements
 
-- None.
+- No requirement is currently misunderstood: the installer performs an
+  explicit managed installation and does not treat installation as readiness.
 
 ## Cannot Verify From Diff
 
@@ -30,7 +32,8 @@ approved
 
 ## Required Fixes
 
-- None.
+- No further specification fix is required for Task 007 after the clean-root
+  installation and failure-preservation evidence passed.
 
 ## Direct Evidence
 

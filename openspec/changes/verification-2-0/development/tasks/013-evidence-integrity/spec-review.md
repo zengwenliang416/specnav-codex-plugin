@@ -6,7 +6,8 @@ approved
 
 ## Missing Requirements
 
-None for the Task 013 slice.
+- No requirement is missing from the Task 013 evidence-integrity boundary;
+  Reading and release verdict ownership remain assigned downstream.
 
 ## Extra Behavior
 
@@ -42,4 +43,5 @@ None for the Task 013 slice.
 
 ## Required Fixes
 
-None.
+- No further specification fix is required for Task 013 after complete
+  fingerprint, object-byte, store-record, and cross-reference checks passed.

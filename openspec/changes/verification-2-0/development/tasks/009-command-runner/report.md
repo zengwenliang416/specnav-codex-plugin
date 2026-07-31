@@ -49,7 +49,7 @@ exit evidence, and exact blockers.
 - Evidence integrity and derived green verdicts remain Tasks 013 and 016.
 - Playwright and Midscene execution remain Tasks 010 and 011.
 
-## TDD And Review Evidence
+## TDD Evidence
 
 - `066` preserves the original RED baseline.
 - `072`, `079`, `085`, `091`, and `097` preserve independent quality-review
@@ -78,6 +78,21 @@ exit evidence, and exact blockers.
   and redaction are intentionally deferred to Tasks 012 through 014.
 - Approved cwd must exist and resolve before spawn; missing or inaccessible cwd
   fails closed.
+
+## Scope Deviations
+
+- The task required repeated race-condition repairs after independent review,
+  but the delivered scope remained limited to the `AC-14` command execution
+  boundary.
+- No EvidenceStore, Reading, six-domain, report, host, release, or fallback
+  behavior was added.
+
+## Follow-up Needed
+
+- Tasks 012 through 016 must persist, validate, interpret, and aggregate the raw
+  execution output before it can influence a verification verdict.
+- Task 020 must consume the immutable retry identity when implementing retest
+  and regression closure.
 
 ## Adjudication
 

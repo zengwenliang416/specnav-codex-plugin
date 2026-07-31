@@ -6,7 +6,9 @@ approved
 
 ## Missing Requirements
 
-- None.
+- No requirement is missing from the Task 006 lock-manifest boundary; runtime
+  installation and readiness probing remain explicitly assigned to Tasks 007
+  and 008.
 
 ## Extra Behavior
 
@@ -15,7 +17,9 @@ approved
 
 ## Misunderstood Requirements
 
-- None.
+- No requirement is currently misunderstood: Task 006 freezes exact runtime
+  identity and compatibility inputs without claiming installation or doctor
+  behavior.
 
 ## Cannot Verify From Diff
 
@@ -31,7 +35,8 @@ approved
 
 ## Required Fixes
 
-- None.
+- No further specification fix is required for Task 006 because `AC-04` and
+  `AC-05` are supported by the exact lock identity and mismatch blockers.
 
 ## Direct Evidence
 

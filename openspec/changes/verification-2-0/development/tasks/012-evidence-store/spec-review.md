@@ -6,7 +6,8 @@ approved
 
 ## Missing Requirements
 
-None for the Task 012 slice.
+- No requirement is missing from the Task 012 append-only EvidenceStore
+  boundary; integrity, redaction, and verdict derivation remain downstream.
 
 ## Extra Behavior
 
@@ -42,4 +43,5 @@ None for the Task 012 slice.
 
 ## Required Fixes
 
-None.
+- No further specification fix is required for the Task 012 append-only
+  EvidenceStore boundary; integrity and verdict behavior remain downstream.

@@ -106,7 +106,8 @@ approved
 
 ## Required Fixes
 
-- None.
+- No further quality fix is required for Task 008 after remediation synthesis
+  and preserve-then-restore repair behavior were independently exercised.
 
 ## Direct Evidence
 

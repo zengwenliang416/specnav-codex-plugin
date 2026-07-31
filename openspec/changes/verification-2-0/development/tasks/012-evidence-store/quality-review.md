@@ -62,4 +62,6 @@ No blocking findings.
 
 ## Required Fixes
 
-None.
+- No further quality fix is required for Task 012 after append, object
+  publication, deterministic index rebuild, and fail-closed lookup coverage
+  passed.

@@ -10,6 +10,29 @@ Task 009 remains scoped to `AC-14`. The final stability repair only makes the
 timeout-before-abort regression deterministic; it does not change the command
 runner contract or claim downstream evidence ownership.
 
+## Missing Requirements
+
+- No requirement is missing from the Task 009 `AC-14` command-runner boundary.
+  Persistent evidence and derived verdicts remain assigned to later tasks.
+
+## Extra Behavior
+
+- No material extra behavior was found. Process lifecycle hardening, immutable
+  stop-cause handling, and blocked artifact preservation directly support the
+  approved command execution contract.
+
+## Misunderstood Requirements
+
+- No current requirement misunderstanding remains. The runner emits execution
+  facts and raw artifacts but does not claim EvidenceStore or verdict ownership.
+
+## Cannot Verify From Diff
+
+- Long-term evidence retention cannot be verified from Task 009 because it is
+  owned by Task 012.
+- Reading and six-domain verdict derivation cannot be verified from Task 009
+  because they are owned by Tasks 015 and 016.
+
 ## AC-14 Verification
 
 - Approval, runtime readiness, exact command identity, run/snapshot binding,
@@ -42,6 +65,18 @@ runner contract or claim downstream evidence ownership.
 - Verification and development plugin fixtures: passed.
 - Static syntax and diff checks: passed.
 
+## Acceptance Assertions Verified
+
+- `AC-14`: approved command-backed cases execute through exact argv, cwd,
+  environment, runtime, identity, lifecycle, timeout, cancellation, and
+  terminal-artifact contracts without shell or fallback execution.
+
 ## Findings
 
-No blocking findings.
+- No blocking specification finding remains after the deterministic
+  timeout-before-abort repair and independent regression runs.
+
+## Required Fixes
+
+- No further specification fix is required for Task 009 inside the approved
+  `AC-14` boundary.

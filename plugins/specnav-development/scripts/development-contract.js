@@ -93,7 +93,7 @@ const BRIEF_CORE_HEADINGS = [
   'Verification Commands',
   'Stop Conditions'
 ];
-const SQL_INTENT_PATTERN = /\b(?:ALTER\s+TABLE|CREATE\s+TABLE|DROP\s+TABLE|CREATE\s+INDEX|DROP\s+INDEX|INSERT\s+INTO|UPDATE\s+[a-z0-9_."`]+?\s+SET|DELETE\s+FROM|sys_menu|sys_role_menu|migration|migrations|seed\s+sql|ddl|dml)\b/i;
+const SQL_INTENT_PATTERN = /\b(?:ALTER\s+TABLE|CREATE\s+TABLE|DROP\s+TABLE|CREATE\s+INDEX|DROP\s+INDEX|INSERT\s+INTO|UPDATE\s+[a-z0-9_."`]+?\s+SET|DELETE\s+FROM|sys_menu|sys_role_menu|seed\s+sql|(?:add|apply|create|execute|generate|implement|include|provide|requires?|run|write)\s+(?:a\s+|an\s+|the\s+)?(?:database|schema|sql)\s+migrations?|(?:database|schema|sql)\s+migrations?\s+(?:is|are)\s+required|migrations?\s+(?:sql|ddl|dml|scripts?|files?)|ddl|dml)\b/i;
 const SQL_FILE_PATTERN = /\.sql$/i;
 const SQL_KIND_PATTERN = /\b(?:ALTER|CREATE|DROP|INSERT|UPDATE|DELETE|TRUNCATE|MERGE)\b/i;
 
@@ -370,7 +370,7 @@ function isSubstantiveLine(line) {
   const value = stripListMarker(line);
   return value !== ''
     && !/^#{1,6}\s+/.test(value)
-    && !/\b(?:TODO|TBD|unresolved|gap)\b/i.test(value)
+    && !/^(?:TODO|TBD|unresolved|gap)(?:\s*[:：-].*|)$/i.test(value)
     && !isPlaceholder(value);
 }
 
@@ -1509,11 +1509,67 @@ function validateValidationLog(developmentDir, activeChange) {
     const status = String(entry.status || '').toLowerCase();
     return entry.ok === true || status === 'pass' || status === 'passed';
   };
-  const executed = result.entries.filter((entry) => entry.attestation === 'system-executed');
+  const indexedEntries = result.entries.map((entry, index) => ({ entry, index }));
+  const executed = indexedEntries.filter(({ entry }) => entry.attestation === 'system-executed');
   const selfReported = result.entries.filter((entry) => entry.attestation !== 'system-executed');
   const hasPass = result.entries.some(isPass);
-  const hasExecutedPass = executed.some(isPass);
-  const executedFailures = executed.filter((entry) => !isPass(entry));
+  const hasExecutedPass = executed.some(({ entry }) => isPass(entry));
+  const executedFailures = executed.filter(({ entry }) => !isPass(entry));
+  const failureByEvidenceLog = new Map(
+    executedFailures
+      .filter(({ entry }) => (
+        typeof entry.evidence_log === 'string'
+        && entry.evidence_log.trim()
+      ))
+      .map((record) => [record.entry.evidence_log, record])
+  );
+  const passByEvidenceLog = new Map(
+    executed
+      .filter(({ entry }) => (
+        isPass(entry)
+        && typeof entry.evidence_log === 'string'
+        && entry.evidence_log.trim()
+      ))
+      .map((record) => [record.entry.evidence_log, record])
+  );
+  const adjudicatedFailures = new Set();
+
+  for (const { entry, index } of indexedEntries) {
+    if (String(entry.status || '').toLowerCase() !== 'overturned') continue;
+    const taskId = entry.task || entry.task_id || 'unknown';
+    const target = typeof entry.target_evidence_log === 'string'
+      ? entry.target_evidence_log.trim()
+      : '';
+    const supersedingTarget = typeof entry.superseding_evidence_log === 'string'
+      ? entry.superseding_evidence_log.trim()
+      : '';
+    const reason = typeof entry.reason === 'string' ? entry.reason.trim() : '';
+    const failureRecord = target ? failureByEvidenceLog.get(target) : null;
+    const failure = failureRecord && failureRecord.entry;
+    if (
+      !failure
+      || (failure.task || failure.task_id || 'unknown') !== taskId
+    ) {
+      blockers.push(`validation-log:invalid-overturn-target:${taskId}`);
+      continue;
+    }
+    if (!reason) {
+      blockers.push(`validation-log:overturn-reason-missing:${taskId}`);
+      continue;
+    }
+    const passRecord = supersedingTarget ? passByEvidenceLog.get(supersedingTarget) : null;
+    const pass = passRecord && passRecord.entry;
+    if (
+      !pass
+      || (pass.task || pass.task_id || 'unknown') !== taskId
+      || passRecord.index <= failureRecord.index
+      || passRecord.index >= index
+    ) {
+      blockers.push(`validation-log:invalid-overturn-successor:${taskId}`);
+      continue;
+    }
+    adjudicatedFailures.add(target);
+  }
 
   if (!hasPass) blockers.push('validation-log:no-pass');
   // Handoff requires at least one system-executed pass when any entry is
@@ -1523,8 +1579,11 @@ function validateValidationLog(developmentDir, activeChange) {
     entry.replayable !== false && typeof entry.command === 'string' && entry.command.trim());
   if (hasReplayable && !hasExecutedPass) blockers.push('validation-log:no-executed-evidence');
   // Executed evidence outranks claims: a system-executed failure blocks even
-  // when a self-reported pass exists for the same work.
-  for (const entry of executedFailures) {
+  // when a self-reported pass exists for the same work. Historical RED remains
+  // append-only and stops blocking only through an explicit overturned flag or
+  // a later adjudication that names the exact failed evidence receipt.
+  for (const { entry } of executedFailures) {
+    if (adjudicatedFailures.has(entry.evidence_log)) continue;
     blockers.push(`validation-log:executed-evidence-failed:${entry.task || entry.task_id || 'unknown'}`);
   }
   // Non-replayable self-reported entries must carry a caveat explaining why
@@ -1539,6 +1598,7 @@ function validateValidationLog(developmentDir, activeChange) {
     entries: result.entries.length,
     executed_entries: executed.length,
     executed_pass: hasExecutedPass,
+    adjudicated_failures: adjudicatedFailures.size,
     attestation: hasExecutedPass ? 'system-executed' : 'self-reported-only'
   });
 }
