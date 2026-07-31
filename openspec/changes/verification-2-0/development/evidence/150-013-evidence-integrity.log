@@ -1,0 +1,277 @@
+# command: node --test tests/verification-v2/evidence/integrity.test.js tests/verification-v2/evidence/evidence-store.test.js tests/verification-v2/kernel/package-boundary.test.js # task013-final-focused
+# exit_status: 0
+# duration_ms: 1801
+
+## stdout
+TAP version 13
+# Subtest: append writes one immutable raw record, content object, index, and cache metadata
+ok 1 - append writes one immutable raw record, content object, index, and cache metadata
+  ---
+  duration_ms: 46.880334
+  type: 'test'
+  ...
+# Subtest: persisted evidence and index pass the managed AJV schema registry
+ok 2 - persisted evidence and index pass the managed AJV schema registry
+  ---
+  duration_ms: 982.888542
+  type: 'test'
+  ...
+# Subtest: append does not mutate caller-owned evidence or content
+ok 3 - append does not mutate caller-owned evidence or content
+  ---
+  duration_ms: 30.937666
+  type: 'test'
+  ...
+# Subtest: failed evidence remains after a later passing attempt and cache deletion
+ok 4 - failed evidence remains after a later passing attempt and cache deletion
+  ---
+  duration_ms: 85.975417
+  type: 'test'
+  ...
+# Subtest: index bytes are deterministic across rebuild and ignore mtime changes
+ok 5 - index bytes are deterministic across rebuild and ignore mtime changes
+  ---
+  duration_ms: 44.29125
+  type: 'test'
+  ...
+# Subtest: an exact duplicate append is idempotent and adds no raw record
+ok 6 - an exact duplicate append is idempotent and adds no raw record
+  ---
+  duration_ms: 54.162834
+  type: 'test'
+  ...
+# Subtest: an idempotent append restores deleted derived and object files
+ok 7 - an idempotent append restores deleted derived and object files
+  ---
+  duration_ms: 64.351167
+  type: 'test'
+  ...
+# Subtest: the same bytes under different attempts reuse the object but keep distinct records
+ok 8 - the same bytes under different attempts reuse the object but keep distinct records
+  ---
+  duration_ms: 64.385333
+  type: 'test'
+  ...
+# Subtest: store rejects caller-supplied managed identity and object fields
+ok 9 - store rejects caller-supplied managed identity and object fields
+  ---
+  duration_ms: 0.93325
+  type: 'test'
+  ...
+# Subtest: source files must resolve inside the approved source root
+ok 10 - source files must resolve inside the approved source root
+  ---
+  duration_ms: 2.113625
+  type: 'test'
+  ...
+# Subtest: a raw JSONL symlink cannot redirect append outside the store
+ok 11 - a raw JSONL symlink cannot redirect append outside the store
+  ---
+  duration_ms: 6.086917
+  type: 'test'
+  ...
+# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index
+ok 12 - corrupt raw JSON blocks rebuild and preserves the last valid index
+  ---
+  duration_ms: 34.12425
+  type: 'test'
+  ...
+# Subtest: duplicate raw ids block rebuild and ID lookup
+ok 13 - duplicate raw ids block rebuild and ID lookup
+  ---
+  duration_ms: 41.057083
+  type: 'test'
+  ...
+# Subtest: an existing content-addressed object with different bytes blocks append
+ok 14 - an existing content-addressed object with different bytes blocks append
+  ---
+  duration_ms: 1.094959
+  type: 'test'
+  ...
+# Subtest: content object publication failure returns an exact blocker without throwing
+ok 15 - content object publication failure returns an exact blocker without throwing
+  ---
+  duration_ms: 15.744334
+  type: 'test'
+  ...
+# Subtest: resolve refuses a content object replaced by a symlink
+ok 16 - resolve refuses a content object replaced by a symlink
+  ---
+  duration_ms: 47.8325
+  type: 'test'
+  ...
+# Subtest: schema rejection blocks raw append and index publication
+ok 17 - schema rejection blocks raw append and index publication
+  ---
+  duration_ms: 0.577375
+  type: 'test'
+  ...
+# Subtest: store root must remain inside the approved change root
+ok 18 - store root must remain inside the approved change root
+  ---
+  duration_ms: 0.817875
+  type: 'test'
+  ...
+# Subtest: a symlinked change root cannot redirect the complete store
+ok 19 - a symlinked change root cannot redirect the complete store
+  ---
+  duration_ms: 4.58025
+  type: 'test'
+  ...
+# Subtest: cache publication failure restores the previous index and preserves raw truth
+ok 20 - cache publication failure restores the previous index and preserves raw truth
+  ---
+  duration_ms: 92.079833
+  type: 'test'
+  ...
+# Subtest: raw writer completes short writes instead of committing a partial line
+ok 21 - raw writer completes short writes instead of committing a partial line
+  ---
+  duration_ms: 0.333333
+  type: 'test'
+  ...
+# Subtest: an occupied raw lock fails closed without creating a raw claim
+ok 22 - an occupied raw lock fails closed without creating a raw claim
+  ---
+  duration_ms: 14.274209
+  type: 'test'
+  ...
+# Subtest: lookup requires a valid summary index and never scans raw as fallback
+ok 23 - lookup requires a valid summary index and never scans raw as fallback
+  ---
+  duration_ms: 34.198
+  type: 'test'
+  ...
+# Subtest: non-JSON evidence candidates return a blocker instead of throwing
+ok 24 - non-JSON evidence candidates return a blocker instead of throwing
+  ---
+  duration_ms: 2.790625
+  type: 'test'
+  ...
+# Subtest: public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API
+ok 25 - public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API
+  ---
+  duration_ms: 990.883792
+  type: 'test'
+  ...
+# Subtest: valid intact and fresh evidence returns facts only and uses the injected collaborators
+ok 26 - valid intact and fresh evidence returns facts only and uses the injected collaborators
+  ---
+  duration_ms: 51.960584
+  type: 'test'
+  ...
+# Subtest: missing evidence file reports a broken-evidence fact instead of a verdict
+ok 27 - missing evidence file reports a broken-evidence fact instead of a verdict
+  ---
+  duration_ms: 50.131125
+  type: 'test'
+  ...
+# Subtest: tampered evidence bytes block integrity when hash no longer matches
+ok 28 - tampered evidence bytes block integrity when hash no longer matches
+  ---
+  duration_ms: 38.277458
+  type: 'test'
+  ...
+# Subtest: size mismatch blocks integrity even when the file still exists
+ok 29 - size mismatch blocks integrity even when the file still exists
+  ---
+  duration_ms: 54.270833
+  type: 'test'
+  ...
+# Subtest: an unrecognized producer remains blocked even when bytes are intact
+ok 30 - an unrecognized producer remains blocked even when bytes are intact
+  ---
+  duration_ms: 44.874583
+  type: 'test'
+  ...
+# Subtest: record mismatch blocks when the graph evidence no longer matches the stored record
+ok 31 - record mismatch blocks when the graph evidence no longer matches the stored record
+  ---
+  duration_ms: 51.410583
+  type: 'test'
+  ...
+# Subtest: binding mismatch is surfaced from the injected cross-reference validator
+ok 32 - binding mismatch is surfaced from the injected cross-reference validator
+  ---
+  duration_ms: 43.0115
+  type: 'test'
+  ...
+# Subtest: empty evidence blocks green-driving facts before any downstream reading verdict exists
+ok 33 - empty evidence blocks green-driving facts before any downstream reading verdict exists
+  ---
+  duration_ms: 49.162708
+  type: 'test'
+  ...
+# Subtest: stale current fingerprints block freshness with SHA-based comparison instead of mtime
+ok 34 - stale current fingerprints block freshness with SHA-based comparison instead of mtime
+  ---
+  duration_ms: 36.896333
+  type: 'test'
+  ...
+# Subtest: missing current fingerprints return blockers and facts without throwing
+ok 35 - missing current fingerprints return blockers and facts without throwing
+  ---
+  duration_ms: 47.749167
+  type: 'test'
+  ...
+# Subtest: mtime changes alone are ignored when bytes and fingerprints still match
+ok 36 - mtime changes alone are ignored when bytes and fingerprints still match
+  ---
+  duration_ms: 38.805083
+  type: 'test'
+  ...
+# Subtest: unsafe symlink evidence paths are blocked before bytes are trusted
+ok 37 - unsafe symlink evidence paths are blocked before bytes are trusted
+  ---
+  duration_ms: 55.976292
+  type: 'test'
+  ...
+# Subtest: integrity checks never mutate caller graph, evidence, or fingerprint input
+ok 38 - integrity checks never mutate caller graph, evidence, or fingerprint input
+  ---
+  duration_ms: 42.79025
+  type: 'test'
+  ...
+# Subtest: hostile proxy input fails closed without escaping or reaching collaborators
+ok 39 - hostile proxy input fails closed without escaping or reaching collaborators
+  ---
+  duration_ms: 39.796208
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 40 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.761041
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 41 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 17.344417
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 42 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.293166
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 43 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 1.299
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1762.77575
+
+
+## stderr
+(empty)

@@ -16,7 +16,8 @@ const {
   createExecutionOrchestrator
 } = require('./execution');
 const {
-  createEvidenceStore
+  createEvidenceStore,
+  createEvidenceIntegrityChecker
 } = require('./evidence');
 
 module.exports = Object.freeze({
@@ -28,5 +29,6 @@ module.exports = Object.freeze({
   createCommandAdapter,
   createPlaywrightAdapter,
   createExecutionOrchestrator,
-  createEvidenceStore
+  createEvidenceStore,
+  createEvidenceIntegrityChecker
 });

@@ -37,12 +37,25 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/evidence/**
+- plugins/specnav-verification/kernel/index.js
 - tests/verification-v2/evidence/**
 - tests/verification-v2/negative/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-negative.sh
+- openspec/changes/verification-2-0/tasks.md
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/drift-check.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/development/tasks/013-evidence-integrity/**
 
 ## Interfaces / Seams
 
-- Integrity service returns facts to reading and gate services and never edits source evidence.
+- `createEvidenceIntegrityChecker()` returns integrity and freshness facts to
+  later reading and gate services and never edits source evidence.
+- The checker is a concrete Kernel factory. Adding a new frozen service
+  contract requires an explicit API and contract version upgrade.
 
 ## Components To Create
 
@@ -61,8 +74,14 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-17`, `AC-18`, `AC-23`, `AC-28`.
+- Direct acceptance assertion: `AC-17`.
+- Acceptance subclaims: `AC-18:empty-evidence`,
+  `AC-23:evidence-fingerprint-freshness`, and
+  `AC-28:evidence-integrity-blockers`.
 - Reading references resolve to evidence objects; any failed integrity check blocks the reading and release.
+- Task 013 returns facts and blockers only. Reading verdict ownership remains
+  Task 015, case freshness remains Task 021, and release/archive enforcement
+  remains Task 033.
 
 ## State / Error / Empty / Loading Behavior
 

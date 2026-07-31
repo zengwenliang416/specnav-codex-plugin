@@ -4,7 +4,10 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { canonicalJson, sha256 } = require('./identity');
-const { ensureSafeDirectory } = require('./paths');
+const {
+  ensureSafeDirectory,
+  readStoreFile
+} = require('./paths');
 const { readRaw } = require('./raw-store');
 const { blocked } = require('./blockers');
 
@@ -45,8 +48,26 @@ function ioDetail(error, file) {
   return `${code}: ${message}; target=${file}`;
 }
 
-function readOptionalFile(file) {
-  if (!fs.existsSync(file)) {
+function readOptionalFile(rootState, file) {
+  const read = readStoreFile(rootState, rootState.root, file);
+  if (!read.ok) {
+    if (
+      read.id === 'verification-evidence:store-root-invalid'
+      || read.id === 'verification-evidence:store-root-outside-change'
+      || read.id === 'verification-evidence:store-root-symlink'
+      || read.id === 'verification-evidence:change-root-missing'
+    ) {
+      return blocked(read.id, file);
+    }
+    return blocked(
+      read.id === 'verification-evidence:store-file-path-unsafe'
+        ? 'verification-evidence:derived-path-unsafe'
+        : 'verification-evidence:derived-read-failed',
+      file,
+      read.error ? ioDetail(read.error, file) : `unsafe target=${file}`
+    );
+  }
+  if (read.missing) {
     return {
       ok: true,
       exists: false,
@@ -54,27 +75,12 @@ function readOptionalFile(file) {
       blockers: []
     };
   }
-  try {
-    const stat = fs.lstatSync(file);
-    if (stat.isSymbolicLink() || !stat.isFile()) {
-      return blocked(
-        'verification-evidence:derived-path-unsafe',
-        file
-      );
-    }
-    return {
-      ok: true,
-      exists: true,
-      bytes: fs.readFileSync(file),
-      blockers: []
-    };
-  } catch (error) {
-    return blocked(
-      'verification-evidence:derived-read-failed',
-      file,
-      ioDetail(error, file)
-    );
-  }
+  return {
+    ok: true,
+    exists: true,
+    bytes: read.bytes,
+    blockers: []
+  };
 }
 
 function writeBufferAtomic(rootState, file, bytes) {
@@ -128,9 +134,11 @@ function writeJsonAtomic(rootState, file, value) {
   );
 }
 
-function publicationMatches(file, sourceDigest) {
+function publicationMatches(rootState, file, sourceDigest) {
   try {
-    const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const read = readStoreFile(rootState, rootState.root, file);
+    if (!read.ok || read.missing) return false;
+    const value = JSON.parse(read.bytes.toString('utf8'));
     return value.source_digest === sourceDigest;
   } catch {
     return false;
@@ -144,7 +152,7 @@ function restorePublication(options) {
     previous,
     sourceDigest
   } = options;
-  if (!publicationMatches(file, sourceDigest)) {
+  if (!publicationMatches(rootState, file, sourceDigest)) {
     return { ok: true, skipped: true, blockers: [] };
   }
   if (previous.exists) {
@@ -199,7 +207,7 @@ function rebuildEvidenceIndex(options) {
     schemaRegistry,
     clock
   } = options;
-  const raw = readRaw(root);
+  const raw = readRaw(root, rootState);
   if (!raw.ok) return raw;
   if (raw.missing) {
     return blocked(
@@ -264,15 +272,15 @@ function rebuildEvidenceIndex(options) {
   };
   const indexFile = path.join(root, INDEX_ARTIFACT);
   const cacheFile = path.join(root, ...CACHE_ARTIFACT.split('/'));
-  const previousIndex = readOptionalFile(indexFile);
+  const previousIndex = readOptionalFile(rootState, indexFile);
   if (!previousIndex.ok) return previousIndex;
-  const previousCache = readOptionalFile(cacheFile);
+  const previousCache = readOptionalFile(rootState, cacheFile);
   if (!previousCache.ok) return previousCache;
 
   const indexWrite = writeJsonAtomic(rootState, indexFile, index);
   if (!indexWrite.ok) return indexWrite;
 
-  const currentRaw = readRaw(root);
+  const currentRaw = readRaw(root, rootState);
   if (!currentRaw.ok) {
     return withRollback(currentRaw, [
       restorePublication({
@@ -316,7 +324,7 @@ function rebuildEvidenceIndex(options) {
     ], { attempted_index: index });
   }
 
-  const finalRaw = readRaw(root);
+  const finalRaw = readRaw(root, rootState);
   if (!finalRaw.ok) {
     return withRollback(finalRaw, [
       restorePublication({

@@ -34,6 +34,7 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.match(kernel.metadata.contractDigest, /^[a-f0-9]{64}$/);
   assert.equal(Object.isFrozen(kernel.metadata), true);
   assert.equal(typeof kernel.createEvidenceStore, 'function');
+  assert.equal(typeof kernel.createEvidenceIntegrityChecker, 'function');
   assert.deepEqual(
     kernel.serviceContracts.evidenceStore.methods,
     ['append', 'rebuildIndex']

@@ -6,7 +6,9 @@ const { evidenceId, canonicalJson, sha256 } = require('./identity');
 const {
   isContained,
   validateStoreRoot,
-  validateSourcePath
+  validateSourcePath,
+  validateResolvedStorePath,
+  readStoreFile
 } = require('./paths');
 const {
   readRaw,
@@ -266,7 +268,7 @@ function createEvidenceStore(options) {
       };
     }
 
-    const current = readRaw(config.root);
+    const current = readRaw(config.root, config.rootState);
     if (!current.ok) return current;
     const rawValidation = validateRecords(
       current.records,
@@ -353,7 +355,7 @@ function createEvidenceStore(options) {
         'evidence_id'
       );
     }
-    const raw = readRaw(config.root);
+    const raw = readRaw(config.root, config.rootState);
     if (!raw.ok) return raw;
     if (raw.missing) {
       return blocked(
@@ -364,7 +366,35 @@ function createEvidenceStore(options) {
     const validation = validateRecords(raw.records, config.schemaRegistry);
     if (!validation.ok) return validation;
     const indexFile = path.join(config.root, INDEX_ARTIFACT);
-    if (!fs.existsSync(indexFile)) {
+    const indexRead = readStoreFile(
+      config.rootState,
+      config.root,
+      indexFile
+    );
+    if (!indexRead.ok) {
+      if (
+        indexRead.id === 'verification-evidence:store-root-invalid'
+        || indexRead.id === 'verification-evidence:store-root-outside-change'
+        || indexRead.id === 'verification-evidence:store-root-symlink'
+        || indexRead.id === 'verification-evidence:change-root-missing'
+      ) {
+        return blocked(indexRead.id, INDEX_ARTIFACT);
+      }
+      return blocked(
+        indexRead.id === 'verification-evidence:store-file-path-unsafe'
+          ? 'verification-evidence:derived-path-unsafe'
+          : 'verification-evidence:index-read-failed',
+        INDEX_ARTIFACT,
+        indexRead.error
+          ? `${indexRead.error?.code || 'ERROR'}: ${
+              indexRead.error instanceof Error
+                ? indexRead.error.message
+                : String(indexRead.error)
+            }; target=${indexFile}`
+          : null
+      );
+    }
+    if (indexRead.missing) {
       return blocked(
         'verification-evidence:index-missing',
         INDEX_ARTIFACT
@@ -372,14 +402,7 @@ function createEvidenceStore(options) {
     }
     let index;
     try {
-      const stat = fs.lstatSync(indexFile);
-      if (stat.isSymbolicLink() || !stat.isFile()) {
-        return blocked(
-          'verification-evidence:derived-path-unsafe',
-          INDEX_ARTIFACT
-        );
-      }
-      index = JSON.parse(fs.readFileSync(indexFile, 'utf8'));
+      index = JSON.parse(indexRead.bytes.toString('utf8'));
     } catch (error) {
       return blocked(
         'verification-evidence:index-read-failed',
@@ -436,6 +459,14 @@ function createEvidenceStore(options) {
         found.evidence.path
       );
     }
+    const resolvedPath = validateResolvedStorePath(
+      config.rootState,
+      config.root,
+      absolute
+    );
+    if (!resolvedPath.ok) {
+      return blocked(resolvedPath.id, found.evidence.path);
+    }
     if (fs.existsSync(absolute)) {
       const stat = fs.lstatSync(absolute);
       if (stat.isSymbolicLink() || !stat.isFile()) {
@@ -449,6 +480,10 @@ function createEvidenceStore(options) {
       ok: true,
       evidence: found.evidence,
       path: absolute,
+      pathPolicy: Object.freeze({
+        root: config.root,
+        rootState: Object.freeze(structuredClone(config.rootState))
+      }),
       blockers: []
     };
   }

@@ -2,28 +2,44 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+None for the Task 013 slice.
 
 ## Extra Behavior
 
-- None recorded.
+- No redaction, Reading verdict, six-domain aggregation, report rendering,
+  release, archive, fallback, or simplified mode was added.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- The initial implementation checked only part of the execution fingerprint
+  and collapsed distinct missing-evidence causes. Both defects were repaired
+  and preserved as failed review evidence.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Reading verdict ownership remains Task 015.
+- Case-level freshness remains Task 021.
+- Release and archive gates remain Task 033.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-17`
+- `AC-18:empty-evidence`
+- `AC-23:evidence-fingerprint-freshness`
+- `AC-28:evidence-integrity-blockers`
+
+## Verified Behavior
+
+- Every stored evidence record is checked against immutable object bytes.
+- Complete execution fingerprints are compared without mtime fallback.
+- Cross-reference binding failures make evidence and summary integrity broken.
+- Empty, missing, tampered, stale, unrecognized, or unsafe evidence blocks.
+- The checker returns facts and blockers only.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+None.

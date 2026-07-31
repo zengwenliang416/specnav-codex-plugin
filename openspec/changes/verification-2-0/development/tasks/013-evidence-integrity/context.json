@@ -18,8 +18,18 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/evidence/**",
+    "plugins/specnav-verification/kernel/index.js",
     "tests/verification-v2/evidence/**",
-    "tests/verification-v2/negative/**"
+    "tests/verification-v2/negative/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-negative.sh",
+    "openspec/changes/verification-2-0/tasks.md",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/drift-check.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/development/tasks/013-evidence-integrity/**"
   ],
   "test_paths": [
     "node --test tests/verification-v2/evidence/integrity.test.js",
@@ -35,6 +45,20 @@
     "AC-23",
     "AC-28"
   ],
+  "acceptance_role": "mixed",
+  "acceptance_primary": [
+    "AC-17"
+  ],
+  "acceptance_subclaims": [
+    "AC-18:empty-evidence",
+    "AC-23:evidence-fingerprint-freshness",
+    "AC-28:evidence-integrity-blockers"
+  ],
+  "acceptance_contributes": [
+    "AC-18",
+    "AC-23",
+    "AC-28"
+  ],
   "external_targets": [],
   "non_goals": [
     "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
@@ -46,7 +70,9 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-17, AC-18, AC-23, AC-28"
+    "Direct evidence for AC-17",
+    "Contribution evidence for AC-18:empty-evidence, AC-23:evidence-fingerprint-freshness, and AC-28:evidence-integrity-blockers without claiming downstream gate closure",
+    "Public createEvidenceIntegrityChecker factory without changing the frozen service contract digest"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

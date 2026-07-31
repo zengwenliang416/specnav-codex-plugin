@@ -542,6 +542,34 @@ test('resolve refuses a content object replaced by a symlink', () => {
   );
 });
 
+test('lookup rejects a store root replaced by an external symlink', () => {
+  const sandbox = makeStore();
+  const appended = sandbox.store.append({
+    evidence: baseEvidence(),
+    content: Buffer.from('must remain under the change root')
+  });
+  assert.equal(appended.ok, true);
+  const externalBase = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-evidence-store-swap-')
+  );
+  const externalStore = path.join(externalBase, 'evidence');
+  fs.renameSync(sandbox.storeRoot, externalStore);
+  fs.symlinkSync(externalStore, sandbox.storeRoot);
+
+  try {
+    const result = sandbox.store.getById(appended.evidence.id);
+    assert.equal(result.ok, false);
+    assert.deepEqual(
+      result.blockers.map((blocker) => blocker.id),
+      ['verification-evidence:store-root-symlink']
+    );
+  } finally {
+    fs.rmSync(sandbox.storeRoot, { force: true });
+    fs.rmSync(externalBase, { recursive: true, force: true });
+    fs.rmSync(sandbox.projectRoot, { recursive: true, force: true });
+  }
+});
+
 test('schema rejection blocks raw append and index publication', () => {
   const rejectingRegistry = {
     validate(entityType) {

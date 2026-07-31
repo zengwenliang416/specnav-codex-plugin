@@ -96,6 +96,29 @@ function validateStoreRoot(changeRoot, root) {
   };
 }
 
+function revalidateStoreRoot(rootState, root) {
+  if (
+    !rootState
+    || typeof rootState !== 'object'
+    || typeof rootState.change_lexical !== 'string'
+    || typeof rootState.change_real !== 'string'
+  ) {
+    return {
+      ok: false,
+      id: 'verification-evidence:store-root-invalid'
+    };
+  }
+  const active = validateStoreRoot(rootState.change_lexical, root);
+  if (!active.ok) return active;
+  if (active.change_real !== rootState.change_real) {
+    return {
+      ok: false,
+      id: 'verification-evidence:store-root-outside-change'
+    };
+  }
+  return active;
+}
+
 function ensureSafeDirectory(rootState, target) {
   const targetPath = path.resolve(target);
   if (!isContained(rootState.change_lexical, targetPath)) {
@@ -188,9 +211,141 @@ function validateSourcePath(sourceRoot, sourcePath) {
   };
 }
 
+function validateResolvedStorePath(rootState, root, target) {
+  const rootPath = path.resolve(root);
+  const targetPath = path.resolve(target);
+  if (!isContained(rootPath, targetPath)) {
+    return {
+      ok: false,
+      id: 'verification-evidence:object-path-unsafe'
+    };
+  }
+  const relative = path.relative(rootState.change_lexical, targetPath);
+  let current = rootState.change_lexical;
+  for (const segment of relative.split(path.sep).filter(Boolean)) {
+    current = path.join(current, segment);
+    let stat;
+    try {
+      stat = fs.lstatSync(current);
+    } catch (error) {
+      if (error?.code === 'ENOENT') break;
+      return {
+        ok: false,
+        id: 'verification-evidence:object-path-unsafe'
+      };
+    }
+    if (stat.isSymbolicLink()) {
+      return {
+        ok: false,
+        id: 'verification-evidence:object-path-unsafe'
+      };
+    }
+    const real = existingRealpath(current);
+    if (!real || !isContained(rootState.change_real, real)) {
+      return {
+        ok: false,
+        id: 'verification-evidence:object-path-unsafe'
+      };
+    }
+  }
+  return {
+    ok: true,
+    path: targetPath
+  };
+}
+
+function readStoreFile(rootState, root, target) {
+  const activeRoot = revalidateStoreRoot(rootState, root);
+  if (!activeRoot.ok) return activeRoot;
+  const targetPath = path.resolve(target);
+  const resolvedPath = validateResolvedStorePath(
+    activeRoot,
+    root,
+    targetPath
+  );
+  if (!resolvedPath.ok) {
+    return {
+      ok: false,
+      id: 'verification-evidence:store-file-path-unsafe'
+    };
+  }
+
+  let fd;
+  try {
+    fd = fs.openSync(
+      targetPath,
+      fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0)
+    );
+    const openedStat = fs.fstatSync(fd);
+    if (!openedStat.isFile()) {
+      return {
+        ok: false,
+        id: 'verification-evidence:store-file-path-unsafe'
+      };
+    }
+
+    const currentRoot = revalidateStoreRoot(rootState, root);
+    if (!currentRoot.ok) return currentRoot;
+    const currentPath = validateResolvedStorePath(
+      currentRoot,
+      root,
+      targetPath
+    );
+    if (!currentPath.ok) {
+      return {
+        ok: false,
+        id: 'verification-evidence:store-file-path-unsafe'
+      };
+    }
+    const currentStat = fs.lstatSync(targetPath);
+    if (
+      currentStat.isSymbolicLink()
+      || !currentStat.isFile()
+      || currentStat.dev !== openedStat.dev
+      || currentStat.ino !== openedStat.ino
+    ) {
+      return {
+        ok: false,
+        id: 'verification-evidence:store-file-path-unsafe'
+      };
+    }
+    return {
+      ok: true,
+      bytes: fs.readFileSync(fd),
+      missing: false
+    };
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return {
+        ok: true,
+        bytes: Buffer.alloc(0),
+        missing: true
+      };
+    }
+    return {
+      ok: false,
+      id: error?.code === 'ELOOP'
+        ? 'verification-evidence:store-file-path-unsafe'
+        : 'verification-evidence:store-file-read-failed',
+      error
+    };
+  } finally {
+    if (fd !== undefined) {
+      try {
+        fs.closeSync(fd);
+      } catch {
+        // The primary read result remains authoritative.
+      }
+    }
+  }
+}
+
 module.exports = {
   isContained,
   validateStoreRoot,
+  revalidateStoreRoot,
   ensureSafeDirectory,
-  validateSourcePath
+  validateSourcePath,
+  validateResolvedStorePath,
+  readStoreFile
 };

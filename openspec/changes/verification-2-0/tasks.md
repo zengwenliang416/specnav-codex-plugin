@@ -36,7 +36,7 @@ User Outcome: Reviewers can execute command, Playwright, and Midscene cases with
 User Outcome: Reviewers can inspect append-only, integrity-checked, redacted evidence and assertion readings.
 
 - [x] 5.1 Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts.
-- [ ] 5.2 Release owner can see missing, tampered, stale, or incorrectly bound evidence block green.
+- [x] 5.2 Release owner can see missing, tampered, stale, or incorrectly bound evidence block green.
 - [ ] 5.3 Reviewer can inspect redacted logs and HTML without provider secrets leaking.
 - [ ] 5.4 Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading.
 

@@ -1,0 +1,1576 @@
+# command: node --test tests/verification-v2/**/*.test.js # task013-final-full
+# exit_status: 0
+# duration_ms: 30495
+
+## stdout
+TAP version 13
+# Subtest: evidence runner never overwrites a prior system-executed log
+ok 1 - evidence runner never overwrites a prior system-executed log
+  ---
+  duration_ms: 29.29775
+  type: 'test'
+  ...
+# Subtest: browser access policy allows only exact approved HTTP origins
+ok 2 - browser access policy allows only exact approved HTTP origins
+  ---
+  duration_ms: 0.611958
+  type: 'test'
+  ...
+# Subtest: browser access policy rejects malformed or unsafe approved origins
+ok 3 - browser access policy rejects malformed or unsafe approved origins
+  ---
+  duration_ms: 0.393
+  type: 'test'
+  ...
+# Subtest: playwright case schema requires scenario, browser, and access identity
+ok 4 - playwright case schema requires scenario, browser, and access identity
+  ---
+  duration_ms: 1169.290125
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 5 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 95.724292
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 6 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 81.781209
+  type: 'test'
+  ...
+# Subtest: playwright preflight binds source and attempt hashes to the approved scenario
+ok 7 - playwright preflight binds source and attempt hashes to the approved scenario
+  ---
+  duration_ms: 77.404208
+  type: 'test'
+  ...
+# Subtest: playwright adapter independently verifies the approved scenario hash
+ok 8 - playwright adapter independently verifies the approved scenario hash
+  ---
+  duration_ms: 61.397583
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 9 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 1667.211333
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 10 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 1010.767916
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 11 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 965.909125
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 12 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 51.033542
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 106.932583
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 103.947542
+      type: 'test'
+      ...
+    1..2
+ok 13 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 211.855958
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 14 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 111.902625
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 15 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 92.789792
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 16 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 1017.549583
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 17 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 1817.322042
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, network, and detached children
+ok 18 - process confinement blocks host reads, writes, network, and detached children
+  ---
+  duration_ms: 969.620708
+  type: 'test'
+  ...
+# Subtest: scenario cannot forge authenticated worker events or terminal results
+ok 19 - scenario cannot forge authenticated worker events or terminal results
+  ---
+  duration_ms: 907.687625
+  type: 'test'
+  ...
+# Subtest: browser access violations block a caught scenario success
+ok 20 - browser access violations block a caught scenario success
+  ---
+  duration_ms: 7776.280917
+  type: 'test'
+  ...
+# Subtest: scenario cannot remove policy routes or create an unguarded context
+ok 21 - scenario cannot remove policy routes or create an unguarded context
+  ---
+  duration_ms: 11829.343791
+  type: 'test'
+  ...
+# Subtest: execution is legal only for an exact explicit human approval
+ok 22 - execution is legal only for an exact explicit human approval
+  ---
+  duration_ms: 1113.4025
+  type: 'test'
+  ...
+# Subtest: missing, null, or malformed snapshot always blocks execution
+ok 23 - missing, null, or malformed snapshot always blocks execution
+  ---
+  duration_ms: 2.758167
+  type: 'test'
+  ...
+# Subtest: rejected, service, mismatched, and stale approvals block execution
+    # Subtest: missing approval
+    ok 1 - missing approval
+      ---
+      duration_ms: 0.460291
+      type: 'test'
+      ...
+    # Subtest: rejected approval
+    ok 2 - rejected approval
+      ---
+      duration_ms: 0.362375
+      type: 'test'
+      ...
+    # Subtest: service approval
+    ok 3 - service approval
+      ---
+      duration_ms: 0.270875
+      type: 'test'
+      ...
+    # Subtest: snapshot id mismatch
+    ok 4 - snapshot id mismatch
+      ---
+      duration_ms: 0.311375
+      type: 'test'
+      ...
+    # Subtest: snapshot hash mismatch
+    ok 5 - snapshot hash mismatch
+      ---
+      duration_ms: 0.275791
+      type: 'test'
+      ...
+    # Subtest: snapshot content changed after approval
+    ok 6 - snapshot content changed after approval
+      ---
+      duration_ms: 0.405917
+      type: 'test'
+      ...
+    # Subtest: snapshot id is stale
+    ok 7 - snapshot id is stale
+      ---
+      duration_ms: 0.413458
+      type: 'test'
+      ...
+    # Subtest: current requirements are missing
+    ok 8 - current requirements are missing
+      ---
+      duration_ms: 0.341042
+      type: 'test'
+      ...
+    # Subtest: current acceptance is missing
+    ok 9 - current acceptance is missing
+      ---
+      duration_ms: 0.275375
+      type: 'test'
+      ...
+    # Subtest: requirements changed after approval
+    ok 10 - requirements changed after approval
+      ---
+      duration_ms: 0.230959
+      type: 'test'
+      ...
+    # Subtest: acceptance changed after approval
+    ok 11 - acceptance changed after approval
+      ---
+      duration_ms: 0.229166
+      type: 'test'
+      ...
+    # Subtest: reviewer identity mismatch
+    ok 12 - reviewer identity mismatch
+      ---
+      duration_ms: 0.231583
+      type: 'test'
+      ...
+    # Subtest: expected reviewer identity is missing
+    ok 13 - expected reviewer identity is missing
+      ---
+      duration_ms: 0.208083
+      type: 'test'
+      ...
+    # Subtest: approval predates snapshot
+    ok 14 - approval predates snapshot
+      ---
+      duration_ms: 0.210875
+      type: 'test'
+      ...
+    # Subtest: snapshot provenance changed after approval
+    ok 15 - snapshot provenance changed after approval
+      ---
+      duration_ms: 4.039459
+      type: 'test'
+      ...
+    1..15
+ok 24 - rejected, service, mismatched, and stale approvals block execution
+  ---
+  duration_ms: 9.800583
+  type: 'test'
+  ...
+# Subtest: case planner requires validated sources and complete behavior coverage
+ok 25 - case planner requires validated sources and complete behavior coverage
+  ---
+  duration_ms: 1017.73875
+  type: 'test'
+  ...
+# Subtest: case planner fails closed for empty plans and unresolved source references
+ok 26 - case planner fails closed for empty plans and unresolved source references
+  ---
+  duration_ms: 0.896916
+  type: 'test'
+  ...
+# Subtest: case planner rejects uncovered requirements or acceptance assertions
+ok 27 - case planner rejects uncovered requirements or acceptance assertions
+  ---
+  duration_ms: 0.400875
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+ok 28 - case planner rejects duplicate members, orphan assertions, and evidence policy conflicts
+  ---
+  duration_ms: 0.448625
+  type: 'test'
+  ...
+# Subtest: case planner rejects unknown assertion references and non-ready cases
+ok 29 - case planner rejects unknown assertion references and non-ready cases
+  ---
+  duration_ms: 2.402458
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate cases and cases from another change
+ok 30 - case planner rejects duplicate cases and cases from another change
+  ---
+  duration_ms: 0.705625
+  type: 'test'
+  ...
+# Subtest: case planner rejects duplicate and invalid source ids
+ok 31 - case planner rejects duplicate and invalid source ids
+  ---
+  duration_ms: 0.462584
+  type: 'test'
+  ...
+# Subtest: case planner returns stable blockers for malformed case records
+ok 32 - case planner returns stable blockers for malformed case records
+  ---
+  duration_ms: 0.430791
+  type: 'test'
+  ...
+# Subtest: case planner returns stable blockers for malformed source records
+ok 33 - case planner returns stable blockers for malformed source records
+  ---
+  duration_ms: 0.869792
+  type: 'test'
+  ...
+# Subtest: canonical JSON and case normalization are deterministic and immutable
+ok 34 - canonical JSON and case normalization are deterministic and immutable
+  ---
+  duration_ms: 17.423083
+  type: 'test'
+  ...
+# Subtest: snapshot hash is stable for equivalent input and changes with contract content
+ok 35 - snapshot hash is stable for equivalent input and changes with contract content
+  ---
+  duration_ms: 1144.129
+  type: 'test'
+  ...
+# Subtest: snapshot writer rejects a failed plan instead of inferring a fallback
+ok 36 - snapshot writer rejects a failed plan instead of inferring a fallback
+  ---
+  duration_ms: 0.116834
+  type: 'test'
+  ...
+# Subtest: fixture graph is shape-valid before Task 004 validation
+ok 37 - fixture graph is shape-valid before Task 004 validation
+  ---
+  duration_ms: 1115.23525
+  type: 'test'
+  ...
+# Subtest: factory requires the Task 003 schema registry and exposes one validator API
+    # Subtest: rejects missing schemaRegistry without fallback
+    ok 1 - rejects missing schemaRegistry without fallback
+      ---
+      duration_ms: 0.253583
+      type: 'test'
+      ...
+    # Subtest: returns cross-reference and retry validators
+    ok 2 - returns cross-reference and retry validators
+      ---
+      duration_ms: 0.080166
+      type: 'test'
+      ...
+    1..2
+ok 38 - factory requires the Task 003 schema registry and exposes one validator API
+  ---
+  duration_ms: 0.57175
+  type: 'test'
+  ...
+# Subtest: accepts the complete graph without approval or evidence integrity checks
+ok 39 - accepts the complete graph without approval or evidence integrity checks
+  ---
+  duration_ms: 1.710917
+  type: 'test'
+  ...
+# Subtest: binds active change, snapshot, run, case, and attempt identities
+    # Subtest: case-snapshot.change_id matches activeChangeId
+    ok 1 - case-snapshot.change_id matches activeChangeId
+      ---
+      duration_ms: 1.653208
+      type: 'test'
+      ...
+    # Subtest: test-case.change_id matches activeChangeId
+    ok 2 - test-case.change_id matches activeChangeId
+      ---
+      duration_ms: 0.764542
+      type: 'test'
+      ...
+    # Subtest: verification-run.change_id matches activeChangeId
+    ok 3 - verification-run.change_id matches activeChangeId
+      ---
+      duration_ms: 20.879541
+      type: 'test'
+      ...
+    # Subtest: attempt.change_id matches activeChangeId
+    ok 4 - attempt.change_id matches activeChangeId
+      ---
+      duration_ms: 1.66575
+      type: 'test'
+      ...
+    # Subtest: reading.change_id matches activeChangeId
+    ok 5 - reading.change_id matches activeChangeId
+      ---
+      duration_ms: 0.5315
+      type: 'test'
+      ...
+    # Subtest: evidence.change_id matches activeChangeId
+    ok 6 - evidence.change_id matches activeChangeId
+      ---
+      duration_ms: 0.334667
+      type: 'test'
+      ...
+    # Subtest: run.case_snapshot_id matches the supplied snapshot
+    ok 7 - run.case_snapshot_id matches the supplied snapshot
+      ---
+      duration_ms: 0.36575
+      type: 'test'
+      ...
+    # Subtest: run.case_snapshot_hash matches the supplied snapshot
+    ok 8 - run.case_snapshot_hash matches the supplied snapshot
+      ---
+      duration_ms: 0.725791
+      type: 'test'
+      ...
+    # Subtest: attempt case exists in the case snapshot
+    ok 9 - attempt case exists in the case snapshot
+      ---
+      duration_ms: 1.3605
+      type: 'test'
+      ...
+    # Subtest: attempt case exists in run.case_ids
+    ok 10 - attempt case exists in run.case_ids
+      ---
+      duration_ms: 0.417458
+      type: 'test'
+      ...
+    # Subtest: attempt.run_id matches run, snapshot, or case
+    ok 11 - attempt.run_id matches run, snapshot, or case
+      ---
+      duration_ms: 0.312042
+      type: 'test'
+      ...
+    # Subtest: attempt.case_snapshot_hash matches run, snapshot, or case
+    ok 12 - attempt.case_snapshot_hash matches run, snapshot, or case
+      ---
+      duration_ms: 0.284709
+      type: 'test'
+      ...
+    # Subtest: attempt.change_id matches run, snapshot, or case
+    ok 13 - attempt.change_id matches run, snapshot, or case
+      ---
+      duration_ms: 0.265583
+      type: 'test'
+      ...
+    # Subtest: attempt.case_id matches run, snapshot, or case
+    ok 14 - attempt.case_id matches run, snapshot, or case
+      ---
+      duration_ms: 0.28175
+      type: 'test'
+      ...
+    # Subtest: attempt.code_sha matches run, snapshot, or case
+    ok 15 - attempt.code_sha matches run, snapshot, or case
+      ---
+      duration_ms: 0.268375
+      type: 'test'
+      ...
+    # Subtest: attempt.test_sha matches run, snapshot, or case
+    ok 16 - attempt.test_sha matches run, snapshot, or case
+      ---
+      duration_ms: 0.280708
+      type: 'test'
+      ...
+    # Subtest: attempt.environment_hash matches run, snapshot, or case
+    ok 17 - attempt.environment_hash matches run, snapshot, or case
+      ---
+      duration_ms: 0.252833
+      type: 'test'
+      ...
+    # Subtest: attempt.runtime_version matches run, snapshot, or case
+    ok 18 - attempt.runtime_version matches run, snapshot, or case
+      ---
+      duration_ms: 0.271292
+      type: 'test'
+      ...
+    # Subtest: attempt.kernel_version matches run, snapshot, or case
+    ok 19 - attempt.kernel_version matches run, snapshot, or case
+      ---
+      duration_ms: 0.31075
+      type: 'test'
+      ...
+    # Subtest: attempt.runner matches run, snapshot, or case
+    ok 20 - attempt.runner matches run, snapshot, or case
+      ---
+      duration_ms: 0.257
+      type: 'test'
+      ...
+    1..20
+ok 40 - binds active change, snapshot, run, case, and attempt identities
+  ---
+  duration_ms: 32.587916
+  type: 'test'
+  ...
+# Subtest: case internals and browser execution identity are cross-referenced
+    # Subtest: browser attempt matches case runner browser_project
+    ok 1 - browser attempt matches case runner browser_project
+      ---
+      duration_ms: 0.428833
+      type: 'test'
+      ...
+    # Subtest: command runner uses deterministic none browser project
+    ok 2 - command runner uses deterministic none browser project
+      ---
+      duration_ms: 0.270792
+      type: 'test'
+      ...
+    # Subtest: duplicate case step ids are rejected deterministically
+    ok 3 - duplicate case step ids are rejected deterministically
+      ---
+      duration_ms: 0.436708
+      type: 'test'
+      ...
+    # Subtest: duplicate case assertion ids are rejected deterministically
+    ok 4 - duplicate case assertion ids are rejected deterministically
+      ---
+      duration_ms: 0.483958
+      type: 'test'
+      ...
+    # Subtest: step assertion_ids resolve to case assertions
+    ok 5 - step assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.300458
+      type: 'test'
+      ...
+    # Subtest: facticity assertion_ids resolve to case assertions
+    ok 6 - facticity assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.257458
+      type: 'test'
+      ...
+    # Subtest: static assertion_ids resolve to case assertions
+    ok 7 - static assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.2355
+      type: 'test'
+      ...
+    # Subtest: unit assertion_ids resolve to case assertions
+    ok 8 - unit assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.294042
+      type: 'test'
+      ...
+    # Subtest: redteam assertion_ids resolve to case assertions
+    ok 9 - redteam assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.3665
+      type: 'test'
+      ...
+    # Subtest: e2e assertion_ids resolve to case assertions
+    ok 10 - e2e assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.279333
+      type: 'test'
+      ...
+    # Subtest: sensory assertion_ids resolve to case assertions
+    ok 11 - sensory assertion_ids resolve to case assertions
+      ---
+      duration_ms: 0.252333
+      type: 'test'
+      ...
+    # Subtest: reading assertion_id belongs to its selected step
+    ok 12 - reading assertion_id belongs to its selected step
+      ---
+      duration_ms: 0.398792
+      type: 'test'
+      ...
+    # Subtest: evidence assertion_id belongs to its selected step
+    ok 13 - evidence assertion_id belongs to its selected step
+      ---
+      duration_ms: 1.107125
+      type: 'test'
+      ...
+    # Subtest: matching step and assertion ids pass together
+    ok 14 - matching step and assertion ids pass together
+      ---
+      duration_ms: 0.668917
+      type: 'test'
+      ...
+    1..14
+ok 41 - case internals and browser execution identity are cross-referenced
+  ---
+  duration_ms: 6.386917
+  type: 'test'
+  ...
+# Subtest: reading references resolve through run, case, attempt, and evidence
+    # Subtest: reading.run_id
+    ok 1 - reading.run_id
+      ---
+      duration_ms: 0.452833
+      type: 'test'
+      ...
+    # Subtest: reading.case_id
+    ok 2 - reading.case_id
+      ---
+      duration_ms: 0.332959
+      type: 'test'
+      ...
+    # Subtest: reading.attempt_id
+    ok 3 - reading.attempt_id
+      ---
+      duration_ms: 0.274042
+      type: 'test'
+      ...
+    # Subtest: reading.step_id
+    ok 4 - reading.step_id
+      ---
+      duration_ms: 0.263583
+      type: 'test'
+      ...
+    # Subtest: reading.code_sha
+    ok 5 - reading.code_sha
+      ---
+      duration_ms: 0.233375
+      type: 'test'
+      ...
+    # Subtest: reading.test_sha
+    ok 6 - reading.test_sha
+      ---
+      duration_ms: 0.278416
+      type: 'test'
+      ...
+    # Subtest: reading.assertion_id belongs to the case
+    ok 7 - reading.assertion_id belongs to the case
+      ---
+      duration_ms: 1.963125
+      type: 'test'
+      ...
+    # Subtest: reading.evidence_ids resolve to supplied evidence
+    ok 8 - reading.evidence_ids resolve to supplied evidence
+      ---
+      duration_ms: 0.43825
+      type: 'test'
+      ...
+    # Subtest: assertion reading rejects evidence captured for a step
+    ok 9 - assertion reading rejects evidence captured for a step
+      ---
+      duration_ms: 0.361042
+      type: 'test'
+      ...
+    # Subtest: reading rejects shape-valid evidence from another attempt
+    ok 10 - reading rejects shape-valid evidence from another attempt
+      ---
+      duration_ms: 0.337958
+      type: 'test'
+      ...
+    1..10
+ok 42 - reading references resolve through run, case, attempt, and evidence
+  ---
+  duration_ms: 5.278709
+  type: 'test'
+  ...
+# Subtest: evidence validates only references and execution identity
+    # Subtest: evidence.run_id
+    ok 1 - evidence.run_id
+      ---
+      duration_ms: 0.299208
+      type: 'test'
+      ...
+    # Subtest: evidence.case_id
+    ok 2 - evidence.case_id
+      ---
+      duration_ms: 0.320208
+      type: 'test'
+      ...
+    # Subtest: evidence.attempt_id
+    ok 3 - evidence.attempt_id
+      ---
+      duration_ms: 0.258041
+      type: 'test'
+      ...
+    # Subtest: evidence.step_id
+    ok 4 - evidence.step_id
+      ---
+      duration_ms: 0.248583
+      type: 'test'
+      ...
+    # Subtest: evidence.code_sha
+    ok 5 - evidence.code_sha
+      ---
+      duration_ms: 0.233875
+      type: 'test'
+      ...
+    # Subtest: evidence.test_sha
+    ok 6 - evidence.test_sha
+      ---
+      duration_ms: 0.255292
+      type: 'test'
+      ...
+    # Subtest: evidence.environment_hash
+    ok 7 - evidence.environment_hash
+      ---
+      duration_ms: 1.232125
+      type: 'test'
+      ...
+    # Subtest: evidence.runtime_version
+    ok 8 - evidence.runtime_version
+      ---
+      duration_ms: 1.759583
+      type: 'test'
+      ...
+    # Subtest: evidence.kernel_version
+    ok 9 - evidence.kernel_version
+      ---
+      duration_ms: 0.626292
+      type: 'test'
+      ...
+    # Subtest: evidence.assertion_id belongs to the case
+    ok 10 - evidence.assertion_id belongs to the case
+      ---
+      duration_ms: 2.089125
+      type: 'test'
+      ...
+    1..10
+ok 43 - evidence validates only references and execution identity
+  ---
+  duration_ms: 7.885458
+  type: 'test'
+  ...
+# Subtest: graph shape, duplicate ids, and unknown references fail closed
+    # Subtest: attempts must be an array
+    ok 1 - attempts must be an array
+      ---
+      duration_ms: 0.286333
+      type: 'test'
+      ...
+    # Subtest: readings must be an array
+    ok 2 - readings must be an array
+      ---
+      duration_ms: 0.995625
+      type: 'test'
+      ...
+    # Subtest: evidence must be an array
+    ok 3 - evidence must be an array
+      ---
+      duration_ms: 0.302667
+      type: 'test'
+      ...
+    # Subtest: case duplicate id is rejected deterministically
+    ok 4 - case duplicate id is rejected deterministically
+      ---
+      duration_ms: 0.549875
+      type: 'test'
+      ...
+    # Subtest: attempt duplicate id is rejected deterministically
+    ok 5 - attempt duplicate id is rejected deterministically
+      ---
+      duration_ms: 0.350584
+      type: 'test'
+      ...
+    # Subtest: reading duplicate id is rejected deterministically
+    ok 6 - reading duplicate id is rejected deterministically
+      ---
+      duration_ms: 0.362417
+      type: 'test'
+      ...
+    # Subtest: evidence duplicate id is rejected deterministically
+    ok 7 - evidence duplicate id is rejected deterministically
+      ---
+      duration_ms: 1.528625
+      type: 'test'
+      ...
+    # Subtest: unknown attempt kind returns only exact schema blockers
+    ok 8 - unknown attempt kind returns only exact schema blockers
+      ---
+      duration_ms: 0.366
+      type: 'test'
+      ...
+    # Subtest: non-retry attempt rejects an unknown parent reference
+    ok 9 - non-retry attempt rejects an unknown parent reference
+      ---
+      duration_ms: 0.314083
+      type: 'test'
+      ...
+    1..9
+ok 44 - graph shape, duplicate ids, and unknown references fail closed
+  ---
+  duration_ms: 5.832708
+  type: 'test'
+  ...
+# Subtest: retry validation distinguishes parent and retry semantics
+    # Subtest: accepts a retry with the same fingerprint
+    ok 1 - accepts a retry with the same fingerprint
+      ---
+      duration_ms: 0.194417
+      type: 'test'
+      ...
+    # Subtest: requires parent_attempt_id
+    ok 2 - requires parent_attempt_id
+      ---
+      duration_ms: 0.137791
+      type: 'test'
+      ...
+    # Subtest: requires the parent to exist in the supplied graph
+    ok 3 - requires the parent to exist in the supplied graph
+      ---
+      duration_ms: 0.323291
+      type: 'test'
+      ...
+    # Subtest: requires sequence to equal parent sequence plus one
+    ok 4 - requires sequence to equal parent sequence plus one
+      ---
+      duration_ms: 0.190791
+      type: 'test'
+      ...
+    # Subtest: rejects a parent from a different run
+    ok 5 - rejects a parent from a different run
+      ---
+      duration_ms: 0.091833
+      type: 'test'
+      ...
+    # Subtest: rejects a parent from a different case
+    ok 6 - rejects a parent from a different case
+      ---
+      duration_ms: 0.083917
+      type: 'test'
+      ...
+    # Subtest: requires retry kind and never misclassifies retest or regression
+    ok 7 - requires retry kind and never misclassifies retest or regression
+      ---
+      duration_ms: 0.083875
+      type: 'test'
+      ...
+    1..7
+ok 45 - retry validation distinguishes parent and retry semantics
+  ---
+  duration_ms: 1.28475
+  type: 'test'
+  ...
+# Subtest: retry rejects every changed immutable fingerprint
+    # Subtest: run_id
+    ok 1 - run_id
+      ---
+      duration_ms: 0.094458
+      type: 'test'
+      ...
+    # Subtest: change_id
+    ok 2 - change_id
+      ---
+      duration_ms: 0.129958
+      type: 'test'
+      ...
+    # Subtest: case_id
+    ok 3 - case_id
+      ---
+      duration_ms: 0.073541
+      type: 'test'
+      ...
+    # Subtest: case_snapshot_hash
+    ok 4 - case_snapshot_hash
+      ---
+      duration_ms: 0.0705
+      type: 'test'
+      ...
+    # Subtest: runner
+    ok 5 - runner
+      ---
+      duration_ms: 0.071875
+      type: 'test'
+      ...
+    # Subtest: code_sha
+    ok 6 - code_sha
+      ---
+      duration_ms: 0.063458
+      type: 'test'
+      ...
+    # Subtest: test_sha
+    ok 7 - test_sha
+      ---
+      duration_ms: 0.063875
+      type: 'test'
+      ...
+    # Subtest: scenario_hash
+    ok 8 - scenario_hash
+      ---
+      duration_ms: 0.064291
+      type: 'test'
+      ...
+    # Subtest: environment_hash
+    ok 9 - environment_hash
+      ---
+      duration_ms: 0.064208
+      type: 'test'
+      ...
+    # Subtest: browser_project
+    ok 10 - browser_project
+      ---
+      duration_ms: 0.064833
+      type: 'test'
+      ...
+    # Subtest: test_data_snapshot
+    ok 11 - test_data_snapshot
+      ---
+      duration_ms: 0.064041
+      type: 'test'
+      ...
+    # Subtest: runtime_version
+    ok 12 - runtime_version
+      ---
+      duration_ms: 0.0645
+      type: 'test'
+      ...
+    # Subtest: kernel_version
+    ok 13 - kernel_version
+      ---
+      duration_ms: 0.060458
+      type: 'test'
+      ...
+    1..13
+ok 46 - retry rejects every changed immutable fingerprint
+  ---
+  duration_ms: 1.192792
+  type: 'test'
+  ...
+# Subtest: schema validation returns exact blockers before cross-reference checks
+    # Subtest: case-snapshot
+    ok 1 - case-snapshot
+      ---
+      duration_ms: 0.301125
+      type: 'test'
+      ...
+    # Subtest: verification-run
+    ok 2 - verification-run
+      ---
+      duration_ms: 0.346458
+      type: 'test'
+      ...
+    # Subtest: attempt
+    ok 3 - attempt
+      ---
+      duration_ms: 0.266917
+      type: 'test'
+      ...
+    # Subtest: reading
+    ok 4 - reading
+      ---
+      duration_ms: 0.253083
+      type: 'test'
+      ...
+    # Subtest: evidence
+    ok 5 - evidence
+      ---
+      duration_ms: 0.391792
+      type: 'test'
+      ...
+    1..5
+ok 47 - schema validation returns exact blockers before cross-reference checks
+  ---
+  duration_ms: 1.738417
+  type: 'test'
+  ...
+# Subtest: cross-reference and retry validation never mutate caller input
+    # Subtest: graph input remains unchanged
+    ok 1 - graph input remains unchanged
+      ---
+      duration_ms: 0.415625
+      type: 'test'
+      ...
+    # Subtest: retry inputs remain unchanged
+    ok 2 - retry inputs remain unchanged
+      ---
+      duration_ms: 0.104875
+      type: 'test'
+      ...
+    1..2
+ok 48 - cross-reference and retry validation never mutate caller input
+  ---
+  duration_ms: 0.606541
+  type: 'test'
+  ...
+# Subtest: blocker dedupe preserves distinct semantic payloads
+ok 49 - blocker dedupe preserves distinct semantic payloads
+  ---
+  duration_ms: 0.100792
+  type: 'test'
+  ...
+# Subtest: published kernel package includes the public entry, registry, and schemas
+ok 50 - published kernel package includes the public entry, registry, and schemas
+  ---
+  duration_ms: 991.793167
+  type: 'test'
+  ...
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 51 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 1098.81025
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 52 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 175.008625
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 53 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 112.73625
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 54 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 106.752125
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 55 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 104.048459
+  type: 'test'
+  ...
+# Subtest: append writes one immutable raw record, content object, index, and cache metadata
+ok 56 - append writes one immutable raw record, content object, index, and cache metadata
+  ---
+  duration_ms: 33.208083
+  type: 'test'
+  ...
+# Subtest: persisted evidence and index pass the managed AJV schema registry
+ok 57 - persisted evidence and index pass the managed AJV schema registry
+  ---
+  duration_ms: 748.370167
+  type: 'test'
+  ...
+# Subtest: append does not mutate caller-owned evidence or content
+ok 58 - append does not mutate caller-owned evidence or content
+  ---
+  duration_ms: 49.301292
+  type: 'test'
+  ...
+# Subtest: failed evidence remains after a later passing attempt and cache deletion
+ok 59 - failed evidence remains after a later passing attempt and cache deletion
+  ---
+  duration_ms: 96.806333
+  type: 'test'
+  ...
+# Subtest: index bytes are deterministic across rebuild and ignore mtime changes
+ok 60 - index bytes are deterministic across rebuild and ignore mtime changes
+  ---
+  duration_ms: 52.336916
+  type: 'test'
+  ...
+# Subtest: an exact duplicate append is idempotent and adds no raw record
+ok 61 - an exact duplicate append is idempotent and adds no raw record
+  ---
+  duration_ms: 70.726625
+  type: 'test'
+  ...
+# Subtest: an idempotent append restores deleted derived and object files
+ok 62 - an idempotent append restores deleted derived and object files
+  ---
+  duration_ms: 83.504292
+  type: 'test'
+  ...
+# Subtest: the same bytes under different attempts reuse the object but keep distinct records
+ok 63 - the same bytes under different attempts reuse the object but keep distinct records
+  ---
+  duration_ms: 75.14975
+  type: 'test'
+  ...
+# Subtest: store rejects caller-supplied managed identity and object fields
+ok 64 - store rejects caller-supplied managed identity and object fields
+  ---
+  duration_ms: 0.881
+  type: 'test'
+  ...
+# Subtest: source files must resolve inside the approved source root
+ok 65 - source files must resolve inside the approved source root
+  ---
+  duration_ms: 2.128459
+  type: 'test'
+  ...
+# Subtest: a raw JSONL symlink cannot redirect append outside the store
+ok 66 - a raw JSONL symlink cannot redirect append outside the store
+  ---
+  duration_ms: 5.230667
+  type: 'test'
+  ...
+# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index
+ok 67 - corrupt raw JSON blocks rebuild and preserves the last valid index
+  ---
+  duration_ms: 33.808292
+  type: 'test'
+  ...
+# Subtest: duplicate raw ids block rebuild and ID lookup
+ok 68 - duplicate raw ids block rebuild and ID lookup
+  ---
+  duration_ms: 38.895166
+  type: 'test'
+  ...
+# Subtest: an existing content-addressed object with different bytes blocks append
+ok 69 - an existing content-addressed object with different bytes blocks append
+  ---
+  duration_ms: 0.884
+  type: 'test'
+  ...
+# Subtest: content object publication failure returns an exact blocker without throwing
+ok 70 - content object publication failure returns an exact blocker without throwing
+  ---
+  duration_ms: 9.898209
+  type: 'test'
+  ...
+# Subtest: resolve refuses a content object replaced by a symlink
+ok 71 - resolve refuses a content object replaced by a symlink
+  ---
+  duration_ms: 30.624958
+  type: 'test'
+  ...
+# Subtest: schema rejection blocks raw append and index publication
+ok 72 - schema rejection blocks raw append and index publication
+  ---
+  duration_ms: 0.607083
+  type: 'test'
+  ...
+# Subtest: store root must remain inside the approved change root
+ok 73 - store root must remain inside the approved change root
+  ---
+  duration_ms: 0.423667
+  type: 'test'
+  ...
+# Subtest: a symlinked change root cannot redirect the complete store
+ok 74 - a symlinked change root cannot redirect the complete store
+  ---
+  duration_ms: 1.222125
+  type: 'test'
+  ...
+# Subtest: cache publication failure restores the previous index and preserves raw truth
+ok 75 - cache publication failure restores the previous index and preserves raw truth
+  ---
+  duration_ms: 90.781541
+  type: 'test'
+  ...
+# Subtest: raw writer completes short writes instead of committing a partial line
+ok 76 - raw writer completes short writes instead of committing a partial line
+  ---
+  duration_ms: 0.309917
+  type: 'test'
+  ...
+# Subtest: an occupied raw lock fails closed without creating a raw claim
+ok 77 - an occupied raw lock fails closed without creating a raw claim
+  ---
+  duration_ms: 7.385166
+  type: 'test'
+  ...
+# Subtest: lookup requires a valid summary index and never scans raw as fallback
+ok 78 - lookup requires a valid summary index and never scans raw as fallback
+  ---
+  duration_ms: 48.878334
+  type: 'test'
+  ...
+# Subtest: non-JSON evidence candidates return a blocker instead of throwing
+ok 79 - non-JSON evidence candidates return a blocker instead of throwing
+  ---
+  duration_ms: 1.885542
+  type: 'test'
+  ...
+# Subtest: public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API
+ok 80 - public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API
+  ---
+  duration_ms: 721.811042
+  type: 'test'
+  ...
+# Subtest: valid intact and fresh evidence returns facts only and uses the injected collaborators
+ok 81 - valid intact and fresh evidence returns facts only and uses the injected collaborators
+  ---
+  duration_ms: 50.740875
+  type: 'test'
+  ...
+# Subtest: missing evidence file reports a broken-evidence fact instead of a verdict
+ok 82 - missing evidence file reports a broken-evidence fact instead of a verdict
+  ---
+  duration_ms: 59.594
+  type: 'test'
+  ...
+# Subtest: tampered evidence bytes block integrity when hash no longer matches
+ok 83 - tampered evidence bytes block integrity when hash no longer matches
+  ---
+  duration_ms: 45.849125
+  type: 'test'
+  ...
+# Subtest: size mismatch blocks integrity even when the file still exists
+ok 84 - size mismatch blocks integrity even when the file still exists
+  ---
+  duration_ms: 53.385917
+  type: 'test'
+  ...
+# Subtest: an unrecognized producer remains blocked even when bytes are intact
+ok 85 - an unrecognized producer remains blocked even when bytes are intact
+  ---
+  duration_ms: 51.666166
+  type: 'test'
+  ...
+# Subtest: record mismatch blocks when the graph evidence no longer matches the stored record
+ok 86 - record mismatch blocks when the graph evidence no longer matches the stored record
+  ---
+  duration_ms: 73.664
+  type: 'test'
+  ...
+# Subtest: binding mismatch is surfaced from the injected cross-reference validator
+ok 87 - binding mismatch is surfaced from the injected cross-reference validator
+  ---
+  duration_ms: 72.414292
+  type: 'test'
+  ...
+# Subtest: empty evidence blocks green-driving facts before any downstream reading verdict exists
+ok 88 - empty evidence blocks green-driving facts before any downstream reading verdict exists
+  ---
+  duration_ms: 70.508959
+  type: 'test'
+  ...
+# Subtest: stale current fingerprints block freshness with SHA-based comparison instead of mtime
+ok 89 - stale current fingerprints block freshness with SHA-based comparison instead of mtime
+  ---
+  duration_ms: 39.0465
+  type: 'test'
+  ...
+# Subtest: missing current fingerprints return blockers and facts without throwing
+ok 90 - missing current fingerprints return blockers and facts without throwing
+  ---
+  duration_ms: 42.266916
+  type: 'test'
+  ...
+# Subtest: mtime changes alone are ignored when bytes and fingerprints still match
+ok 91 - mtime changes alone are ignored when bytes and fingerprints still match
+  ---
+  duration_ms: 40.904125
+  type: 'test'
+  ...
+# Subtest: unsafe symlink evidence paths are blocked before bytes are trusted
+ok 92 - unsafe symlink evidence paths are blocked before bytes are trusted
+  ---
+  duration_ms: 49.255125
+  type: 'test'
+  ...
+# Subtest: integrity checks never mutate caller graph, evidence, or fingerprint input
+ok 93 - integrity checks never mutate caller graph, evidence, or fingerprint input
+  ---
+  duration_ms: 44.696083
+  type: 'test'
+  ...
+# Subtest: hostile proxy input fails closed without escaping or reaching collaborators
+ok 94 - hostile proxy input fails closed without escaping or reaching collaborators
+  ---
+  duration_ms: 40.284583
+  type: 'test'
+  ...
+# Subtest: command adapter passes explicit argv, cwd, and env without a shell fallback
+ok 95 - command adapter passes explicit argv, cwd, and env without a shell fallback
+  ---
+  duration_ms: 2.365459
+  type: 'test'
+  ...
+# Subtest: orchestrator blocks before spawn unless Task 005 approval succeeds
+ok 96 - orchestrator blocks before spawn unless Task 005 approval succeeds
+  ---
+  duration_ms: 651.17325
+  type: 'test'
+  ...
+# Subtest: orchestrator blocks before spawn unless runtime doctor is ready
+ok 97 - orchestrator blocks before spawn unless runtime doctor is ready
+  ---
+  duration_ms: 3.258208
+  type: 'test'
+  ...
+# Subtest: orchestrator rejects a run that is not bound to the approved snapshot
+ok 98 - orchestrator rejects a run that is not bound to the approved snapshot
+  ---
+  duration_ms: 1.13675
+  type: 'test'
+  ...
+# Subtest: successful command emits structured run and attempt states with raw logs
+ok 99 - successful command emits structured run and attempt states with raw logs
+  ---
+  duration_ms: 33.845125
+  type: 'test'
+  ...
+# Subtest: timeout escalates to SIGKILL when the child ignores SIGTERM
+ok 100 - timeout escalates to SIGKILL when the child ignores SIGTERM
+  ---
+  duration_ms: 20.626791
+  type: 'test'
+  ...
+# Subtest: exit before close cannot be reclassified by late cancellation or timeout
+    # Subtest: late cancellation
+    ok 1 - late cancellation
+      ---
+      duration_ms: 20.223667
+      type: 'test'
+      ...
+    # Subtest: late timeout
+    ok 2 - late timeout
+      ---
+      duration_ms: 27.291875
+      type: 'test'
+      ...
+    1..2
+ok 101 - exit before close cannot be reclassified by late cancellation or timeout
+  ---
+  duration_ms: 47.97075
+  type: 'test'
+  ...
+# Subtest: timeout remains the terminal cause when abort arrives before close
+ok 102 - timeout remains the terminal cause when abort arrives before close
+  ---
+  duration_ms: 34.120542
+  type: 'test'
+  ...
+# Subtest: empty argv is a stable blocker and never starts an attempt
+ok 103 - empty argv is a stable blocker and never starts an attempt
+  ---
+  duration_ms: 0.953208
+  type: 'test'
+  ...
+# Subtest: approved command binds argv, project-relative cwd, and env keys
+    # Subtest: argv mismatch
+    ok 1 - argv mismatch
+      ---
+      duration_ms: 0.445333
+      type: 'test'
+      ...
+    # Subtest: cwd mismatch
+    ok 2 - cwd mismatch
+      ---
+      duration_ms: 0.181416
+      type: 'test'
+      ...
+    # Subtest: env key mismatch
+    ok 3 - env key mismatch
+      ---
+      duration_ms: 0.506166
+      type: 'test'
+      ...
+    1..3
+ok 104 - approved command binds argv, project-relative cwd, and env keys
+  ---
+  duration_ms: 1.624542
+  type: 'test'
+  ...
+# Subtest: approved cwd cannot escape project root through a directory symlink
+ok 105 - approved cwd cannot escape project root through a directory symlink
+  ---
+  duration_ms: 4.131375
+  type: 'test'
+  ...
+# Subtest: approved cwd must resolve before an attempt can start
+ok 106 - approved cwd must resolve before an attempt can start
+  ---
+  duration_ms: 1.301333
+  type: 'test'
+  ...
+# Subtest: command case schema requires the complete approved command contract
+ok 107 - command case schema requires the complete approved command contract
+  ---
+  duration_ms: 0.25125
+  type: 'test'
+  ...
+# Subtest: kernel public entry exports command execution factories
+ok 108 - kernel public entry exports command execution factories
+  ---
+  duration_ms: 2.724667
+  type: 'test'
+  ...
+# Subtest: nonzero, signal, timeout, and cancellation produce terminal attempts
+    # Subtest: nonzero exit
+    ok 1 - nonzero exit
+      ---
+      duration_ms: 32.782
+      type: 'test'
+      ...
+    # Subtest: process signal
+    ok 2 - process signal
+      ---
+      duration_ms: 30.182083
+      type: 'test'
+      ...
+    # Subtest: timeout
+    ok 3 - timeout
+      ---
+      duration_ms: 56.596959
+      type: 'test'
+      ...
+    # Subtest: cancellation
+    ok 4 - cancellation
+      ---
+      duration_ms: 54.307875
+      type: 'test'
+      ...
+    1..4
+ok 109 - nonzero, signal, timeout, and cancellation produce terminal attempts
+  ---
+  duration_ms: 174.330292
+  type: 'test'
+  ...
+# Subtest: a later passing attempt retains the earlier failed attempt unchanged
+ok 110 - a later passing attempt retains the earlier failed attempt unchanged
+  ---
+  duration_ms: 73.925792
+  type: 'test'
+  ...
+# Subtest: retry identity is validated before command execution
+ok 111 - retry identity is validated before command execution
+  ---
+  duration_ms: 30.908125
+  type: 'test'
+  ...
+# Subtest: post-execution contract failure preserves raw logs and command events
+ok 112 - post-execution contract failure preserves raw logs and command events
+  ---
+  duration_ms: 30.876208
+  type: 'test'
+  ...
+# Subtest: blocked terminal fallback retains the original execution blocker
+ok 113 - blocked terminal fallback retains the original execution blocker
+  ---
+  duration_ms: 30.9625
+  type: 'test'
+  ...
+# Subtest: double terminal rejection preserves execution history without fake terminal artifacts
+ok 114 - double terminal rejection preserves execution history without fake terminal artifacts
+  ---
+  duration_ms: 30.454
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 115 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.849584
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 116 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 10.839334
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 117 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.289041
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 118 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 2.575167
+  type: 'test'
+  ...
+# Subtest: doctor probes FFmpeg with its supported version argument
+ok 119 - doctor probes FFmpeg with its supported version argument
+  ---
+  duration_ms: 0.894708
+  type: 'test'
+  ...
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 120 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 10.108125
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 121 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 10.266583
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 122 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 0.703167
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 123 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.32775
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 124 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 24.853375
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 125 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 7.422667
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 126 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 8.138333
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 127 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 14.291875
+  type: 'test'
+  ...
+# Subtest: installer writes a complete side-by-side runtime and leaves the project unchanged
+ok 128 - installer writes a complete side-by-side runtime and leaves the project unchanged
+  ---
+  duration_ms: 19.223042
+  type: 'test'
+  ...
+# Subtest: installer preserves a failed attempt and never promotes invalid browser bytes
+ok 129 - installer preserves a failed attempt and never promotes invalid browser bytes
+  ---
+  duration_ms: 7.681542
+  type: 'test'
+  ...
+# Subtest: installer refuses an occupied runtime root instead of overwriting it
+ok 130 - installer refuses an occupied runtime root instead of overwriting it
+  ---
+  duration_ms: 1.136458
+  type: 'test'
+  ...
+# Subtest: installer blocks when a new business-project lockfile appears
+ok 131 - installer blocks when a new business-project lockfile appears
+  ---
+  duration_ms: 12.617667
+  type: 'test'
+  ...
+# Subtest: installer preserves package-manager failure output and affected artifact
+ok 132 - installer preserves package-manager failure output and affected artifact
+  ---
+  duration_ms: 3.715042
+  type: 'test'
+  ...
+# Subtest: installer preserves download and extraction command failures
+ok 133 - installer preserves download and extraction command failures
+  ---
+  duration_ms: 15.317
+  type: 'test'
+  ...
+# Subtest: installer canonicalizes a symlinked runtime base before invoking npm
+ok 134 - installer canonicalizes a symlinked runtime base before invoking npm
+  ---
+  duration_ms: 13.835541
+  type: 'test'
+  ...
+# Subtest: runtime lock pins every required package and browser artifact
+ok 135 - runtime lock pins every required package and browser artifact
+  ---
+  duration_ms: 1.396667
+  type: 'test'
+  ...
+# Subtest: resolver accepts only the exact lock and compatible environment
+ok 136 - resolver accepts only the exact lock and compatible environment
+  ---
+  duration_ms: 0.312625
+  type: 'test'
+  ...
+# Subtest: resolver rejects unknown runtime versions without fallback
+ok 137 - resolver rejects unknown runtime versions without fallback
+  ---
+  duration_ms: 0.132833
+  type: 'test'
+  ...
+# Subtest: resolver returns exact compatibility blockers
+ok 138 - resolver returns exact compatibility blockers
+  ---
+  duration_ms: 0.286292
+  type: 'test'
+  ...
+# Subtest: resolver blocks missing or mismatched kernel identity without defaults
+ok 139 - resolver blocks missing or mismatched kernel identity without defaults
+  ---
+  duration_ms: 0.423583
+  type: 'test'
+  ...
+1..139
+# tests 257
+# suites 0
+# pass 257
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30431.88675
+
+
+## stderr
+(empty)

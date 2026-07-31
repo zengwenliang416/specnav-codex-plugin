@@ -3,7 +3,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { canonicalJson } = require('./identity');
-const { ensureSafeDirectory } = require('./paths');
+const {
+  ensureSafeDirectory,
+  readStoreFile
+} = require('./paths');
 const { blocked } = require('./blockers');
 
 function rawFileFor(root) {
@@ -49,9 +52,27 @@ function parseRawBytes(bytes, artifact = 'raw.jsonl') {
   return { ok: true, records, bytes };
 }
 
-function readRaw(root) {
+function readRaw(root, rootState) {
   const file = rawFileFor(root);
-  if (!fs.existsSync(file)) {
+  const read = readStoreFile(rootState, root, file);
+  if (!read.ok) {
+    if (
+      read.id === 'verification-evidence:store-root-invalid'
+      || read.id === 'verification-evidence:store-root-outside-change'
+      || read.id === 'verification-evidence:store-root-symlink'
+      || read.id === 'verification-evidence:change-root-missing'
+    ) {
+      return blocked(read.id, 'raw.jsonl');
+    }
+    return blocked(
+      read.id === 'verification-evidence:store-file-path-unsafe'
+        ? 'verification-evidence:raw-path-unsafe'
+        : 'verification-evidence:raw-read-failed',
+      'raw.jsonl',
+      read.error ? errorDetail(read.error, file) : null
+    );
+  }
+  if (read.missing) {
     return {
       ok: true,
       records: [],
@@ -60,22 +81,7 @@ function readRaw(root) {
       missing: true
     };
   }
-  let stat;
-  try {
-    stat = fs.lstatSync(file);
-  } catch {
-    return blocked(
-      'verification-evidence:raw-read-failed',
-      'raw.jsonl'
-    );
-  }
-  if (stat.isSymbolicLink() || !stat.isFile()) {
-    return blocked(
-      'verification-evidence:raw-path-unsafe',
-      'raw.jsonl'
-    );
-  }
-  const parsed = parseRawBytes(fs.readFileSync(file), 'raw.jsonl');
+  const parsed = parseRawBytes(read.bytes, 'raw.jsonl');
   return parsed.ok
     ? { ...parsed, file, missing: false }
     : parsed;
@@ -137,7 +143,7 @@ function appendRaw(options) {
   }
 
   try {
-    const current = readRaw(root);
+    const current = readRaw(root, rootState);
     if (!current.ok) return current;
     const existing = existingById(current.records, record.id);
     if (existing) {
