@@ -38,7 +38,15 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/evaluation/**
 - plugins/specnav-verification/kernel/cases/**
+- plugins/specnav-verification/kernel/index.js
 - tests/verification-v2/evaluation/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- openspec/changes/verification-2-0/development/tasks/017-not-applicable-approval/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
 
 ## Interfaces / Seams
 
@@ -60,7 +68,9 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/six-domain-evaluation/spec.md`.
-- Acceptance assertions: `AC-19`, `AC-20`.
+- Direct acceptance assertion: `AC-20`.
+- Contribution assertion: `AC-19` for the validated `not_applicable` terminal
+  branch; Task 016 retains complete six-domain terminal-result ownership.
 - A non-applicable domain remains blocked until policy, reason, evidence, and approval are all valid.
 
 ## State / Error / Empty / Loading Behavior

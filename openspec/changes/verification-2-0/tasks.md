@@ -45,7 +45,7 @@ User Outcome: Reviewers can inspect append-only, integrity-checked, redacted evi
 User Outcome: Release owners can receive derived six-domain verdicts and explicitly approved not-applicable decisions.
 
 - [x] 6.1 Release owner can receive six-domain and release verdicts derived only from validated case readings.
-- [ ] 6.2 Reviewer can approve a domain as not applicable only with reason and evidence.
+- [x] 6.2 Reviewer can approve a domain as not applicable only with reason and evidence.
 
 ## 7. Failure Repair Loop
 

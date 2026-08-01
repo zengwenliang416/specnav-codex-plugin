@@ -1,0 +1,157 @@
+# command: node --test tests/verification-v2/evaluation/not-applicable.test.js tests/verification-v2/evaluation/aggregation.test.js tests/verification-v2/kernel/package-boundary.test.js # 017-not-applicable-review-green
+# exit_status: 0
+# duration_ms: 1258
+
+## stdout
+TAP version 13
+# Subtest: six fixed domains derive stable frozen case, domain, and release pass
+ok 1 - six fixed domains derive stable frozen case, domain, and release pass
+  ---
+  duration_ms: 1108.085584
+  type: 'test'
+  ...
+# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed
+ok 2 - missing cases, readings, domains, and light or manual-green inputs fail closed
+  ---
+  duration_ms: 2.2965
+  type: 'test'
+  ...
+# Subtest: only schema-valid, identity-bound readings can contribute to green
+ok 3 - only schema-valid, identity-bound readings can contribute to green
+  ---
+  duration_ms: 0.653041
+  type: 'test'
+  ...
+# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green
+ok 4 - missing, mismatched, or non-intact evidence cannot contribute to green
+  ---
+  duration_ms: 3.219125
+  type: 'test'
+  ...
+# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states
+ok 5 - external terminal facts provide deterministic flaky and pass-after-fix states
+  ---
+  duration_ms: 1.562542
+  type: 'test'
+  ...
+# Subtest: a real failed reading is not overwritten by stale or canceled metadata
+ok 6 - a real failed reading is not overwritten by stale or canceled metadata
+  ---
+  duration_ms: 0.707875
+  type: 'test'
+  ...
+# Subtest: not-applicable consumes an external validated decision binding only
+ok 7 - not-applicable consumes an external validated decision binding only
+  ---
+  duration_ms: 0.952833
+  type: 'test'
+  ...
+# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+ok 8 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+  ---
+  duration_ms: 1.787
+  type: 'test'
+  ...
+# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it
+ok 9 - DecisionEngine rejects a caller-authored aggregate instead of trusting it
+  ---
+  duration_ms: 0.362
+  type: 'test'
+  ...
+# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+ok 10 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+  ---
+  duration_ms: 5.372209
+  type: 'test'
+  ...
+# Subtest: current human approval creates one stable validator fact
+ok 11 - current human approval creates one stable validator fact
+  ---
+  duration_ms: 1109.198625
+  type: 'test'
+  ...
+# Subtest: approved fact is consumed by six-domain aggregation
+ok 12 - approved fact is consumed by six-domain aggregation
+  ---
+  duration_ms: 15.131042
+  type: 'test'
+  ...
+# Subtest: human identity, policy allowance, and approval freshness fail closed
+ok 13 - human identity, policy allowance, and approval freshness fail closed
+  ---
+  duration_ms: 6.032209
+  type: 'test'
+  ...
+# Subtest: missing, late, mismatched, or broken evidence blocks approval
+ok 14 - missing, late, mismatched, or broken evidence blocks approval
+  ---
+  duration_ms: 1.673959
+  type: 'test'
+  ...
+# Subtest: evidence must belong to an assertion and step owned by the domain
+ok 15 - evidence must belong to an assertion and step owned by the domain
+  ---
+  duration_ms: 0.630958
+  type: 'test'
+  ...
+# Subtest: fact identity changes when evidence content changes under the same id
+ok 16 - fact identity changes when evidence content changes under the same id
+  ---
+  duration_ms: 0.809292
+  type: 'test'
+  ...
+# Subtest: policy timestamps require an explicit RFC3339 timezone
+ok 17 - policy timestamps require an explicit RFC3339 timezone
+  ---
+  duration_ms: 0.321083
+  type: 'test'
+  ...
+# Subtest: validator snapshots trusted catalogs at construction time
+ok 18 - validator snapshots trusted catalogs at construction time
+  ---
+  duration_ms: 0.631667
+  type: 'test'
+  ...
+# Subtest: forged or stale fact identity cannot be revalidated
+ok 19 - forged or stale fact identity cannot be revalidated
+  ---
+  duration_ms: 2.950334
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 20 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.7955
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 21 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 20.982709
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 22 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.300583
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 23 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 10.076458
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1213.749459
+
+
+## stderr
+(empty)

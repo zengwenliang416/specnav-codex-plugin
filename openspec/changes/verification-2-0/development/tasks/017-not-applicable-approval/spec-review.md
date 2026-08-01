@@ -2,28 +2,44 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- No requirement is missing from the narrowed Task 017 slice.
 
 ## Extra Behavior
 
-- None recorded.
+- No report renderer, repair loop, host adapter, fallback, simplified
+  verification path, or business-project dependency mutation was added.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- Task 017 directly closes `AC-20`.
+- Task 017 contributes the validated `not_applicable` branch to `AC-19`;
+  Task 016 retains complete six-domain terminal-result ownership.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Complete release/archive proof remains Task 033.
+- Cross-host parity remains Tasks 028 through 031.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-20`
+- `AC-19` contribution: policy-valid `not_applicable` terminal facts
+
+## Verified Behavior
+
+- Reason, evidence ids, reviewer, approval timestamp, and policy reference are
+  schema-required.
+- The expected reviewer must be human and match the configured identity.
+- Policy scope, effective time, update time, and expiration fail closed.
+- Evidence must be schema-valid, intact, fresh, captured before approval, and
+  bound to the same change, case, domain, assertion, and owning step.
+- Fact identity binds current case, policy, and evidence content digests.
+- The six-domain aggregator consumes only a fact revalidated by this authority.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No further specification fix is required for Task 017.

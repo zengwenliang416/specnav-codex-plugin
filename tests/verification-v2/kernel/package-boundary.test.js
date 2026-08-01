@@ -53,6 +53,10 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(Object.isFrozen(kernel.SIX_DOMAINS), true);
   assert.equal(typeof kernel.createSixDomainAggregator, 'function');
   assert.equal(typeof kernel.createDecisionEngine, 'function');
+  assert.equal(
+    typeof kernel.createNotApplicableDecisionValidator,
+    'function'
+  );
   assert.deepEqual(
     kernel.serviceContracts.evidenceStore.methods,
     ['append', 'rebuildIndex']

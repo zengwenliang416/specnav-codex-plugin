@@ -1,0 +1,133 @@
+# command: node --test tests/verification-v2/evaluation/not-applicable.test.js tests/verification-v2/evaluation/aggregation.test.js tests/verification-v2/kernel/package-boundary.test.js # 017-not-applicable-green
+# exit_status: 0
+# duration_ms: 1099
+
+## stdout
+TAP version 13
+# Subtest: six fixed domains derive stable frozen case, domain, and release pass
+ok 1 - six fixed domains derive stable frozen case, domain, and release pass
+  ---
+  duration_ms: 970.61375
+  type: 'test'
+  ...
+# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed
+ok 2 - missing cases, readings, domains, and light or manual-green inputs fail closed
+  ---
+  duration_ms: 2.448459
+  type: 'test'
+  ...
+# Subtest: only schema-valid, identity-bound readings can contribute to green
+ok 3 - only schema-valid, identity-bound readings can contribute to green
+  ---
+  duration_ms: 0.556416
+  type: 'test'
+  ...
+# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green
+ok 4 - missing, mismatched, or non-intact evidence cannot contribute to green
+  ---
+  duration_ms: 1.250666
+  type: 'test'
+  ...
+# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states
+ok 5 - external terminal facts provide deterministic flaky and pass-after-fix states
+  ---
+  duration_ms: 1.45525
+  type: 'test'
+  ...
+# Subtest: a real failed reading is not overwritten by stale or canceled metadata
+ok 6 - a real failed reading is not overwritten by stale or canceled metadata
+  ---
+  duration_ms: 0.613708
+  type: 'test'
+  ...
+# Subtest: not-applicable consumes an external validated decision binding only
+ok 7 - not-applicable consumes an external validated decision binding only
+  ---
+  duration_ms: 0.905
+  type: 'test'
+  ...
+# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+ok 8 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+  ---
+  duration_ms: 2.459833
+  type: 'test'
+  ...
+# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it
+ok 9 - DecisionEngine rejects a caller-authored aggregate instead of trusting it
+  ---
+  duration_ms: 0.506375
+  type: 'test'
+  ...
+# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+ok 10 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+  ---
+  duration_ms: 3.418292
+  type: 'test'
+  ...
+# Subtest: current human approval creates one stable validator fact
+ok 11 - current human approval creates one stable validator fact
+  ---
+  duration_ms: 962.172
+  type: 'test'
+  ...
+# Subtest: approved fact is consumed by six-domain aggregation
+ok 12 - approved fact is consumed by six-domain aggregation
+  ---
+  duration_ms: 10.670791
+  type: 'test'
+  ...
+# Subtest: human identity, policy allowance, and approval freshness fail closed
+ok 13 - human identity, policy allowance, and approval freshness fail closed
+  ---
+  duration_ms: 2.953833
+  type: 'test'
+  ...
+# Subtest: missing, late, mismatched, or broken evidence blocks approval
+ok 14 - missing, late, mismatched, or broken evidence blocks approval
+  ---
+  duration_ms: 1.202166
+  type: 'test'
+  ...
+# Subtest: forged or stale fact identity cannot be revalidated
+ok 15 - forged or stale fact identity cannot be revalidated
+  ---
+  duration_ms: 1.130292
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 16 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.811625
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 17 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 31.037709
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 18 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.830375
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 19 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 20.159625
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1061.79325
+
+
+## stderr
+(empty)

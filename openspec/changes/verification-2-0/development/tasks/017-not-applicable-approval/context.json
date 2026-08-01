@@ -19,7 +19,15 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/evaluation/**",
     "plugins/specnav-verification/kernel/cases/**",
-    "tests/verification-v2/evaluation/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "tests/verification-v2/evaluation/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "openspec/changes/verification-2-0/development/tasks/017-not-applicable-approval/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**"
   ],
   "test_paths": [
     "node --test tests/verification-v2/evaluation/not-applicable.test.js"
@@ -29,8 +37,10 @@
     "016-six-domain-aggregation"
   ],
   "acceptance_assertions": [
-    "AC-19",
     "AC-20"
+  ],
+  "contribution_assertions": [
+    "AC-19"
   ],
   "external_targets": [],
   "non_goals": [
@@ -43,7 +53,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-19, AC-20"
+    "Direct evidence for AC-20 and contribution evidence for the AC-19 not_applicable branch"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

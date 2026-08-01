@@ -4,6 +4,9 @@ const {
   createOracleRegistry
 } = require('./oracle-registry');
 const {
+  createNotApplicableDecisionValidator
+} = require('./not-applicable-validator');
+const {
   createReadingEvaluator
 } = require('./reading-evaluator');
 const {
@@ -19,6 +22,7 @@ module.exports = {
   SIX_DOMAINS,
   TERMINAL_PRECEDENCE,
   TERMINAL_STATES,
+  createNotApplicableDecisionValidator,
   createOracleRegistry,
   createReadingEvaluator,
   createSixDomainAggregator

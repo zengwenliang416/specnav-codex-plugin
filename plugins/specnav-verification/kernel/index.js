@@ -32,6 +32,7 @@ const {
 } = require('./repair');
 const {
   SIX_DOMAINS,
+  createNotApplicableDecisionValidator,
   createOracleRegistry,
   createReadingEvaluator,
   createSixDomainAggregator
@@ -56,6 +57,7 @@ module.exports = Object.freeze({
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,
   SIX_DOMAINS,
+  createNotApplicableDecisionValidator,
   createOracleRegistry,
   createReadingEvaluator,
   createSixDomainAggregator,

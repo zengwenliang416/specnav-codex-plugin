@@ -1,0 +1,162 @@
+# command: node --test tests/verification-v2/evaluation/not-applicable.test.js tests/verification-v2/kernel/package-boundary.test.js # 017-not-applicable-red
+# exit_status: 1
+# duration_ms: 1211
+
+## stdout
+TAP version 13
+# Subtest: current human approval creates one stable validator fact
+not ok 1 - current human approval creates one stable validator fact
+  ---
+  duration_ms: 1067.337417
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:195:1'
+  failureType: 'testCodeFailure'
+  error: 'createNotApplicableDecisionValidator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    validator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:132:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:196:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: approved fact is consumed by six-domain aggregation
+not ok 2 - approved fact is consumed by six-domain aggregation
+  ---
+  duration_ms: 0.209209
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:219:1'
+  failureType: 'testCodeFailure'
+  error: 'createNotApplicableDecisionValidator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    validator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:132:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:220:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: human identity, policy allowance, and approval freshness fail closed
+not ok 3 - human identity, policy allowance, and approval freshness fail closed
+  ---
+  duration_ms: 0.223792
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:252:1'
+  failureType: 'testCodeFailure'
+  error: 'createNotApplicableDecisionValidator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    validator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:132:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:255:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing, late, mismatched, or broken evidence blocks approval
+not ok 4 - missing, late, mismatched, or broken evidence blocks approval
+  ---
+  duration_ms: 0.235542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:303:1'
+  failureType: 'testCodeFailure'
+  error: 'createNotApplicableDecisionValidator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:312:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: forged or stale fact identity cannot be revalidated
+not ok 5 - forged or stale fact identity cannot be revalidated
+  ---
+  duration_ms: 0.168542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:366:1'
+  failureType: 'testCodeFailure'
+  error: 'createNotApplicableDecisionValidator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    validator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:132:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/evaluation/not-applicable.test.js:367:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 6 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.86
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 7 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 67.508542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:56:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 8 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.33325
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 9 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 23.895709
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1169.868708
+
+
+## stderr
+(empty)
