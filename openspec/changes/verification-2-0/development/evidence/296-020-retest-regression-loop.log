@@ -1,0 +1,140 @@
+# command: bash tests/run-verification-v2-repair-loop.sh # 020-retest-regression-loop-focused-green
+# exit_status: 0
+# duration_ms: 2612
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 1593.046667
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 234.2725
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 152.864292
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 4 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 172.604542
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 5 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 141.817084
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 6 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 148.3695
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 7 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 2.13625
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 8 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 92.524041
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 9 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.39025
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 10 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 17.349666
+  type: 'test'
+  ...
+# Subtest: preserves first failure repair retest and regression as immutable history
+ok 11 - preserves first failure repair retest and regression as immutable history
+  ---
+  duration_ms: 1553.763625
+  type: 'test'
+  ...
+# Subtest: labels an unchanged-fingerprint retry pass as flaky
+ok 12 - labels an unchanged-fingerprint retry pass as flaky
+  ---
+  duration_ms: 0.913042
+  type: 'test'
+  ...
+# Subtest: rejects retry when any immutable retry fingerprint changes
+ok 13 - rejects retry when any immutable retry fingerprint changes
+  ---
+  duration_ms: 1.063208
+  type: 'test'
+  ...
+# Subtest: product and test defects cannot use retry to bypass reviewed repair
+ok 14 - product and test defects cannot use retry to bypass reviewed repair
+  ---
+  duration_ms: 0.504667
+  type: 'test'
+  ...
+# Subtest: completed repair proposes retest and passed retest requires exact regression scope
+ok 15 - completed repair proposes retest and passed retest requires exact regression scope
+  ---
+  duration_ms: 14.048292
+  type: 'test'
+  ...
+# Subtest: failed blocked stale or tampered required regression proposes reopen
+ok 16 - failed blocked stale or tampered required regression proposes reopen
+  ---
+  duration_ms: 1.758
+  type: 'test'
+  ...
+# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases
+ok 17 - closure fails closed when rerun plan omits repaired impacted or baseline cases
+  ---
+  duration_ms: 1.245209
+  type: 'test'
+  ...
+# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance
+ok 18 - routes only a trusted classifier no-progress signal to Core break-loop governance
+  ---
+  duration_ms: 0.4745
+  type: 'test'
+  ...
+# Subtest: rejects caller-authored lifecycle fields fallback and manual green
+ok 19 - rejects caller-authored lifecycle fields fallback and manual green
+  ---
+  duration_ms: 1.079584
+  type: 'test'
+  ...
+# Subtest: rejects duplicate overwritten out-of-order and cross-failure history
+ok 20 - rejects duplicate overwritten out-of-order and cross-failure history
+  ---
+  duration_ms: 40.028292
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2546.719584
+verification v2 repair loop ok
+
+
+## stderr
+(empty)

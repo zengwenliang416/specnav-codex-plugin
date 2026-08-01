@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/transition-proposal.schema.json",
+  "title": "SpecNav Verification 2.0 Core Transition Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "change_id",
+    "action",
+    "owner",
+    "from_state",
+    "target_state",
+    "case_ids",
+    "attempt_ids",
+    "reason_ids",
+    "proposed_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.transition-proposal.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "action": {
+      "enum": [
+        "request_retry",
+        "request_repair",
+        "request_retest",
+        "request_regression",
+        "close_failure",
+        "reopen_failure",
+        "route_break_loop"
+      ]
+    },
+    "owner": {
+      "const": "core"
+    },
+    "from_state": {
+      "enum": [
+        "classified",
+        "retry_required",
+        "repair_required",
+        "repair_in_progress",
+        "retest_required",
+        "regression_required",
+        "closure_ready",
+        "reopen_required",
+        "break_loop_required"
+      ]
+    },
+    "target_state": {
+      "enum": [
+        "retry",
+        "development_repair",
+        "retest",
+        "regression",
+        "closed",
+        "reopened",
+        "break_loop"
+      ]
+    },
+    "case_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "attempt_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "reason_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "repair_link_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "scope_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "proposed_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}

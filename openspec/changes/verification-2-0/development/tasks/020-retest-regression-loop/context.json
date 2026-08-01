@@ -19,7 +19,19 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/repair/**",
     "plugins/specnav-verification/kernel/execution/**",
-    "tests/verification-v2/repair-loop/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/schemas/**",
+    "tests/verification-v2/repair-loop/**",
+    "tests/verification-v2/contracts/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-repair-loop.sh",
+    "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/tasks.md"
   ],
   "test_paths": [
     "node --test tests/verification-v2/repair-loop/state-machine.test.js",
@@ -33,10 +45,19 @@
   "acceptance_assertions": [
     "AC-06",
     "AC-07",
-    "AC-15",
-    "AC-26",
     "AC-27"
   ],
+  "acceptance_contributes": [
+    "AC-15",
+    "AC-26"
+  ],
+  "acceptance_ownership": {
+    "AC-06": "Task 020 owns the append-only lifecycle history that distinguishes first failure, retry, repair, retest, and regression without overwriting prior attempts or evidence.",
+    "AC-07": "Task 020 owns deterministic FLAKY and PASS AFTER FIX labels derived from attempt kind, immutable fingerprints, completed repair facts, and fresh evidence.",
+    "AC-15": "Task 004 owns retry fingerprint validation. Task 020 must invoke and regression-test that validator before accepting a retry.",
+    "AC-26": "Task 022 owns the concrete repaired, impacted, and baseline rerun scope. Task 020 must consume the exact required case set before proposing closure.",
+    "AC-27": "Task 020 owns deterministic routing to a Core break-loop proposal from a trusted Task 018 no-progress signal. Core alone owns the governance decision and lifecycle transition."
+  },
   "external_targets": [],
   "non_goals": [
     "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
@@ -48,7 +69,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-06, AC-07, AC-15, AC-26, AC-27"
+    "Direct evidence for AC-06, AC-07, and AC-27 plus regression evidence that Task 004 AC-15 and Task 022 AC-26 contracts are consumed without duplication"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

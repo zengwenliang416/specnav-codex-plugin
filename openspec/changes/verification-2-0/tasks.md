@@ -53,7 +53,7 @@ User Outcome: Developers and reviewers can classify, repair, retest, regress, an
 
 - [x] 7.1 Maintainer can classify failures into product, test, environment, flaky, blocker, or requirement categories.
 - [x] 7.2 Developer can receive a scoped repair task linked to frozen verification failure evidence.
-- [ ] 7.3 Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes.
+- [x] 7.3 Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes.
 
 ## 8. Freshness And Impact Reruns
 

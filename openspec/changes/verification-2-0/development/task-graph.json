@@ -242,9 +242,16 @@
       "acceptance": [
         "AC-06",
         "AC-07",
-        "AC-15",
-        "AC-26",
         "AC-27"
+      ],
+      "contributes_to": [
+        "AC-15",
+        "AC-26"
+      ],
+      "direct_deliverables": [
+        "append-only retry repair retest regression history",
+        "deterministic flaky and pass-after-fix labels",
+        "Core-owned close reopen and break-loop transition proposals"
       ],
       "packet": "development/tasks/020-retest-regression-loop"
     },

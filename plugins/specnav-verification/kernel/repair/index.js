@@ -14,14 +14,20 @@ const {
   STANDARD_REVIEWS,
   createDevelopmentRepairBridge
 } = require('./development-repair-bridge');
+const {
+  PROPOSAL_TARGETS,
+  createRepairLoopStateMachine
+} = require('./repair-loop-state-machine');
 
 module.exports = Object.freeze({
   ALL_DOMAINS,
   CLASSIFICATION_POLICY,
   OWNERSHIP,
+  PROPOSAL_TARGETS,
   STANDARD_PACKET_ARTIFACTS,
   STANDARD_REVIEWS,
   createDevelopmentRepairBridge,
   createFailureClassifier,
-  createCaseRerunPlanner
+  createCaseRerunPlanner,
+  createRepairLoopStateMachine
 });

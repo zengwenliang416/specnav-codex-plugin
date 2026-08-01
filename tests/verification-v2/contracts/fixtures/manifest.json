@@ -41,6 +41,14 @@
       "file": "positive/repair-link.json"
     },
     {
+      "entity_type": "trusted-fact-envelope",
+      "file": "positive/trusted-fact-envelope.json"
+    },
+    {
+      "entity_type": "transition-proposal",
+      "file": "positive/transition-proposal.json"
+    },
+    {
       "entity_type": "runtime-status",
       "file": "positive/runtime-status.json"
     },
@@ -101,6 +109,16 @@
     {
       "entity_type": "repair-link",
       "file": "negative/repair-link-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "trusted-fact-envelope",
+      "file": "negative/trusted-fact-envelope-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "transition-proposal",
+      "file": "negative/transition-proposal-missing-schema.json",
       "expected_field": "/schema"
     },
     {

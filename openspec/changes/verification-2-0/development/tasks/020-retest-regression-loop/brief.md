@@ -26,7 +26,12 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## In Scope
 
-- Implement attempt-kind eligibility, immutable history, pass-after-fix, flaky labels, regression closure, reopen, and break-loop threshold.
+- Implement attempt-kind eligibility, immutable history, pass-after-fix and flaky
+  labels, regression closure readiness, reopen proposals, and break-loop routing
+  proposals.
+- Consume Task 004 retry identity validation and Task 022 concrete rerun scope
+  without redefining either contract.
+- Keep every lifecycle transition proposal host-neutral and Core-owned.
 
 ## Out Of Scope
 
@@ -38,32 +43,57 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/repair/**
 - plugins/specnav-verification/kernel/execution/**
+- plugins/specnav-verification/kernel/index.js
+- plugins/specnav-verification/schemas/**
 - tests/verification-v2/repair-loop/**
+- tests/verification-v2/contracts/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-repair-loop.sh
+- openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/tasks.md
 
 ## Interfaces / Seams
 
-- Execution starts attempts; repair state machine decides legal next attempt; gates consume terminal closure.
+- Execution records attempts; the repair-loop state machine derives legal next
+  actions and immutable labels; Core consumes transition proposals and remains
+  the only lifecycle transition authority.
 
 ## Components To Create
 
 - Repair-loop state machine
 - Failure closure validator
+- Versioned Core transition-proposal contract
 
 ## Components To Reuse
 
 - Execution orchestrator
 - Rerun planner
-- Break-loop governance
+- Task 004 retry identity validator
+- Task 018 frozen classification result and break-loop-required signal
+- Task 019 completed repair link
+- Existing Core break-loop governance
 
 ## Components To Extract
 
-- Attempt transition table and no-progress detector
+- Attempt transition table and immutable lifecycle history projection
 
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/verification-repair-loop/spec.md`.
-- Acceptance assertions: `AC-06`, `AC-07`, `AC-15`, `AC-26`, `AC-27`.
-- Initial failure moves through classification, repair, retest, regression, closure, reopen, or break-loop.
+- Direct acceptance assertions: `AC-06`, `AC-07`, `AC-27`.
+- Regression assertions for already-owned contracts: `AC-15`, `AC-26`.
+- Task 004 retains retry-fingerprint ownership for `AC-15`.
+- Task 022 retains concrete regression-scope ownership for `AC-26`; this task
+  must consume the exact repaired, impacted, and baseline case set.
+- The Kernel may propose close, reopen, repair, retest, regression, or
+  break-loop routing, but only Core may execute those lifecycle transitions.
+- Initial failure moves through classification, repair, retest, regression, and
+  a Core-owned closure, reopen, or break-loop transition.
 
 ## State / Error / Empty / Loading Behavior
 

@@ -94,6 +94,8 @@ test('registry compiles and validates every Verification Contract V2 entity', ()
     'evidence-index',
     'failure-packet',
     'repair-link',
+    'trusted-fact-envelope',
+    'transition-proposal',
     'runtime-status',
     'report-model',
     'gate-decision',

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/trusted-fact-envelope.schema.json",
+  "title": "SpecNav Verification 2.0 Trusted Fact Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "kind",
+    "producer",
+    "payload",
+    "payload_digest",
+    "issued_at",
+    "bindings",
+    "claims",
+    "signature_algorithm",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.trusted-fact-envelope.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "kind": {
+      "enum": [
+        "classification_result",
+        "repair_link",
+        "attempt_fact",
+        "rerun_plan"
+      ]
+    },
+    "producer": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "payload_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "issued_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_id",
+        "change_id",
+        "run_id",
+        "case_id"
+      ],
+      "properties": {
+        "failure_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "change_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "run_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "case_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "attempt_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "signature_algorithm": {
+      "const": "hmac-sha256"
+    },
+    "signature": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

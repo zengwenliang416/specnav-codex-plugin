@@ -30,7 +30,8 @@ const {
 const {
   createCaseRerunPlanner,
   createDevelopmentRepairBridge,
-  createFailureClassifier
+  createFailureClassifier,
+  createRepairLoopStateMachine
 } = require('./repair');
 const {
   SIX_DOMAINS,
@@ -60,6 +61,7 @@ module.exports = Object.freeze({
   createCaseRerunPlanner,
   createDevelopmentRepairBridge,
   createFailureClassifier,
+  createRepairLoopStateMachine,
   SIX_DOMAINS,
   createNotApplicableDecisionValidator,
   createOracleRegistry,

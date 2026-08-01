@@ -15,6 +15,8 @@ const ENTITY_TYPES = Object.freeze([
   'evidence-index',
   'failure-packet',
   'repair-link',
+  'trusted-fact-envelope',
+  'transition-proposal',
   'runtime-status',
   'report-model',
   'gate-decision',

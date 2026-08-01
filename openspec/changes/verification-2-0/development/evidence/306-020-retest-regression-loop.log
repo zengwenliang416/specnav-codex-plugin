@@ -1,0 +1,10 @@
+# command: git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' && node plugins/specnav-development/scripts/development-contract.js --mode handoff --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const r=JSON.parse(s);const b=r.blockers.filter(x=>x.includes("020-retest-regression-loop"));if(b.length)throw new Error(b.join(","));console.log("task 020 checkpoint ready")})' # 020-retest-regression-loop-checkpoint
+# exit_status: 0
+# duration_ms: 350
+
+## stdout
+task 020 checkpoint ready
+
+
+## stderr
+(empty)
