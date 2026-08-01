@@ -37,13 +37,23 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/repair/**
-- plugins/specnav-development/**
-- plugins/specnav-core/**
+- plugins/specnav-verification/kernel/index.js
 - tests/verification-v2/repair-loop/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-repair-bridge.sh
+- openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/tasks.md
 
 ## Interfaces / Seams
 
-- Verification owns failure facts and closure; Development owns code repair and review; Core owns stage transition.
+- Verification owns failure facts, frozen evidence, and closure; Development owns
+  code repair and review; Core owns lifecycle transition and break-loop
+  governance.
 
 ## Components To Create
 
@@ -54,7 +64,8 @@ listed verification commands and must preserve all earlier artifacts.
 
 - SpecNav vertical-slice task packet
 - Scope lock
-- Break-loop governance
+- Task 018 frozen product/test failure packet without caller-authored
+  `break_loop_required` forwarding
 
 ## Components To Extract
 
@@ -63,8 +74,12 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/verification-repair-loop/spec.md`.
-- Acceptance assertions: `AC-25`, `AC-27`.
-- Failure packet creates a bounded repair task and receives a reviewed repair reference back.
+- Acceptance assertion: `AC-25`.
+- Task 019 rejects caller-authored `break_loop_required` signals. It does not
+  preserve, forward, decide, or transition break-loop state and does not close
+  `AC-27`; Task 020 and Core own that behavior.
+- Failure packet creates a bounded repair task and receives a reviewed repair
+  reference back.
 
 ## State / Error / Empty / Loading Behavior
 

@@ -1,0 +1,11 @@
+# command: bash tests/run-verification-v2-development-contract-maintenance.sh && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' # 019-development-repair-bridge-lifecycle-closure
+# exit_status: 0
+# duration_ms: 34303
+
+## stdout
+specnav development plugin fixtures ok
+development contract maintenance ok; 45 legitimate unfinished-work blockers remain
+
+
+## stderr
+(empty)

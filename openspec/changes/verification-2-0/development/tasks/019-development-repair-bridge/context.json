@@ -18,9 +18,17 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/repair/**",
-    "plugins/specnav-development/**",
-    "plugins/specnav-core/**",
-    "tests/verification-v2/repair-loop/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "tests/verification-v2/repair-loop/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-repair-bridge.sh",
+    "openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/tasks.md"
   ],
   "test_paths": [
     "bash tests/run-verification-v2-repair-bridge.sh",
@@ -30,8 +38,11 @@
     "018-failure-classification"
   ],
   "acceptance_assertions": [
-    "AC-25",
-    "AC-27"
+    "AC-25"
+  ],
+  "acceptance_ownership": {
+    "AC-25": "Task 019 owns routing only for eligible frozen product_defect and test_defect failures into a standard scoped Development repair packet linked to frozen evidence.",
+    "AC-27": "Task 019 must reject caller-authored break_loop_required signals and does not preserve, forward, decide, or transition break-loop state. Task 020 and Core own break-loop governance and lifecycle transitions."
   ],
   "external_targets": [],
   "non_goals": [
@@ -44,7 +55,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-25, AC-27"
+    "Direct evidence for AC-25 and negative evidence that caller-authored break_loop_required signals are rejected without claiming AC-27"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

@@ -1,0 +1,10 @@
+# command: node -e 'const fs=require("fs");const entries=fs.readFileSync("openspec/changes/verification-2-0/development/validation-log.jsonl","utf8").trim().split(/\r?\n/).map(JSON.parse);const redIndex=entries.findIndex(x=>x.evidence_log==="development/evidence/280-019-development-repair-bridge.log"&&x.attestation==="system-executed"&&x.ok===false);const greenIndex=entries.findIndex(x=>x.evidence_log==="development/evidence/285-019-development-repair-bridge.log"&&x.attestation==="system-executed"&&x.ok===true);if(redIndex<0)throw new Error("initial-red-missing");if(greenIndex<=redIndex)throw new Error("superseding-green-missing");console.log("task 019 initial API RED has a later adversarial GREEN receipt")' # 019-development-repair-bridge-initial-red-superseded
+# exit_status: 0
+# duration_ms: 40
+
+## stdout
+task 019 initial API RED has a later adversarial GREEN receipt
+
+
+## stderr
+(empty)

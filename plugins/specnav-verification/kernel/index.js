@@ -29,6 +29,7 @@ const {
 } = require('./reporting');
 const {
   createCaseRerunPlanner,
+  createDevelopmentRepairBridge,
   createFailureClassifier
 } = require('./repair');
 const {
@@ -57,6 +58,7 @@ module.exports = Object.freeze({
   createSecretRedactor,
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,
+  createDevelopmentRepairBridge,
   createFailureClassifier,
   SIX_DOMAINS,
   createNotApplicableDecisionValidator,

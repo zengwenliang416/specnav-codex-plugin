@@ -1,0 +1,208 @@
+# command: bash tests/run-verification-v2-repair-bridge.sh # 019-development-repair-bridge-red-api-missing
+# exit_status: 1
+# duration_ms: 1088
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 1.462833
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 64.2205
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:43:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.62675
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 23.908667
+  type: 'test'
+  ...
+# Subtest: routes eligible frozen product defects into a standard scoped Development repair packet
+not ok 5 - routes eligible frozen product defects into a standard scoped Development repair packet
+  ---
+  duration_ms: 936.18525
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:193:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Task 019 RED: createDevelopmentRepairBridge API is unavailable
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    factory (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:171:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:195:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: routes test defects as test_code and keeps task identity stable across clocks
+not ok 6 - routes test defects as test_code and keeps task identity stable across clocks
+  ---
+  duration_ms: 0.135125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:246:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Task 019 RED: createDevelopmentRepairBridge API is unavailable
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    factory (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:171:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:255:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: rejects open or non-development classifications instead of routing them
+not ok 7 - rejects open or non-development classifications instead of routing them
+  ---
+  duration_ms: 0.147333
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:272:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Task 019 RED: createDevelopmentRepairBridge API is unavailable
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    factory (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:171:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:273:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: fails closed on fallback, light mode, manual green, and fingerprint drift
+not ok 8 - fails closed on fallback, light mode, manual green, and fingerprint drift
+  ---
+  duration_ms: 0.326125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:311:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Task 019 RED: createDevelopmentRepairBridge API is unavailable
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    factory (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:171:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:323:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clones trusted inputs so later mutation cannot alter the routed packet or link
+not ok 9 - clones trusted inputs so later mutation cannot alter the routed packet or link
+  ---
+  duration_ms: 0.724834
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:332:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Task 019 RED: createDevelopmentRepairBridge API is unavailable
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    factory (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:171:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/development-bridge.test.js:334:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1036.573166
+
+
+## stderr
+(empty)

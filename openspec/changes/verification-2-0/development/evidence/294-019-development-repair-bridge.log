@@ -1,0 +1,10 @@
+# command: git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' && node plugins/specnav-development/scripts/development-contract.js --mode handoff --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const r=JSON.parse(s);const b=r.blockers.filter(x=>x.includes("019-development-repair-bridge"));if(b.length)throw new Error(b.join(","));console.log("task 019 checkpoint ready")})' # 019-development-repair-bridge-checkpoint
+# exit_status: 0
+# duration_ms: 755
+
+## stdout
+task 019 checkpoint ready
+
+
+## stderr
+(empty)

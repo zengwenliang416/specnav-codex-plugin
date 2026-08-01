@@ -1,0 +1,27 @@
+# command: bash tests/run-verification-v2-development-contract-maintenance.sh # 019-development-repair-bridge-pre-completion-lifecycle
+# exit_status: 1
+# duration_ms: 25041
+
+## stdout
+specnav development plugin fixtures ok
+
+
+## stderr
+[stdin]:53
+    throw new Error(`retired blocker returned: ${blocker}`);
+    ^
+
+Error: retired blocker returned: validation-log:executed-evidence-failed:019-development-repair-bridge
+    at [stdin]:53:11
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [stdin]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_stdin:53:5
+    at ReadStream.<anonymous> (node:internal/process/execution:201:5)
+    at ReadStream.emit (node:events:519:28)
+
+Node.js v22.19.0
+
