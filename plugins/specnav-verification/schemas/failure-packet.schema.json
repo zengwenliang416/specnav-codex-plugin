@@ -59,6 +59,7 @@
     },
     "classification": {
       "enum": [
+        null,
         "product_defect",
         "test_defect",
         "environment_defect",
@@ -112,5 +113,32 @@
     "frozen_at": {
       "$ref": "common.schema.json#/$defs/dateTime"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "classification": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "classification"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "open"
+          },
+          "next_action": {
+            "const": "blocked_for_decision"
+          },
+          "owner": {
+            "const": "verification"
+          }
+        }
+      }
+    }
+  ]
 }

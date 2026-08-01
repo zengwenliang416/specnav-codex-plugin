@@ -1,0 +1,229 @@
+# command: node --test tests/verification-v2/repair-loop/classifier.test.js tests/verification-v2/contracts/schema-registry.test.js # 018-failure-classification-review-red
+# exit_status: 1
+# duration_ms: 1587
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 861.164834
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 139.120708
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 95.638667
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+not ok 4 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 90.8895
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js:201:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-contract:schema-invalid","artifact_path":"memory://failure-packet","entity_type":"failure-packet","field":"/classification","keyword":"enum","schema_path":"#/properties/classification/enum","message":"must be equal to one of the allowed values"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/contracts/schema-registry.test.js:221:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 5 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 96.454333
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 6 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 198.308208
+  type: 'test'
+  ...
+# Subtest: classifies all six failure categories using explicit policy
+ok 7 - classifies all six failure categories using explicit policy
+  ---
+  duration_ms: 854.982667
+  type: 'test'
+  ...
+# Subtest: accepts only schema-valid failed or blocked readings
+ok 8 - accepts only schema-valid failed or blocked readings
+  ---
+  duration_ms: 1.637958
+  type: 'test'
+  ...
+# Subtest: requires every reading to share change run case and attempt identity
+ok 9 - requires every reading to share change run case and attempt identity
+  ---
+  duration_ms: 0.489
+  type: 'test'
+  ...
+# Subtest: binds evidence ids to matching intact and fresh integrity facts
+ok 10 - binds evidence ids to matching intact and fresh integrity facts
+  ---
+  duration_ms: 0.936
+  type: 'test'
+  ...
+# Subtest: produces a stable frozen packet id bound to reading and evidence content
+ok 11 - produces a stable frozen packet id bound to reading and evidence content
+  ---
+  duration_ms: 0.970166
+  type: 'test'
+  ...
+# Subtest: packet id covers frozen timestamps and clock requires RFC3339 timezone
+not ok 12 - packet id covers frozen timestamps and clock requires RFC3339 timezone
+  ---
+  duration_ms: 0.808875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:225:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+    
+    'failure-91dcfbd96bd51aabc34665ea0713feeeaa693a17170a7bc27ba06cd8b0b135bd'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'failure-91dcfbd96bd51aabc34665ea0713feeeaa693a17170a7bc27ba06cd8b0b135bd'
+  actual: 'failure-91dcfbd96bd51aabc34665ea0713feeeaa693a17170a7bc27ba06cd8b0b135bd'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:238:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing classification freezes a schema-valid open packet and blocks
+not ok 13 - missing classification freezes a schema-valid open packet and blocks
+  ---
+  duration_ms: 0.348417
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:250:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'classification')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:263:30)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: blocks when trusted root-cause check is unavailable or untrusted
+ok 14 - blocks when trusted root-cause check is unavailable or untrusted
+  ---
+  duration_ms: 0.457334
+  type: 'test'
+  ...
+# Subtest: failed assertion ids exactly match non-empty reading assertion ids
+not ok 15 - failed assertion ids exactly match non-empty reading assertion ids
+  ---
+  duration_ms: 0.833709
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:294:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'verification-failure:failed-assertion-set-mismatch'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-failure:failed-assertion-set-mismatch'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:297:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: reading evidence, supplied evidence, and integrity ids are exact sets
+not ok 16 - reading evidence, supplied evidence, and integrity ids are exact sets
+  ---
+  duration_ms: 0.679042
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:332:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'verification-failure:evidence-set-mismatch'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-failure:evidence-set-mismatch'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:337:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clones trusted inputs so later external mutation cannot alter results
+ok 17 - clones trusted inputs so later external mutation cannot alter results
+  ---
+  duration_ms: 0.357791
+  type: 'test'
+  ...
+# Subtest: emits only break_loop_required when no-progress threshold is reached
+ok 18 - emits only break_loop_required when no-progress threshold is reached
+  ---
+  duration_ms: 0.298083
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 13
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1545.496083
+
+
+## stderr
+(empty)

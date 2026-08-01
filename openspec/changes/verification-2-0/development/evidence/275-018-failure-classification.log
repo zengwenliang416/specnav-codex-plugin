@@ -1,0 +1,24 @@
+# command: node -e 'const fs=require("fs");const graph=JSON.parse(fs.readFileSync("openspec/changes/verification-2-0/development/task-graph.json","utf8"));const tasks=fs.readFileSync("openspec/changes/verification-2-0/tasks.md","utf8");const node=graph.tasks.find(x=>x.id==="018-failure-classification");if(!node)throw new Error("task-node-missing");const pending=`- [ ] 7.1 ${node.goal}`;const done=`- [x] 7.1 ${node.goal}`;if(!tasks.includes(pending)&&!tasks.includes(done))throw new Error("task-checklist-goal-mismatch");console.log("task 018 checklist goal aligned")' # 018-failure-classification-goal-aligned
+# exit_status: 1
+# duration_ms: 45
+
+## stdout
+(empty)
+
+## stderr
+[eval]:1
+const fs=require("fs");const graph=JSON.parse(fs.readFileSync("openspec/changes/verification-2-0/development/task-graph.json","utf8"));const tasks=fs.readFileSync("openspec/changes/verification-2-0/tasks.md","utf8");const node=graph.tasks.find(x=>x.id==="018-failure-classification");if(!node)throw new Error("task-node-missing");const pending=`- [ ] 7.1 ${node.goal}`;const done=`- [x] 7.1 ${node.goal}`;if(!tasks.includes(pending)&&!tasks.includes(done))throw new Error("task-checklist-goal-mismatch");console.log("task 018 checklist goal aligned")
+                                                                                                                                                                                                                                               ^
+
+TypeError: Cannot read properties of undefined (reading 'find')
+    at [eval]:1:240
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.19.0
+

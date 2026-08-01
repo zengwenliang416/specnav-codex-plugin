@@ -28,7 +28,8 @@ const {
   renderSafeHtmlText
 } = require('./reporting');
 const {
-  createCaseRerunPlanner
+  createCaseRerunPlanner,
+  createFailureClassifier
 } = require('./repair');
 const {
   SIX_DOMAINS,
@@ -56,6 +57,7 @@ module.exports = Object.freeze({
   createSecretRedactor,
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,
+  createFailureClassifier,
   SIX_DOMAINS,
   createNotApplicableDecisionValidator,
   createOracleRegistry,

@@ -198,6 +198,43 @@ test('evidence and gate schemas directly enforce AC-31 and AC-35 fields', () => 
   }
 });
 
+test('failure packet schema supports only the constrained unclassified open state', () => {
+  const runtimeStatus = readyRuntime();
+  const registry = createSchemaRegistry({
+    runtimeStatus,
+    runtimeRoot: runtimeStatus.runtime_root,
+    schemaRoot: SCHEMA_ROOT
+  });
+  const classified = JSON.parse(fs.readFileSync(
+    path.join(FIXTURE_ROOT, 'positive/failure-packet.json'),
+    'utf8'
+  ));
+  const open = {
+    ...classified,
+    classification: null,
+    status: 'open',
+    next_action: 'blocked_for_decision',
+    owner: 'verification'
+  };
+
+  const result = registry.validate('failure-packet', open);
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(Object.isFrozen(result.value), true);
+
+  for (const [field, value] of [
+    ['status', 'classified'],
+    ['next_action', 'repair_required'],
+    ['owner', 'development']
+  ]) {
+    const invalid = { ...open, [field]: value };
+    assert.equal(
+      registry.validate('failure-packet', invalid).ok,
+      false,
+      `${field}:${value}`
+    );
+  }
+});
+
 test('registry requires doctor-approved managed AJV and never mutates input', () => {
   assert.throws(
     () => createSchemaRegistry({

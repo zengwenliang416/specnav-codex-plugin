@@ -1,0 +1,177 @@
+# command: node --test tests/verification-v2/repair-loop/classifier.test.js # 018-failure-classification-red-trusted-check-catalog
+# exit_status: 1
+# duration_ms: 654
+
+## stdout
+TAP version 13
+# Subtest: classifies all six failure categories using explicit policy
+not ok 1 - classifies all six failure categories using explicit policy
+  ---
+  duration_ms: 555.083375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:118:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:119:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: accepts only schema-valid failed or blocked readings
+not ok 2 - accepts only schema-valid failed or blocked readings
+  ---
+  duration_ms: 0.099791
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:137:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:138:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: requires every reading to share change run case and attempt identity
+not ok 3 - requires every reading to share change run case and attempt identity
+  ---
+  duration_ms: 1.815791
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:161:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:168:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: binds evidence ids to matching intact and fresh integrity facts
+not ok 4 - binds evidence ids to matching intact and fresh integrity facts
+  ---
+  duration_ms: 0.07975
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:185:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:186:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: produces a stable frozen packet id bound to reading and evidence content
+not ok 5 - produces a stable frozen packet id bound to reading and evidence content
+  ---
+  duration_ms: 0.069625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:208:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:209:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: blocks when classification or trusted root-cause check is missing
+not ok 6 - blocks when classification or trusted root-cause check is missing
+  ---
+  duration_ms: 0.066458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:226:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:230:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clones trusted inputs so later external mutation cannot alter results
+not ok 7 - clones trusted inputs so later external mutation cannot alter results
+  ---
+  duration_ms: 0.06075
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:256:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:258:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: emits only break_loop_required when no-progress threshold is reached
+not ok 8 - emits only break_loop_required when no-progress threshold is reached
+  ---
+  duration_ms: 0.261375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:277:1'
+  failureType: 'testCodeFailure'
+  error: 'createFailureClassifier is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createClassifier (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:109:10)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/repair-loop/classifier.test.js:279:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 617.276875
+
+
+## stderr
+(empty)

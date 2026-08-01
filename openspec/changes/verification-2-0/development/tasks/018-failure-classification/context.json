@@ -18,20 +18,44 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/repair/**",
-    "tests/verification-v2/repair-loop/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/schemas/failure-packet.schema.json",
+    "tests/verification-v2/repair-loop/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/verification-v2/contracts/schema-registry.test.js",
+    "tests/verification-v2/contracts/cross-reference.test.js",
+    "tests/verification-v2/contracts/fixtures/**",
+    "openspec/changes/verification-2-0/development/tasks/018-failure-classification/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**"
   ],
   "test_paths": [
-    "node --test tests/verification-v2/repair-loop/classifier.test.js"
+    "node --test tests/verification-v2/repair-loop/classifier.test.js",
+    "node --test tests/verification-v2/repair-loop/classifier.test.js tests/verification-v2/kernel/package-boundary.test.js tests/verification-v2/evaluation/reading-model.test.js tests/verification-v2/evaluation/aggregation.test.js",
+    "node --test tests/verification-v2/repair-loop/classifier.test.js tests/verification-v2/contracts/schema-registry.test.js tests/verification-v2/contracts/cross-reference.test.js tests/verification-v2/kernel/package-boundary.test.js tests/verification-v2/evaluation/reading-model.test.js tests/verification-v2/evaluation/aggregation.test.js"
   ],
   "dependencies": [
     "015-reading-model",
     "016-six-domain-aggregation"
   ],
-  "acceptance_assertions": [
+  "acceptance_assertions": [],
+  "contributes_to": [
     "AC-06",
     "AC-25",
     "AC-27"
   ],
+  "acceptance_ownership": {
+    "direct_deliverables": [
+      "schema-valid frozen failure packet",
+      "six deterministic failure classifications"
+    ],
+    "AC-06": "Task 018 contributes first-failure evidence; Task 020 owns complete attempt history.",
+    "AC-25": "Task 018 contributes the frozen packet; Task 019 owns Development task creation and routing.",
+    "AC-27": "Task 018 contributes break_loop_required only; Task 020 and Core own governance and lifecycle transitions."
+  },
   "external_targets": [],
   "non_goals": [
     "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",
@@ -43,7 +67,8 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-06, AC-25, AC-27"
+    "Blocked review RED and superseding GREEN evidence for open packets, exact assertion/evidence sets, and timestamp-bound packet identity",
+    "Direct evidence for the frozen failure packet and all six classifications; contribution evidence for AC-06, AC-25, and AC-27"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",

@@ -214,10 +214,15 @@
       "id": "018-failure-classification",
       "group": 7,
       "goal": "Maintainer can classify failures into product, test, environment, flaky, blocker, or requirement categories.",
-      "acceptance": [
+      "acceptance": [],
+      "contributes_to": [
         "AC-06",
         "AC-25",
         "AC-27"
+      ],
+      "direct_deliverables": [
+        "schema-valid frozen failure packet",
+        "six deterministic failure classifications"
       ],
       "packet": "development/tasks/018-failure-classification"
     },
@@ -226,8 +231,7 @@
       "group": 7,
       "goal": "Developer can receive a scoped repair task linked to frozen verification failure evidence.",
       "acceptance": [
-        "AC-25",
-        "AC-27"
+        "AC-25"
       ],
       "packet": "development/tasks/019-development-repair-bridge"
     },

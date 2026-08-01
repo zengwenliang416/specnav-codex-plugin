@@ -1,0 +1,10 @@
+# command: node -e 'const fs=require("fs");const graph=JSON.parse(fs.readFileSync("openspec/changes/verification-2-0/development/task-graph.json","utf8"));const tasks=fs.readFileSync("openspec/changes/verification-2-0/tasks.md","utf8");const node=graph.nodes.find(x=>x.id==="018-failure-classification");if(!node)throw new Error("task-node-missing");const pending=`- [ ] 7.1 ${node.goal}`;const done=`- [x] 7.1 ${node.goal}`;if(!tasks.includes(pending)&&!tasks.includes(done))throw new Error("task-checklist-goal-mismatch");console.log("task 018 checklist goal aligned")' # 018-failure-classification-goal-aligned-v2
+# exit_status: 0
+# duration_ms: 35
+
+## stdout
+task 018 checklist goal aligned
+
+
+## stderr
+(empty)

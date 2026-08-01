@@ -2,28 +2,51 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- No requirement is missing from the narrowed Task 018 slice.
 
 ## Extra Behavior
 
-- None recorded.
+- No Development repair task, retry/retest/regression state machine, closure
+  decision, break-loop transition, host adapter, fallback, or simplified
+  verification path was added.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- Task 018 directly delivers the frozen failure packet and six deterministic
+  classifications.
+- It contributes first-failure evidence to `AC-06`, the frozen packet to
+  `AC-25`, and the `break_loop_required` signal to `AC-27`.
+- Tasks 019 and 020/Core retain complete acceptance ownership for repair-task
+  routing, attempt history, closure, and break-loop governance.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Standard Development repair-task creation remains Task 019.
+- Retry, retest, regression, reopen, closure, and break-loop transitions remain
+  Task 020 and Core.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- Direct deliverable: schema-valid frozen failure packet
+- Direct deliverable: six deterministic failure classifications
+- Contribution: `AC-06`
+- Contribution: `AC-25`
+- Contribution: `AC-27`
+
+## Verified Behavior
+
+- Failed or blocked schema-valid readings are frozen with exact reading,
+  assertion, evidence, integrity, and root-cause bindings.
+- Missing classification produces a schema-valid immutable open packet and
+  blocks closure.
+- Product, test, environment, flaky, expected blocker, and requirement
+  ambiguity classifications produce explicit owner and next-action policy.
+- The no-progress threshold emits only a break-loop-required signal.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No further specification fix is required for Task 018.
