@@ -1,0 +1,199 @@
+# command: bash tests/run-verification-v2-report-model.sh # 023-report-model-red
+# exit_status: 1
+# duration_ms: 1811
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 1133.68475
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 146.079625
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 107.115416
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 4 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 94.83925
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 5 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 96.6015
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 6 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 91.769458
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 7 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 1.61275
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 8 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 73.268625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:45:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 9 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.405334
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 10 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 16.018709
+  type: 'test'
+  ...
+# Subtest: builds one deterministic immutable rich model for all three pages
+not ok 11 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 1076.7925
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:243:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createReportModelBuilder is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    builder (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:237:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:246:17)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+not ok 12 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 2.197792
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:265:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createReportModelBuilder is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    builder (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:237:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:279:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+not ok 13 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 1.428625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:304:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createReportModelBuilder is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    builder (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:237:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:341:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+not ok 14 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 1.545542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:353:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createReportModelBuilder is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    builder (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:237:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:360:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+not ok 15 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 1.989125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:375:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createReportModelBuilder is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    builder (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:237:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:380:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 9
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1764.250458
+
+
+## stderr
+(empty)

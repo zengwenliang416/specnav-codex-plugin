@@ -1,0 +1,19 @@
+# command: node --test tests/verification-v2/reports/report-model.test.js
+# exit_status: 1
+# attestation: developer-observed
+
+## result
+
+25 tests executed; 22 passed and 3 failed before the production fixes.
+
+## failing regressions
+
+- malformed authoritative freshness fails closed instead of normalizing green
+- report-model schema independently rejects unsafe evidence paths and hrefs
+- repair review evidence must come from the successful post-fix chain
+
+## purpose
+
+This append-only receipt preserves the RED state introduced from independent
+review findings before freshness validation, schema path constraints, and
+post-fix repair evidence binding were implemented.

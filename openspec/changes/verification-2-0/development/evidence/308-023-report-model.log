@@ -1,0 +1,147 @@
+# command: node --test tests/verification-v2/reports/report-model.test.js # 023-report-model-review-red
+# exit_status: 1
+# duration_ms: 1111
+
+## stdout
+TAP version 13
+# Subtest: builds one deterministic immutable rich model for all three pages
+ok 1 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 913.231917
+  type: 'test'
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+ok 2 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 21.159417
+  type: 'test'
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+ok 3 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 3.742375
+  type: 'test'
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+ok 4 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 2.0255
+  type: 'test'
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+ok 5 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 1.696958
+  type: 'test'
+  ...
+# Subtest: trusted recomputation rejects caller-forged aggregate and gate green
+not ok 6 - trusted recomputation rejects caller-forged aggregate and gate green
+  ---
+  duration_ms: 4.215041
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:416:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+    
+    'green'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'green'
+  actual: 'green'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:430:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: controlled evidence locator rejects URI schemes and encoded traversal
+not ok 7 - controlled evidence locator rejects URI schemes and encoded traversal
+  ---
+  duration_ms: 2.387417
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:439:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    javascript:alert(1)
+    
+    'green' !== 'blocked'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'blocked'
+  actual: 'green'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:454:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: duplicate evidence ids block instead of folding immutable history
+not ok 8 - duplicate evidence ids block instead of folding immutable history
+  ---
+  duration_ms: 1.898125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:462:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'green' !== 'blocked'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'blocked'
+  actual: 'green'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:476:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rejects missing and forged authority collaborators without fallback
+not ok 9 - rejects missing and forged authority collaborators without fallback
+  ---
+  duration_ms: 1.45375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:483:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:485:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 5
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1073.4145
+
+
+## stderr
+(empty)

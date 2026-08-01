@@ -36,51 +36,41 @@
       "$ref": "common.schema.json#/$defs/dateTime"
     },
     "verdict": {
-      "enum": [
-        "green",
-        "red",
-        "blocked",
-        "running",
-        "canceled",
-        "stale",
-        "flaky",
-        "pass_after_fix"
-      ]
+      "$ref": "#/$defs/reportVerdict"
     },
     "sources": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "case_snapshot_id",
+        "case_snapshot_hash",
         "run_ids",
+        "attempt_ids",
         "reading_ids",
+        "evidence_ids",
         "evidence_index_version",
+        "evidence_index_digest",
+        "aggregate_id",
         "gate_decision_id"
       ],
       "properties": {
         "case_snapshot_id": {
-          "anyOf": [
-            {
-              "$ref": "common.schema.json#/$defs/stableId"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "$ref": "#/$defs/nullableStableId"
+        },
+        "case_snapshot_hash": {
+          "$ref": "#/$defs/nullableSha256"
         },
         "run_ids": {
-          "type": "array",
-          "items": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "uniqueItems": true
+          "$ref": "#/$defs/idArray"
+        },
+        "attempt_ids": {
+          "$ref": "#/$defs/idArray"
         },
         "reading_ids": {
-          "type": "array",
-          "items": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "uniqueItems": true
+          "$ref": "#/$defs/idArray"
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/idArray"
         },
         "evidence_index_version": {
           "type": [
@@ -89,15 +79,14 @@
           ],
           "minimum": 1
         },
+        "evidence_index_digest": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "aggregate_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
         "gate_decision_id": {
-          "anyOf": [
-            {
-              "$ref": "common.schema.json#/$defs/stableId"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "$ref": "#/$defs/nullableStableId"
         }
       }
     },
@@ -110,6 +99,7 @@
         "totals",
         "integrity",
         "freshness",
+        "repair_loop",
         "open_failure_ids",
         "open_repair_ids",
         "runtime_version",
@@ -211,92 +201,64 @@
         "freshness": {
           "$ref": "common.schema.json#/$defs/freshnessResult"
         },
+        "repair_loop": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "failure_ids",
+            "repair_ids",
+            "history_event_count"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "open",
+                "repairing",
+                "retesting",
+                "regressing",
+                "closed",
+                "blocked",
+                "break_loop"
+              ]
+            },
+            "failure_ids": {
+              "$ref": "#/$defs/idArray"
+            },
+            "repair_ids": {
+              "$ref": "#/$defs/idArray"
+            },
+            "history_event_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
         "open_failure_ids": {
-          "type": "array",
-          "items": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "uniqueItems": true
+          "$ref": "#/$defs/idArray"
         },
         "open_repair_ids": {
-          "type": "array",
-          "items": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "uniqueItems": true
+          "$ref": "#/$defs/idArray"
         },
         "runtime_version": {
-          "$ref": "common.schema.json#/$defs/semver"
+          "$ref": "#/$defs/nullableSemver"
         },
         "kernel_version": {
-          "$ref": "common.schema.json#/$defs/semver"
+          "$ref": "#/$defs/nullableSemver"
         }
       }
     },
     "catalog": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "case_id",
-          "title",
-          "priority",
-          "status"
-        ],
-        "properties": {
-          "case_id": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "title": {
-            "$ref": "common.schema.json#/$defs/nonEmptyString"
-          },
-          "priority": {
-            "$ref": "common.schema.json#/$defs/priority"
-          },
-          "status": {
-            "$ref": "#/$defs/domainVerdict"
-          }
-        }
+        "$ref": "test-case.schema.json"
       }
     },
     "results": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "case_id",
-          "status",
-          "attempt_ids",
-          "reading_ids",
-          "evidence_ids",
-          "failure_ids",
-          "repair_ids"
-        ],
-        "properties": {
-          "case_id": {
-            "$ref": "common.schema.json#/$defs/stableId"
-          },
-          "status": {
-            "$ref": "#/$defs/domainVerdict"
-          },
-          "attempt_ids": {
-            "$ref": "#/$defs/idArray"
-          },
-          "reading_ids": {
-            "$ref": "#/$defs/idArray"
-          },
-          "evidence_ids": {
-            "$ref": "#/$defs/idArray"
-          },
-          "failure_ids": {
-            "$ref": "#/$defs/idArray"
-          },
-          "repair_ids": {
-            "$ref": "#/$defs/idArray"
-          }
-        }
+        "$ref": "#/$defs/caseResult"
       }
     },
     "blockers": {
@@ -313,6 +275,18 @@
     }
   },
   "$defs": {
+    "reportVerdict": {
+      "enum": [
+        "green",
+        "red",
+        "blocked",
+        "running",
+        "canceled",
+        "stale",
+        "flaky",
+        "pass_after_fix"
+      ]
+    },
     "domainVerdict": {
       "enum": [
         "pass",
@@ -320,6 +294,7 @@
         "blocked",
         "not_applicable",
         "running",
+        "canceled",
         "stale",
         "flaky",
         "pass_after_fix"
@@ -331,6 +306,261 @@
         "$ref": "common.schema.json#/$defs/stableId"
       },
       "uniqueItems": true
+    },
+    "nullableStableId": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableSha256": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableSemver": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/semver"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "controlledEvidencePath": {
+      "type": "string",
+      "pattern": "^objects/(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*[%?#:\\\\])[A-Za-z0-9][A-Za-z0-9._/-]*$"
+    },
+    "controlledEvidenceHref": {
+      "type": "string",
+      "pattern": "^evidence/objects/(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*[%?#:\\\\])[A-Za-z0-9][A-Za-z0-9._/-]*$"
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runner",
+        "entrypoint",
+        "args",
+        "cwd",
+        "env_keys"
+      ],
+      "properties": {
+        "runner": {
+          "$ref": "common.schema.json#/$defs/runnerKind"
+        },
+        "entrypoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cwd": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "env_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "evidenceProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "path",
+        "href",
+        "available",
+        "integrity",
+        "freshness",
+        "sha256",
+        "size",
+        "producer",
+        "captured_at",
+        "run_id",
+        "case_id",
+        "attempt_id",
+        "code_sha",
+        "test_sha",
+        "redaction"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "kind": {
+          "$ref": "common.schema.json#/$defs/evidenceKind"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/controlledEvidencePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "href": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/controlledEvidenceHref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "integrity": {
+          "enum": [
+            "intact",
+            "broken",
+            "unknown"
+          ]
+        },
+        "freshness": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "producer": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "captured_at": {
+          "$ref": "common.schema.json#/$defs/dateTime"
+        },
+        "run_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "case_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "attempt_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "code_sha": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        },
+        "test_sha": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        },
+        "redaction": {
+          "$ref": "common.schema.json#/$defs/redaction"
+        }
+      }
+    },
+    "caseResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "status",
+        "freshness",
+        "command",
+        "runs",
+        "attempts",
+        "readings",
+        "evidence",
+        "failures",
+        "repairs",
+        "blockers"
+      ],
+      "properties": {
+        "case_id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "status": {
+          "$ref": "#/$defs/domainVerdict"
+        },
+        "freshness": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "command": {
+          "$ref": "#/$defs/command"
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "verification-run.schema.json"
+          }
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "attempt.schema.json"
+          }
+        },
+        "readings": {
+          "type": "array",
+          "items": {
+            "$ref": "reading.schema.json"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceProjection"
+          }
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "$ref": "failure-packet.schema.json"
+          }
+        },
+        "repairs": {
+          "type": "array",
+          "items": {
+            "$ref": "repair-link.schema.json"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/blocker"
+          }
+        }
+      }
     }
   }
 }

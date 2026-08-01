@@ -1,0 +1,212 @@
+# command: bash tests/run-verification-v2-report-model.sh # 023-report-model-authority-final
+# exit_status: 0
+# duration_ms: 1616
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 960.159125
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 148.609084
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 102.416583
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 4 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 98.516084
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 5 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 101.564167
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 6 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 96.495459
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 7 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.829458
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 8 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 36.044875
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 9 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.395791
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 10 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 11.169334
+  type: 'test'
+  ...
+# Subtest: builds one deterministic immutable rich model for all three pages
+ok 11 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 946.362875
+  type: 'test'
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+ok 12 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 42.294791
+  type: 'test'
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+ok 13 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 9.458625
+  type: 'test'
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+ok 14 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 4.760709
+  type: 'test'
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+ok 15 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 4.464791
+  type: 'test'
+  ...
+# Subtest: trusted recomputation rejects caller-forged aggregate and gate green
+ok 16 - trusted recomputation rejects caller-forged aggregate and gate green
+  ---
+  duration_ms: 4.112
+  type: 'test'
+  ...
+# Subtest: controlled evidence locator rejects URI schemes and encoded traversal
+ok 17 - controlled evidence locator rejects URI schemes and encoded traversal
+  ---
+  duration_ms: 17.490042
+  type: 'test'
+  ...
+# Subtest: duplicate evidence ids block instead of folding immutable history
+ok 18 - duplicate evidence ids block instead of folding immutable history
+  ---
+  duration_ms: 3.746167
+  type: 'test'
+  ...
+# Subtest: rejects missing and forged authority collaborators without fallback
+ok 19 - rejects missing and forged authority collaborators without fallback
+  ---
+  duration_ms: 3.258042
+  type: 'test'
+  ...
+# Subtest: failure history must bind to current run attempt readings and evidence
+ok 20 - failure history must bind to current run attempt readings and evidence
+  ---
+  duration_ms: 6.443167
+  type: 'test'
+  ...
+# Subtest: repair history must resolve to a verified same-change failure
+ok 21 - repair history must resolve to a verified same-change failure
+  ---
+  duration_ms: 3.543542
+  type: 'test'
+  ...
+# Subtest: binds the Evidence Index to the exact change and canonical raw source
+ok 22 - binds the Evidence Index to the exact change and canonical raw source
+  ---
+  duration_ms: 7.021791
+  type: 'test'
+  ...
+# Subtest: gate stage and policy come from independent authority
+ok 23 - gate stage and policy come from independent authority
+  ---
+  duration_ms: 3.574667
+  type: 'test'
+  ...
+# Subtest: redacts command secrets in every projection and never exposes absolute cwd
+ok 24 - redacts command secrets in every projection and never exposes absolute cwd
+  ---
+  duration_ms: 8.198583
+  type: 'test'
+  ...
+# Subtest: rejects a modified case snapshot that retains an old snapshot hash
+ok 25 - rejects a modified case snapshot that retains an old snapshot hash
+  ---
+  duration_ms: 3.321666
+  type: 'test'
+  ...
+# Subtest: structural blockers override pass-after-fix and every terminal verdict
+ok 26 - structural blockers override pass-after-fix and every terminal verdict
+  ---
+  duration_ms: 7.138958
+  type: 'test'
+  ...
+# Subtest: one chronological run order drives gate, history, and summary versions
+ok 27 - one chronological run order drives gate, history, and summary versions
+  ---
+  duration_ms: 3.442584
+  type: 'test'
+  ...
+# Subtest: rejects caller-injected pass after fix without repair-loop history
+ok 28 - rejects caller-injected pass after fix without repair-loop history
+  ---
+  duration_ms: 5.571541
+  type: 'test'
+  ...
+# Subtest: reuses complete cross-reference validation for attempt runner bindings
+ok 29 - reuses complete cross-reference validation for attempt runner bindings
+  ---
+  duration_ms: 4.293375
+  type: 'test'
+  ...
+# Subtest: rejects integrity freshness and raw digest changes outside authorities
+ok 30 - rejects integrity freshness and raw digest changes outside authorities
+  ---
+  duration_ms: 3.65175
+  type: 'test'
+  ...
+# Subtest: redacts separated CLI credential flags and values
+ok 31 - redacts separated CLI credential flags and values
+  ---
+  duration_ms: 3.748458
+  type: 'test'
+  ...
+# Subtest: orders RFC3339 offsets by epoch instead of text
+ok 32 - orders RFC3339 offsets by epoch instead of text
+  ---
+  duration_ms: 4.767666
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1568.315208
+verification v2 report model ok
+
+
+## stderr
+(empty)

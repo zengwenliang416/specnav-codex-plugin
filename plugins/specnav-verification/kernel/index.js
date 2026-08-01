@@ -25,6 +25,9 @@ const {
   createCaseFreshnessEvaluator
 } = require('./evidence');
 const {
+  createEvidenceIndexAuthority,
+  createReportFactAuthority,
+  createReportModelBuilder,
   renderSafeHtmlText
 } = require('./reporting');
 const {
@@ -62,6 +65,9 @@ module.exports = Object.freeze({
   createDevelopmentRepairBridge,
   createFailureClassifier,
   createRepairLoopStateMachine,
+  createEvidenceIndexAuthority,
+  createReportFactAuthority,
+  createReportModelBuilder,
   SIX_DOMAINS,
   createNotApplicableDecisionValidator,
   createOracleRegistry,

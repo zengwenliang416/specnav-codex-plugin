@@ -7,13 +7,22 @@
   "verdict": "green",
   "sources": {
     "case_snapshot_id": "snapshot-minimal",
+    "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "run_ids": [
       "run-minimal"
+    ],
+    "attempt_ids": [
+      "attempt-minimal"
     ],
     "reading_ids": [
       "reading-minimal"
     ],
+    "evidence_ids": [
+      "evidence-minimal"
+    ],
     "evidence_index_version": 1,
+    "evidence_index_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "aggregate_id": "aggregate-minimal",
     "gate_decision_id": "gate-minimal"
   },
   "summary": {
@@ -40,6 +49,12 @@
       "status": "fresh",
       "checked_at": "2026-07-31T00:00:04Z",
       "reasons": []
+    },
+    "repair_loop": {
+      "status": "not_started",
+      "failure_ids": [],
+      "repair_ids": [],
+      "history_event_count": 0
     },
     "open_failure_ids": [],
     "open_repair_ids": [],

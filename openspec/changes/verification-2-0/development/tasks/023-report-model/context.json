@@ -18,10 +18,23 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/reporting/**",
-    "tests/verification-v2/reports/**"
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/schemas/report-model.schema.json",
+    "tests/verification-v2/contracts/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/verification-v2/reports/**",
+    "tests/run-verification-v2-report-model.sh",
+    "openspec/changes/verification-2-0/development/tasks/023-report-model/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**",
+    "openspec/changes/verification-2-0/tasks.md"
   ],
   "test_paths": [
-    "node --test tests/verification-v2/reports/report-model.test.js"
+    "node --test tests/verification-v2/reports/report-model.test.js",
+    "bash tests/run-verification-v2-report-model.sh"
   ],
   "dependencies": [
     "016-six-domain-aggregation",
@@ -37,6 +50,13 @@
     "AC-11",
     "AC-29"
   ],
+  "acceptance_ownership": {
+    "AC-08": "Task 023 owns the lifecycle, six-domain, totals, integrity, freshness, blocker, repair-loop, runtime, kernel, and release-verdict data consumed by overview.html; Task 024 owns its HTML projection.",
+    "AC-09": "Task 023 owns the complete approved case-contract and domain-coverage projection; Task 025 owns the catalog HTML projection.",
+    "AC-10": "Task 023 owns immutable runs, attempts, readings, commands, evidence, hashes, freshness, failure, and repair history; Task 025 owns the results HTML projection.",
+    "AC-11": "Task 023 owns one stable information hierarchy and vocabulary for all eight verdict states; Tasks 024-026 own shared visual components and accessible presentation.",
+    "AC-29": "Task 023 owns report-model generation for partial, red, blocked, and passing states while keeping JSON and JSONL source artifacts authoritative; Tasks 024-026 own HTML generation."
+  },
   "external_targets": [],
   "non_goals": [
     "Do not expand beyond this vertical slice or complete dependent tasks implicitly.",

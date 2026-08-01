@@ -1,0 +1,263 @@
+# command: node --test tests/verification-v2/reports/report-model.test.js # 023-report-model-second-review-red
+# exit_status: 1
+# duration_ms: 1164
+
+## stdout
+TAP version 13
+# Subtest: builds one deterministic immutable rich model for all three pages
+not ok 1 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 928.802875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:287:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-report:evidence-index-unverified","artifact":"evidence/raw.jsonl","detail":"f3755edd7b5be09933a4818b9e384cd504e861caf2ffd30629ff4c50511edf11"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:293:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+not ok 2 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 6.158167
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:309:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    pass
+    
+    'blocked' !== 'green'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'green'
+  actual: 'blocked'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:324:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+not ok 3 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 6.163666
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:348:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     artifact: 'evidence/raw.jsonl',
+    +     detail: 'f3755edd7b5be09933a4818b9e384cd504e861caf2ffd30629ff4c50511edf11',
+    +     id: 'verification-report:evidence-index-unverified'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      id: 'verification-report:evidence-index-unverified'
+      artifact: 'evidence/raw.jsonl'
+      detail: 'f3755edd7b5be09933a4818b9e384cd504e861caf2ffd30629ff4c50511edf11'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:384:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+ok 4 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 5.762166
+  type: 'test'
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+ok 5 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 3.955542
+  type: 'test'
+  ...
+# Subtest: trusted recomputation rejects caller-forged aggregate and gate green
+ok 6 - trusted recomputation rejects caller-forged aggregate and gate green
+  ---
+  duration_ms: 5.318541
+  type: 'test'
+  ...
+# Subtest: controlled evidence locator rejects URI schemes and encoded traversal
+ok 7 - controlled evidence locator rejects URI schemes and encoded traversal
+  ---
+  duration_ms: 12.621125
+  type: 'test'
+  ...
+# Subtest: duplicate evidence ids block instead of folding immutable history
+ok 8 - duplicate evidence ids block instead of folding immutable history
+  ---
+  duration_ms: 5.184542
+  type: 'test'
+  ...
+# Subtest: rejects missing and forged authority collaborators without fallback
+ok 9 - rejects missing and forged authority collaborators without fallback
+  ---
+  duration_ms: 2.686458
+  type: 'test'
+  ...
+# Subtest: failure history must bind to current run attempt readings and evidence
+ok 10 - failure history must bind to current run attempt readings and evidence
+  ---
+  duration_ms: 3.882417
+  type: 'test'
+  ...
+# Subtest: repair history must resolve to a verified same-change failure
+ok 11 - repair history must resolve to a verified same-change failure
+  ---
+  duration_ms: 4.124666
+  type: 'test'
+  ...
+# Subtest: binds the Evidence Index to the exact change and canonical raw source
+ok 12 - binds the Evidence Index to the exact change and canonical raw source
+  ---
+  duration_ms: 5.415209
+  type: 'test'
+  ...
+# Subtest: gate stage and policy come from independent authority
+not ok 13 - gate stage and policy come from independent authority
+  ---
+  duration_ms: 2.684333
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:605:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+    
+    'archived'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'archived'
+  actual: 'archived'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:617:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: redacts command secrets and absolute sensitive paths in every projection
+not ok 14 - redacts command secrets and absolute sensitive paths in every projection
+  ---
+  duration_ms: 2.637084
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:623:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'runner')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:644:29)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rejects a modified case snapshot that retains an old snapshot hash
+not ok 15 - rejects a modified case snapshot that retains an old snapshot hash
+  ---
+  duration_ms: 2.450458
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:653:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:661:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: structural blockers override pass-after-fix and every terminal verdict
+ok 16 - structural blockers override pass-after-fix and every terminal verdict
+  ---
+  duration_ms: 2.713708
+  type: 'test'
+  ...
+# Subtest: one chronological run order drives gate, history, and summary versions
+not ok 17 - one chronological run order drives gate, history, and summary versions
+  ---
+  duration_ms: 4.480542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:677:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [{"id":"verification-report:evidence-index-unverified","artifact":"evidence/raw.jsonl","detail":"f3755edd7b5be09933a4818b9e384cd504e861caf2ffd30629ff4c50511edf11"}]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-model.test.js:691:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 10
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1126.42025
+
+
+## stderr
+(empty)

@@ -26,7 +26,17 @@ listed verification commands and must preserve all earlier artifacts.
 
 ## In Scope
 
-- Build one deterministic report model from cases, runs, readings, evidence, failures, freshness, and gate decisions.
+- Build one deterministic, immutable report model from the approved case
+  snapshot, runs, attempts, readings, evidence index, integrity facts,
+  six-domain aggregate, case freshness, frozen failures, repair links, and gate
+  decision.
+- Derive green, red, blocked, running, canceled, stale, flaky, and
+  pass-after-fix verdicts without accepting caller-authored summary state.
+- Preserve complete case contracts and append-only run, attempt, reading,
+  evidence, failure, and repair history for downstream renderers.
+- Resolve an evidence link only when the referenced indexed artifact has an
+  intact, fresh, existing, hash-matched, size-matched, binding-matched, and
+  path-safe integrity fact.
 
 ## Out Of Scope
 
@@ -37,7 +47,19 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/reporting/**
+- plugins/specnav-verification/kernel/index.js
+- plugins/specnav-verification/schemas/report-model.schema.json
+- tests/verification-v2/contracts/**
+- tests/verification-v2/kernel/package-boundary.test.js
 - tests/verification-v2/reports/**
+- tests/run-verification-v2-report-model.sh
+- openspec/changes/verification-2-0/development/tasks/023-report-model/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
+- openspec/changes/verification-2-0/tasks.md
 
 ## Interfaces / Seams
 
@@ -46,7 +68,7 @@ listed verification commands and must preserve all earlier artifacts.
 ## Components To Create
 
 - Report model builder
-- Report model schema
+- Complete report model schema
 
 ## Components To Reuse
 
@@ -63,6 +85,12 @@ listed verification commands and must preserve all earlier artifacts.
 - Capability spec: `openspec/changes/verification-2-0/specs/verification-report-center/spec.md`.
 - Acceptance assertions: `AC-08`, `AC-09`, `AC-10`, `AC-11`, `AC-29`.
 - Validated source artifacts become one report model used by every page and state.
+- Task 023 owns the shared data projection and verdict vocabulary. Tasks
+  024-026 own HTML rendering, responsive behavior, accessibility, and escaping.
+- `generated_at` is an injected generation event timestamp; the report id is
+  derived from source-bound semantic content and is not changed by rendering.
+- Report generation is read-only and never updates a gate, source artifact, or
+  evidence object.
 
 ## State / Error / Empty / Loading Behavior
 
@@ -80,6 +108,7 @@ listed verification commands and must preserve all earlier artifacts.
 ## Verification Commands
 
 - `node --test tests/verification-v2/reports/report-model.test.js`
+- `bash tests/run-verification-v2-report-model.sh`
 
 ## Stop Conditions
 
