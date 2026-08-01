@@ -40,6 +40,8 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(typeof kernel.createCaseFreshnessEvaluator, 'function');
   assert.equal(typeof kernel.createCaseRerunPlanner, 'function');
   assert.equal(typeof kernel.createMidsceneAdapter, 'function');
+  assert.equal(typeof kernel.createOracleRegistry, 'function');
+  assert.equal(typeof kernel.createReadingEvaluator, 'function');
   assert.deepEqual(
     kernel.serviceContracts.evidenceStore.methods,
     ['append', 'rebuildIndex']
@@ -82,9 +84,12 @@ test('service creation requires every adapter and never falls back', () => {
 
 test('kernel source contains no host runtime dependency', () => {
   const kernelDir = path.join(PLUGIN_ROOT, 'kernel');
-  const files = fs.readdirSync(kernelDir)
-    .filter((name) => name.endsWith('.js'))
-    .map((name) => path.join(kernelDir, name));
+  const files = fs.readdirSync(kernelDir, {
+    recursive: true,
+    withFileTypes: true
+  })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.js'))
+    .map((entry) => path.join(entry.parentPath, entry.name));
   const source = files.map((file) => fs.readFileSync(file, 'utf8')).join('\n');
 
   assert.doesNotMatch(source, /\b(?:codex|claude|codefree|opencode)\b/i);

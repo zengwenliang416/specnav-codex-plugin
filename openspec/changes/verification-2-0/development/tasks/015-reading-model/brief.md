@@ -37,7 +37,15 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/evaluation/**
+- plugins/specnav-verification/kernel/index.js
 - tests/verification-v2/evaluation/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- openspec/changes/verification-2-0/development/tasks/015-reading-model/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
 
 ## Interfaces / Seams
 
@@ -60,7 +68,10 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/evidence-backed-execution/spec.md`.
-- Acceptance assertions: `AC-16`, `AC-19`, `AC-21`, `AC-31`.
+- Acceptance assertion directly closed by this task: `AC-16`.
+- This task contributes validated Reading inputs to `AC-19`, `AC-21`, and
+  `AC-31`, but Tasks 016, 017, and the evidence-contract tasks retain final
+  closure ownership.
 - Observation plus oracle plus intact evidence becomes a validated reading for aggregation.
 
 ## State / Error / Empty / Loading Behavior

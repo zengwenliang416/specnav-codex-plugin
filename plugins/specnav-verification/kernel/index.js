@@ -30,6 +30,10 @@ const {
 const {
   createCaseRerunPlanner
 } = require('./repair');
+const {
+  createOracleRegistry,
+  createReadingEvaluator
+} = require('./evaluation');
 
 module.exports = Object.freeze({
   metadata,
@@ -46,5 +50,7 @@ module.exports = Object.freeze({
   createSecretRedactor,
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,
+  createOracleRegistry,
+  createReadingEvaluator,
   renderSafeHtmlText
 });
