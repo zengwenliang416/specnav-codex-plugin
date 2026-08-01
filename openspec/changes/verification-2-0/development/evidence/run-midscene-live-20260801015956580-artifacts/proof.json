@@ -1,0 +1,119 @@
+{
+  "schema": "specnav.verification.midscene-live-proof.v1",
+  "ok": false,
+  "status": "blocked",
+  "runtime": {
+    "readiness": "ready",
+    "runtime_version": "2.0.0-alpha.1",
+    "provider": {
+      "configured": true,
+      "model_name_present": true,
+      "model_family_present": true,
+      "credential_source": "MIDSCENE_MODEL_API_KEY",
+      "base_url_present": true,
+      "configuration_fingerprint": "e971738c22a71a02fc2cb6d30baa9bf93cc0769591909b89766d72354d044136",
+      "secret_values_exposed": false
+    }
+  },
+  "run_id": "run-midscene-live-20260801015956580",
+  "attempt_id": "attempt-midscene-live-20260801015956580",
+  "runner": "midscene",
+  "prompt": {
+    "id": "prompt-midscene",
+    "hash": "4a4bf52e3a17d1e35cb699058e0efda103ab48aa4cefd2a1d856952bbe8c62ca",
+    "text": "Click the button labeled Confirm.",
+    "redaction": {
+      "status": "not_required",
+      "redacted_fields": []
+    }
+  },
+  "model": {
+    "base_url_present": true,
+    "credential_source": "MIDSCENE_MODEL_API_KEY",
+    "family": "gpt-5",
+    "name": "gpt-5.6-luna",
+    "secret_values_exposed": false
+  },
+  "observation": null,
+  "oracle": null,
+  "assertions": [],
+  "screenshots": [
+    {
+      "kind": "screenshot",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/screenshot.png",
+      "producer": "midscene-runner",
+      "sha256": "395d8ad4ebee3e5386cfa6d7ca5e4608fa8aaab6a93ae7b595f27821fd4b4bce",
+      "size": 16320
+    }
+  ],
+  "artifacts": [
+    {
+      "kind": "screenshot",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/screenshot.png",
+      "producer": "midscene-runner",
+      "sha256": "395d8ad4ebee3e5386cfa6d7ca5e4608fa8aaab6a93ae7b595f27821fd4b4bce",
+      "size": 16320
+    },
+    {
+      "kind": "video",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/video.webm",
+      "producer": "midscene-runner",
+      "sha256": "197352df6fe5ca15f5f9784f09109bb05466399df1496e3d2bb6ec3753eba747",
+      "size": 49408
+    },
+    {
+      "kind": "trace",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/trace.zip",
+      "producer": "midscene-runner",
+      "sha256": "4dccf51adf27953c7c33f033b4d2644492c797bf62ada825769bd17cabd1c2ea",
+      "size": 76713
+    },
+    {
+      "kind": "log",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/console.json",
+      "producer": "midscene-runner",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size": 3
+    },
+    {
+      "kind": "log",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/network.json",
+      "producer": "midscene-runner",
+      "sha256": "85067ac2bf312269f35ca0c393cc4d05debbc1f550e793d246d97a4949a38d82",
+      "size": 287
+    },
+    {
+      "kind": "assertion_result",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts/assertions.json",
+      "producer": "midscene-runner",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size": 3
+    }
+  ],
+  "console": [],
+  "network": [
+    {
+      "method": "GET",
+      "phase": "request",
+      "resource_type": "document",
+      "url": "http://127.0.0.1:54716/"
+    },
+    {
+      "method": "GET",
+      "ok": true,
+      "phase": "response",
+      "resource_type": "document",
+      "status": 200,
+      "url": "http://127.0.0.1:54716/"
+    }
+  ],
+  "blockers": [
+    {
+      "artifact": "scenario-midscene",
+      "detail": "failed to call AI model service (gpt-5.6-luna): AI model request failed after 1 retry (2/2 attempts). Last error: 401 Invalid token (request id: 202608010200028713972078268d9d6sZaiWfLC)\nPrevious AI call attempt errors:\nAttempt 1: 401 Invalid token (request id: 202608010200003477558378268d9d6tz4ZlLr4)\nOpenAI raw error response bodies:\nAttempt 1: {\"error\":{\"code\":\"\",\"message\":\"Invalid token (request id: 202608010200003477558378268d9d6tz4ZlLr4)\",\"type\":\"new_api_error\"}}\nAttempt 2: {\"error\":{\"code\":\"\",\"message\":\"Invalid token (request id: 202608010200028713972078268d9d6sZaiWfLC)\",\"type\":\"new_api_error\"}}\nTrouble shooting: https://midscenejs.com/model-provider.html\nError: failed to call AI model service (gpt-5.6-luna): AI model request failed after 1 retry (2/2 attempts). Last error: 401 Invalid token (request id: 202608010200028713972078268d9d6sZaiWfLC)\nPrevious AI call attempt errors:\nAttempt 1: 401 Invalid token (request id: 202608010200003477558378268d9d6tz4ZlLr4)\nOpenAI raw error response bodies:\nAttempt 1: {\"error\":{\"code\":\"\",\"message\":\"Invalid token (request id: 202608010200003477558378268d9d6tz4ZlLr4)\",\"type\":\"new_api_error\"}}\nAttempt 2: {\"error\":{\"code\":\"\",\"message\":\"Invalid token (request id: 202608010200028713972078268d9d6sZaiWfLC)\",\"type\":\"new_api_error\"}}\nTrouble shooting: https://midscenejs.com/model-provider.html\n    at callAI (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/service-caller/index.js:479:26)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async callAndParseOnce (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/service-caller/semantic-retry.js:33:26)\n    at async plan (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/llm-planning.js:242:127)\n    at async Object.executor (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/tasks.js:258:38)\n    at async TaskRunner.flush (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/task-runner.js:186:35)\n    at async TaskExecutor.runAction (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/tasks.js:221:28)\n    at async runAiAct (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/agent.js:463:46)\n    at async PlaywrightPageAgent.aiAct (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/agent.js:496:22)\n    at async /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/execution/playwright-worker.js:527:30",
+      "id": "verification-execution:midscene-oracle-failed"
+    }
+  ],
+  "artifact_root": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801015956580-artifacts",
+  "fallback_used": false
+}

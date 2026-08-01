@@ -50,7 +50,8 @@ const taskChecklist = fs.readFileSync(
 
 const retired = [
   'migration-manifest-sql-mentioned-but-not-required',
-  'invalid-spec-review:empty-heading:Missing Requirements'
+  'invalid-spec-review:empty-heading:Missing Requirements',
+  'task-ledger-missing-status:011-midscene-runner:complete'
 ];
 const retiredPrefixes = [
   'validation-log:executed-evidence-failed:',
@@ -60,7 +61,6 @@ const retiredPrefixes = [
 ];
 const required = [
   'tasks-md:incomplete-checkboxes',
-  'task-ledger-missing-status:011-midscene-runner:complete',
   'scaffold-placeholder:handoff-to-verify.md:decision-required',
   'scaffold-placeholder:report.md:decision-required',
   'invalid-spec-review:verdict',

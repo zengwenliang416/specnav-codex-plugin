@@ -2,7 +2,7 @@
 
 ## Status
 
-DONE_WITH_CONCERNS
+DONE
 
 ## Delivered Slice
 
@@ -61,6 +61,24 @@ Midscene model output cannot declare PASS.
   `development/evidence/219-011-midscene-runner.log` are the checkpoint
   revalidation receipts: focused 31/31, full suite 353/353, both plugin
   fixtures, and diff checks passed.
+- `development/evidence/222-011-midscene-runner.log` is the system-executed
+  live provider receipt. It records `gpt-5.6-luna`, a passed deterministic
+  oracle, one passed assertion, complete browser artifacts, and
+  `fallback_used: false`.
+- `development/evidence/run-midscene-live-20260801020207501-artifacts/proof.json`
+  is the secret-free live proof. The same directory retains the screenshot,
+  video, trace, console, network, assertions, and redacted Midscene logs.
+- `development/evidence/223-011-midscene-runner.log` through
+  `development/evidence/226-011-midscene-runner.log` are the completion
+  revalidation receipts: focused 34/34, full suite 356/356, plugin and
+  lifecycle fixtures, and diff checks all passed.
+- `development/evidence/227-011-midscene-runner.log` preserves the obsolete
+  maintenance expectation that Task 011 remained incomplete. Receipt `228`
+  proves that blocker is retired, and receipt `229` proves the repaired full
+  lifecycle contract with 59 legitimate downstream blockers remaining.
+- `development/evidence/230-011-midscene-runner.log` and `231` prove the final
+  private-staging cleanup hardening at focused 34/34 and full 356/356
+  regression scope.
 
 ## Verification Commands
 
@@ -71,13 +89,15 @@ Midscene model output cannot declare PASS.
 - `bash tests/run-development-plugin-fixtures.sh`
 - `git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log'`
 - `node plugins/specnav-verification/scripts/verification-runtime.js doctor --version 2.0.0-alpha.1 --project /Volumes/zwl/AI/ai-coding/specnav-codex-plugin --root /Users/wenliang_zeng/.specnav/runtime/verification --requires-midscene --json`
+- `node tests/verification-v2/midscene/live-provider-run.js`
 
 ## Concerns
 
-- The strict runtime doctor currently returns exit status 2 with
-  `verification-runtime:midscene-provider-not-configured`.
-- No provider credential was read, invented, or used. A real provider-backed
-  Midscene execution remains mandatory before this task can be completed.
+- Midscene internal logs are treated as untrusted text and are redacted before
+  atomic publication. Binary screenshot, video, and trace artifacts are not
+  rewritten.
+- Provider egress is limited to a loopback CONNECT relay that accepts only the
+  exact approved HTTPS authority.
 
 ## Scope Deviations
 
@@ -85,14 +105,11 @@ Midscene model output cannot declare PASS.
 
 ## Follow-up Needed
 
-- Obtain explicit user approval and an approved Midscene provider
-  configuration.
-- Run the strict doctor and one real provider-backed Midscene scenario.
-- Preserve that run as system-executed evidence, then change Task 4.3 from
-  `- [ ]` to `- [x]` and record the task as complete.
+- Task 015 consumes the resulting observation, deterministic oracle facts, and
+  integrity-checked evidence to create verdict-bearing Readings.
 
 ## Adjudication
 
-The implementation and code reviews are approved, but the task remains blocked
-at its explicit runtime stop condition. No fallback or simplified verification
-path is permitted.
+The implementation, live `gpt-5.6-luna` execution, deterministic oracle,
+artifact set, secret scan, and final regressions are approved. Task 011 is
+complete without fallback or a simplified verification path.

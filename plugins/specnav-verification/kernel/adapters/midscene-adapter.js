@@ -34,6 +34,19 @@ const {
 
 const PRODUCER = 'midscene-runner';
 const INTERACTION_KINDS = new Set(['act', 'tap', 'input', 'query']);
+const TEXT_ARTIFACT_EXTENSIONS = new Set([
+  '.css',
+  '.csv',
+  '.html',
+  '.json',
+  '.jsonl',
+  '.log',
+  '.md',
+  '.txt',
+  '.xml',
+  '.yaml',
+  '.yml'
+]);
 
 function midsceneBlocker(id, artifact = 'midscene', detail = null) {
   return { id, artifact, detail };
@@ -55,6 +68,64 @@ function directoryIsEmpty(directory) {
       && fs.readdirSync(directory).length === 0;
   } catch {
     return false;
+  }
+}
+
+function sanitizeTextArtifacts(root, redactor) {
+  const redactedFiles = [];
+
+  function visit(directory) {
+    const entries = fs.readdirSync(directory, { withFileTypes: true });
+    for (const entry of entries) {
+      const file = path.join(directory, entry.name);
+      if (entry.isSymbolicLink()) {
+        throw new Error(`text artifact symlink is not allowed: ${entry.name}`);
+      }
+      if (entry.isDirectory()) {
+        visit(file);
+        continue;
+      }
+      if (
+        !entry.isFile()
+        || !TEXT_ARTIFACT_EXTENSIONS.has(
+          path.extname(entry.name).toLowerCase()
+        )
+      ) {
+        continue;
+      }
+      const content = fs.readFileSync(file, 'utf8');
+      const redacted = redactor.redactText(content, {
+        field: `midscene.artifact.${path.relative(root, file)}`
+      });
+      if (!redacted.ok) {
+        throw new Error(`text artifact redaction failed: ${entry.name}`);
+      }
+      if (redacted.redaction_count > 0) {
+        fs.writeFileSync(file, redacted.value, {
+          encoding: 'utf8',
+          flag: 'w',
+          mode: 0o600
+        });
+        redactedFiles.push(path.relative(root, file));
+      }
+    }
+  }
+
+  visit(root);
+  return redactedFiles;
+}
+
+function discardArtifactWorkspace(workspace) {
+  if (!workspace || typeof workspace.stagingRoot !== 'string') return;
+  try {
+    fs.rmSync(workspace.stagingRoot, {
+      force: true,
+      maxRetries: 2,
+      recursive: true,
+      retryDelay: 10
+    });
+  } catch {
+    // The original execution blocker remains authoritative.
   }
 }
 
@@ -463,6 +534,7 @@ function createMidsceneAdapter(factoryOptions = {}) {
         }
       });
     } catch (error) {
+      discardArtifactWorkspace(workspace);
       const safeError = redactor.redactText(
         error instanceof Error ? error.message : String(error),
         { field: 'midscene.error' }
@@ -474,6 +546,7 @@ function createMidsceneAdapter(factoryOptions = {}) {
       )] });
     }
     if (!isPlainObject(workerResult)) {
+      discardArtifactWorkspace(workspace);
       return finish({ blockers: [midsceneBlocker(
         'verification-execution:midscene-worker-result-invalid'
       )] });
@@ -490,11 +563,29 @@ function createMidsceneAdapter(factoryOptions = {}) {
       Array.isArray(workerResult.network) ? workerResult.network : [],
       'midscene.network'
     ) || [];
+    const blockers = sanitize(
+      Array.isArray(workerResult.blockers) ? workerResult.blockers : [],
+      'midscene.blockers'
+    ) || [];
 
+    try {
+      sanitizeTextArtifacts(workspace.stagingRoot, redactor);
+    } catch (error) {
+      discardArtifactWorkspace(workspace);
+      return finish({ blockers: [midsceneBlocker(
+        'verification-execution:midscene-artifact-redaction-failed',
+        workspace.stagingRoot,
+        sanitize(
+          error instanceof Error ? error.message : String(error),
+          'artifact.redaction.error'
+        )
+      )] });
+    }
     const published = publishArtifacts(workspace, state, () => {}, {
       producer: PRODUCER
     });
     if (published.blocker) {
+      discardArtifactWorkspace(workspace);
       return finish({ blockers: [midsceneBlocker(
         'verification-execution:midscene-artifact-publish-failed',
         workspace.destination,
@@ -506,6 +597,25 @@ function createMidsceneAdapter(factoryOptions = {}) {
       (entry) => entry.kind === 'screenshot'
     );
     if (!screenshot) {
+      if (workerResult.status !== 'observed' || blockers.length > 0) {
+        return finish({
+          status: typeof workerResult.status === 'string'
+            ? workerResult.status
+            : 'blocked',
+          artifacts: state.artifacts,
+          assertions: state.assertions,
+          console: state.console,
+          network: state.network,
+          blockers: blockers.length > 0
+            ? blockers
+            : [midsceneBlocker(
+              'verification-execution:midscene-worker-terminal-invalid',
+              'midscene-worker'
+            )],
+          timed_out: workerResult.timed_out === true,
+          canceled: workerResult.canceled === true
+        });
+      }
       return finish({ blockers: [midsceneBlocker(
         'verification-execution:midscene-screenshot-missing'
       )] });
@@ -524,10 +634,6 @@ function createMidsceneAdapter(factoryOptions = {}) {
     const safePrompt = redactor.redactText(request.prompt, {
       field: 'midscene.prompt'
     });
-    const blockers = sanitize(
-      Array.isArray(workerResult.blockers) ? workerResult.blockers : [],
-      'midscene.blockers'
-    ) || [];
     return finish({
       status: workerResult.status,
       observation: safeObservation,
@@ -560,8 +666,10 @@ function createMidsceneAdapter(factoryOptions = {}) {
 
 module.exports = {
   createMidsceneAdapter,
+  discardArtifactWorkspace,
   providerEnvironment: selectProviderEnvironment,
   providerMetadata,
   resolveMidscenePackage,
+  sanitizeTextArtifacts,
   validateMidsceneRequest
 };

@@ -2,6 +2,8 @@
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const http = require('node:http');
+const net = require('node:net');
 const path = require('node:path');
 const vm = require('node:vm');
 const { spawn } = require('node:child_process');
@@ -834,20 +836,21 @@ function sandboxNetworkRule(wsEndpoint) {
   return `(allow network-outbound (remote tcp "localhost:${endpoint.port}"))`;
 }
 
-function sandboxProviderNetworkRule(baseUrl) {
-  const endpoint = new URL(baseUrl);
+function sandboxProviderNetworkRule(proxyUrl) {
+  const endpoint = new URL(proxyUrl);
   if (
-    endpoint.protocol !== 'https:'
+    endpoint.protocol !== 'http:'
     || endpoint.username !== ''
     || endpoint.password !== ''
     || endpoint.hash !== ''
+    || !['127.0.0.1', '::1', '[::1]', 'localhost'].includes(
+      endpoint.hostname
+    )
+    || !/^\d+$/.test(endpoint.port)
   ) {
-    throw new Error('Midscene provider base URL must be explicit HTTPS');
+    throw new Error('Midscene provider proxy must be explicit loopback HTTP');
   }
-  const port = endpoint.port || '443';
-  return `(allow network-outbound (remote tcp "${sandboxLiteral(
-    `${endpoint.hostname}:${port}`
-  )}"))`;
+  return `(allow network-outbound (remote tcp "localhost:${endpoint.port}"))`;
 }
 
 function sandboxProfile(payload) {
@@ -893,11 +896,136 @@ function sandboxProfile(payload) {
     `(allow process-exec (literal "${nodeExecutable}"))`,
     sandboxNetworkRule(payload.ws_endpoint),
     ...(payload.mode === 'midscene'
-      ? [sandboxProviderNetworkRule(payload.provider_base_url)]
+      ? [sandboxProviderNetworkRule(payload.provider_proxy_url)]
       : []),
     '(allow sysctl-read)',
     '(allow mach-lookup)'
   ].join('\n');
+}
+
+function parseConnectTarget(authority) {
+  if (typeof authority !== 'string' || authority.trim() === '') return null;
+  try {
+    const parsed = new URL(`http://${authority}`);
+    if (
+      parsed.username !== ''
+      || parsed.password !== ''
+      || parsed.pathname !== '/'
+      || parsed.search !== ''
+      || parsed.hash !== ''
+      || !parsed.hostname
+      || !/^\d+$/.test(parsed.port)
+    ) {
+      return null;
+    }
+    return {
+      hostname: parsed.hostname.toLowerCase(),
+      port: parsed.port
+    };
+  } catch {
+    return null;
+  }
+}
+
+function createRestrictedConnectProxy(providerBaseUrl) {
+  return new Promise((resolve, reject) => {
+    let provider;
+    try {
+      provider = new URL(providerBaseUrl);
+      if (
+        provider.protocol !== 'https:'
+        || provider.username !== ''
+        || provider.password !== ''
+        || provider.hash !== ''
+      ) {
+        throw new Error('provider base URL is not explicit HTTPS');
+      }
+    } catch (error) {
+      reject(error);
+      return;
+    }
+
+    const expected = {
+      hostname: provider.hostname.toLowerCase(),
+      port: provider.port || '443'
+    };
+    const sockets = new Set();
+    const server = http.createServer((_request, response) => {
+      response.writeHead(405, {
+        connection: 'close',
+        'content-type': 'text/plain; charset=utf-8'
+      });
+      response.end('CONNECT required\n');
+    });
+
+    function track(socket) {
+      sockets.add(socket);
+      socket.once('close', () => sockets.delete(socket));
+    }
+
+    server.on('connect', (request, clientSocket, head) => {
+      track(clientSocket);
+      const target = parseConnectTarget(request.url);
+      if (
+        !target
+        || target.hostname !== expected.hostname
+        || target.port !== expected.port
+      ) {
+        clientSocket.end([
+          'HTTP/1.1 403 Forbidden',
+          'Connection: close',
+          'Content-Length: 0',
+          '',
+          ''
+        ].join('\r\n'));
+        return;
+      }
+
+      const upstream = net.connect({
+        host: expected.hostname,
+        port: Number(expected.port)
+      });
+      track(upstream);
+      upstream.once('connect', () => {
+        clientSocket.write([
+          'HTTP/1.1 200 Connection Established',
+          'Proxy-Agent: SpecNav',
+          '',
+          ''
+        ].join('\r\n'));
+        if (head.length > 0) upstream.write(head);
+        clientSocket.pipe(upstream);
+        upstream.pipe(clientSocket);
+      });
+      upstream.once('error', () => {
+        if (!clientSocket.destroyed) {
+          clientSocket.end([
+            'HTTP/1.1 502 Bad Gateway',
+            'Connection: close',
+            'Content-Length: 0',
+            '',
+            ''
+          ].join('\r\n'));
+        }
+      });
+    });
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', () => {
+      server.removeListener('error', reject);
+      const address = server.address();
+      resolve({
+        url: `http://127.0.0.1:${address.port}`,
+        async close() {
+          for (const socket of sockets) socket.destroy();
+          await new Promise((closeResolve, closeReject) => {
+            server.close((error) => (
+              error ? closeReject(error) : closeResolve()
+            ));
+          });
+        }
+      });
+    });
+  });
 }
 
 function signalProcessGroup(child, signal) {
@@ -1193,6 +1321,7 @@ async function runPlaywrightWorker(payload, options = {}) {
   }
 
   let browserServer = null;
+  let providerProxy = null;
   let launchError = null;
   const managed = loadManagedPlaywright(payload);
   const launchPromise = managed.playwright.chromium.launchServer({
@@ -1229,12 +1358,31 @@ async function runPlaywrightWorker(payload, options = {}) {
     ? Math.max(1, payload.timeout_ms - elapsed)
     : payload.timeout_ms;
   try {
+    if (payload.mode === 'midscene') {
+      providerProxy = await createRestrictedConnectProxy(
+        payload.provider_base_url
+      );
+    }
     return await runSandboxedScenario({
       ...payload,
+      ...(providerProxy
+        ? { provider_proxy_url: providerProxy.url }
+        : {}),
       timeout_ms: remainingTimeout,
       ws_endpoint: browserServer.wsEndpoint()
-    }, options);
+    }, {
+      ...options,
+      ...(providerProxy
+        ? {
+          providerEnvironment: {
+            ...options.providerEnvironment,
+            MIDSCENE_MODEL_HTTP_PROXY: providerProxy.url
+          }
+        }
+        : {})
+    });
   } finally {
+    if (providerProxy) await providerProxy.close();
     await closeBrowserServer(browserServer);
   }
 }
@@ -1289,5 +1437,8 @@ if (process.env.SPECNAV_PLAYWRIGHT_CHILD === CHILD_MARKER) {
 }
 
 module.exports = {
+  createRestrictedConnectProxy,
+  parseConnectTarget,
+  sandboxProviderNetworkRule,
   runPlaywrightWorker
 };

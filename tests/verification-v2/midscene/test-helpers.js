@@ -84,6 +84,12 @@ function midsceneExecutionFixture(options = {}) {
       path.join(os.tmpdir(), 'specnav-midscene-project-')
     )
   );
+  const allowedOrigins = Array.isArray(options.allowedOrigins)
+    ? [...options.allowedOrigins]
+    : ['https://example.invalid'];
+  const startUrl = options.startUrl || 'https://example.invalid/start';
+  const runId = options.runId || 'run-midscene';
+  const attemptId = options.attemptId || 'attempt-midscene';
   const schemaRegistry = readySchemaRegistry();
   const sourceArtifacts = sources();
   const prompt = options.prompt || 'Open the payroll summary.';
@@ -119,10 +125,10 @@ function midsceneExecutionFixture(options = {}) {
       scenario_id: 'scenario-midscene',
       scenario_hash: 'a'.repeat(64),
       browser_project: 'chromium',
-      allowed_origins: ['https://example.invalid'],
+      allowed_origins: allowedOrigins,
       prompt_id: 'prompt-midscene',
       prompt_hash: promptHash,
-      start_url: 'https://example.invalid/start',
+      start_url: startUrl,
       oracle_scenario_hash: serializedOracle.hash,
       oracle_assertion_ids: ['assertion-1'],
       requires_midscene: true
@@ -162,7 +168,7 @@ function midsceneExecutionFixture(options = {}) {
   const runtimeStatus = options.runtimeStatus || providerReadyRuntimeStatus();
   const run = {
     schema: 'specnav.verification.run.v1',
-    id: 'run-midscene',
+    id: runId,
     change_id: snapshot.change_id,
     case_snapshot_id: snapshot.id,
     case_snapshot_hash: snapshot.snapshot_hash,
@@ -177,12 +183,12 @@ function midsceneExecutionFixture(options = {}) {
     started_at: null,
     completed_at: null
   };
-  const artifactRoot = path.join(
+  const artifactRoot = options.artifactRoot || path.join(
     projectRoot,
     '.specnav',
     'verification-runs',
     run.id,
-    'attempt-midscene'
+    attemptId
   );
   return {
     schemaRegistry,
@@ -208,7 +214,7 @@ function midsceneExecutionFixture(options = {}) {
     run,
     caseId: testCase.id,
     attempt: {
-      id: 'attempt-midscene',
+      id: attemptId,
       kind: 'initial',
       sequence: 1,
       scenario_hash: testCase.runner.scenario_hash,

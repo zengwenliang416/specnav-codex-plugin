@@ -33,10 +33,19 @@ No blocking code-quality or security findings remain.
   secret redaction, managed-worker delegation, malformed results, timeout,
   cancellation, screenshot integrity, deterministic assertions, human signoff,
   complete artifact propagation, and read-only API escape attempts.
-- Full Verification V2 regression passed 353/353 in system receipts `214` and
-  the final checkpoint receipt `218`.
-- Verification and development plugin fixtures passed in system receipts `215`
-  and the final checkpoint receipt `219`.
+- Tests also cover exact-authority CONNECT relay enforcement, preservation of
+  worker root-cause blockers, and pre-publication redaction of generated
+  Midscene text artifacts.
+- The final focused suite passed 34/34 in system receipt `223`.
+- The final full Verification 2.0 regression passed 356/356 in system receipt
+  `224`.
+- Verification, development, and lifecycle maintenance fixtures passed in
+  system receipt `225`; diff checks passed in `226`.
+- The real `gpt-5.6-luna` scenario passed in system receipt `222`.
+- Lifecycle completion and exact failed-receipt adjudication passed in system
+  receipts `228` and `229`.
+- Final private-staging cleanup regression passed in system receipts `230` and
+  `231`.
 - The final reflection and touchscreen assertions passed 1/1 in system receipt
   `216`.
 
@@ -63,6 +72,4 @@ No blocking code-quality or security findings remain.
 
 ## Required Fixes
 
-- No code-quality or security fix is required.
-- Runtime completion remains blocked until an approved Midscene provider is
-  configured and exercised; no fallback is acceptable.
+- No further code-quality or security fix is required for Task 011.

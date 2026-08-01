@@ -59,6 +59,13 @@ function adapterFor(runWorker) {
   });
 }
 
+function privateStagingDirectories(fixture) {
+  const parent = path.dirname(fixture.artifactRoot);
+  const prefix = `.${path.basename(fixture.artifactRoot)}.staging-`;
+  if (!fs.existsSync(parent)) return [];
+  return fs.readdirSync(parent).filter((name) => name.startsWith(prefix));
+}
+
 test('midscene case schema requires prompt, start URL, scenario, and oracle linkage', () => {
   const { readySchemaRegistry, sampleCase } = require('../cases/test-helpers');
   const result = readySchemaRegistry().validate('test-case', sampleCase({
@@ -198,6 +205,56 @@ test('adapter redacts prompts, observations, logs, model metadata, and errors', 
     assert.equal(result.prompt.text.includes('[REDACTED'), true);
     assert.equal(result.model.secret_values_exposed, false);
     assert.deepEqual({ ...request, oracle_scenario: null }, before);
+  } finally {
+    fixture.cleanup();
+  }
+});
+
+test('adapter redacts generated Midscene text artifacts before publication', async () => {
+  const fixture = midsceneExecutionFixture();
+  const adapter = adapterFor(async (payload) => {
+    writeWorkerScreenshot(payload);
+    const logDirectory = path.join(payload.staging_root, 'midscene_run', 'log');
+    fs.mkdirSync(logDirectory, { recursive: true });
+    fs.writeFileSync(
+      path.join(logDirectory, 'ai-config.log'),
+      [
+        "MIDSCENE_MODEL_API_KEY: 'sk-********IoY'",
+        'Authorization: Bearer secret-value',
+        'status: ready'
+      ].join('\n')
+    );
+    return observedWorker()(payload);
+  });
+
+  try {
+    const result = await adapter.interact(
+      midsceneRequest(fixture).midscene,
+      {
+        runtimeStatus: fixture.runtimeStatus,
+        projectRoot: fixture.projectRoot,
+        timeoutMs: 100,
+        allowedOrigins: fixture.testCase.runner.allowed_origins,
+        expectedOracleScenarioHash:
+          fixture.testCase.runner.oracle_scenario_hash,
+        expectedPromptHash: fixture.testCase.runner.prompt_hash,
+        expectedStartUrl: fixture.testCase.runner.start_url,
+        oracleAssertionIds: fixture.testCase.runner.oracle_assertion_ids,
+        oracleMode: 'deterministic'
+      }
+    );
+    assert.equal(result.status, 'observed');
+    const publishedLog = fs.readFileSync(path.join(
+      fixture.artifactRoot,
+      'midscene_run',
+      'log',
+      'ai-config.log'
+    ), 'utf8');
+    assert.doesNotMatch(publishedLog, /sk-\*+IoY/);
+    assert.doesNotMatch(publishedLog, /secret-value/);
+    assert.match(publishedLog, /MIDSCENE_MODEL_API_KEY: \[REDACTED\]/);
+    assert.match(publishedLog, /Authorization: Bearer \[REDACTED\]/);
+    assert.match(publishedLog, /status: ready/);
   } finally {
     fixture.cleanup();
   }
@@ -413,6 +470,23 @@ test('adapter fails closed for worker exceptions, timeout, cancellation, and mis
       blocker: 'verification-execution:midscene-canceled'
     },
     {
+      name: 'worker failure before screenshot',
+      worker: async () => ({
+        status: 'blocked',
+        assertions: [],
+        console: [],
+        network: [],
+        blockers: [{
+          id: 'verification-execution:playwright-process-failed',
+          artifact: 'playwright-process',
+          detail: 'sandbox launch failed'
+        }],
+        timed_out: false,
+        canceled: false
+      }),
+      blocker: 'verification-execution:playwright-process-failed'
+    },
+    {
       name: 'missing screenshot',
       worker: async () => ({
         status: 'observed',
@@ -451,6 +525,9 @@ test('adapter fails closed for worker exceptions, timeout, cancellation, and mis
       assert.equal(result.blockers[0].id, item.blocker, item.name);
       assert.equal(JSON.stringify(result).includes('secret-value'), false);
       assert.equal(result.fallback_used, false);
+      if (item.name === 'exception') {
+        assert.deepEqual(privateStagingDirectories(fixture), []);
+      }
     } finally {
       fixture.cleanup();
     }
@@ -488,6 +565,7 @@ test('adapter rejects malformed worker results and occupied artifact roots', asy
       'verification-execution:midscene-worker-result-invalid'
     );
     assert.equal(calls, 1);
+    assert.deepEqual(privateStagingDirectories(fixture), []);
 
     fs.mkdirSync(fixture.artifactRoot, { recursive: true });
     fs.writeFileSync(path.join(fixture.artifactRoot, 'occupied'), 'data');

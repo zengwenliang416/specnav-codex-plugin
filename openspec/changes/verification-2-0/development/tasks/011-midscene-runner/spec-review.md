@@ -8,9 +8,8 @@ approved
 
 - No implementation requirement is missing from the Task 011 adapter and
   oracle boundary.
-- A real provider-backed execution is still required by the task stop
-  condition before lifecycle completion; this is an environment blocker, not
-  an implementation omission.
+- The task stop condition is satisfied by the system-executed
+  `gpt-5.6-luna` run in `development/evidence/222-011-midscene-runner.log`.
 
 ## Extra Behavior
 
@@ -24,8 +23,6 @@ approved
 
 ## Cannot Verify From Diff
 
-- Live provider behavior cannot be verified because the strict runtime doctor
-  reports `verification-runtime:midscene-provider-not-configured`.
 - Downstream Reading and aggregate verdict behavior remains owned by Tasks 015
   and 016.
 
@@ -48,9 +45,12 @@ approved
   timeout, cancellation, and malformed worker output fail closed.
 - The system retains all worker artifact and observation channels without
   fabricating evidence.
+- The approved Motion Cover provider completed a real `gpt-5.6-luna`
+  interaction; the deterministic oracle independently observed `Ready` and
+  passed `assertion-1`.
+- Provider egress uses an exact-authority loopback relay, and Midscene-generated
+  text logs are redacted before publication.
 
 ## Required Fixes
 
-- No specification fix is required for the implementation.
-- Do not mark Task 011 complete until the strict doctor passes and a real
-  provider-backed scenario is retained as system-executed evidence.
+- No further specification fix is required for Task 011.

@@ -1,0 +1,149 @@
+{
+  "schema": "specnav.verification.midscene-live-proof.v1",
+  "ok": true,
+  "status": "passed",
+  "runtime": {
+    "readiness": "ready",
+    "runtime_version": "2.0.0-alpha.1",
+    "provider": {
+      "configured": true,
+      "model_name_present": true,
+      "model_family_present": true,
+      "credential_source": "MIDSCENE_MODEL_API_KEY",
+      "base_url_present": true,
+      "configuration_fingerprint": "e971738c22a71a02fc2cb6d30baa9bf93cc0769591909b89766d72354d044136",
+      "secret_values_exposed": false
+    }
+  },
+  "run_id": "run-midscene-live-20260801020043049",
+  "attempt_id": "attempt-midscene-live-20260801020043049",
+  "runner": "midscene",
+  "prompt": {
+    "id": "prompt-midscene",
+    "hash": "4a4bf52e3a17d1e35cb699058e0efda103ab48aa4cefd2a1d856952bbe8c62ca",
+    "text": "Click the button labeled Confirm.",
+    "redaction": {
+      "status": "not_required",
+      "redacted_fields": []
+    }
+  },
+  "model": {
+    "base_url_present": true,
+    "credential_source": "MIDSCENE_MODEL_API_KEY",
+    "family": "gpt-5",
+    "name": "gpt-5.6-luna",
+    "secret_values_exposed": false
+  },
+  "observation": {
+    "description": "Confirm button clicked.",
+    "response": "Confirm button clicked."
+  },
+  "oracle": {
+    "type": "deterministic",
+    "producer": "specnav-playwright-worker",
+    "evidence_sha256": "60d2f0b9ca3537c715212a4e8b3500b1ac97c855dcfcd67755027ac231cf9e0c",
+    "facts": [
+      {
+        "assertion_id": "assertion-1",
+        "method": "ok",
+        "actual": true,
+        "expected": true,
+        "status": "passed"
+      }
+    ]
+  },
+  "assertions": [
+    {
+      "actual": true,
+      "expected": true,
+      "id": "assertion-1",
+      "method": "ok",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    {
+      "kind": "screenshot",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/screenshot.png",
+      "producer": "midscene-runner",
+      "sha256": "60d2f0b9ca3537c715212a4e8b3500b1ac97c855dcfcd67755027ac231cf9e0c",
+      "size": 16376
+    }
+  ],
+  "artifacts": [
+    {
+      "kind": "screenshot",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/screenshot.png",
+      "producer": "midscene-runner",
+      "sha256": "60d2f0b9ca3537c715212a4e8b3500b1ac97c855dcfcd67755027ac231cf9e0c",
+      "size": 16376
+    },
+    {
+      "kind": "video",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/video.webm",
+      "producer": "midscene-runner",
+      "sha256": "663523a48eb09336a7e2d3ff7a381f0ea6daf7a1c9f6f60c5c4fef4c65fb0b3c",
+      "size": 96716
+    },
+    {
+      "kind": "trace",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/trace.zip",
+      "producer": "midscene-runner",
+      "sha256": "9461aed2d659f3d740fa7d8ebcb877439629aa0a2657bf5f0296b6c1d7119af5",
+      "size": 123528
+    },
+    {
+      "kind": "log",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/console.json",
+      "producer": "midscene-runner",
+      "sha256": "8a0aab07c6bf3628b17a04f4f46bd496d455d31c37618db9a4f220b6555f083d",
+      "size": 211
+    },
+    {
+      "kind": "log",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/network.json",
+      "producer": "midscene-runner",
+      "sha256": "0b99578b6dd867b69cc3603a5d7dd8d3fcab7f0c090beb18f73561181cc93ffb",
+      "size": 287
+    },
+    {
+      "kind": "assertion_result",
+      "path": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts/assertions.json",
+      "producer": "midscene-runner",
+      "sha256": "dc5023c4fb5c2e6d0f39dfa51303531926184fa0e78633526d5ae1dc9f466d37",
+      "size": 122
+    }
+  ],
+  "console": [
+    {
+      "location": {
+        "column": 22,
+        "columnNumber": 22,
+        "line": 48,
+        "lineNumber": 48,
+        "url": "http://127.0.0.1:55817/"
+      },
+      "text": "payroll-ready",
+      "type": "log"
+    }
+  ],
+  "network": [
+    {
+      "method": "GET",
+      "phase": "request",
+      "resource_type": "document",
+      "url": "http://127.0.0.1:55817/"
+    },
+    {
+      "method": "GET",
+      "ok": true,
+      "phase": "response",
+      "resource_type": "document",
+      "status": 200,
+      "url": "http://127.0.0.1:55817/"
+    }
+  ],
+  "blockers": [],
+  "artifact_root": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/run-midscene-live-20260801020043049-artifacts",
+  "fallback_used": false
+}

@@ -1,0 +1,40 @@
+[2026-08-01T01:48:45.988+00:00] adapter chat completion params: {"config":{"temperature":0,"enable_thinking":false}}
+[2026-08-01T01:48:45.988+00:00] sending request to qwen3.5-plus
+[2026-08-01T01:48:47.359+00:00] AI call failed (attempt 1/2), retrying in 2000ms... Error: 403 Your request was blocked.
+[2026-08-01T01:48:49.593+00:00] call AI error PermissionDeniedError: AI model request failed after 1 retry (2/2 attempts). Last error: 403 Your request was blocked.
+Previous AI call attempt errors:
+Attempt 1: 403 Your request was blocked.
+    at APIError.generate (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/openai/core/error.js:51:20)
+    at OpenAI.makeStatusError (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/openai/client.js:165:32)
+    at OpenAI.makeRequest (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/openai/client.js:333:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async callAI (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/service-caller/index.js:409:36)
+    at async callAndParseOnce (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/service-caller/semantic-retry.js:33:26)
+    at async plan (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/ai-model/llm-planning.js:242:127)
+    at async Object.executor (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/tasks.js:258:38)
+    at async TaskRunner.flush (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/task-runner.js:186:35)
+    at async TaskExecutor.runAction (/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/node_modules/@midscene/core/dist/lib/agent/tasks.js:221:28) {
+  status: 403,
+  headers: Headers {
+    date: 'Sat, 01 Aug 2026 01:48:49 GMT',
+    'content-type': 'text/plain',
+    'content-length': '25',
+    connection: 'keep-alive',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+    expires: 'Thu, 01 Jan 1970 00:00:01 GMT',
+    'referrer-policy': 'same-origin',
+    'x-frame-options': 'SAMEORIGIN',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'report-to': '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Wkd3Zd3GKBJOt3f%2Bszr29ftl8nDQStdO%2FnhTayDBjlPwDrJ72wBcKgzSkfnjES8LacMLdz3z4iZ2kezh6ulsg3OEeTni4AObn7%2Bl6hnJrGg6eMSVm01vTElqRUDpQLkM0ZaIlolj79%2FywUdO6CXgaeJgjwN3On0%3D"}]}',
+    nel: '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}',
+    server: 'cloudflare',
+    'cf-ray': 'a2412ecb6f24346b-SEA',
+    'alt-svc': 'h3=":443"; ma=86400'
+  },
+  requestID: null,
+  error: undefined,
+  code: undefined,
+  param: undefined,
+  type: undefined
+}

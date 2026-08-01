@@ -1,0 +1,223 @@
+# command: node --test tests/verification-v2/midscene/*.test.js tests/verification-v2/runtime/doctor.test.js # 011-staging-cleanup-focused-final
+# exit_status: 0
+# duration_ms: 2245
+
+## stdout
+TAP version 13
+# Subtest: midscene case schema requires prompt, start URL, scenario, and oracle linkage
+ok 1 - midscene case schema requires prompt, start URL, scenario, and oracle linkage
+  ---
+  duration_ms: 1139.61475
+  type: 'test'
+  ...
+# Subtest: kernel exports Midscene adapter and unified execution method
+ok 2 - kernel exports Midscene adapter and unified execution method
+  ---
+  duration_ms: 76.628042
+  type: 'test'
+  ...
+# Subtest: missing provider configuration blocks before Midscene interaction
+ok 3 - missing provider configuration blocks before Midscene interaction
+  ---
+  duration_ms: 63.632625
+  type: 'test'
+  ...
+# Subtest: adapter redacts prompts, observations, logs, model metadata, and errors
+ok 4 - adapter redacts prompts, observations, logs, model metadata, and errors
+  ---
+  duration_ms: 71.30225
+  type: 'test'
+  ...
+# Subtest: adapter redacts generated Midscene text artifacts before publication
+ok 5 - adapter redacts generated Midscene text artifacts before publication
+  ---
+  duration_ms: 62.251333
+  type: 'test'
+  ...
+# Subtest: adapter delegates to the sandboxed Playwright worker without a raw Page
+ok 6 - adapter delegates to the sandboxed Playwright worker without a raw Page
+  ---
+  duration_ms: 62.216542
+  type: 'test'
+  ...
+# Subtest: execute-time provider overrides cannot change the approved provider target
+ok 7 - execute-time provider overrides cannot change the approved provider target
+  ---
+  duration_ms: 57.716917
+  type: 'test'
+  ...
+# Subtest: adapter blocks when doctor and adapter provider configurations differ
+ok 8 - adapter blocks when doctor and adapter provider configurations differ
+  ---
+  duration_ms: 52.427708
+  type: 'test'
+  ...
+# Subtest: human signoff mode reaches the worker without requiring assertions
+ok 9 - human signoff mode reaches the worker without requiring assertions
+  ---
+  duration_ms: 56.344833
+  type: 'test'
+  ...
+# Subtest: adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+ok 10 - adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+  ---
+  duration_ms: 274.028291
+  type: 'test'
+  ...
+# Subtest: adapter rejects malformed worker results and occupied artifact roots
+ok 11 - adapter rejects malformed worker results and occupied artifact roots
+  ---
+  duration_ms: 54.064375
+  type: 'test'
+  ...
+# Subtest: model-only success remains blocked without a worker assertion
+ok 12 - model-only success remains blocked without a worker assertion
+  ---
+  duration_ms: 1207.577167
+  type: 'test'
+  ...
+# Subtest: a sandboxed deterministic assertion can authorize PASS
+ok 13 - a sandboxed deterministic assertion can authorize PASS
+  ---
+  duration_ms: 60.596209
+  type: 'test'
+  ...
+# Subtest: kernel recomputes assertion status and rejects a forged PASS
+ok 14 - kernel recomputes assertion status and rejects a forged PASS
+  ---
+  duration_ms: 68.667417
+  type: 'test'
+  ...
+# Subtest: failed deterministic assertion produces a failed terminal attempt
+ok 15 - failed deterministic assertion produces a failed terminal attempt
+  ---
+  duration_ms: 61.010083
+  type: 'test'
+  ...
+# Subtest: human signoff passes only when contract and execution identity permit it
+ok 16 - human signoff passes only when contract and execution identity permit it
+  ---
+  duration_ms: 116.42075
+  type: 'test'
+  ...
+# Subtest: human signoff can be requested only after the retained screenshot exists
+ok 17 - human signoff can be requested only after the retained screenshot exists
+  ---
+  duration_ms: 53.501167
+  type: 'test'
+  ...
+# Subtest: human signoff cannot approve a screenshot modified during review
+ok 18 - human signoff cannot approve a screenshot modified during review
+  ---
+  duration_ms: 56.510541
+  type: 'test'
+  ...
+# Subtest: Midscene result retains every published artifact and execution channel
+ok 19 - Midscene result retains every published artifact and execution channel
+  ---
+  duration_ms: 56.406583
+  type: 'test'
+  ...
+# Subtest: human signoff reviewer and evidence hash must match the approved execution
+ok 20 - human signoff reviewer and evidence hash must match the approved execution
+  ---
+  duration_ms: 162.9305
+  type: 'test'
+  ...
+# Subtest: missing, forged, or tampered screenshots block before oracle evaluation
+ok 21 - missing, forged, or tampered screenshots block before oracle evaluation
+  ---
+  duration_ms: 168.915
+  type: 'test'
+  ...
+# Subtest: malformed and hostile adapter results fail closed
+ok 22 - malformed and hostile adapter results fail closed
+  ---
+  duration_ms: 105.940458
+  type: 'test'
+  ...
+# Subtest: provider sandbox rule permits only an explicit loopback relay
+ok 23 - provider sandbox rule permits only an explicit loopback relay
+  ---
+  duration_ms: 1.076041
+  type: 'test'
+  ...
+# Subtest: restricted relay tunnels only the approved provider authority
+ok 24 - restricted relay tunnels only the approved provider authority
+  ---
+  duration_ms: 14.092333
+  type: 'test'
+  ...
+# Subtest: Midscene oracle guard permits reads and blocks page mutation
+ok 25 - Midscene oracle guard permits reads and blocks page mutation
+  ---
+  duration_ms: 1.654667
+  type: 'test'
+  ...
+# Subtest: doctor probes FFmpeg with its supported version argument
+ok 26 - doctor probes FFmpeg with its supported version argument
+  ---
+  duration_ms: 0.924291
+  type: 'test'
+  ...
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 27 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 12.15175
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 28 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 8.237667
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 29 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 0.912833
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 30 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.393083
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 31 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 18.440625
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 32 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 6.269458
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 33 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 5.772334
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 34 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 8.962417
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2202.282791
+
+
+## stderr
+(empty)

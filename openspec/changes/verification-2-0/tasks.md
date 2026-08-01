@@ -29,7 +29,7 @@ User Outcome: Reviewers can execute command, Playwright, and Midscene cases with
 
 - [x] 4.1 Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence.
 - [x] 4.2 Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence.
-- [ ] 4.3 Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.
+- [x] 4.3 Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.
 
 ## 5. Evidence And Readings
 

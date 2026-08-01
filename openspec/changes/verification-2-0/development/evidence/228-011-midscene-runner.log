@@ -1,0 +1,10 @@
+# command: node plugins/specnav-development/scripts/development-contract.js --mode handoff --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const r=JSON.parse(s);const b="task-ledger-missing-status:011-midscene-runner:complete";if(r.blockers.includes(b))throw new Error(b);if(!r.blockers.includes("tasks-md:incomplete-checkboxes"))throw new Error("unfinished-work-control-missing");console.log("task 011 lifecycle blocker retired")})' # 011-lifecycle-blocker-retired
+# exit_status: 0
+# duration_ms: 729
+
+## stdout
+task 011 lifecycle blocker retired
+
+
+## stderr
+(empty)
