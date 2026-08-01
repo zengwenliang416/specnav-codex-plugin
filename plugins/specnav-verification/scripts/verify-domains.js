@@ -115,6 +115,16 @@ function artifactResult(change, name, blockers, extra = {}) {
   };
 }
 
+function changeArtifactResult(change, name, blockers, extra = {}) {
+  return {
+    name,
+    path: path.join('openspec', 'changes', change, name),
+    ok: blockers.length === 0,
+    blockers: unique(blockers),
+    ...extra
+  };
+}
+
 function parseJsonl(file, name, allowEmpty = false) {
   const text = readTextFile(file);
   const blockers = [];
@@ -1038,18 +1048,20 @@ function validateVerify(root = lib.projectRoot()) {
     }
   }
 
-  // Lane routing: light-lane changes verify only static + unit. User test case
-  // signoff still applies to every lane; only runtime/browser and behavior eval
-  // evidence stays reserved for standard/full lanes.
   const lane = changeDir ? lib.readLane(changeDir).lane : 'standard';
-  const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
+  const laneDomains = DOMAINS;
+  const lightLaneBlocker = 'verification-v2:light-lane-not-supported';
 
-  // Light lane v2: the single light-change.json is the verification contract —
-  // assertions passing with evidence, tasks done, user test approved. No
-  // verify/ packet is required.
+  // Requirements and development may use the light lane, but Verification 2.0
+  // never skips domains. A light change must escalate into the six-domain
+  // verification contract before it can release or archive.
   const lightChange = changeDir ? lib.readLightChange(changeDir) : { present: false };
   if (lane === 'light' && lightChange.present) {
-    const lightBlockers = [...blockers, ...lightChange.blockers];
+    const lightBlockers = [
+      ...blockers,
+      ...lightChange.blockers,
+      lightLaneBlocker
+    ];
     const value = lightChange.value || {};
     if (lightChange.ok) {
       const userTest = value.user_test || {};
@@ -1077,31 +1089,40 @@ function validateVerify(root = lib.projectRoot()) {
       verify_dir: verifyDir,
       lane,
       light_format: 'v2',
+      required_domains: laneDomains,
       blockers: unique(lightBlockers),
       warnings: unique([...warnings, ...codegraphWarnings(lightCodegraph)]),
       codegraph: lightCodegraph,
       development,
-      artifacts: [artifactResult(change, 'light-change.json', unique(lightChange.blockers))]
+      artifacts: [changeArtifactResult(
+        change,
+        'light-change.json',
+        unique(lightChange.blockers)
+      )]
     };
   }
 
+  if (lane === 'light') blockers.push(lightLaneBlocker);
+
   if (verifyDir) {
     artifacts.push(validateTextHeadings(verifyDir, change, 'plan.md', ['Verification Scope', 'Required Domains', 'Evidence Plan'], 'invalid-verify-plan-md'));
-    artifacts.push(validatePlan(verifyDir, change, laneDomains, { runtimeEvidenceRequired: lane !== 'light' }));
+    artifacts.push(validatePlan(verifyDir, change, laneDomains, {
+      runtimeEvidenceRequired: true
+    }));
     artifacts.push(validateEvidenceIndex(verifyDir, change));
     const anchorGate = foundation.validateAnnotationPolicy(projectRoot).enforcement === 'gate';
     artifacts.push(validateTraceability(verifyDir, change, anchorGate));
     artifacts.push(validateDiffTraceability(verifyDir, change));
     artifacts.push(...validateUserTestCaseGate(verifyDir, change, laneDomains));
-    if (lane !== 'light') {
-      artifacts.push(validateRuntimeEvidence(verifyDir, change, migrationRequired(changeDir)));
-    }
+    artifacts.push(validateRuntimeEvidence(
+      verifyDir,
+      change,
+      migrationRequired(changeDir)
+    ));
     artifacts.push(validateBlockers(verifyDir, change));
     artifacts.push(validateTextHeadings(verifyDir, change, 'receipt.md', ['Covered Scope', 'Uncovered Scope', 'Residual Risk', 'Confidence'], 'invalid-receipt-md'));
     artifacts.push(validateReceipt(verifyDir, change, changeDir));
-    if (lane !== 'light') {
-      artifacts.push(...validateBehaviorEvals(verifyDir, change));
-    }
+    artifacts.push(...validateBehaviorEvals(verifyDir, change));
     for (const domain of laneDomains) {
       artifacts.push(validateTextHeadings(verifyDir, change, `${domain}/report.md`, DOMAIN_REPORT_HEADINGS, `invalid-domain-report-md:${domain}`));
       artifacts.push(validateDomainReport(verifyDir, change, domain));
@@ -1109,9 +1130,13 @@ function validateVerify(root = lib.projectRoot()) {
     artifacts.push(validateUnitRubric(verifyDir, change));
     const anchorArtifact = validateAnchorCoverage(projectRoot, verifyDir, change);
     if (anchorArtifact) artifacts.push(anchorArtifact);
-    if (lane !== 'light') {
-      artifacts.push(validateTextHeadings(verifyDir, change, 'sensory/reviewer-independence.md', INDEPENDENCE_HEADINGS, 'invalid-reviewer-independence'));
-    }
+    artifacts.push(validateTextHeadings(
+      verifyDir,
+      change,
+      'sensory/reviewer-independence.md',
+      INDEPENDENCE_HEADINGS,
+      'invalid-reviewer-independence'
+    ));
     artifacts.push(artifactResult(change, 'root-cause-checks.jsonl', parseJsonl(path.join(verifyDir, 'root-cause-checks.jsonl'), 'root-cause-checks.jsonl', true).blockers));
   }
 
@@ -1147,15 +1172,9 @@ function writeAggregate(root = lib.projectRoot(), options = {}) {
   const staleUnresolved = staleMarkerUnresolved(validation.change_dir, verifyDir);
   const verdict = validation.ok ? 'green' : 'red';
   const lane = validation.change_dir ? lib.readLane(validation.change_dir).lane : 'standard';
-  const laneDomains = lane === 'light' ? ['static', 'unit'] : DOMAINS;
+  const laneDomains = DOMAINS;
   const domains = {};
   for (const domain of laneDomains) {
-    // Light v2 has no per-domain report files: the domain verdict IS the
-    // contract verdict (the single-file gate already covers static+unit).
-    if (validation.light_format === 'v2') {
-      domains[domain] = verdict;
-      continue;
-    }
     const artifact = validation.artifacts.find((item) => item.name === `${domain}/report.json`);
     domains[domain] = artifact && VERDICTS.has(artifact.verdict) ? artifact.verdict : 'blocked';
   }

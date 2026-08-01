@@ -1,0 +1,10 @@
+# command: node plugins/specnav-development/scripts/development-contract.js --mode handoff --json | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const r=JSON.parse(s);const b=r.blockers.filter(x=>x.includes("016-six-domain-aggregation"));if(b.length)throw new Error(b.join(","));if(!r.blockers.includes("tasks-md:incomplete-checkboxes"))throw new Error("unfinished-work-control-missing");console.log(`task 016 lifecycle blocker retired; ${r.blockers.length} legitimate downstream blockers remain`)})' # 016-six-domain-lifecycle-retired
+# exit_status: 0
+# duration_ms: 566
+
+## stdout
+task 016 lifecycle blocker retired; 53 legitimate downstream blockers remain
+
+
+## stderr
+(empty)

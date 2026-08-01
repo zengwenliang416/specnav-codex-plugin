@@ -38,8 +38,19 @@ listed verification commands and must preserve all earlier artifacts.
 
 - plugins/specnav-verification/kernel/evaluation/**
 - plugins/specnav-verification/kernel/gates/**
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/scripts/verify-domains.js
 - tests/verification-v2/evaluation/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-no-light.sh
+- tests/run-light-change-v2-fixtures.sh
+- tests/run-light-compact-gate-fixtures.sh
+- openspec/changes/verification-2-0/development/tasks/016-six-domain-aggregation/**
+- openspec/changes/verification-2-0/development/task-context.jsonl
+- openspec/changes/verification-2-0/development/task-graph.json
+- openspec/changes/verification-2-0/development/task-ledger.jsonl
+- openspec/changes/verification-2-0/development/validation-log.jsonl
+- openspec/changes/verification-2-0/development/evidence/**
 
 ## Interfaces / Seams
 
@@ -62,7 +73,11 @@ listed verification commands and must preserve all earlier artifacts.
 ## API / Data Flow Contracts
 
 - Capability spec: `openspec/changes/verification-2-0/specs/six-domain-evaluation/spec.md`.
-- Acceptance assertions: `AC-03`, `AC-18`, `AC-19`, `AC-21`, `AC-28`.
+- Direct acceptance assertions: `AC-03`, `AC-18`, `AC-19`, `AC-21`.
+- This task contributes the aggregate decision core to `AC-28`; Task 033
+  retains complete release and archive gate ownership.
+- Task 017 retains final approval validation for `not_applicable` while this
+  task requires an explicit external validator before consuming that state.
 - Validated readings become case verdicts, six domain verdicts, and one auditable release decision.
 
 ## State / Error / Empty / Loading Behavior

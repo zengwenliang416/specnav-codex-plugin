@@ -42,6 +42,17 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(typeof kernel.createMidsceneAdapter, 'function');
   assert.equal(typeof kernel.createOracleRegistry, 'function');
   assert.equal(typeof kernel.createReadingEvaluator, 'function');
+  assert.deepEqual(kernel.SIX_DOMAINS, [
+    'facticity',
+    'static',
+    'unit',
+    'redteam',
+    'e2e',
+    'sensory'
+  ]);
+  assert.equal(Object.isFrozen(kernel.SIX_DOMAINS), true);
+  assert.equal(typeof kernel.createSixDomainAggregator, 'function');
+  assert.equal(typeof kernel.createDecisionEngine, 'function');
   assert.deepEqual(
     kernel.serviceContracts.evidenceStore.methods,
     ['append', 'rebuildIndex']

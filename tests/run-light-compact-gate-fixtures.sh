@@ -209,28 +209,27 @@ PROJECT_DIR="$PROJECT" SPECNAV_CHANGE="$CHANGE" \
   node "$VERIFY/scripts/verify-domains.js" aggregate --json >"$TMP_DIR/light-aggregate.json"
 AGGREGATE_STATUS=$?
 set -e
-if [[ "$AGGREGATE_STATUS" != "0" ]]; then
-  echo "light aggregate expected green" >&2
-  cat "$TMP_DIR/light-aggregate.json" >&2
-  exit 1
-fi
-jq -e '.verdict == "green" and .lane == "light" and (.required_domains == ["static", "unit"])' "$TMP_DIR/light-aggregate.json" >/dev/null
+[[ "$AGGREGATE_STATUS" == "2" ]]
+jq -e '
+  .verdict == "red"
+  and (.blockers | index("verification-v2:light-lane-not-supported"))
+  and (.required_domains | length == 6)
+' "$TMP_DIR/light-aggregate.json" >/dev/null
 
 set +e
 PROJECT_DIR="$PROJECT" SPECNAV_CHANGE="$CHANGE" \
   node "$OPS/scripts/operations-gate.js" --json >"$TMP_DIR/light-ops.json"
 OPS_STATUS=$?
 set -e
-if [[ "$OPS_STATUS" != "0" ]]; then
-  echo "light operations gate expected green" >&2
-  cat "$TMP_DIR/light-ops.json" >&2
-  exit 1
-fi
-jq -e '.ok == true and .lane == "light" and .release_target == "local-only"' "$TMP_DIR/light-ops.json" >/dev/null
-jq -e '(.artifacts | map(.name) | index("readiness.md")) == null' "$TMP_DIR/light-ops.json" >/dev/null
+[[ "$OPS_STATUS" == "2" ]]
+jq -e '.ok == false' "$TMP_DIR/light-ops.json" >/dev/null
 
+set +e
 PROJECT_DIR="$PROJECT" SPECNAV_CHANGE="$CHANGE" \
   node "$OPS/scripts/archive-gate.js" --json >"$TMP_DIR/light-archive.json"
-jq -e '.verdict == "green" and .lane == "light"' "$TMP_DIR/light-archive.json" >/dev/null
+ARCHIVE_STATUS=$?
+set -e
+[[ "$ARCHIVE_STATUS" == "2" ]]
+jq -e '.verdict == "red"' "$TMP_DIR/light-archive.json" >/dev/null
 
 echo "specnav light compact gate fixtures ok"

@@ -31,9 +31,14 @@ const {
   createCaseRerunPlanner
 } = require('./repair');
 const {
+  SIX_DOMAINS,
   createOracleRegistry,
-  createReadingEvaluator
+  createReadingEvaluator,
+  createSixDomainAggregator
 } = require('./evaluation');
+const {
+  createDecisionEngine
+} = require('./gates');
 
 module.exports = Object.freeze({
   metadata,
@@ -50,7 +55,10 @@ module.exports = Object.freeze({
   createSecretRedactor,
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,
+  SIX_DOMAINS,
   createOracleRegistry,
   createReadingEvaluator,
+  createSixDomainAggregator,
+  createDecisionEngine,
   renderSafeHtmlText
 });

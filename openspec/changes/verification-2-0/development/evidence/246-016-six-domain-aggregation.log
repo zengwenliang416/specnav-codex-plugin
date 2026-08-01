@@ -1,0 +1,268 @@
+# command: bash tests/run-verification-v2-no-light.sh # 016-six-domain-no-light-red
+# exit_status: 1
+# duration_ms: 456
+
+## stdout
+(empty)
+
+## stderr
+Verification 2.0 light lane must block, got exit 0
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-01T03:02:31.925Z",
+  "change_id": "verification-v2-no-light",
+  "active_change": "verification-v2-no-light",
+  "verdict": "green",
+  "domains": {
+    "static": "green",
+    "unit": "green"
+  },
+  "blocking_findings": [],
+  "residual_risk": [],
+  "evidence_receipt": "verify/receipt.json",
+  "behavior_eval_report": "verify/behavior-evals/report.json",
+  "html_report": "verify/aggregate-report.html",
+  "review_style": "claude-warm-editorial",
+  "stale": false,
+  "blockers": [],
+  "warnings": [
+    "development:codegraph:not-indexed",
+    "codegraph:not-indexed"
+  ],
+  "codegraph": {
+    "ok": true,
+    "status": {
+      "schema": "specnav.codegraph.status.v1",
+      "ok": true,
+      "generated_at": "2026-08-01T03:02:31.924Z",
+      "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.QYxfTDF59Y/project",
+      "active_change": "verification-v2-no-light",
+      "policy": {
+        "enabled": true,
+        "profile": "bootstrap",
+        "mode": "observe",
+        "stage": "verification",
+        "required_for_stage": false,
+        "disabled_reason": null
+      },
+      "execution_surface": "cli",
+      "decision": {
+        "stage": "verification",
+        "result": "warn",
+        "reason": "CodeGraph policy has advisory warnings for verification."
+      },
+      "cli": {
+        "available": true,
+        "version": "1.3.1",
+        "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+        "unsupported": false,
+        "error": null
+      },
+      "mcp": {
+        "configured": true,
+        "visible_in_current_session": false,
+        "restart_required": true,
+        "config_files": [
+          "/Users/wenliang_zeng/.claude.json",
+          "/Users/wenliang_zeng/.codex/config.toml"
+        ]
+      },
+      "index": {
+        "initialized": false,
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.QYxfTDF59Y/project",
+        "indexPath": null,
+        "lastIndexed": null,
+        "fileCount": 0,
+        "nodeCount": 0,
+        "edgeCount": 0,
+        "pendingChanges": {
+          "added": 0,
+          "modified": 0,
+          "removed": 0
+        },
+        "reindexRecommended": false,
+        "worktreeMismatch": null
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "raw_codegraph_status": {
+        "initialized": false,
+        "version": "1.3.1",
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.QYxfTDF59Y/project",
+        "indexPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.QYxfTDF59Y/project/.codegraph",
+        "lastIndexed": null
+      }
+    },
+    "evidence_index": {
+      "schema": "specnav.codegraph.evidence_index.v1",
+      "generated_at": "2026-08-01T03:02:31.924Z",
+      "active_change": "verification-v2-no-light",
+      "source_raw": "openspec/changes/verification-v2-no-light/codegraph/evidence.jsonl",
+      "by_claim": {},
+      "by_stage": {},
+      "blockers": [],
+      "raw_exists": false,
+      "record_count": 0
+    },
+    "claims_report": {
+      "schema": "specnav.codegraph.claims_report.v1",
+      "generated_at": "2026-08-01T03:02:31.924Z",
+      "active_change": "verification-v2-no-light",
+      "claims_file": "openspec/changes/verification-v2-no-light/codegraph/claims-map.json",
+      "evidence_index": "openspec/changes/verification-v2-no-light/codegraph/evidence-index.json",
+      "claims_count": 0,
+      "verified_claims": [],
+      "unverified_claims": [],
+      "blockers": [],
+      "warnings": []
+    },
+    "drift": {
+      "schema": "specnav.codegraph.drift.v1",
+      "active_change": "verification-v2-no-light",
+      "drift": [],
+      "blockers": []
+    },
+    "decision": {
+      "schema": "specnav.codegraph.decision.v1",
+      "stage": "verification",
+      "profile": "bootstrap",
+      "effective_mode": "observe",
+      "required_for_stage": false,
+      "execution_surface": "cli",
+      "result": "warn",
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "explanation": "CodeGraph policy has advisory warnings for verification."
+    },
+    "guard_report": {
+      "schema": "specnav.codegraph.guard_report.v1",
+      "generated_at": "2026-08-01T03:02:31.924Z",
+      "active_change": "verification-v2-no-light",
+      "stage": "verification",
+      "ok": true,
+      "status": {
+        "policy": {
+          "enabled": true,
+          "profile": "bootstrap",
+          "mode": "observe",
+          "stage": "verification",
+          "required_for_stage": false,
+          "disabled_reason": null
+        },
+        "execution_surface": "cli",
+        "cli": {
+          "available": true,
+          "version": "1.3.1",
+          "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+          "unsupported": false,
+          "error": null
+        },
+        "mcp": {
+          "configured": true,
+          "visible_in_current_session": false,
+          "restart_required": true,
+          "config_files": [
+            "/Users/wenliang_zeng/.claude.json",
+            "/Users/wenliang_zeng/.codex/config.toml"
+          ]
+        },
+        "index": {
+          "initialized": false,
+          "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.QYxfTDF59Y/project",
+          "indexPath": null,
+          "lastIndexed": null,
+          "fileCount": 0,
+          "nodeCount": 0,
+          "edgeCount": 0,
+          "pendingChanges": {
+            "added": 0,
+            "modified": 0,
+            "removed": 0
+          },
+          "reindexRecommended": false,
+          "worktreeMismatch": null
+        }
+      },
+      "decision": {
+        "schema": "specnav.codegraph.decision.v1",
+        "stage": "verification",
+        "profile": "bootstrap",
+        "effective_mode": "observe",
+        "required_for_stage": false,
+        "execution_surface": "cli",
+        "result": "warn",
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ],
+        "explanation": "CodeGraph policy has advisory warnings for verification."
+      },
+      "evidence_index": {
+        "schema": "specnav.codegraph.evidence_index.v1",
+        "generated_at": "2026-08-01T03:02:31.924Z",
+        "active_change": "verification-v2-no-light",
+        "source_raw": "openspec/changes/verification-v2-no-light/codegraph/evidence.jsonl",
+        "by_claim": {},
+        "by_stage": {},
+        "blockers": [],
+        "raw_exists": false,
+        "record_count": 0
+      },
+      "claims_report": {
+        "schema": "specnav.codegraph.claims_report.v1",
+        "generated_at": "2026-08-01T03:02:31.924Z",
+        "active_change": "verification-v2-no-light",
+        "claims_file": "openspec/changes/verification-v2-no-light/codegraph/claims-map.json",
+        "evidence_index": "openspec/changes/verification-v2-no-light/codegraph/evidence-index.json",
+        "claims_count": 0,
+        "verified_claims": [],
+        "unverified_claims": [],
+        "blockers": [],
+        "warnings": []
+      },
+      "drift": {
+        "schema": "specnav.codegraph.drift.v1",
+        "active_change": "verification-v2-no-light",
+        "drift": [],
+        "blockers": []
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ]
+    },
+    "artifacts": {
+      "status": "openspec/changes/verification-v2-no-light/codegraph/status.json",
+      "decision": "openspec/changes/verification-v2-no-light/codegraph/decision.json",
+      "guard_report": "openspec/changes/verification-v2-no-light/codegraph/guard-report.json",
+      "evidence_raw": "openspec/changes/verification-v2-no-light/codegraph/evidence.jsonl",
+      "evidence_index": "openspec/changes/verification-v2-no-light/codegraph/evidence-index.json",
+      "claims_map": "openspec/changes/verification-v2-no-light/codegraph/claims-map.json",
+      "claims_report": "openspec/changes/verification-v2-no-light/codegraph/claims-report.json",
+      "drift_report": "openspec/changes/verification-v2-no-light/codegraph/drift-report.json",
+      "impact_report": "openspec/changes/verification-v2-no-light/codegraph/impact-report.json"
+    },
+    "blockers": [],
+    "warnings": [
+      "codegraph:not-indexed"
+    ]
+  },
+  "lane": "light",
+  "required_domains": [
+    "static",
+    "unit"
+  ],
+  "artifacts": [
+    {
+      "name": "light-change.json",
+      "path": "openspec/changes/verification-v2-no-light/verify/light-change.json",
+      "ok": true,
+      "blockers": []
+    }
+  ]
+}
+

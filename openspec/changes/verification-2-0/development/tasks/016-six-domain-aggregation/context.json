@@ -19,8 +19,19 @@
   "allowed_files": [
     "plugins/specnav-verification/kernel/evaluation/**",
     "plugins/specnav-verification/kernel/gates/**",
+    "plugins/specnav-verification/kernel/index.js",
     "plugins/specnav-verification/scripts/verify-domains.js",
-    "tests/verification-v2/evaluation/**"
+    "tests/verification-v2/evaluation/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-no-light.sh",
+    "tests/run-light-change-v2-fixtures.sh",
+    "tests/run-light-compact-gate-fixtures.sh",
+    "openspec/changes/verification-2-0/development/tasks/016-six-domain-aggregation/**",
+    "openspec/changes/verification-2-0/development/task-context.jsonl",
+    "openspec/changes/verification-2-0/development/task-graph.json",
+    "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+    "openspec/changes/verification-2-0/development/validation-log.jsonl",
+    "openspec/changes/verification-2-0/development/evidence/**"
   ],
   "test_paths": [
     "node --test tests/verification-v2/evaluation/aggregation.test.js",
@@ -35,8 +46,7 @@
     "AC-03",
     "AC-18",
     "AC-19",
-    "AC-21",
-    "AC-28"
+    "AC-21"
   ],
   "external_targets": [],
   "non_goals": [
@@ -49,7 +59,7 @@
     "System-executed command output with exit status",
     "Changed-file list contained by scope.json",
     "Task report, spec review, and quality review before checkbox completion",
-    "Direct evidence for AC-03, AC-18, AC-19, AC-21, AC-28"
+    "Direct evidence for AC-03, AC-18, AC-19, and AC-21; contribution evidence for AC-28"
   ],
   "unsafe_assumptions": [
     "Tool availability is not runtime readiness.",
