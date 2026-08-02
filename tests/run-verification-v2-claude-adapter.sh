@@ -51,6 +51,8 @@ jq -e '
 set +e
 node "$CLAUDE_ADAPTER" validate \
   --project "$CLAUDE_ROOT/tests/fixtures/simple-project" \
+  --change add-dark-mode \
+  --reviewer-id reviewer-1 \
   --json >"$TMP_DIR/downstream-validate.json"
 DOWNSTREAM_VALIDATE_STATUS=$?
 set -e
@@ -63,10 +65,12 @@ jq -e '
   and .exit_status == 2
   and .fallback_used == false
   and .result.fallback_used == false
-  and (.blocker_ids | index("missing-verify-artifact:user-test-cases.json"))
+  and (.blocker_ids | index("verification-production:snapshot-read-failed"))
   and (
-    .artifact_paths
-    | index("openspec/changes/add-dark-mode/verify/user-test-cases.json")
+    .artifact_paths[0]
+    | endswith(
+        "/openspec/changes/add-dark-mode/verify/v2/case-snapshot.json"
+      )
   )
 ' "$TMP_DIR/downstream-validate.json" >/dev/null
 
