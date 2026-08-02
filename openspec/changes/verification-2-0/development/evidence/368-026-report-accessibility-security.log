@@ -1,0 +1,49 @@
+# command: node --test tests/verification-v2/security/report-security.test.js # task026-final-security
+# exit_status: 0
+# duration_ms: 927
+
+## stdout
+TAP version 13
+# Subtest: standalone reports use one independently pinned script and reject unknown script identities
+ok 1 - standalone reports use one independently pinned script and reject unknown script identities
+  ---
+  duration_ms: 772.398292
+  type: 'test'
+  ...
+# Subtest: shell escapes its title and rejects unapproved scripts or active raw content
+ok 2 - shell escapes its title and rejects unapproved scripts or active raw content
+  ---
+  duration_ms: 1.267167
+  type: 'test'
+  ...
+# Subtest: all dynamic report fields are redacted before hostile HTML is escaped
+ok 3 - all dynamic report fields are redacted before hostile HTML is escaped
+  ---
+  duration_ms: 8.195792
+  type: 'test'
+  ...
+# Subtest: report status colors meet WCAG AA contrast on both report surfaces
+ok 4 - report status colors meet WCAG AA contrast on both report surfaces
+  ---
+  duration_ms: 0.474375
+  type: 'test'
+  ...
+# Subtest: editing emitted HTML cannot change the DecisionEngine result
+ok 5 - editing emitted HTML cannot change the DecisionEngine result
+  ---
+  duration_ms: 14.462166
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 883.103042
+
+
+## stderr
+(empty)

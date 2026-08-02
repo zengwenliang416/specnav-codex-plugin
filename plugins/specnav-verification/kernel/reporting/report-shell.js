@@ -4,6 +4,13 @@ const {
   renderSafeHtmlAttribute,
   renderSafeHtmlText
 } = require('./safe-html-text');
+const {
+  contentSecurityPolicy,
+  renderInlineScripts,
+  resolveReportScripts,
+  validateReportBody,
+  validateReportStylesheet
+} = require('./report-security');
 
 const REPORT_PAGES = Object.freeze([
   Object.freeze({
@@ -42,6 +49,10 @@ function createSafeRenderer(secretRedactor) {
     text(value, field = 'html_text') {
       return render(renderSafeHtmlText, value, field);
     },
+    reject(value) {
+      blockers.push(value);
+      return null;
+    },
     blockers
   });
 }
@@ -59,6 +70,7 @@ function renderReportShell(options) {
     body,
     model,
     safe,
+    scriptIds = [],
     stylesheet,
     title
   } = options;
@@ -73,9 +85,39 @@ function renderReportShell(options) {
     model.summary.kernel_version || 'unknown',
     'kernel_version'
   );
-  if ([modelId, changeId, generatedAt, runtimeVersion, kernelVersion].includes(null)) {
+  const generatedAtAttribute = safe.attribute(
+    model.generated_at,
+    'generated_at_attribute'
+  );
+  const renderedTitle = safe.text(title, 'report_title');
+  if ([
+    modelId,
+    changeId,
+    generatedAt,
+    generatedAtAttribute,
+    renderedTitle,
+    runtimeVersion,
+    kernelVersion
+  ].includes(null)) {
     return null;
   }
+  const resolvedScripts = resolveReportScripts(scriptIds);
+  if (!resolvedScripts.ok) {
+    safe.reject(resolvedScripts.blockers[0]);
+    return null;
+  }
+  const bodyValidation = validateReportBody(body);
+  if (!bodyValidation.ok) {
+    safe.reject(bodyValidation.blocker);
+    return null;
+  }
+  const stylesheetValidation = validateReportStylesheet(stylesheet);
+  if (!stylesheetValidation.ok) {
+    safe.reject(stylesheetValidation.blocker);
+    return null;
+  }
+  const securityPolicy = contentSecurityPolicy(resolvedScripts.scripts);
+  const inlineScripts = renderInlineScripts(resolvedScripts.scripts);
 
   return `<!doctype html>
 <html lang="en">
@@ -83,7 +125,8 @@ function renderReportShell(options) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>${title}</title>
+  <meta http-equiv="Content-Security-Policy" content="${securityPolicy}">
+  <title>${renderedTitle}</title>
   <style data-specnav-report-styles>
 ${stylesheet}
   </style>
@@ -105,14 +148,15 @@ ${stylesheet}
     <nav class="report-navigation" aria-label="Verification reports">
       ${renderNavigation(activePage)}
     </nav>
-    <main id="report-content">
+    <main id="report-content" tabindex="-1">
 ${body}
     </main>
     <footer class="report-footer">
-      <span>Generated <time>${generatedAt}</time> from validated Verification 2.0 artifacts.</span>
+      <span>Generated <time datetime="${generatedAtAttribute}">${generatedAt}</time> from validated Verification 2.0 artifacts.</span>
       <strong>HTML is a projection, not the gate source of truth.</strong>
     </footer>
   </div>
+${inlineScripts}
 </body>
 </html>`;
 }

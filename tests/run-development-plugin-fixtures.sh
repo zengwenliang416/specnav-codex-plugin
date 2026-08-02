@@ -1604,4 +1604,57 @@ JSONL
 run_json "$INVALID_ADJUDICATION_SUCCESSOR_PROJECT" "$TMP_DIR/invalid-adjudication-successor.json" 2
 assert_blocker "$TMP_DIR/invalid-adjudication-successor.json" 'validation-log:invalid-overturn-successor:001-dashboard-summary'
 
+PASS_SUPERSESSION_PROJECT="$TMP_DIR/pass-supersession-project"
+cp -R "$HAPPY_PROJECT" "$PASS_SUPERSESSION_PROJECT"
+cat >>"$PASS_SUPERSESSION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":null,"reason":"An independent review invalidated this otherwise green receipt before a corrected run existed.","recorded_at":"2026-07-03T00:01:00.000Z"}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":"development/evidence/002-dashboard-summary.log","reason":"The later system-executed run repairs the earlier incomplete adjudication without rewriting append-only history.","recorded_at":"2026-07-03T00:03:00.000Z"}
+JSONL
+node - "$PASS_SUPERSESSION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'NODE'
+'use strict';
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const file = process.argv[2];
+const entries = fs.readFileSync(file, 'utf8').trim().split(/\r?\n/).map(JSON.parse);
+const adjudications = entries.filter((entry) => entry.schema === 'specnav.validationAdjudication.v1');
+const digest = (entry) => crypto.createHash('sha256').update(JSON.stringify(entry)).digest('hex');
+fs.appendFileSync(file, `${JSON.stringify({
+  schema: 'specnav.validationAdjudicationCorrection.v1',
+  task: '001-dashboard-summary',
+  status: 'corrected',
+  invalid_adjudication_digest: digest(adjudications[0]),
+  replacement_adjudication_digest: digest(adjudications[1]),
+  reason: 'The exact invalid adjudication is retained and explicitly corrected by the exact later valid adjudication.',
+  recorded_at: '2026-07-03T00:04:00.000Z'
+})}\n`);
+NODE
+run_json "$PASS_SUPERSESSION_PROJECT" "$TMP_DIR/pass-supersession.json" 0
+
+UNCORRECTED_ADJUDICATION_PROJECT="$TMP_DIR/uncorrected-adjudication-project"
+cp -R "$HAPPY_PROJECT" "$UNCORRECTED_ADJUDICATION_PROJECT"
+cat >>"$UNCORRECTED_ADJUDICATION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":null,"reason":"This incomplete adjudication must remain visible even when a later valid adjudication exists.","recorded_at":"2026-07-03T00:01:00.000Z"}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":"development/evidence/002-dashboard-summary.log","reason":"This valid replacement must not silently hide the earlier invalid record.","recorded_at":"2026-07-03T00:03:00.000Z"}
+JSONL
+run_json "$UNCORRECTED_ADJUDICATION_PROJECT" "$TMP_DIR/uncorrected-adjudication.json" 2
+assert_blocker "$TMP_DIR/uncorrected-adjudication.json" 'validation-log:invalid-overturn-successor:001-dashboard-summary'
+
+UNRESOLVED_PASS_SUPERSESSION_PROJECT="$TMP_DIR/unresolved-pass-supersession-project"
+cp -R "$HAPPY_PROJECT" "$UNRESOLVED_PASS_SUPERSESSION_PROJECT"
+cat >>"$UNRESOLVED_PASS_SUPERSESSION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":null,"reason":"A green receipt cannot be invalidated without a later system-executed replacement.","recorded_at":"2026-07-03T00:01:00.000Z"}
+JSONL
+run_json "$UNRESOLVED_PASS_SUPERSESSION_PROJECT" "$TMP_DIR/unresolved-pass-supersession.json" 2
+assert_blocker "$TMP_DIR/unresolved-pass-supersession.json" 'validation-log:invalid-overturn-successor:001-dashboard-summary'
+
+DUPLICATE_EVIDENCE_LOG_PROJECT="$TMP_DIR/duplicate-evidence-log-project"
+cp -R "$HAPPY_PROJECT" "$DUPLICATE_EVIDENCE_LOG_PROJECT"
+cat >>"$DUPLICATE_EVIDENCE_LOG_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # forged-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
+JSONL
+run_json "$DUPLICATE_EVIDENCE_LOG_PROJECT" "$TMP_DIR/duplicate-evidence-log.json" 2
+assert_blocker "$TMP_DIR/duplicate-evidence-log.json" 'validation-log:duplicate-evidence-log:001-dashboard-summary'
+
 echo "specnav development plugin fixtures ok"

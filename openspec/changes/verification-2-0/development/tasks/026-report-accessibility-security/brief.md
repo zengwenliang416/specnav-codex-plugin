@@ -40,6 +40,7 @@ listed verification commands and must preserve all earlier artifacts.
 - plugins/specnav-verification/assets/report/**
 - tests/verification-v2/reports/**
 - tests/verification-v2/security/**
+- tests/run-verification-v2-report-browser.sh
 
 ## Interfaces / Seams
 

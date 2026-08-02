@@ -1,0 +1,82 @@
+# command: bash tests/run-verification-v2-report-browser.sh # task026-review-fix-browser-print-artifacts
+# exit_status: 0
+# duration_ms: 4153
+
+## stdout
+TAP version 13
+# Subtest: all report pages are responsive, keyboard operable, semantic, and printable
+ok 1 - all report pages are responsive, keyboard operable, semantic, and printable
+  ---
+  duration_ms: 2763.6085
+  type: 'test'
+  ...
+# Subtest: Chromium blocks an injected script while the approved catalog script still runs
+ok 2 - Chromium blocks an injected script while the approved catalog script still runs
+  ---
+  duration_ms: 264.02125
+  type: 'test'
+  ...
+# {"artifact_directory":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T112049Z-65329","manifest":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T112049Z-65329/manifest.json","manifest_sha256":"aaa7bb9802872bf7519267f1a1536e50ab3287327693cb96cc21caf9ab806652","artifact_count":12}
+# Subtest: real paginated PDFs preserve exact green and blocked report facts
+ok 3 - real paginated PDFs preserve exact green and blocked report facts
+  ---
+  duration_ms: 917.566667
+  type: 'test'
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 4 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 1859.165875
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 5 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 1859.168875
+  type: 'test'
+  ...
+# Subtest: standalone reports use one independently pinned script and reject unknown script identities
+ok 6 - standalone reports use one independently pinned script and reject unknown script identities
+  ---
+  duration_ms: 1002.362917
+  type: 'test'
+  ...
+# Subtest: shell escapes its title and fails closed for an unapproved script identity
+ok 7 - shell escapes its title and fails closed for an unapproved script identity
+  ---
+  duration_ms: 0.463833
+  type: 'test'
+  ...
+# Subtest: all dynamic report fields are redacted before hostile HTML is escaped
+ok 8 - all dynamic report fields are redacted before hostile HTML is escaped
+  ---
+  duration_ms: 8.983709
+  type: 'test'
+  ...
+# Subtest: report status colors meet WCAG AA contrast on both report surfaces
+ok 9 - report status colors meet WCAG AA contrast on both report surfaces
+  ---
+  duration_ms: 0.570583
+  type: 'test'
+  ...
+# Subtest: editing an emitted HTML artifact cannot change the production gate path
+ok 10 - editing an emitted HTML artifact cannot change the production gate path
+  ---
+  duration_ms: 15.931917
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4097.893167
+verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T112049Z-65329
+verification v2 report browser and security ok
+
+
+## stderr
+(empty)

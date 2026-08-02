@@ -262,7 +262,7 @@ function createOverviewRenderer(options) {
     if (html === null || safe.blockers.length > 0) {
       return invalid([
         blocker(
-          'verification-report-renderer:redaction-failed',
+          'verification-report-renderer:shell-failed',
           JSON.stringify(safe.blockers)
         )
       ]);

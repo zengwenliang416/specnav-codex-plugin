@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: all report pages are responsive, keyboard operable, semantic, and printable
+not ok 1 - all report pages are responsive, keyboard operable, semantic, and printable
+  ---
+  duration_ms: 2169.609542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/accessibility-security-browser.test.js:132:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '' !== 'P0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'P0'
+  actual: ''
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/accessibility-security-browser.test.js:178:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 2 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 2243.614042
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 3 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 2183.914666
+  type: 'test'
+  ...
+# Subtest: standalone reports enforce a hash-bound script policy with no event handlers
+ok 4 - standalone reports enforce a hash-bound script policy with no event handlers
+  ---
+  duration_ms: 1159.480083
+  type: 'test'
+  ...
+# Subtest: all dynamic report fields are redacted before hostile HTML is escaped
+ok 5 - all dynamic report fields are redacted before hostile HTML is escaped
+  ---
+  duration_ms: 7.352625
+  type: 'test'
+  ...
+# Subtest: report status colors meet WCAG AA contrast on both report surfaces
+ok 6 - report status colors meet WCAG AA contrast on both report surfaces
+  ---
+  duration_ms: 0.523792
+  type: 'test'
+  ...
+# Subtest: editing rendered HTML cannot change the JSON-derived gate decision
+ok 7 - editing rendered HTML cannot change the JSON-derived gate decision
+  ---
+  duration_ms: 27.901792
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2382.024292

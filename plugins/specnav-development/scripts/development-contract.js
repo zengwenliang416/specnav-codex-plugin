@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+const crypto = require('node:crypto');
 const fs = require('fs');
 const path = require('path');
 const runtime = require('./plugin-runtime');
@@ -1515,27 +1516,42 @@ function validateValidationLog(developmentDir, activeChange) {
   const hasPass = result.entries.some(isPass);
   const hasExecutedPass = executed.some(({ entry }) => isPass(entry));
   const executedFailures = executed.filter(({ entry }) => !isPass(entry));
+  const evidenceLogGroups = new Map();
+  for (const record of executed) {
+    const evidenceLog = typeof record.entry.evidence_log === 'string'
+      ? record.entry.evidence_log.trim()
+      : '';
+    if (!evidenceLog) continue;
+    if (!evidenceLogGroups.has(evidenceLog)) evidenceLogGroups.set(evidenceLog, []);
+    evidenceLogGroups.get(evidenceLog).push(record);
+  }
+  for (const records of evidenceLogGroups.values()) {
+    if (records.length <= 1) continue;
+    const taskIds = new Set(records.map(({ entry }) => (
+      entry.task || entry.task_id || 'unknown'
+    )));
+    for (const taskId of taskIds) {
+      blockers.push(`validation-log:duplicate-evidence-log:${taskId}`);
+    }
+  }
+  const uniqueExecuted = [...evidenceLogGroups.entries()]
+    .filter(([, records]) => records.length === 1)
+    .map(([evidenceLog, records]) => [evidenceLog, records[0]]);
+  const executedByEvidenceLog = new Map(uniqueExecuted);
   const failureByEvidenceLog = new Map(
-    executedFailures
-      .filter(({ entry }) => (
-        typeof entry.evidence_log === 'string'
-        && entry.evidence_log.trim()
-      ))
-      .map((record) => [record.entry.evidence_log, record])
+    uniqueExecuted.filter(([, record]) => !isPass(record.entry))
   );
   const passByEvidenceLog = new Map(
-    executed
-      .filter(({ entry }) => (
-        isPass(entry)
-        && typeof entry.evidence_log === 'string'
-        && entry.evidence_log.trim()
-      ))
-      .map((record) => [record.entry.evidence_log, record])
+    uniqueExecuted.filter(([, record]) => isPass(record.entry))
   );
   const adjudicatedFailures = new Set();
-
-  for (const { entry, index } of indexedEntries) {
-    if (String(entry.status || '').toLowerCase() !== 'overturned') continue;
+  const supersededPasses = new Set();
+  const digestEntry = (entry) => (
+    crypto.createHash('sha256').update(JSON.stringify(entry)).digest('hex')
+  );
+  const adjudications = indexedEntries
+    .filter(({ entry }) => String(entry.status || '').toLowerCase() === 'overturned')
+    .map(({ entry, index }) => {
     const taskId = entry.task || entry.task_id || 'unknown';
     const target = typeof entry.target_evidence_log === 'string'
       ? entry.target_evidence_log.trim()
@@ -1544,31 +1560,113 @@ function validateValidationLog(developmentDir, activeChange) {
       ? entry.superseding_evidence_log.trim()
       : '';
     const reason = typeof entry.reason === 'string' ? entry.reason.trim() : '';
-    const failureRecord = target ? failureByEvidenceLog.get(target) : null;
-    const failure = failureRecord && failureRecord.entry;
+    const targetRecord = target ? executedByEvidenceLog.get(target) : null;
+    const targetEntry = targetRecord && targetRecord.entry;
     if (
-      !failure
-      || (failure.task || failure.task_id || 'unknown') !== taskId
+      !targetEntry
+      || (targetEntry.task || targetEntry.task_id || 'unknown') !== taskId
     ) {
-      blockers.push(`validation-log:invalid-overturn-target:${taskId}`);
-      continue;
+      return {
+        entry,
+        index,
+        taskId,
+        target,
+        digest: digestEntry(entry),
+        valid: false,
+        blocker: `validation-log:invalid-overturn-target:${taskId}`
+      };
     }
     if (!reason) {
-      blockers.push(`validation-log:overturn-reason-missing:${taskId}`);
-      continue;
+      return {
+        entry,
+        index,
+        taskId,
+        target,
+        digest: digestEntry(entry),
+        valid: false,
+        blocker: `validation-log:overturn-reason-missing:${taskId}`
+      };
     }
     const passRecord = supersedingTarget ? passByEvidenceLog.get(supersedingTarget) : null;
     const pass = passRecord && passRecord.entry;
     if (
       !pass
       || (pass.task || pass.task_id || 'unknown') !== taskId
-      || passRecord.index <= failureRecord.index
+      || passRecord.index <= targetRecord.index
       || passRecord.index >= index
     ) {
-      blockers.push(`validation-log:invalid-overturn-successor:${taskId}`);
+      return {
+        entry,
+        index,
+        taskId,
+        target,
+        digest: digestEntry(entry),
+        valid: false,
+        blocker: `validation-log:invalid-overturn-successor:${taskId}`
+      };
+    }
+    return {
+      entry,
+      index,
+      taskId,
+      target,
+      digest: digestEntry(entry),
+      valid: true,
+      blocker: null
+    };
+  });
+  const adjudicationByDigest = new Map(
+    adjudications.map((record) => [record.digest, record])
+  );
+  const correctedAdjudications = new Set();
+
+  for (const { entry, index } of indexedEntries) {
+    if (
+      entry.schema !== 'specnav.validationAdjudicationCorrection.v1'
+      || String(entry.status || '').toLowerCase() !== 'corrected'
+    ) {
       continue;
     }
-    adjudicatedFailures.add(target);
+    const taskId = entry.task || entry.task_id || 'unknown';
+    const invalidDigest = typeof entry.invalid_adjudication_digest === 'string'
+      ? entry.invalid_adjudication_digest.trim()
+      : '';
+    const replacementDigest = typeof entry.replacement_adjudication_digest === 'string'
+      ? entry.replacement_adjudication_digest.trim()
+      : '';
+    const reason = typeof entry.reason === 'string' ? entry.reason.trim() : '';
+    const invalid = adjudicationByDigest.get(invalidDigest);
+    const replacement = adjudicationByDigest.get(replacementDigest);
+    if (
+      !reason
+      || !invalid
+      || invalid.valid
+      || invalid.taskId !== taskId
+      || !replacement
+      || !replacement.valid
+      || replacement.taskId !== taskId
+      || replacement.target !== invalid.target
+      || invalid.index >= replacement.index
+      || replacement.index >= index
+    ) {
+      blockers.push(`validation-log:invalid-adjudication-correction:${taskId}`);
+      continue;
+    }
+    correctedAdjudications.add(invalidDigest);
+  }
+
+  for (const adjudication of adjudications) {
+    if (!adjudication.valid) {
+      if (!correctedAdjudications.has(adjudication.digest)) {
+        blockers.push(adjudication.blocker);
+      }
+      continue;
+    }
+    if (failureByEvidenceLog.has(adjudication.target)) {
+      adjudicatedFailures.add(adjudication.target);
+    } else {
+      supersededPasses.add(adjudication.target);
+    }
   }
 
   if (!hasPass) blockers.push('validation-log:no-pass');
@@ -1579,9 +1677,11 @@ function validateValidationLog(developmentDir, activeChange) {
     entry.replayable !== false && typeof entry.command === 'string' && entry.command.trim());
   if (hasReplayable && !hasExecutedPass) blockers.push('validation-log:no-executed-evidence');
   // Executed evidence outranks claims: a system-executed failure blocks even
-  // when a self-reported pass exists for the same work. Historical RED remains
-  // append-only and stops blocking only through an explicit overturned flag or
-  // a later adjudication that names the exact failed evidence receipt.
+  // when a self-reported pass exists for the same work. Historical receipts
+  // remain append-only. A later adjudication may correct an earlier incomplete
+  // adjudication for the same target, but it must name an exact later
+  // system-executed PASS before it can retire a failure or supersede stale
+  // green evidence.
   for (const { entry } of executedFailures) {
     if (adjudicatedFailures.has(entry.evidence_log)) continue;
     blockers.push(`validation-log:executed-evidence-failed:${entry.task || entry.task_id || 'unknown'}`);
@@ -1599,6 +1699,8 @@ function validateValidationLog(developmentDir, activeChange) {
     executed_entries: executed.length,
     executed_pass: hasExecutedPass,
     adjudicated_failures: adjudicatedFailures.size,
+    superseded_passes: supersededPasses.size,
+    corrected_adjudications: correctedAdjudications.size,
     attestation: hasExecutedPass ? 'system-executed' : 'self-reported-only'
   });
 }

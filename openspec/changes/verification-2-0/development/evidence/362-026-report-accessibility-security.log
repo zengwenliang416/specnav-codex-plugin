@@ -1,0 +1,52 @@
+# command: bash tests/run-verification-v2-report-browser.sh # task026-review2-browser-print-artifacts
+# exit_status: 0
+# duration_ms: 4014
+
+## stdout
+TAP version 13
+# Subtest: all report pages are responsive, keyboard operable, semantic, and printable
+ok 1 - all report pages are responsive, keyboard operable, semantic, and printable
+  ---
+  duration_ms: 2613.765542
+  type: 'test'
+  ...
+# Subtest: Chromium blocks an injected script while the approved catalog script still runs
+ok 2 - Chromium blocks an injected script while the approved catalog script still runs
+  ---
+  duration_ms: 239.336167
+  type: 'test'
+  ...
+# {"artifact_directory":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T114016Z-80091","manifest":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T114016Z-80091/manifest.json","manifest_sha256":"f970e518901ad36e54476d568bd3d63877321252502f8e16158b3e473d7fb5b5","artifact_count":12}
+# Subtest: real paginated PDFs preserve exact green and blocked report facts
+ok 3 - real paginated PDFs preserve exact green and blocked report facts
+  ---
+  duration_ms: 963.527625
+  type: 'test'
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 4 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 1777.808209
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 5 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 1781.459542
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3924.572292
+verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260802T114016Z-80091
+verification v2 report browser and security ok
+
+
+## stderr
+(empty)

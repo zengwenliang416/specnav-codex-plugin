@@ -104,30 +104,6 @@ function renderCatalogCase(testCase, safe) {
   </article>`;
 }
 
-function catalogScript() {
-  return `<script>
-  (() => {
-    const root = document.querySelector('[data-report-component="case-filter"]');
-    if (!root) return;
-    const search = root.querySelector('input[type="search"]');
-    const priority = root.querySelector('select');
-    const rows = [...document.querySelectorAll('[data-case-row]')];
-    const apply = () => {
-      const query = search.value.trim().toLowerCase();
-      const selected = priority.value;
-      for (const row of rows) {
-        row.hidden = !(
-          (!query || row.dataset.search.includes(query))
-          && (!selected || row.dataset.priority === selected)
-        );
-      }
-    };
-    root.addEventListener('input', apply);
-    root.addEventListener('change', apply);
-  })();
-  </script>`;
-}
-
 function renderCatalogBody(model, safe) {
   const cases = model.catalog.map((entry) => renderCatalogCase(entry, safe));
   const blockers = renderBlockers(model.blockers, safe);
@@ -140,13 +116,13 @@ function renderCatalogBody(model, safe) {
       <div><p class="eyebrow">Approved contract</p><h1>Test case catalog</h1><p>${model.catalog.length} approved behavior contract(s).</p></div>
       ${statusBadge(model.verdict)}
     </section>
-    <form class="filter-bar" data-report-component="case-filter" onsubmit="return false">
+    <form class="filter-bar" data-report-component="case-filter" role="search">
       <label>Search cases<input type="search" aria-label="Search cases"></label>
       <label>Priority<select aria-label="Filter by priority"><option value="">All priorities</option><option>P0</option><option>P1</option><option>P2</option></select></label>
     </form>
     <section class="case-contracts">${content}</section>
     <section class="section" data-report-section="blockers"><h2>Report blockers</h2>${blockers}</section>
-  </article>${catalogScript()}`;
+  </article>`;
 }
 
 function renderEvidence(entry, safe) {
@@ -212,7 +188,7 @@ function renderResult(result, safe) {
     <div class="result-summary"><span>Freshness ${statusBadge(result.freshness)}</span><span>${result.failures.length} failure(s)</span><span>${result.repairs.length} repair(s)</span></div>
     <section><h3>Runs</h3><ol class="history-list">${runs.join('')}</ol></section>
     <section><h3>Attempts</h3><ol class="history-list">${attempts.join('')}</ol></section>
-    <section><h3>Readings</h3><div class="table-scroll"><table><thead><tr><th>Reading</th><th>Domain</th><th>Expected</th><th>Actual</th><th>Oracle</th><th>Verdict</th></tr></thead><tbody>${readings.join('')}</tbody></table></div></section>
+    <section><h3>Readings</h3><div class="table-scroll"><table><caption>Readings for case ${caseId}</caption><thead><tr><th scope="col">Reading</th><th scope="col">Domain</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Oracle</th><th scope="col">Verdict</th></tr></thead><tbody>${readings.join('')}</tbody></table></div></section>
     <section><h3>Evidence</h3><div class="evidence-grid">${evidence.join('')}</div></section>
     <section><h3>Case blockers</h3>${blockers}</section>
   </section>`;
@@ -276,9 +252,17 @@ function createRenderer(options, page) {
         body,
         model: validation.value,
         safe,
+        scriptIds: page === 'catalog' ? ['catalog-filter'] : [],
         stylesheet,
         title: `SpecNav Verification 2.0 - ${page === 'catalog' ? 'Test case catalog' : 'Case results'}`
       });
+      if (html === null || safe.blockers.length) {
+        return invalid(
+          fileName,
+          'verification-report-renderer:shell-failed',
+          JSON.stringify(safe.blockers)
+        );
+      }
       return deepFreeze({ ok: true, file_name: fileName, html, blockers: [] });
     }
   });
