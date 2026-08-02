@@ -6,6 +6,8 @@ CORE="$ROOT/plugins/specnav-core"
 OPS="$ROOT/plugins/specnav-operations"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
+source "$ROOT/tests/verification-v2/release/live-authority-fixture.sh"
+specnav_verification_prepare_live_authority "$TMP_DIR/host-authority"
 
 run_gate() {
   local project="$1"

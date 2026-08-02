@@ -24,6 +24,11 @@ const { readySchemaRegistry } = require('../contracts/cross-reference/test-helpe
 const { reportModel } = require('../reports/report-test-helpers');
 
 const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
+const HOST_REPOSITORIES = Object.freeze({
+  'claude-code': 'zengwenliang416/specnav-claude-plugin',
+  codex: 'zengwenliang416/specnav-codex-plugin',
+  'codefree-o': 'zengwenliang416/specnav-codefree-o-plugin'
+});
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -141,7 +146,7 @@ function reading(change, caseId, domain) {
   };
 }
 
-function evidence(change, caseId, source) {
+function evidence(change, caseId, source, runtimeVersion) {
   return {
     schema: 'specnav.verification.evidence.v1',
     id: source.evidence_ids[0],
@@ -160,7 +165,7 @@ function evidence(change, caseId, source) {
     code_sha: source.code_sha,
     test_sha: source.test_sha,
     environment_hash: '4'.repeat(64),
-    runtime_version: '2.0.0',
+    runtime_version: runtimeVersion,
     kernel_version: kernel.metadata.version,
     redaction: {
       status: 'not_required',
@@ -168,6 +173,24 @@ function evidence(change, caseId, source) {
     },
     domain: source.domain
   };
+}
+
+function loadHostCommits(lockFile) {
+  if (typeof lockFile !== 'string' || lockFile.trim() === '') {
+    throw new Error('verification-fixture:host-lock-required');
+  }
+  const lock = JSON.parse(fs.readFileSync(path.resolve(lockFile), 'utf8'));
+  const commits = {
+    codex: lock.source_commit,
+    'claude-code': lock.hosts?.['claude-code']?.ref,
+    'codefree-o': lock.hosts?.['codefree-o']?.ref
+  };
+  for (const host of HOSTS) {
+    if (!/^[a-f0-9]{40}$/.test(commits[host] || '')) {
+      throw new Error(`verification-fixture:host-lock-invalid:${host}`);
+    }
+  }
+  return commits;
 }
 
 function createGate(schemaRegistry, input, stage) {
@@ -193,7 +216,7 @@ function createGate(schemaRegistry, input, stage) {
   return result.gate;
 }
 
-function populateProject(projectRoot, change) {
+function populateProject(projectRoot, change, options = {}) {
   const root = path.resolve(projectRoot);
   const changeDir = path.join(root, 'openspec', 'changes', change);
   const verifyV2 = path.join(changeDir, 'verify', 'v2');
@@ -273,11 +296,14 @@ function populateProject(projectRoot, change) {
   if (!runtimeStatus.ok) {
     throw new Error(JSON.stringify(runtimeStatus.blockers));
   }
+  const hostCommits = loadHostCommits(
+    options.hostLockFile || process.env.SPECNAV_VERIFICATION_HOST_LOCK
+  );
   const readings = kernel.SIX_DOMAINS.map((domain) => (
     reading(change, caseId, domain)
   ));
   const evidenceEntries = readings.map((entry) => (
-    evidence(change, caseId, entry)
+    evidence(change, caseId, entry, runtimeStatus.runtime_version)
   ));
   const input = {
     schema: 'specnav.verification.release-gate-input.v1',
@@ -328,7 +354,7 @@ function populateProject(projectRoot, change) {
     },
     integrity_status: 'intact',
     evidence_index_version: evidenceEntries.length,
-    runtime_version: '2.0.0',
+    runtime_version: runtimeStatus.runtime_version,
     kernel_version: kernel.metadata.version,
     policy_version: 'verification-v2.0'
   };
@@ -431,14 +457,14 @@ function populateProject(projectRoot, change) {
     ),
     evidence_index_digest: evidenceIndex.source_digest
   };
-  const hosts = HOSTS.map((host, index) => {
+  const hosts = HOSTS.map((host) => {
     const receiptPath = `operations/install-receipts/${host}.json`;
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
       ...releaseBindings,
-      source: `https://github.com/example/specnav-${host}.git`,
-      commit: String(index + 7).repeat(40),
+      source: `https://github.com/${HOST_REPOSITORIES[host]}.git`,
+      commit: hostCommits[host],
       clean_checkout: true,
       plugin_discovered: true,
       runtime_ready: true,

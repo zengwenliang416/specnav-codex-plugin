@@ -9,6 +9,8 @@ if [[ "${SPECNAV_KEEP_TMP:-0}" == "1" ]]; then
 else
   trap 'rm -rf "$TMP_DIR"' EXIT
 fi
+source "$ROOT/tests/verification-v2/release/live-authority-fixture.sh"
+specnav_verification_prepare_live_authority "$TMP_DIR/host-authority"
 
 write_fake_openspec() {
   local bin="$1"
