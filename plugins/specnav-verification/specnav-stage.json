@@ -10,9 +10,13 @@
     "specnav-development"
   ],
   "commands": [
+    "specnav-verification",
     "specnav-verify"
   ],
   "skills": [
+    "specnav-verification",
+    "specnav-verification-runtime-status",
+    "specnav-verification-runtime-setup",
     "specnav-verify-plan",
     "specnav-verify-facticity",
     "specnav-verify-static",
@@ -24,7 +28,9 @@
     "specnav-html-report"
   ],
   "contracts": {
-    "verification": "scripts/verify-domains.js"
+    "verification": "scripts/verify-domains.js",
+    "codex_adapter": "scripts/codex-verification-adapter.js",
+    "kernel": "kernel/index.js"
   },
   "state_outputs": [
     "openspec/changes/<change>/verify/"

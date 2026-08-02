@@ -136,10 +136,14 @@ function run(args = process.argv.slice(2), dependencies = {}) {
       integrityChecker,
       schemaRegistry
     });
-    return migrator.migrate({
+    const result = migrator.migrate({
       ...loaded.value,
       mode
     });
+    return {
+      ...result,
+      fallback_used: false
+    };
   } catch (error) {
     return {
       ok: false,

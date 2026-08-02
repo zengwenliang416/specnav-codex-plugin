@@ -31,7 +31,7 @@ function resultBase(root) {
     generated_at: new Date().toISOString(),
     project_root: root,
     command: '/specnav-bootstrap',
-    next_actions: ['/specnav-status', '/specnav-requirements']
+    next_actions: ['$specnav-status', '$specnav-requirements']
   };
 }
 

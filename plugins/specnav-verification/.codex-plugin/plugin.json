@@ -1,7 +1,7 @@
 {
   "name": "specnav-verification",
   "version": "0.3.0",
-  "description": "Six-domain verification, stale rerun, evidence aggregation, and HTML review report stage for SpecNav.",
+  "description": "Full Verification 2.0 for Codex with approved cases, six-domain evidence, repair loops, gates, and review reports.",
   "author": {
     "name": "SpecNav Maintainers",
     "url": "https://github.com/zengwenliang416/specnav-codex-plugin"
@@ -19,8 +19,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SpecNav Verification",
-    "shortDescription": "Six-domain verification and stakeholder HTML reports",
-    "longDescription": "Plans and runs facticity, static, unit, redteam, E2E, and sensory verification, then aggregates JSON, Markdown, and warm editorial HTML reports.",
+    "shortDescription": "Full evidence-backed Verification 2.0 for Codex",
+    "longDescription": "Runs approved test cases through facticity, static, unit, redteam, E2E, and sensory verification with a locked runtime, immutable evidence, repair and regression loops, machine gates, and stakeholder reports.",
     "developerName": "SpecNav Maintainers",
     "category": "Developer Tools",
     "capabilities": [
@@ -29,7 +29,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use SpecNav verification to produce six-domain evidence and an HTML review report."
+      "Use SpecNav Verification 2.0 to inspect runtime readiness, approve cases, execute all six domains, preserve repair evidence, and produce gated review reports."
     ],
     "brandColor": "#10A37F",
     "composerIcon": "./assets/icon.svg",

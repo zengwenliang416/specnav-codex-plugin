@@ -1,0 +1,21 @@
+# Task 028 review-fix RED evidence
+
+Command:
+
+`node --test tests/verification-v2/cross-host/codex-adapter.test.js`
+
+Exit status: 1
+
+Observed result:
+
+```text
+tests 9
+pass 6
+fail 3
+```
+
+The new review-driven tests proved that:
+
+- migration apply/rollback did not require approval;
+- a child fallback signal was not blocked;
+- a missing child no-fallback attestation was not blocked.

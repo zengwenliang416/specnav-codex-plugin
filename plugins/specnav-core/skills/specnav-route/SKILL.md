@@ -35,7 +35,8 @@ Routing order:
 5. PROTOTYPE -> `specnav-prototype`, `-prototype`, `specnav-prototype`.
 6. BUILD -> `specnav-development`, `-development-entry`, `specnav-development-entry`.
 7. FIX -> `specnav-development`, `-development-entry`, `specnav-fix`.
-8. CHECK or VERIFICATION -> `specnav-verification`, `-verify-plan`, `specnav-verify-plan`.
+8. CHECK or VERIFICATION -> `specnav-verification`, `$specnav-verification`,
+   `specnav-verification`.
 9. RELEASE -> `specnav-operations`, `-release-plan`, `specnav-release-plan`.
 10. ARCHIVE -> `specnav-operations`, `-branch-finish`, `specnav-branch-finish`.
 

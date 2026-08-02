@@ -60,8 +60,8 @@ const ROUTES = {
   },
   verification: {
     target_plugin: 'specnav-verification',
-    command: '$specnav-verify-plan',
-    skill: 'specnav-verify-plan',
+    command: '$specnav-verification',
+    skill: 'specnav-verification',
     required_plugins: ['specnav-core', 'specnav-verification'],
     action: 'verify'
   },

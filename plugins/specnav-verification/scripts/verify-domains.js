@@ -1284,9 +1284,13 @@ function main() {
     process.stdout.write(args.includes('--json') ? `${JSON.stringify(result, null, 2)}\n` : markdown(result));
     process.exit(2);
   }
-  const result = command === 'aggregate'
+  const sourceResult = command === 'aggregate'
     ? writeAggregate(lib.projectRoot(), { render: args.includes('--render') })
     : validateVerify();
+  const result = {
+    ...sourceResult,
+    fallback_used: false
+  };
   process.stdout.write(args.includes('--json') ? `${JSON.stringify(result, null, 2)}\n` : (command === 'aggregate' ? `${JSON.stringify(result, null, 2)}\n` : markdown(result)));
   process.exit((result.ok === false || result.verdict === 'red') ? 2 : 0);
 }

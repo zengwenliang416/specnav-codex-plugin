@@ -1,0 +1,21 @@
+# Task 028 RED evidence
+
+Command:
+
+`bash tests/run-verification-v2-codex.sh`
+
+Exit status: 1
+
+Observed failure:
+
+```text
+Error: Cannot find module
+'/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/scripts/codex-verification-adapter'
+
+tests 1
+pass 0
+fail 1
+```
+
+The focused contract failed before production implementation because the Codex
+Verification 2.0 adapter did not exist.

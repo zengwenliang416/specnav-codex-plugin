@@ -369,7 +369,7 @@ function main() {
   const baseRef = argValue(args, '--base', null);
   const filesArg = argValue(args, '--files', null);
   const repairedArg = argValue(args, '--repaired', null);
-  const result = computeRerunScope(root, {
+  const sourceResult = computeRerunScope(root, {
     ...(change ? { change } : {}),
     ...(baseRef ? { baseRef } : {}),
     ...(filesArg ? { files: filesArg.split(',').map((file) => file.trim()).filter(Boolean) } : {}),
@@ -386,6 +386,10 @@ function main() {
     traceabilityPath: argValue(args, '--traceability', null),
     codegraphImpactPath: argValue(args, '--codegraph-impact', null)
   });
+  const result = {
+    ...sourceResult,
+    fallback_used: false
+  };
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.ok ? 0 : 2);
 }

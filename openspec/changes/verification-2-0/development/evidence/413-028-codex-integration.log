@@ -1,0 +1,9 @@
+# command: node --check plugins/specnav-verification/scripts/codex-verification-adapter.js && node --check plugins/specnav-verification/scripts/verify-domains.js && node --check plugins/specnav-verification/scripts/rerun-scope.js && node --check plugins/specnav-verification/scripts/verification-migrate.js && node --check plugins/specnav-core/scripts/specnav-route.js && node --check plugins/specnav-core/scripts/specnav-bootstrap.js && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' # task028-final-syntax-diff
+# exit_status: 0
+# duration_ms: 244
+
+## stdout
+(empty)
+
+## stderr
+(empty)
