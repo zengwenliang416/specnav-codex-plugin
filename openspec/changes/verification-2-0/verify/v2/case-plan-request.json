@@ -1,0 +1,355 @@
+{
+  "changeId": "verification-2-0",
+  "requirements": [
+    {
+      "id": "REQ-01",
+      "statement": "Verification 2.0 must provide versioned case contracts, immutable execution identity, explicit human approval, and no simplified verification path."
+    },
+    {
+      "id": "REQ-02",
+      "statement": "Verification 2.0 must use an explicit locked runtime with Playwright, Midscene, AJV, browser diagnostics, and no runtime fallback."
+    },
+    {
+      "id": "REQ-03",
+      "statement": "Verification 2.0 must execute through explicit adapters, deterministic oracles, append-only evidence, integrity validation, and secret-safe persistence."
+    },
+    {
+      "id": "REQ-04",
+      "statement": "Verification 2.0 must evaluate every approved case across all six domains and derive terminal and release verdicts from validated readings."
+    },
+    {
+      "id": "REQ-05",
+      "statement": "Verification 2.0 must preserve failure, retry, repair, retest, regression, and break-loop history as one governed lifecycle."
+    },
+    {
+      "id": "REQ-06",
+      "statement": "Verification 2.0 must render three accessible, responsive, evidence-linked HTML report pages from one validated report model."
+    },
+    {
+      "id": "REQ-07",
+      "statement": "Verification 2.0 must share one host-neutral kernel across Codex, Claude Code, and CodeFree-O with migration, drift, installation, release, and archive governance."
+    }
+  ],
+  "acceptance": [
+    {"id": "AC-01", "statement": "A reviewer can inspect all proposed test cases, steps, assertions, six-domain mappings, runner choices, and evidence requirements before any case executes."},
+    {"id": "AC-02", "statement": "Verification is blocked until the current case snapshot has explicit user approval."},
+    {"id": "AC-03", "statement": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path."},
+    {"id": "AC-04", "statement": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."},
+    {"id": "AC-05", "statement": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."},
+    {"id": "AC-06", "statement": "A reviewer can see first failure, retry, repair, retest, and regression attempts without earlier evidence being overwritten."},
+    {"id": "AC-07", "statement": "A retry that passes is labeled FLAKY; a repaired case that passes is labeled PASS AFTER FIX."},
+    {"id": "AC-08", "statement": "overview.html shows lifecycle readiness, six-domain status, blocker counts, freshness, integrity, repair-loop state, and release verdict."},
+    {"id": "AC-09", "statement": "test-case-catalog.html shows the approved case contract and domain coverage."},
+    {"id": "AC-10", "statement": "test-case-results.html shows runs, attempts, readings, commands, evidence, hashes, freshness, and repair history."},
+    {"id": "AC-11", "statement": "Green, red, blocked, running, canceled, stale, flaky, and pass-after-fix reports share the same navigation and information hierarchy."},
+    {"id": "AC-12", "statement": "Report pages work on desktop and mobile, are keyboard operable, and preserve verdict and evidence information in print output."},
+    {"id": "AC-13", "statement": "Versioned schemas validate test cases, approvals, snapshots, runs, attempts, readings, evidence, indexes, failures, runtime, reports, and gates."},
+    {"id": "AC-14", "statement": "Every attempt is bound to change id, case id, run id, attempt id, code SHA, test SHA, scenario hash, environment hash, browser project, and test data snapshot."},
+    {"id": "AC-15", "statement": "Retry is rejected when any retry identity fingerprint changes."},
+    {"id": "AC-16", "statement": "Midscene output cannot produce PASS without a deterministic assertion, structured fact, or explicit human signoff."},
+    {"id": "AC-17", "statement": "Missing evidence files, hash mismatch, size mismatch, stale SHA, unrecognized producer, or broken case/step references block green."},
+    {"id": "AC-18", "statement": "Empty evidence arrays, empty verification commands, or a manually edited green domain report cannot produce green."},
+    {"id": "AC-19", "statement": "All six domains receive a terminal result for every approved case."},
+    {"id": "AC-20", "statement": "not_applicable requires a reason, evidence, reviewer identity, approval timestamp, and policy allowance."},
+    {"id": "AC-21", "statement": "Domain status and release verdict are derived from case readings; no domain skill or agent prose can override the aggregate."},
+    {"id": "AC-22", "statement": "Raw evidence is append-only, the summary index is rebuildable, and cache loss does not lose source truth."},
+    {"id": "AC-23", "statement": "Case-level freshness uses SHA and execution fingerprints rather than mtime alone."},
+    {"id": "AC-24", "statement": "Rerun scope returns concrete affected case ids and reasons, not only domain names."},
+    {"id": "AC-25", "statement": "A failed case creates a frozen failure packet and routes product or test repair to a standard development task packet."},
+    {"id": "AC-26", "statement": "Regression scope includes the repaired case, directly impacted cases, and policy-required baseline cases."},
+    {"id": "AC-27", "statement": "Repeated no-progress repair attempts route to break-loop governance instead of silently retrying."},
+    {"id": "AC-28", "statement": "Release and archive block on unapproved cases, incomplete readings, stale or tampered evidence, open failures, missing reports, or red or blocked gates."},
+    {"id": "AC-29", "statement": "Reports generate for green, red, and blocked states and never become the source of truth."},
+    {"id": "AC-30", "statement": "HTML rendering escapes artifact content and never exposes provider secrets."},
+    {"id": "AC-31", "statement": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA."},
+    {"id": "AC-32", "statement": "Failed evidence is retained after retry, repair, migration, report regeneration, release, and archive."},
+    {"id": "AC-33", "statement": "V1-to-V2 migration provides dry-run output, backup references, migration receipt, validation results, and rollback instructions."},
+    {"id": "AC-34", "statement": "Migration never interprets missing V1 evidence as V2 PASS."},
+    {"id": "AC-35", "statement": "Gate decisions name source case readings, evidence index version, runtime version, kernel version, and freshness result."},
+    {"id": "AC-36", "statement": "One host-neutral Verification Kernel owns schemas, state transitions, evidence integrity, aggregation, freshness, and report model semantics."},
+    {"id": "AC-37", "statement": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."},
+    {"id": "AC-38", "statement": "Shared report components are reused across all three HTML pages."},
+    {"id": "AC-39", "statement": "Playwright, Midscene, command execution, EvidenceStore, failure classification, and report rendering use explicit adapter or service boundaries."},
+    {"id": "AC-40", "statement": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."}
+  ],
+  "cases": [
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-01",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-01"],
+      "acceptance_ids": ["AC-01", "AC-02", "AC-03"],
+      "title": "Case planning and approval gate",
+      "goal": "Prove that the complete case contract is reviewable and no execution or simplified path can bypass exact-snapshot human approval.",
+      "actor": "verification reviewer",
+      "priority": "P0",
+      "preconditions": ["The active change contains current requirements and acceptance contracts.", "No approval exists for the newly generated snapshot."],
+      "steps": [
+        {"id": "CASE-01-STEP-01", "action": "Generate and inspect the normalized case snapshot.", "expected": "Cases, steps, assertions, six-domain mappings, runners, and evidence policies are visible and schema-valid.", "assertion_ids": ["CASE-01-A01"]},
+        {"id": "CASE-01-STEP-02", "action": "Attempt execution without a matching human approval.", "expected": "Execution is blocked with an approval blocker bound to the current snapshot.", "assertion_ids": ["CASE-01-A02"]},
+        {"id": "CASE-01-STEP-03", "action": "Request light, compact, or simplified verification.", "expected": "The request is rejected and the full six-domain V2 contract remains required.", "assertion_ids": ["CASE-01-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-01-A01", "statement": "The complete proposed case contract is inspectable before execution.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["structured_comparison", "command_output"]},
+        {"id": "CASE-01-A02", "statement": "An absent, stale, service-authored, or hash-mismatched approval blocks execution.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-01-A03", "statement": "No light, compact, partial-domain, or simplified verification path is accepted.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-case-approval.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-02",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-02", "REQ-03"],
+      "acceptance_ids": ["AC-04", "AC-05", "AC-14", "AC-15", "AC-16"],
+      "title": "Managed runtime and runner-oracle boundaries",
+      "goal": "Prove locked runtime diagnosis, immutable attempt identity, registered runner boundaries, and deterministic final oracles without fallback.",
+      "actor": "verification operator",
+      "priority": "P0",
+      "preconditions": ["Verification Runtime 2.0.0-alpha.1 is explicitly installed.", "The repository business dependency manifests remain unchanged."],
+      "steps": [
+        {"id": "CASE-02-STEP-01", "action": "Run runtime doctor and inspect installed package and browser identities.", "expected": "Exact versions, browser readiness, provider status, permissions, and blockers are reported.", "assertion_ids": ["CASE-02-A01"]},
+        {"id": "CASE-02-STEP-02", "action": "Execute command and Playwright adapter contract tests with immutable fingerprints.", "expected": "Attempts bind all required identities and reject changed retry fingerprints.", "assertion_ids": ["CASE-02-A02"]},
+        {"id": "CASE-02-STEP-03", "action": "Submit Midscene-only observations without a deterministic oracle.", "expected": "The reading remains blocked and no alternative runtime or oracle is selected.", "assertion_ids": ["CASE-02-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-02-A01", "statement": "The managed runtime reports locked component and browser status with exact blockers and no fallback.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["command_output", "structured_comparison"]},
+        {"id": "CASE-02-A02", "statement": "Run and retry identity is complete and mutation of any retry fingerprint is rejected.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-02-A03", "statement": "Midscene evidence alone cannot produce PASS without a deterministic or explicitly permitted human oracle.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-codex.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-03",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-01", "REQ-03", "REQ-04"],
+      "acceptance_ids": ["AC-13", "AC-17", "AC-18", "AC-19", "AC-20", "AC-21", "AC-22", "AC-23", "AC-24", "AC-31", "AC-35"],
+      "title": "Evidence integrity, readings, six-domain aggregation, and freshness",
+      "goal": "Prove that complete content-addressed evidence produces validated readings and that all six domains, rerun scope, freshness, and gates are fact-derived.",
+      "actor": "quality reviewer",
+      "priority": "P0",
+      "preconditions": ["The approved case snapshot is available.", "The EvidenceStore starts from an empty append-only raw log."],
+      "steps": [
+        {"id": "CASE-03-STEP-01", "action": "Persist evidence and validate identity, path, hash, size, producer, and source bindings.", "expected": "Valid evidence is accepted and tampered, missing, stale, empty, or forged evidence blocks readings.", "assertion_ids": ["CASE-03-A01"]},
+        {"id": "CASE-03-STEP-02", "action": "Derive readings and aggregate all six domains from the validated evidence.", "expected": "Every case has six terminal domain results and prose or manual green reports cannot override them.", "assertion_ids": ["CASE-03-A02"]},
+        {"id": "CASE-03-STEP-03", "action": "Change source fingerprints and compute freshness and rerun scope.", "expected": "Affected concrete case IDs and reasons are returned, and stale evidence blocks the gate.", "assertion_ids": ["CASE-03-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-03-A01", "statement": "Evidence is append-only, content-addressed, fully identity-bound, rebuildable, and fail-closed on integrity violations.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]},
+        {"id": "CASE-03-A02", "statement": "All six domain and release verdicts are derived from validated readings, including governed not_applicable decisions.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]},
+        {"id": "CASE-03-A03", "statement": "Freshness and rerun scope use immutable fingerprints and identify affected case IDs with reasons.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-smoke.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-04",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-05"],
+      "acceptance_ids": ["AC-06", "AC-07", "AC-25", "AC-26", "AC-27", "AC-32"],
+      "title": "Failure, repair, retry, retest, regression, and break-loop",
+      "goal": "Prove that failures remain immutable while retry, repair, retest, regression, closure, reopen, and no-progress escalation follow distinct governed states.",
+      "actor": "developer and verification operator",
+      "priority": "P0",
+      "preconditions": ["A deterministic case has a captured initial failure.", "The failure packet is frozen before any repair begins."],
+      "steps": [
+        {"id": "CASE-04-STEP-01", "action": "Classify the failure and route product or test repair through a standard development task.", "expected": "The failure packet and source evidence remain immutable and the repair owner is explicit.", "assertion_ids": ["CASE-04-A01"]},
+        {"id": "CASE-04-STEP-02", "action": "Exercise identical retry and changed-code retest paths.", "expected": "Retry success is FLAKY, repaired success is PASS AFTER FIX, and prior failure evidence remains present.", "assertion_ids": ["CASE-04-A02"]},
+        {"id": "CASE-04-STEP-03", "action": "Run regression scope and repeat a no-progress failure cycle.", "expected": "Required regressions control closure and repeated no-progress routes to break-loop governance.", "assertion_ids": ["CASE-04-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-04-A01", "statement": "Failure classification creates an immutable packet and an ownership-correct development repair handoff.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]},
+        {"id": "CASE-04-A02", "statement": "Retry, retest, and regression preserve prior attempts and produce FLAKY or PASS AFTER FIX semantics correctly.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-04-A03", "statement": "Regression failure reopens the loop and repeated no-progress requires a break-loop decision.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-repair-loop.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-05",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-06"],
+      "acceptance_ids": ["AC-08", "AC-09", "AC-10", "AC-11", "AC-12", "AC-29", "AC-30", "AC-38"],
+      "title": "Three-page report center",
+      "goal": "Prove that overview, case catalog, and case results pages render one validated model across all states with responsive, accessible, print-safe, escaped evidence presentation.",
+      "actor": "stakeholder reviewer",
+      "priority": "P0",
+      "preconditions": ["Validated report models exist for green, red, blocked, running, canceled, stale, flaky, and pass-after-fix states.", "Playwright browser binaries are ready."],
+      "steps": [
+        {"id": "CASE-05-STEP-01", "action": "Render all three report pages from the validated report model.", "expected": "Overview, approved case contract, complete attempt history, evidence, freshness, repair, and release state are visible.", "assertion_ids": ["CASE-05-A01"]},
+        {"id": "CASE-05-STEP-02", "action": "Exercise desktop, mobile, keyboard, and print layouts in real browsers.", "expected": "Navigation, verdicts, tables, links, and controls remain readable, operable, and non-overlapping.", "assertion_ids": ["CASE-05-A02"]},
+        {"id": "CASE-05-STEP-03", "action": "Inject markup and provider-secret fixtures and manually alter rendered HTML.", "expected": "Content is escaped and redacted, shared components remain consistent, and JSON gate truth is unchanged.", "assertion_ids": ["CASE-05-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-05-A01", "statement": "All three report pages expose the required lifecycle, case, result, evidence, repair, and release facts from one model.", "expected": true, "oracle": {"type": "playwright_assertion", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "screenshot", "trace"]},
+        {"id": "CASE-05-A02", "statement": "Desktop, mobile, keyboard, and print review preserve readable verdict and evidence information without overlap.", "expected": true, "oracle": {"type": "playwright_assertion", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "screenshot", "trace"]},
+        {"id": "CASE-05-A03", "statement": "Rendering escapes hostile content, redacts secrets, reuses shared components, and never becomes gate authority.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-report-browser.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "screenshot", "structured_comparison", "trace"], "required_kinds": ["assertion_result", "screenshot", "trace"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-06",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-07"],
+      "acceptance_ids": ["AC-33", "AC-34"],
+      "title": "V1-to-V2 migration",
+      "goal": "Prove that legacy artifacts migrate through explicit dry-run, backup, validation, receipt, rollback, and fail-closed missing-evidence semantics.",
+      "actor": "migration operator",
+      "priority": "P1",
+      "preconditions": ["A disposable fixture contains representative V1 green, incomplete, and malformed verification artifacts.", "No production change is mutated by the fixture run."],
+      "steps": [
+        {"id": "CASE-06-STEP-01", "action": "Run migration dry-run and inspect the source inventory and proposed transformations.", "expected": "The plan names backup references, validation actions, and rollback instructions before mutation.", "assertion_ids": ["CASE-06-A01"]},
+        {"id": "CASE-06-STEP-02", "action": "Migrate fixtures and validate the migration receipt.", "expected": "Valid source facts are preserved and receipt hashes bind inputs, outputs, validation, and rollback.", "assertion_ids": ["CASE-06-A02"]},
+        {"id": "CASE-06-STEP-03", "action": "Migrate a V1 green artifact with missing evidence.", "expected": "The V2 reading is blocked and never inferred as PASS.", "assertion_ids": ["CASE-06-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-06-A01", "statement": "Migration exposes dry-run inventory, backups, validation, and rollback before mutation.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["command_output", "structured_comparison"]},
+        {"id": "CASE-06-A02", "statement": "Migration writes a hash-bound receipt and preserves valid source and failed evidence.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-06-A03", "statement": "Missing V1 evidence becomes a blocked V2 reading and never a PASS.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-migration.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-07",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-07"],
+      "acceptance_ids": ["AC-36", "AC-37", "AC-39", "AC-40"],
+      "title": "Shared Kernel and three-host integration",
+      "goal": "Prove one host-neutral kernel owns verdict semantics while thin Codex, Claude Code, and CodeFree-O adapters remain synchronized and drift-detectable.",
+      "actor": "plugin maintainer",
+      "priority": "P0",
+      "preconditions": ["The canonical kernel and immutable host lock are present.", "The Claude Code and CodeFree-O sibling repositories are available for read-only compatibility validation."],
+      "steps": [
+        {"id": "CASE-07-STEP-01", "action": "Run the shared fixture corpus through all three host adapters.", "expected": "Normalized artifacts, blocker IDs, verdicts, runtime behavior, and discovery contracts match.", "assertion_ids": ["CASE-07-A01"]},
+        {"id": "CASE-07-STEP-02", "action": "Inspect host adapter architecture and public service boundaries.", "expected": "Verdict logic stays in the kernel and runners, evidence, failures, and rendering use explicit adapters or services.", "assertion_ids": ["CASE-07-A02"]},
+        {"id": "CASE-07-STEP-03", "action": "Mutate a disposable host lock or generated contract fixture.", "expected": "Cross-host drift detection blocks compatibility and names the mismatched identity.", "assertion_ids": ["CASE-07-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-07-A01", "statement": "Codex, Claude Code, and CodeFree-O produce the same kernel contract results.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]},
+        {"id": "CASE-07-A02", "statement": "Host adapters remain thin and explicit service boundaries own execution and presentation concerns.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-07-A03", "statement": "Kernel, schema, blocker, fixture, wrapper, or generated artifact drift is detected before release.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-cross-host.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    },
+    {
+      "schema": "specnav.verification.test-case.v1",
+      "id": "CASE-08",
+      "change_id": "verification-2-0",
+      "requirement_ids": ["REQ-04", "REQ-07"],
+      "acceptance_ids": ["AC-03", "AC-28", "AC-29", "AC-33", "AC-35", "AC-37"],
+      "title": "Release and archive gate",
+      "goal": "Prove that release and transactional archive recompute complete Verification 2.0 truth and fail closed on any missing, stale, tampered, open, incompatible, or simplified input.",
+      "actor": "release owner",
+      "priority": "P0",
+      "preconditions": ["All approved cases have fresh six-domain readings and generated reports.", "Three clean-host installation receipts and migration status are available."],
+      "steps": [
+        {"id": "CASE-08-STEP-01", "action": "Build release and archive gate inputs from the current snapshot, readings, evidence index, runtime, kernel, reports, migration, and host receipts.", "expected": "Gate identities bind all source facts and produce a deterministic decision.", "assertion_ids": ["CASE-08-A01"]},
+        {"id": "CASE-08-STEP-02", "action": "Remove or tamper with each required input in disposable fixtures.", "expected": "Release and archive block with exact source blockers and cannot trust edited HTML or copied green summaries.", "assertion_ids": ["CASE-08-A02"]},
+        {"id": "CASE-08-STEP-03", "action": "Run transactional archive success and rollback fixtures.", "expected": "Archive occurs only after green proof, preserves failed evidence, and rolls back safely on filesystem or compatibility failure.", "assertion_ids": ["CASE-08-A03"]}
+      ],
+      "assertions": [
+        {"id": "CASE-08-A01", "statement": "Release and archive decisions bind approved cases, six-domain readings, evidence index, freshness, runtime, kernel, reports, migration, and all hosts.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]},
+        {"id": "CASE-08-A02", "statement": "Any unapproved, incomplete, stale, tampered, open, missing, incompatible, or simplified input blocks release and archive.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]},
+        {"id": "CASE-08-A03", "statement": "Archive is transactional, preserves source and failed evidence, and rolls back safely on failure.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output"]}
+      ],
+      "domains": {
+        "facticity": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
+        "static": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
+        "unit": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
+        "redteam": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
+        "e2e": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
+        "sensory": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"}
+      },
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-release.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
+      "status": "ready",
+      "created_at": "2026-08-02T21:00:00Z"
+    }
+  ],
+  "createdAt": "2026-08-02T21:00:00Z",
+  "createdBy": {
+    "id": "specnav-planner",
+    "kind": "service",
+    "display_name": "SpecNav case planner"
+  }
+}

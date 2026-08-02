@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "change_id": "verification-2-0",
+  "status": "pending-user-review",
+  "source": "verify/v2/case-snapshot.json",
+  "snapshot_id": "snapshot-8275e3773c02cde842362ae2",
+  "snapshot_hash": "8275e3773c02cde842362ae26936912e0f6fc57c2431eda9b50279053125b44b",
+  "cases": [
+    {
+      "id": "CASE-01",
+      "title": "Case planning and approval gate",
+      "actor": "verification reviewer",
+      "user_goal": "Review the complete case contract and prove that execution and simplified verification cannot bypass exact-snapshot human approval.",
+      "preconditions": [
+        "The active change contains current requirements and acceptance contracts.",
+        "No approval exists for the newly generated snapshot."
+      ],
+      "steps": [
+        "Generate and inspect the normalized case snapshot.",
+        "Attempt execution without a matching human approval.",
+        "Request light, compact, or simplified verification."
+      ],
+      "expected_results": [
+        "The complete case contract is visible and schema-valid.",
+        "Absent, stale, service-authored, or hash-mismatched approval blocks execution.",
+        "The full six-domain V2 contract remains mandatory."
+      ],
+      "boundary_cases": [
+        "Stale snapshot approval",
+        "Service-authored approval",
+        "Partial-domain request"
+      ],
+      "acceptance_refs": ["AC-01", "AC-02", "AC-03"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/verification-contract-v2/spec.md"]
+    },
+    {
+      "id": "CASE-02",
+      "title": "Managed runtime and runner-oracle boundaries",
+      "actor": "verification operator",
+      "user_goal": "Prove locked runtime diagnosis, immutable attempt identity, explicit adapters, and deterministic final-oracle boundaries without fallback.",
+      "preconditions": [
+        "Verification Runtime 2.0.0-alpha.1 is explicitly installed.",
+        "The business repository dependency manifests remain unchanged."
+      ],
+      "steps": [
+        "Run runtime doctor and inspect package and browser identities.",
+        "Execute command and Playwright adapter identity tests.",
+        "Submit Midscene-only observations without a deterministic oracle."
+      ],
+      "expected_results": [
+        "Exact versions, browser readiness, provider state, permissions, and blockers are reported.",
+        "Changed retry fingerprints are rejected.",
+        "Model-only evidence cannot produce PASS."
+      ],
+      "boundary_cases": [
+        "Missing browser",
+        "Corrupt runtime lock",
+        "Missing Midscene provider",
+        "Changed retry fingerprint"
+      ],
+      "acceptance_refs": ["AC-04", "AC-05", "AC-14", "AC-15", "AC-16"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/managed-verification-runtime/spec.md", "specs/evidence-backed-execution/spec.md"]
+    },
+    {
+      "id": "CASE-03",
+      "title": "Evidence integrity, readings, six-domain aggregation, and freshness",
+      "actor": "quality reviewer",
+      "user_goal": "Prove that only intact evidence can produce readings and that six-domain, freshness, rerun, and release decisions are fact-derived.",
+      "preconditions": [
+        "The approved case snapshot is available.",
+        "EvidenceStore starts from an empty append-only raw log."
+      ],
+      "steps": [
+        "Persist and validate identity-bound evidence.",
+        "Derive readings and aggregate all six domains.",
+        "Change source fingerprints and compute freshness and rerun scope."
+      ],
+      "expected_results": [
+        "Tampered, missing, stale, empty, or forged evidence blocks green.",
+        "Every approved case receives six terminal domain results.",
+        "Rerun scope returns affected case IDs and reasons."
+      ],
+      "boundary_cases": [
+        "Missing evidence path",
+        "Hash or size mismatch",
+        "Manual green report",
+        "Ungoverned not_applicable",
+        "Stale source fingerprint"
+      ],
+      "acceptance_refs": ["AC-13", "AC-17", "AC-18", "AC-19", "AC-20", "AC-21", "AC-22", "AC-23", "AC-24", "AC-31", "AC-35"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/evidence-backed-execution/spec.md", "specs/six-domain-evaluation/spec.md"]
+    },
+    {
+      "id": "CASE-04",
+      "title": "Failure, repair, retry, retest, regression, and break-loop",
+      "actor": "developer and verification operator",
+      "user_goal": "Preserve failures while governing classification, repair, retry, retest, regression, closure, reopen, and no-progress escalation.",
+      "preconditions": [
+        "A deterministic case has a captured initial failure.",
+        "The failure packet is frozen before repair."
+      ],
+      "steps": [
+        "Classify the failure and route repair to Development.",
+        "Exercise identical retry and changed-code retest.",
+        "Run regression scope and a repeated no-progress cycle."
+      ],
+      "expected_results": [
+        "Failure evidence remains immutable.",
+        "Retry success is FLAKY and repaired success is PASS AFTER FIX.",
+        "Regression controls closure and no-progress routes to break-loop."
+      ],
+      "boundary_cases": [
+        "Product defect",
+        "Test defect",
+        "Environment defect",
+        "Regression failure",
+        "Repeated no-progress"
+      ],
+      "acceptance_refs": ["AC-06", "AC-07", "AC-25", "AC-26", "AC-27", "AC-32"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/verification-repair-loop/spec.md"]
+    },
+    {
+      "id": "CASE-05",
+      "title": "Three-page report center",
+      "actor": "stakeholder reviewer",
+      "user_goal": "Review overview, case catalog, and case results pages across all states with accessible, responsive, print-safe, and secure evidence presentation.",
+      "preconditions": [
+        "Validated report models exist for every supported state.",
+        "Playwright browser binaries are ready."
+      ],
+      "steps": [
+        "Render all three pages from one report model.",
+        "Exercise desktop, mobile, keyboard, and print layouts.",
+        "Inject hostile markup and provider-secret fixtures and alter rendered HTML."
+      ],
+      "expected_results": [
+        "Required lifecycle, case, attempt, evidence, repair, and release facts are visible.",
+        "Layouts remain readable and operable without overlap.",
+        "Content is escaped and redacted, and HTML cannot change gate truth."
+      ],
+      "boundary_cases": [
+        "Blocked report before execution",
+        "Mobile viewport",
+        "Print output",
+        "Markup injection",
+        "Secret leakage",
+        "Edited HTML verdict"
+      ],
+      "acceptance_refs": ["AC-08", "AC-09", "AC-10", "AC-11", "AC-12", "AC-29", "AC-30", "AC-38"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/verification-report-center/spec.md"]
+    },
+    {
+      "id": "CASE-06",
+      "title": "V1-to-V2 migration",
+      "actor": "migration operator",
+      "user_goal": "Migrate legacy verification artifacts with dry-run, backup, receipt, validation, rollback, and fail-closed missing-evidence semantics.",
+      "preconditions": [
+        "Disposable V1 fixtures include valid, incomplete, and malformed artifacts.",
+        "No production change is mutated by fixture execution."
+      ],
+      "steps": [
+        "Run migration dry-run.",
+        "Migrate fixtures and validate the receipt.",
+        "Migrate V1 green with missing evidence."
+      ],
+      "expected_results": [
+        "Backup, validation, and rollback are visible before mutation.",
+        "Receipt hashes bind inputs and outputs.",
+        "Missing evidence becomes BLOCKED, never PASS."
+      ],
+      "boundary_cases": [
+        "Malformed V1 artifact",
+        "Missing V1 evidence",
+        "Rollback after validation failure"
+      ],
+      "acceptance_refs": ["AC-33", "AC-34"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/cross-host-verification-governance/spec.md"]
+    },
+    {
+      "id": "CASE-07",
+      "title": "Shared Kernel and three-host integration",
+      "actor": "plugin maintainer",
+      "user_goal": "Prove one host-neutral kernel and thin synchronized adapters across Codex, Claude Code, and CodeFree-O.",
+      "preconditions": [
+        "The canonical kernel and immutable host lock are present.",
+        "Claude Code and CodeFree-O sibling repositories are available for compatibility validation."
+      ],
+      "steps": [
+        "Run shared fixtures through all host adapters.",
+        "Inspect adapter and service boundaries.",
+        "Mutate a disposable host identity and run drift detection."
+      ],
+      "expected_results": [
+        "All hosts produce the same normalized results.",
+        "Verdict semantics remain inside the kernel.",
+        "Any host or generated-contract drift blocks compatibility."
+      ],
+      "boundary_cases": [
+        "Older host schema",
+        "Wrapper digest mismatch",
+        "Duplicated aggregation logic",
+        "Host discovery failure"
+      ],
+      "acceptance_refs": ["AC-36", "AC-37", "AC-39", "AC-40"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/cross-host-verification-governance/spec.md"]
+    },
+    {
+      "id": "CASE-08",
+      "title": "Release and archive gate",
+      "actor": "release owner",
+      "user_goal": "Release and archive only when complete fresh V2 evidence, reports, migration, and all host proofs are green.",
+      "preconditions": [
+        "All approved cases have fresh six-domain readings and reports.",
+        "Three clean-host receipts and migration status are available."
+      ],
+      "steps": [
+        "Build release and archive gate inputs.",
+        "Remove or tamper with each required input in fixtures.",
+        "Run transactional archive success and rollback fixtures."
+      ],
+      "expected_results": [
+        "Gate identity binds all source facts.",
+        "Every missing, stale, tampered, open, incompatible, or simplified state blocks.",
+        "Archive preserves evidence and rolls back safely on failure."
+      ],
+      "boundary_cases": [
+        "Unapproved cases",
+        "Incomplete readings",
+        "Stale evidence",
+        "Open failure",
+        "Missing report",
+        "Host incompatibility",
+        "Archive filesystem failure"
+      ],
+      "acceptance_refs": ["AC-03", "AC-28", "AC-29", "AC-33", "AC-35", "AC-37"],
+      "source_refs": ["verify/v2/case-snapshot.json", "specs/six-domain-evaluation/spec.md", "specs/cross-host-verification-governance/spec.md"]
+    }
+  ]
+}

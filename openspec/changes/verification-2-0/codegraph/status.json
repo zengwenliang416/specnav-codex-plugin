@@ -1,22 +1,22 @@
 {
   "schema": "specnav.codegraph.status.v1",
   "ok": true,
-  "generated_at": "2026-08-02T20:41:22.963Z",
+  "generated_at": "2026-08-02T21:04:49.588Z",
   "project_root": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
   "active_change": "verification-2-0",
   "policy": {
     "enabled": true,
     "profile": "bootstrap",
     "mode": "observe",
-    "stage": "development",
+    "stage": "verification",
     "required_for_stage": false,
     "disabled_reason": null
   },
   "execution_surface": "cli",
   "decision": {
-    "stage": "development",
+    "stage": "verification",
     "result": "warn",
-    "reason": "CodeGraph policy has advisory warnings for development."
+    "reason": "CodeGraph policy has advisory warnings for verification."
   },
   "cli": {
     "available": true,

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "verify-runs-six-domains",
+      "prompt": "$specnav-verify-plan",
+      "expected": [
+        "load active change",
+        "generate verify plan",
+        "run or block all six domains",
+        "write aggregate report"
+      ]
+    }
+  ]
+}

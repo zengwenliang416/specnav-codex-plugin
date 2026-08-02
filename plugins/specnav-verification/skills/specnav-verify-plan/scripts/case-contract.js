@@ -35,24 +35,30 @@ function readJson(file, blockerId) {
 function writeJson(file, value) {
   if (!file) throw new Error('verification-cases:output-missing');
   const resolved = path.resolve(file);
-  if (fs.existsSync(resolved)) {
-    throw new Error('verification-cases:output-exists');
-  }
   fs.mkdirSync(path.dirname(resolved), { recursive: true });
-  const temporary = `${resolved}.tmp-${process.pid}`;
+  let descriptor = null;
+  let created = false;
   try {
-    fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, {
-      flag: 'wx',
-      mode: 0o600
-    });
-    fs.linkSync(temporary, resolved);
+    descriptor = fs.openSync(
+      resolved,
+      fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL,
+      0o600
+    );
+    created = true;
+    fs.writeFileSync(descriptor, `${JSON.stringify(value, null, 2)}\n`);
+    fs.fsyncSync(descriptor);
   } catch (error) {
+    if (descriptor !== null) {
+      fs.closeSync(descriptor);
+      descriptor = null;
+    }
+    if (created) fs.rmSync(resolved, { force: true });
     if (error && error.code === 'EEXIST') {
       throw new Error('verification-cases:output-exists');
     }
     throw error;
   } finally {
-    fs.rmSync(temporary, { force: true });
+    if (descriptor !== null) fs.closeSync(descriptor);
   }
 }
 

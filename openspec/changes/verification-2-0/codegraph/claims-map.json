@@ -1,6 +1,6 @@
 {
   "schema": "specnav.codegraph.claims.v1",
-  "generated_at": "2026-07-31T04:03:27.946Z",
+  "generated_at": "2026-08-02T20:48:19.930Z",
   "active_change": "verification-2-0",
   "claims": [
     {
@@ -934,6 +934,1175 @@
       ],
       "query_ids": [
         "development:task-033-release-archive-proof:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-001-baseline-fake-green",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "001-baseline-fake-green",
+      "text": "Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/001-baseline-fake-green/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/001-baseline-fake-green/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-17, AC-18, AC-21, AC-29"
+      ],
+      "allowed_files": [
+        "plugins/specnav-development/scripts/development-contract.js",
+        "plugins/specnav-verification/scripts/evidence-runner.js",
+        "tests/run-verification-plugin-fixtures.sh",
+        "tests/run-verification-v2-baseline.sh",
+        "tests/verification-v2/baseline/**",
+        "docs/verification-v2-gap-analysis.md",
+        "openspec/changes/verification-2-0/development/**",
+        "openspec/changes/verification-2-0/tasks.md"
+      ],
+      "query_ids": [
+        "verification:task-001-baseline-fake-green:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-002-kernel-package-boundary",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "002-kernel-package-boundary",
+      "text": "Maintainer can install one shared Verification Kernel package without host-specific verdict logic. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/002-kernel-package-boundary/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/002-kernel-package-boundary/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-36, AC-37, AC-39, AC-40"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/**",
+        "plugins/specnav-verification/package.json",
+        "tests/verification-v2/kernel/**",
+        "docs/verification-kernel-packaging.md"
+      ],
+      "query_ids": [
+        "verification:task-002-kernel-package-boundary:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-003-contract-schemas",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "003-contract-schemas",
+      "text": "Plugin author can validate every V2 entity through versioned JSON Schemas. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/003-contract-schemas/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/003-contract-schemas/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-13, AC-31, AC-35"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/package.json",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/kernel/contracts/**",
+        "plugins/specnav-verification/schemas/**",
+        "tests/verification-v2/contracts/**"
+      ],
+      "query_ids": [
+        "verification:task-003-contract-schemas:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-004-contract-cross-references",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "004-contract-cross-references",
+      "text": "Reviewer can reject artifacts whose run, case, attempt, step, or SHA references disagree. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/004-contract-cross-references/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/004-contract-cross-references/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-14, AC-15, AC-17, AC-31"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/contracts/**",
+        "tests/verification-v2/contracts/**"
+      ],
+      "query_ids": [
+        "verification:task-004-contract-cross-references:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-005-case-planning-approval",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "005-case-planning-approval",
+      "text": "Reviewer can approve an immutable test-case snapshot before execution starts. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/005-case-planning-approval/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/005-case-planning-approval/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-01, AC-02"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/cases/**",
+        "plugins/specnav-verification/skills/specnav-verify-plan/**",
+        "tests/run-verification-v2-case-approval.sh",
+        "tests/verification-v2/cases/**"
+      ],
+      "query_ids": [
+        "verification:task-005-case-planning-approval:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-006-runtime-lock-manifest",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "006-runtime-lock-manifest",
+      "text": "Verification operator can resolve an exact runtime version from a committed lock manifest. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/006-runtime-lock-manifest/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/006-runtime-lock-manifest/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-04, AC-05"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/runtime/**",
+        "plugins/specnav-verification/assets/runtime/**",
+        "tests/verification-v2/runtime/**"
+      ],
+      "query_ids": [
+        "verification:task-006-runtime-lock-manifest:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-007-runtime-installer",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "007-runtime-installer",
+      "text": "Verification operator can explicitly install Playwright, browsers, Midscene, and AJV outside the business repository. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/007-runtime-installer/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/007-runtime-installer/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-04, AC-05"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/runtime/**",
+        "plugins/specnav-verification/scripts/verification-runtime.js",
+        "plugins/specnav-verification/skills/specnav-verification-runtime-setup/**",
+        "tests/verification-v2/runtime/**"
+      ],
+      "query_ids": [
+        "verification:task-007-runtime-installer:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-008-runtime-doctor",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "008-runtime-doctor",
+      "text": "Verification operator can diagnose runtime readiness and receive exact blockers without fallback. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/008-runtime-doctor/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/008-runtime-doctor/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-05"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/runtime/**",
+        "plugins/specnav-verification/scripts/verification-runtime.js",
+        "plugins/specnav-verification/skills/specnav-verification-runtime-status/**",
+        "tests/verification-v2/runtime/**"
+      ],
+      "query_ids": [
+        "verification:task-008-runtime-doctor:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-009-command-runner",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "009-command-runner",
+      "text": "Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/009-command-runner/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/009-command-runner/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-14"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/execution/**",
+        "plugins/specnav-verification/kernel/adapters/command-adapter.js",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/schemas/test-case.schema.json",
+        "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+        "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+        "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+        "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
+        "tests/verification-v2/execution/**"
+      ],
+      "query_ids": [
+        "verification:task-009-command-runner:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-010-playwright-runner",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "010-playwright-runner",
+      "text": "Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/010-playwright-runner/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/010-playwright-runner/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct task-slice evidence for tasks.md 4.2 and AC-39:playwright-adapter-boundary; no full AC closure"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/execution/**",
+        "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "plugins/specnav-verification/kernel/runtime/installer.js",
+        "plugins/specnav-verification/assets/runtime/verification-runtime-lock.json",
+        "plugins/specnav-verification/schemas/test-case.schema.json",
+        "tests/run-verification-v2-playwright.sh",
+        "tests/verification-v2/browser/**",
+        "tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js",
+        "tests/verification-v2/runtime/**",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/010-playwright-runner/**"
+      ],
+      "query_ids": [
+        "verification:task-010-playwright-runner:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-011-midscene-runner",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "011-midscene-runner",
+      "text": "Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/011-midscene-runner/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/011-midscene-runner/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-16 and AC-39:midscene-adapter-boundary"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/adapters/midscene-adapter.js",
+        "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+        "plugins/specnav-verification/kernel/execution/midscene-*.js",
+        "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "plugins/specnav-verification/kernel/execution/preflight.js",
+        "plugins/specnav-verification/kernel/execution/index.js",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+        "plugins/specnav-verification/schemas/test-case.schema.json",
+        "tests/verification-v2/midscene/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/verification-v2/runtime/doctor.test.js",
+        "tests/run-verification-v2-midscene-contract.sh",
+        "openspec/changes/verification-2-0/development/tasks/011-midscene-runner/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**"
+      ],
+      "query_ids": [
+        "verification:task-011-midscene-runner:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-012-evidence-store",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "012-evidence-store",
+      "text": "Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/012-evidence-store/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/012-evidence-store/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-22 and AC-31",
+        "Contribution evidence for AC-32:evidence-store-retention without full AC-32 closure",
+        "Public Kernel export, frozen append/rebuildIndex service contract, and concrete getById/resolve read API",
+        "Explicit step or assertion binding with no inferred adapter identity"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evidence/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/kernel/contracts.js",
+        "tests/verification-v2/evidence/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/012-evidence-store/**"
+      ],
+      "query_ids": [
+        "verification:task-012-evidence-store:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-013-evidence-integrity",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "013-evidence-integrity",
+      "text": "Release owner can see missing, tampered, stale, or incorrectly bound evidence block green. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/013-evidence-integrity/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/013-evidence-integrity/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-17",
+        "Contribution evidence for AC-18:empty-evidence, AC-23:evidence-fingerprint-freshness, and AC-28:evidence-integrity-blockers without claiming downstream gate closure",
+        "Public createEvidenceIntegrityChecker factory without changing the frozen service contract digest"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evidence/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "tests/verification-v2/evidence/**",
+        "tests/verification-v2/negative/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-negative.sh",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/013-evidence-integrity/**"
+      ],
+      "query_ids": [
+        "verification:task-013-evidence-integrity:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-014-evidence-redaction",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "014-evidence-redaction",
+      "text": "Reviewer can inspect redacted logs and HTML without provider secrets leaking. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/014-evidence-redaction/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/014-evidence-redaction/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-30",
+        "Public createSecretRedactor and renderSafeHtmlText utilities without changing the frozen service contract digest"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evidence/**",
+        "plugins/specnav-verification/kernel/reporting/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "tests/verification-v2/security/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/014-evidence-redaction/**"
+      ],
+      "query_ids": [
+        "verification:task-014-evidence-redaction:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-015-reading-model",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "015-reading-model",
+      "text": "Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/015-reading-model/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/015-reading-model/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-16 and explicit downstream ownership for AC-19, AC-21, and AC-31"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evaluation/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "tests/verification-v2/evaluation/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "openspec/changes/verification-2-0/development/tasks/015-reading-model/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**"
+      ],
+      "query_ids": [
+        "verification:task-015-reading-model:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-016-six-domain-aggregation",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "016-six-domain-aggregation",
+      "text": "Release owner can receive six-domain and release verdicts derived only from validated case readings. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/016-six-domain-aggregation/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/016-six-domain-aggregation/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-03, AC-18, AC-19, and AC-21; contribution evidence for AC-28"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evaluation/**",
+        "plugins/specnav-verification/kernel/gates/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/scripts/verify-domains.js",
+        "tests/verification-v2/evaluation/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-no-light.sh",
+        "tests/run-light-change-v2-fixtures.sh",
+        "tests/run-light-compact-gate-fixtures.sh",
+        "openspec/changes/verification-2-0/development/tasks/016-six-domain-aggregation/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**"
+      ],
+      "query_ids": [
+        "verification:task-016-six-domain-aggregation:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-017-not-applicable-approval",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "017-not-applicable-approval",
+      "text": "Reviewer can approve a domain as not applicable only with reason and evidence. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/017-not-applicable-approval/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/017-not-applicable-approval/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-20 and contribution evidence for the AC-19 not_applicable branch"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evaluation/**",
+        "plugins/specnav-verification/kernel/cases/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "tests/verification-v2/evaluation/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "openspec/changes/verification-2-0/development/tasks/017-not-applicable-approval/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**"
+      ],
+      "query_ids": [
+        "verification:task-017-not-applicable-approval:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-018-failure-classification",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "018-failure-classification",
+      "text": "Maintainer can classify failures into product, test, environment, flaky,",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/018-failure-classification/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/018-failure-classification/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Blocked review RED and superseding GREEN evidence for open packets, exact assertion/evidence sets, and timestamp-bound packet identity",
+        "Direct evidence for the frozen failure packet and all six classifications; contribution evidence for AC-06, AC-25, and AC-27"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/repair/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/schemas/failure-packet.schema.json",
+        "tests/verification-v2/repair-loop/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/verification-v2/contracts/schema-registry.test.js",
+        "tests/verification-v2/contracts/cross-reference.test.js",
+        "tests/verification-v2/contracts/fixtures/**",
+        "openspec/changes/verification-2-0/development/tasks/018-failure-classification/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**"
+      ],
+      "query_ids": [
+        "verification:task-018-failure-classification:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-019-development-repair-bridge",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "019-development-repair-bridge",
+      "text": "Developer can receive a scoped repair task linked to frozen verification failure evidence. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-25 and negative evidence that caller-authored break_loop_required signals are rejected without claiming AC-27"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/repair/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "tests/verification-v2/repair-loop/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-repair-bridge.sh",
+        "openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/tasks.md"
+      ],
+      "query_ids": [
+        "verification:task-019-development-repair-bridge:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-020-retest-regression-loop",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "020-retest-regression-loop",
+      "text": "Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-06, AC-07, and AC-27 plus regression evidence that Task 004 AC-15 and Task 022 AC-26 contracts are consumed without duplication"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/repair/**",
+        "plugins/specnav-verification/kernel/execution/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/schemas/**",
+        "tests/verification-v2/repair-loop/**",
+        "tests/verification-v2/contracts/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-repair-loop.sh",
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/tasks.md"
+      ],
+      "query_ids": [
+        "verification:task-020-retest-regression-loop:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-021-case-freshness",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "021-case-freshness",
+      "text": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/021-case-freshness/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/021-case-freshness/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-17, AC-23, AC-35",
+        "Public createCaseFreshnessEvaluator utility without changing the frozen service contract digest"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/evidence/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/scripts/rerun-scope.js",
+        "tests/verification-v2/freshness/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/021-case-freshness/**"
+      ],
+      "query_ids": [
+        "verification:task-021-case-freshness:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-022-case-rerun-impact",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "022-case-rerun-impact",
+      "text": "Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/022-case-rerun-impact/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/022-case-rerun-impact/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-24, AC-26"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/repair/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/scripts/rerun-scope.js",
+        "plugins/specnav-verification/skills/specnav-verify-rerun/**",
+        "plugins/specnav-codegraph/**",
+        "tests/verification-v2/rerun/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-codegraph-rerun.sh",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/development/tasks/022-case-rerun-impact/**"
+      ],
+      "query_ids": [
+        "verification:task-022-case-rerun-impact:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-023-report-model",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "023-report-model",
+      "text": "Stakeholder can receive one validated report model for all three report pages and every verdict state. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/023-report-model/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/023-report-model/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-08, AC-09, AC-10, AC-11, AC-29"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/reporting/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/schemas/report-model.schema.json",
+        "tests/verification-v2/contracts/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/verification-v2/reports/**",
+        "tests/run-verification-v2-report-model.sh",
+        "openspec/changes/verification-2-0/development/tasks/023-report-model/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-graph.json",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl",
+        "openspec/changes/verification-2-0/development/evidence/**",
+        "openspec/changes/verification-2-0/tasks.md"
+      ],
+      "query_ids": [
+        "verification:task-023-report-model:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-024-overview-report",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "024-overview-report",
+      "text": "Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/024-overview-report/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/024-overview-report/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-08, AC-11, AC-12, AC-29"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/reporting/**",
+        "plugins/specnav-verification/kernel/contracts/schema-registry.js",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/assets/report/**",
+        "plugins/specnav-verification/package.json",
+        "tests/verification-v2/reports/**",
+        "tests/verification-v2/contracts/package-content.test.js",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-report-overview.sh"
+      ],
+      "query_ids": [
+        "verification:task-024-overview-report:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-025-case-report-pages",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "025-case-report-pages",
+      "text": "Stakeholder can review approved case contracts in test-case-catalog.html and immutable attempt evidence in test-case-results.html. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/025-case-report-pages/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/025-case-report-pages/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-09, AC-10, AC-11, AC-29, AC-38"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/reporting/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/assets/report/**",
+        "tests/verification-v2/reports/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-report-pages.sh"
+      ],
+      "query_ids": [
+        "verification:task-025-case-report-pages:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-026-report-accessibility-security",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "026-report-accessibility-security",
+      "text": "Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/026-report-accessibility-security/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/026-report-accessibility-security/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-12, AC-30"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/reporting/**",
+        "plugins/specnav-verification/assets/report/**",
+        "tests/verification-v2/reports/**",
+        "tests/verification-v2/security/**",
+        "tests/run-verification-v2-report-browser.sh"
+      ],
+      "query_ids": [
+        "verification:task-026-report-accessibility-security:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-027-v1-v2-migration",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "027-v1-v2-migration",
+      "text": "Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/027-v1-v2-migration/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/027-v1-v2-migration/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-32, AC-33, AC-34"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/kernel/migration/**",
+        "plugins/specnav-verification/kernel/index.js",
+        "plugins/specnav-verification/scripts/verification-migrate.js",
+        "plugins/specnav-development/scripts/development-contract.js",
+        "tests/run-development-plugin-fixtures.sh",
+        "tests/verification-v2/migration/**",
+        "tests/verification-v2/kernel/package-boundary.test.js",
+        "tests/run-verification-v2-migration.sh"
+      ],
+      "query_ids": [
+        "verification:task-027-v1-v2-migration:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-028-codex-integration",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "028-codex-integration",
+      "text": "Codex user can discover and run Verification 2.0 through the Codex marketplace adapter. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/028-codex-integration/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/028-codex-integration/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-03, AC-37, AC-40"
+      ],
+      "allowed_files": [
+        "plugins/specnav-verification/.codex-plugin/**",
+        "plugins/specnav-verification/skills/**",
+        "plugins/specnav-verification/scripts/**",
+        "plugins/specnav-core/**",
+        "tests/verification-v2/cross-host/**",
+        "tests/run-codex-*.sh"
+      ],
+      "query_ids": [
+        "verification:task-028-codex-integration:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-029-claude-code-integration",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "029-claude-code-integration",
+      "text": "Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-37, AC-40"
+      ],
+      "allowed_files": [
+        "integrations/claude-code/**",
+        "plugins/specnav-verification/scripts/host-verification-adapter.js",
+        "plugins/specnav-verification/scripts/codex-verification-adapter.js",
+        "plugins/specnav-verification/scripts/verification-runtime.js",
+        "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+        "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+        "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+        "tests/run-verification-v2-claude-adapter.sh",
+        "tests/verification-v2/cross-host/**",
+        "docs/host-integration-claude-code.md"
+      ],
+      "query_ids": [
+        "verification:task-029-claude-code-integration:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-030-codefree-o-integration",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "030-codefree-o-integration",
+      "text": "CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/030-codefree-o-integration/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/030-codefree-o-integration/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-37, AC-40"
+      ],
+      "allowed_files": [
+        "integrations/codefree-o/**",
+        "plugins/specnav-verification/scripts/verification-runtime.js",
+        "tests/run-verification-v2-codefree-o-adapter.sh",
+        "tests/verification-v2/cross-host/**",
+        "docs/host-integration-codefree-o.md"
+      ],
+      "query_ids": [
+        "verification:task-030-codefree-o-integration:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-031-cross-host-drift-ci",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "031-cross-host-drift-ci",
+      "text": "Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-37, AC-39, AC-40"
+      ],
+      "allowed_files": [
+        "tests/verification-v2/cross-host/**",
+        "tests/run-smoke.sh",
+        "tests/run-verification-v2-cross-host.sh",
+        ".github/workflows/ci.yml",
+        "plugins/specnav-verification/kernel/**",
+        "integrations/claude-code/sync-verification-plugin.js",
+        "integrations/codefree-o/sync-verification-module.js"
+      ],
+      "query_ids": [
+        "verification:task-031-cross-host-drift-ci:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-032-docs-install-runtime",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "032-docs-install-runtime",
+      "text": "User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct evidence for AC-04, AC-05, AC-08, AC-09, AC-10"
+      ],
+      "allowed_files": [
+        "README.md",
+        "README.zh-CN.md",
+        "docs/**",
+        "plugins/specnav-verification/skills/**",
+        "tests/run-readme-contract.sh",
+        "tests/run-verification-v2-docs.sh",
+        "tests/verification-v2/docs/**"
+      ],
+      "query_ids": [
+        "verification:task-032-docs-install-runtime:evidence"
+      ]
+    },
+    {
+      "id": "verification:task-033-release-archive-proof",
+      "kind": "verification-task-traceability",
+      "stage": "verification",
+      "task_id": "033-release-archive-proof",
+      "text": "Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts. The delivered slice must be directly demonstrable through the",
+      "required": true,
+      "source": "specnav-codegraph-plan",
+      "source_paths": [
+        "openspec/changes/verification-2-0/development/tasks/033-release-archive-proof/brief.md",
+        "openspec/changes/verification-2-0/development/tasks/033-release-archive-proof/context.json"
+      ],
+      "expected_evidence": [
+        "A focused failing test or fixture before the implementation change",
+        "System-executed command output with exit status",
+        "Changed-file list contained by scope.json",
+        "Task report, spec review, and quality review before checkbox completion",
+        "Direct and reused evidence mapping in the task acceptance.json",
+        "Direct evidence for AC-03, AC-28, AC-29, AC-33, AC-35, AC-37"
+      ],
+      "allowed_files": [
+        "plugins/specnav-operations/**",
+        "tests/verification-v2/release/**",
+        "docs/release-verification-v2.md",
+        ".github/workflows/ci.yml",
+        "tests/run-verification-v2-release.sh",
+        "tests/run-verification-v2-cross-host.sh",
+        "tests/run-smoke.sh",
+        "tests/run-light-compact-gate-fixtures.sh",
+        "tests/run-operations-plugin-fixtures.sh",
+        "tests/run-operations-archive-action-fixtures.sh",
+        "tests/run-verification-v2-development-contract-maintenance.sh",
+        "tests/verification-v2/cross-host/host-lock.json",
+        "openspec/changes/verification-2-0/tasks.md",
+        "openspec/changes/verification-2-0/acceptance.json",
+        "openspec/changes/verification-2-0/development/handoff-to-verify.md",
+        "openspec/changes/verification-2-0/development/tasks/019-development-repair-bridge/context.json",
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/report.md",
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/spec-review.md",
+        "openspec/changes/verification-2-0/development/tasks/020-retest-regression-loop/quality-review.md",
+        "openspec/changes/verification-2-0/development/tasks/026-report-accessibility-security/spec-review.md",
+        "openspec/changes/verification-2-0/development/tasks/026-report-accessibility-security/quality-review.md",
+        "openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/report.md",
+        "openspec/changes/verification-2-0/development/tasks/030-codefree-o-integration/report.md",
+        "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/report.md",
+        "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/spec-review.md",
+        "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/quality-review.md",
+        "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/report.md",
+        "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/spec-review.md",
+        "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/quality-review.md",
+        "openspec/changes/verification-2-0/development/tasks/033-release-archive-proof/**",
+        "openspec/changes/verification-2-0/development/task-context.jsonl",
+        "openspec/changes/verification-2-0/development/task-ledger.jsonl",
+        "openspec/changes/verification-2-0/development/drift-check.jsonl",
+        "openspec/changes/verification-2-0/development/validation-log.jsonl"
+      ],
+      "query_ids": [
+        "verification:task-033-release-archive-proof:evidence"
       ]
     }
   ]

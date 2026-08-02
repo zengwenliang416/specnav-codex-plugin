@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "change_id": "verification-2-0",
+  "snapshot_id": "snapshot-8275e3773c02cde842362ae2",
+  "snapshot_hash": "8275e3773c02cde842362ae26936912e0f6fc57c2431eda9b50279053125b44b",
+  "cases": [
+    {
+      "case_id": "CASE-01",
+      "domains": {
+        "facticity": ["Confirm snapshot identity, source hashes, and human approval provenance."],
+        "static": ["Validate schemas and reject every simplified verification entrypoint."],
+        "unit": ["Exercise planner, snapshot, approval, stale approval, and no-light decisions."],
+        "redteam": ["Attempt service approval, hash mismatch, stale approval, and partial-domain bypass."],
+        "e2e": ["Run the complete plan-to-blocked-to-approved case gate."],
+        "sensory": ["Review that the case contract and approval decision are understandable before execution."]
+      }
+    },
+    {
+      "case_id": "CASE-02",
+      "domains": {
+        "facticity": ["Confirm installed runtime, package, browser, provider, permission, and fingerprint facts."],
+        "static": ["Inspect runtime lock, adapter boundaries, and no-fallback code paths."],
+        "unit": ["Test installer, doctor, runner identity, retry identity, and oracle decisions."],
+        "redteam": ["Remove components, corrupt locks, mutate retry fingerprints, and submit model-only PASS."],
+        "e2e": ["Run managed-runtime and registered-adapter contracts from the repository."],
+        "sensory": ["Review doctor and blocker output for exact, actionable operator guidance."]
+      }
+    },
+    {
+      "case_id": "CASE-03",
+      "domains": {
+        "facticity": ["Confirm evidence identity, hashes, size, producer, references, readings, and gate source bindings."],
+        "static": ["Validate all V2 contracts, cross-references, aggregation ownership, and append-only boundaries."],
+        "unit": ["Test EvidenceStore, integrity, readings, not_applicable, aggregation, freshness, and rerun scope."],
+        "redteam": ["Probe missing, forged, empty, stale, tampered, unrecognized, and manual-green inputs."],
+        "e2e": ["Execute the full evidence-to-reading-to-six-domain-to-gate pipeline."],
+        "sensory": ["Review domain and gate explanations for traceable evidence and concrete rerun reasons."]
+      }
+    },
+    {
+      "case_id": "CASE-04",
+      "domains": {
+        "facticity": ["Confirm every attempt and repair link preserves immutable failure evidence and source identities."],
+        "static": ["Inspect ownership boundaries between Verification, Development, and Core."],
+        "unit": ["Test classification, retry, retest, regression, closure, reopen, and no-progress transitions."],
+        "redteam": ["Attempt to overwrite failures, misclassify retries, close before regression, or loop without progress."],
+        "e2e": ["Run failure packet creation through development repair handoff, retest, regression, and closure."],
+        "sensory": ["Review that failure and repair history clearly distinguishes FLAKY and PASS AFTER FIX."]
+      }
+    },
+    {
+      "case_id": "CASE-05",
+      "domains": {
+        "facticity": ["Confirm every displayed value and evidence link originates from the validated report model."],
+        "static": ["Inspect shared components, semantic markup, escaping, CSP, and no-inline-secret constraints."],
+        "unit": ["Test report model and renderer behavior for every supported state."],
+        "redteam": ["Inject markup and secrets, break evidence paths, and edit generated HTML verdicts."],
+        "e2e": ["Render and navigate all three pages using real Playwright browsers."],
+        "sensory": ["Review desktop, mobile, keyboard, print, readability, overlap, and status hierarchy."]
+      }
+    },
+    {
+      "case_id": "CASE-06",
+      "domains": {
+        "facticity": ["Confirm migration inventory, backups, receipts, hashes, validation, and retained failures."],
+        "static": ["Inspect migration schema, path safety, mutation boundary, and rollback contract."],
+        "unit": ["Test valid, incomplete, malformed, missing-evidence, and rollback fixtures."],
+        "redteam": ["Attempt to convert weak V1 green into V2 PASS or mutate production paths from fixtures."],
+        "e2e": ["Run dry-run, migration, validation, receipt, and rollback lifecycle."],
+        "sensory": ["Review that operator output distinguishes migrated, blocked, failed, and rollback states."]
+      }
+    },
+    {
+      "case_id": "CASE-07",
+      "domains": {
+        "facticity": ["Confirm kernel, schema, fixture, wrapper, generated artifact, and host receipt identities."],
+        "static": ["Detect duplicated verdict logic and verify thin adapter and service boundaries."],
+        "unit": ["Run shared kernel fixtures and host-specific adapter contracts."],
+        "redteam": ["Mutate locks, schemas, blockers, wrappers, fixtures, and discovery manifests."],
+        "e2e": ["Run Codex, Claude Code, and CodeFree-O discovery, doctor, fixture, and compatibility flows."],
+        "sensory": ["Review host diagnostics for consistent terminology and actionable drift details."]
+      }
+    },
+    {
+      "case_id": "CASE-08",
+      "domains": {
+        "facticity": ["Confirm release and archive bind snapshot, readings, evidence, versions, freshness, reports, migration, and hosts."],
+        "static": ["Inspect operations gates, safe filesystem boundaries, and transactional archive contracts."],
+        "unit": ["Test gate recomputation, missing inputs, tampering, receipt binding, archive commit, and rollback."],
+        "redteam": ["Attempt HTML-green forgery, copied summaries, stale evidence, host mismatch, and filesystem races."],
+        "e2e": ["Run complete release proof and transactional archive fixtures."],
+        "sensory": ["Review release and archive verdicts for exact blockers, provenance, and next actions."]
+      }
+    }
+  ]
+}
