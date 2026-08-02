@@ -22,7 +22,7 @@ test('kernel package exposes one versioned public entry and schema-only subpath'
     './schemas/*': './schemas/*',
     './package.json': './package.json'
   });
-  assert.deepEqual(manifest.files, ['kernel/', 'schemas/']);
+  assert.deepEqual(manifest.files, ['assets/', 'kernel/', 'schemas/']);
 });
 
 test('public entry exposes immutable metadata and explicit service contracts', () => {
@@ -38,6 +38,8 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(typeof kernel.createSecretRedactor, 'function');
   assert.equal(typeof kernel.createEvidenceIndexAuthority, 'function');
   assert.equal(typeof kernel.createReportFactAuthority, 'function');
+  assert.equal(typeof kernel.createOverviewRenderer, 'function');
+  assert.equal(typeof kernel.renderSafeHtmlAttribute, 'function');
   assert.equal(typeof kernel.renderSafeHtmlText, 'function');
   assert.equal(typeof kernel.createCaseFreshnessEvaluator, 'function');
   assert.equal(typeof kernel.createCaseRerunPlanner, 'function');

@@ -26,8 +26,10 @@ const {
 } = require('./evidence');
 const {
   createEvidenceIndexAuthority,
+  createOverviewRenderer,
   createReportFactAuthority,
   createReportModelBuilder,
+  renderSafeHtmlAttribute,
   renderSafeHtmlText
 } = require('./reporting');
 const {
@@ -66,6 +68,7 @@ module.exports = Object.freeze({
   createFailureClassifier,
   createRepairLoopStateMachine,
   createEvidenceIndexAuthority,
+  createOverviewRenderer,
   createReportFactAuthority,
   createReportModelBuilder,
   SIX_DOMAINS,
@@ -74,5 +77,6 @@ module.exports = Object.freeze({
   createReadingEvaluator,
   createSixDomainAggregator,
   createDecisionEngine,
+  renderSafeHtmlAttribute,
   renderSafeHtmlText
 });

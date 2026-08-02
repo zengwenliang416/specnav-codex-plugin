@@ -1,0 +1,9 @@
+# command: node -e 'const fs=require("fs");const rows=fs.readFileSync("openspec/changes/verification-2-0/development/task-context.jsonl","utf8").trim().split(/\r?\n/).map(JSON.parse).filter((row)=>row.task_id==="024-overview-report");if(rows.length!==1||rows[0].status!=="complete")throw new Error(JSON.stringify(rows));' # 024-overview-report-context-normalized
+# exit_status: 0
+# duration_ms: 39
+
+## stdout
+(empty)
+
+## stderr
+(empty)

@@ -36,8 +36,13 @@ test('published kernel package includes the public entry, registry, and schemas'
     const files = new Set(packed[0].files.map((entry) => entry.path));
 
     for (const requiredPath of [
+      'assets/report/report.css',
       'kernel/index.js',
       'kernel/contracts/schema-registry.js',
+      'kernel/reporting/overview-renderer.js',
+      'kernel/reporting/report-assets.js',
+      'kernel/reporting/report-components.js',
+      'kernel/reporting/report-shell.js',
       'schemas/common.schema.json',
       'schemas/test-case.schema.json',
       'schemas/evidence.schema.json',

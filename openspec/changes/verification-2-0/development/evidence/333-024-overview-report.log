@@ -1,0 +1,314 @@
+# command: bash tests/run-verification-v2-report-overview.sh # 024-overview-report-focused-final
+# exit_status: 0
+# duration_ms: 1445
+
+## stdout
+TAP version 13
+# Subtest: published kernel package includes the public entry, registry, and schemas
+ok 1 - published kernel package includes the public entry, registry, and schemas
+  ---
+  duration_ms: 675.832917
+  type: 'test'
+  ...
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 2 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 754.529792
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 3 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 146.936458
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 4 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 122.457167
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 5 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 113.861084
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 6 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 104.024958
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 7 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 95.691291
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 8 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.916834
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 9 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 22.02725
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 10 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.295625
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 11 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 11.908333
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 12 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 1171.753708
+  type: 'test'
+  ...
+# Subtest: renders a standalone overview from one validated report model
+ok 13 - renders a standalone overview from one validated report model
+  ---
+  duration_ms: 727.932167
+  type: 'test'
+  ...
+# Subtest: keeps the same information architecture for all eight verdicts
+ok 14 - keeps the same information architecture for all eight verdicts
+  ---
+  duration_ms: 5.705167
+  type: 'test'
+  ...
+# Subtest: uses shared link navigation for all three report pages
+ok 15 - uses shared link navigation for all three report pages
+  ---
+  duration_ms: 0.5545
+  type: 'test'
+  ...
+# Subtest: blocked, running, and empty models still render complete reports
+ok 16 - blocked, running, and empty models still render complete reports
+  ---
+  duration_ms: 0.834375
+  type: 'test'
+  ...
+# Subtest: shows exact blockers, freshness, integrity, repair, and source references
+ok 17 - shows exact blockers, freshness, integrity, repair, and source references
+  ---
+  duration_ms: 0.847667
+  type: 'test'
+  ...
+# Subtest: renders warning, stale reason, and repair ids instead of hiding report facts
+ok 18 - renders warning, stale reason, and repair ids instead of hiding report facts
+  ---
+  duration_ms: 1.070667
+  type: 'test'
+  ...
+# Subtest: escapes and redacts every dynamic blocker text value
+ok 19 - escapes and redacts every dynamic blocker text value
+  ---
+  duration_ms: 0.619542
+  type: 'test'
+  ...
+# Subtest: rejects invalid or unvalidated models without rendering a fallback page
+ok 20 - rejects invalid or unvalidated models without rendering a fallback page
+  ---
+  duration_ms: 8.230625
+  type: 'test'
+  ...
+# Subtest: rejects forged schema registries and hostile status values
+ok 21 - rejects forged schema registries and hostile status values
+  ---
+  duration_ms: 0.770042
+  type: 'test'
+  ...
+# Subtest: output is deterministic and does not mutate the model
+ok 22 - output is deterministic and does not mutate the model
+  ---
+  duration_ms: 1.46275
+  type: 'test'
+  ...
+# Subtest: production overview renderer does not read raw verification artifacts
+ok 23 - production overview renderer does not read raw verification artifacts
+  ---
+  duration_ms: 0.331084
+  type: 'test'
+  ...
+# Subtest: report has no theme or runtime locale controls
+ok 24 - report has no theme or runtime locale controls
+  ---
+  duration_ms: 0.57725
+  type: 'test'
+  ...
+# Subtest: builds one deterministic immutable rich model for all three pages
+ok 25 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 760.2935
+  type: 'test'
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+ok 26 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 41.191
+  type: 'test'
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+ok 27 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 9.590458
+  type: 'test'
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+ok 28 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 4.858209
+  type: 'test'
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+ok 29 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 4.153792
+  type: 'test'
+  ...
+# Subtest: trusted recomputation rejects caller-forged aggregate and gate green
+ok 30 - trusted recomputation rejects caller-forged aggregate and gate green
+  ---
+  duration_ms: 4.339292
+  type: 'test'
+  ...
+# Subtest: controlled evidence locator rejects URI schemes and encoded traversal
+ok 31 - controlled evidence locator rejects URI schemes and encoded traversal
+  ---
+  duration_ms: 16.371959
+  type: 'test'
+  ...
+# Subtest: duplicate evidence ids block instead of folding immutable history
+ok 32 - duplicate evidence ids block instead of folding immutable history
+  ---
+  duration_ms: 3.90925
+  type: 'test'
+  ...
+# Subtest: rejects missing and forged authority collaborators without fallback
+ok 33 - rejects missing and forged authority collaborators without fallback
+  ---
+  duration_ms: 3.043458
+  type: 'test'
+  ...
+# Subtest: failure history must bind to current run attempt readings and evidence
+ok 34 - failure history must bind to current run attempt readings and evidence
+  ---
+  duration_ms: 6.018916
+  type: 'test'
+  ...
+# Subtest: repair history must resolve to a verified same-change failure
+ok 35 - repair history must resolve to a verified same-change failure
+  ---
+  duration_ms: 3.876625
+  type: 'test'
+  ...
+# Subtest: binds the Evidence Index to the exact change and canonical raw source
+ok 36 - binds the Evidence Index to the exact change and canonical raw source
+  ---
+  duration_ms: 7.912375
+  type: 'test'
+  ...
+# Subtest: gate stage and policy come from independent authority
+ok 37 - gate stage and policy come from independent authority
+  ---
+  duration_ms: 6.458833
+  type: 'test'
+  ...
+# Subtest: redacts command secrets in every projection and never exposes absolute cwd
+ok 38 - redacts command secrets in every projection and never exposes absolute cwd
+  ---
+  duration_ms: 9.77925
+  type: 'test'
+  ...
+# Subtest: rejects a modified case snapshot that retains an old snapshot hash
+ok 39 - rejects a modified case snapshot that retains an old snapshot hash
+  ---
+  duration_ms: 3.883583
+  type: 'test'
+  ...
+# Subtest: structural blockers override pass-after-fix and every terminal verdict
+ok 40 - structural blockers override pass-after-fix and every terminal verdict
+  ---
+  duration_ms: 9.523291
+  type: 'test'
+  ...
+# Subtest: one chronological run order drives gate, history, and summary versions
+ok 41 - one chronological run order drives gate, history, and summary versions
+  ---
+  duration_ms: 5.932042
+  type: 'test'
+  ...
+# Subtest: rejects caller-injected pass after fix without repair-loop history
+ok 42 - rejects caller-injected pass after fix without repair-loop history
+  ---
+  duration_ms: 6.208458
+  type: 'test'
+  ...
+# Subtest: reuses complete cross-reference validation for attempt runner bindings
+ok 43 - reuses complete cross-reference validation for attempt runner bindings
+  ---
+  duration_ms: 3.7105
+  type: 'test'
+  ...
+# Subtest: rejects integrity freshness and raw digest changes outside authorities
+ok 44 - rejects integrity freshness and raw digest changes outside authorities
+  ---
+  duration_ms: 3.600375
+  type: 'test'
+  ...
+# Subtest: malformed authoritative freshness fails closed instead of normalizing green
+ok 45 - malformed authoritative freshness fails closed instead of normalizing green
+  ---
+  duration_ms: 5.642833
+  type: 'test'
+  ...
+# Subtest: report-model schema independently rejects unsafe evidence paths and hrefs
+ok 46 - report-model schema independently rejects unsafe evidence paths and hrefs
+  ---
+  duration_ms: 4.87125
+  type: 'test'
+  ...
+# Subtest: repair review evidence must come from the successful post-fix chain
+ok 47 - repair review evidence must come from the successful post-fix chain
+  ---
+  duration_ms: 15.128416
+  type: 'test'
+  ...
+# Subtest: redacts separated CLI credential flags and values
+ok 48 - redacts separated CLI credential flags and values
+  ---
+  duration_ms: 6.956833
+  type: 'test'
+  ...
+# Subtest: orders RFC3339 offsets by epoch instead of text
+ok 49 - orders RFC3339 offsets by epoch instead of text
+  ---
+  duration_ms: 4.653
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1398.9895
+verification v2 overview report ok
+
+
+## stderr
+(empty)

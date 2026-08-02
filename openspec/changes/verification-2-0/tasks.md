@@ -67,7 +67,7 @@ User Outcome: Reviewers can identify stale cases and rerun the exact impacted ca
 User Outcome: Stakeholders can review lifecycle, case, result, evidence, and repair state in accessible HTML reports.
 
 - [x] 9.1 Stakeholder can receive one validated report model for all three report pages and every verdict state.
-- [ ] 9.2 Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html.
+- [x] 9.2 Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html.
 - [ ] 9.3 Stakeholder can review approved case contracts in test-case-catalog.html and immutable attempt evidence in test-case-results.html.
 - [ ] 9.4 Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages.
 

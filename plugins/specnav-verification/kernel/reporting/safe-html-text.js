@@ -58,7 +58,15 @@ function renderSafeHtmlText(redactor, value, options) {
   });
 }
 
+function renderSafeHtmlAttribute(redactor, value, options) {
+  const rendered = renderSafeHtmlText(redactor, value, options);
+  if (rendered.ok !== true) return rendered;
+  if (/[\u0000-\u001f\u007f]/.test(rendered.value)) return blocked();
+  return rendered;
+}
+
 module.exports = {
   escapeHtml,
+  renderSafeHtmlAttribute,
   renderSafeHtmlText
 };

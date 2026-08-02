@@ -37,8 +37,14 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/reporting/**
+- plugins/specnav-verification/kernel/contracts/schema-registry.js
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/assets/report/**
+- plugins/specnav-verification/package.json
 - tests/verification-v2/reports/**
+- tests/verification-v2/contracts/package-content.test.js
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-report-overview.sh
 
 ## Interfaces / Seams
 

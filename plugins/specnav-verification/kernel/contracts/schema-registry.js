@@ -23,6 +23,8 @@ const ENTITY_TYPES = Object.freeze([
   'migration-receipt'
 ]);
 
+const SCHEMA_REGISTRIES = new WeakSet();
+
 function deepFreeze(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
   for (const child of Object.values(value)) deepFreeze(child);
@@ -238,7 +240,7 @@ function createSchemaRegistry(options = {}) {
     return result.value;
   }
 
-  return Object.freeze({
+  const registry = Object.freeze({
     runtime_root: managedRuntimeRoot,
     list: () => [...ENTITY_TYPES],
     getSchema,
@@ -246,6 +248,19 @@ function createSchemaRegistry(options = {}) {
     validateFile,
     assertValid
   });
+  SCHEMA_REGISTRIES.add(registry);
+  return registry;
+}
+
+function isSchemaRegistry(value) {
+  try {
+    return SCHEMA_REGISTRIES.has(value)
+      && typeof value.validate === 'function'
+      && typeof value.getSchema === 'function'
+      && typeof value.assertValid === 'function';
+  } catch {
+    return false;
+  }
 }
 
 module.exports = {
@@ -253,6 +268,7 @@ module.exports = {
   createSchemaRegistry,
   deepFreeze,
   fieldForError,
+  isSchemaRegistry,
   normalizeErrors,
   requireManagedAjv
 };
