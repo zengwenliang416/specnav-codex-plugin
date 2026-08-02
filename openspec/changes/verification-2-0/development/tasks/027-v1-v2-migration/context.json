@@ -18,9 +18,13 @@
   ],
   "allowed_files": [
     "plugins/specnav-verification/kernel/migration/**",
+    "plugins/specnav-verification/kernel/index.js",
     "plugins/specnav-verification/scripts/verification-migrate.js",
     "plugins/specnav-development/scripts/development-contract.js",
-    "tests/verification-v2/migration/**"
+    "tests/run-development-plugin-fixtures.sh",
+    "tests/verification-v2/migration/**",
+    "tests/verification-v2/kernel/package-boundary.test.js",
+    "tests/run-verification-v2-migration.sh"
   ],
   "test_paths": [
     "node --test tests/verification-v2/migration/*.test.js",

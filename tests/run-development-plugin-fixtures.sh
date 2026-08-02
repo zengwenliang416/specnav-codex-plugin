@@ -1400,9 +1400,24 @@ cat >>"$ARTIFACT_MIGRATION_PROJECT/openspec/changes/add-dashboard/development/ta
 
 - Distinguish legacy V1 artifact migration from database migration and migrate
   the verification artifacts without changing application storage.
+- Keep the migration file surface separate from business database changes.
 MD
+cat >>"$ARTIFACT_MIGRATION_PROJECT/openspec/changes/add-dashboard/development/task-ledger.jsonl" <<'JSONL'
+{"task_id":"001-dashboard-summary","status":"policy_note","result":"Explicit database migration files still require a ready manifest; this artifact-only task does not create them."}
+JSONL
 run_json "$ARTIFACT_MIGRATION_PROJECT" "$TMP_DIR/artifact-migration.json" 0
 jq -e '.ok == true' "$TMP_DIR/artifact-migration.json" >/dev/null
+
+DATABASE_MIGRATION_FILES_FAIL_PROJECT="$TMP_DIR/database-migration-files-fail-project"
+cp -R "$HAPPY_PROJECT" "$DATABASE_MIGRATION_FILES_FAIL_PROJECT"
+cat >>"$DATABASE_MIGRATION_FILES_FAIL_PROJECT/openspec/changes/add-dashboard/development/handoff-to-verify.md" <<'MD'
+
+## Storage Change
+
+- Database migration files are required for the dashboard review timestamp.
+MD
+run_json "$DATABASE_MIGRATION_FILES_FAIL_PROJECT" "$TMP_DIR/database-migration-files-fail.json" 2
+assert_blocker "$TMP_DIR/database-migration-files-fail.json" 'migration-manifest-sql-mentioned-but-not-required'
 
 DATABASE_MIGRATION_FAIL_PROJECT="$TMP_DIR/database-migration-fail-project"
 cp -R "$HAPPY_PROJECT" "$DATABASE_MIGRATION_FAIL_PROJECT"

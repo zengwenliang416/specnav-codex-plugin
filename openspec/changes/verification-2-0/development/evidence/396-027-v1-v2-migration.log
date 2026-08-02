@@ -1,0 +1,167 @@
+# command: bash tests/run-verification-v2-migration.sh # task027-final-reviewed-focused
+# exit_status: 0
+# duration_ms: 1693
+
+## stdout
+TAP version 13
+# Subtest: CLI requires an explicit mode and request file
+ok 1 - CLI requires an explicit mode and request file
+  ---
+  duration_ms: 108.828792
+  type: 'test'
+  ...
+# Subtest: CLI dry-run, apply, and rollback use the same Kernel migrator
+ok 2 - CLI dry-run, apply, and rollback use the same Kernel migrator
+  ---
+  duration_ms: 1201.697958
+  type: 'test'
+  ...
+# Subtest: CLI invokes the real integrity checker for a legacy green reading
+ok 3 - CLI invokes the real integrity checker for a legacy green reading
+  ---
+  duration_ms: 109.892166
+  type: 'test'
+  ...
+# Subtest: dry-run plans migration without writing any file
+ok 4 - dry-run plans migration without writing any file
+  ---
+  duration_ms: 4.118791
+  type: 'test'
+  ...
+# Subtest: apply creates an exact backup, V2 projection, and validated receipt
+ok 5 - apply creates an exact backup, V2 projection, and validated receipt
+  ---
+  duration_ms: 43.241584
+  type: 'test'
+  ...
+# Subtest: failed V1 bytes and verdict survive migration unchanged
+ok 6 - failed V1 bytes and verdict survive migration unchanged
+  ---
+  duration_ms: 22.577333
+  type: 'test'
+  ...
+# Subtest: legacy green without evidence becomes blocked and requires rerun
+ok 7 - legacy green without evidence becomes blocked and requires rerun
+  ---
+  duration_ms: 2.335875
+  type: 'test'
+  ...
+# Subtest: legacy green remains pass only with intact and fresh evidence
+ok 8 - legacy green remains pass only with intact and fresh evidence
+  ---
+  duration_ms: 2.073792
+  type: 'test'
+  ...
+# Subtest: stale or broken evidence converts legacy green to blocked
+ok 9 - stale or broken evidence converts legacy green to blocked
+  ---
+  duration_ms: 3.487375
+  type: 'test'
+  ...
+# Subtest: SQL and declared database artifacts are rejected
+ok 10 - SQL and declared database artifacts are rejected
+  ---
+  duration_ms: 2.347959
+  type: 'test'
+  ...
+# Subtest: missing change root and duplicate sources are rejected before writes
+ok 11 - missing change root and duplicate sources are rejected before writes
+  ---
+  duration_ms: 1.778042
+  type: 'test'
+  ...
+# Subtest: path traversal and symlink sources are rejected
+ok 12 - path traversal and symlink sources are rejected
+  ---
+  duration_ms: 1.449292
+  type: 'test'
+  ...
+# Subtest: apply never overwrites an existing migration target
+ok 13 - apply never overwrites an existing migration target
+  ---
+  duration_ms: 2.692083
+  type: 'test'
+  ...
+# Subtest: rollback removes only this migration projection and retains backup and receipts
+ok 14 - rollback removes only this migration projection and retains backup and receipts
+  ---
+  duration_ms: 29.54175
+  type: 'test'
+  ...
+# Subtest: rollback blocks when a transformed artifact was tampered with
+ok 15 - rollback blocks when a transformed artifact was tampered with
+  ---
+  duration_ms: 27.221625
+  type: 'test'
+  ...
+# Subtest: rollback rejects a forged receipt that targets an arbitrary in-root file
+ok 16 - rollback rejects a forged receipt that targets an arbitrary in-root file
+  ---
+  duration_ms: 1.970292
+  type: 'test'
+  ...
+# Subtest: apply compensates all partial outputs when receipt creation fails
+ok 17 - apply compensates all partial outputs when receipt creation fails
+  ---
+  duration_ms: 21.944708
+  type: 'test'
+  ...
+# Subtest: rollback restores the projection when rollback receipt creation fails
+ok 18 - rollback restores the projection when rollback receipt creation fails
+  ---
+  duration_ms: 34.469542
+  type: 'test'
+  ...
+# Subtest: schema-invalid receipts fail closed before apply writes
+ok 19 - schema-invalid receipts fail closed before apply writes
+  ---
+  duration_ms: 1.4955
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1526.300083
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.928875
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 18.653334
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.278584
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 15.462
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 80.754375
+
+
+## stderr
+(empty)

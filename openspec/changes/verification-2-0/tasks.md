@@ -75,7 +75,7 @@ User Outcome: Stakeholders can review lifecycle, case, result, evidence, and rep
 
 User Outcome: Maintainers can migrate or roll back V1 artifacts without manufacturing a V2 PASS.
 
-- [ ] 10.1 Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS.
+- [x] 10.1 Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS.
 
 ## 11. Host Integrations
 

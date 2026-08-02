@@ -1,0 +1,344 @@
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.931292
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+not ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 44.060083
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/kernel/package-boundary.test.js:38:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.454208
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 17.38875
+  type: 'test'
+  ...
+# Subtest: CLI requires an explicit mode and request file
+not ok 5 - CLI requires an explicit mode and request file
+  ---
+  duration_ms: 0.489833
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/scripts/verification-migrate.js'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js:21:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+  ...
+# Subtest: CLI dry-run, apply, and rollback use the same Kernel migrator
+not ok 6 - CLI dry-run, apply, and rollback use the same Kernel migrator
+  ---
+  duration_ms: 2.465125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Cannot find module '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/scripts/verification-migrate.js'
+    Require stack:
+    - /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js
+  code: 'MODULE_NOT_FOUND'
+  stack: |-
+    Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    Function._load (node:internal/modules/cjs/loader:1192:37)
+    TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    Module.require (node:internal/modules/cjs/loader:1463:12)
+    require (node:internal/modules/helpers:147:16)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/cli.test.js:52:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+  ...
+# Subtest: dry-run plans migration without writing any file
+not ok 7 - dry-run plans migration without writing any file
+  ---
+  duration_ms: 3.220708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:24:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:34:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: apply creates an exact backup, V2 projection, and validated receipt
+not ok 8 - apply creates an exact backup, V2 projection, and validated receipt
+  ---
+  duration_ms: 1.489208
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:45:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:53:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: failed V1 bytes and verdict survive migration unchanged
+not ok 9 - failed V1 bytes and verdict survive migration unchanged
+  ---
+  duration_ms: 1.119166
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:90:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:103:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: legacy green without evidence becomes blocked and requires rerun
+not ok 10 - legacy green without evidence becomes blocked and requires rerun
+  ---
+  duration_ms: 1.164334
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:119:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:129:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: legacy green remains pass only with intact and fresh evidence
+not ok 11 - legacy green remains pass only with intact and fresh evidence
+  ---
+  duration_ms: 1.746416
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:142:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:157:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: stale or broken evidence converts legacy green to blocked
+not ok 12 - stale or broken evidence converts legacy green to blocked
+  ---
+  duration_ms: 1.094875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:168:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:194:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SQL and declared database artifacts are rejected
+not ok 13 - SQL and declared database artifacts are rejected
+  ---
+  duration_ms: 1.817666
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:204:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:224:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: path traversal and symlink sources are rejected
+not ok 14 - path traversal and symlink sources are rejected
+  ---
+  duration_ms: 1.359167
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:235:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:252:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: apply never overwrites an existing migration target
+not ok 15 - apply never overwrites an existing migration target
+  ---
+  duration_ms: 1.752
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:263:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:279:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rollback removes only this migration projection and retains backup and receipts
+not ok 16 - rollback removes only this migration projection and retains backup and receipts
+  ---
+  duration_ms: 1.460625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:290:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:298:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rollback blocks when a transformed artifact was tampered with
+not ok 17 - rollback blocks when a transformed artifact was tampered with
+  ---
+  duration_ms: 1.476667
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:335:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:343:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: schema-invalid receipts fail closed before apply writes
+not ok 18 - schema-invalid receipts fail closed before apply writes
+  ---
+  duration_ms: 0.874875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:367:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createV1ToV2Migrator is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    createMigrator (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/test-helpers.js:159:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/migration/migrator.test.js:376:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 3
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.650791
+
+# exit_status: 1

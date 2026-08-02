@@ -94,7 +94,7 @@ const BRIEF_CORE_HEADINGS = [
   'Verification Commands',
   'Stop Conditions'
 ];
-const SQL_INTENT_PATTERN = /\b(?:ALTER\s+TABLE|CREATE\s+TABLE|DROP\s+TABLE|CREATE\s+INDEX|DROP\s+INDEX|INSERT\s+INTO|UPDATE\s+[a-z0-9_."`]+?\s+SET|DELETE\s+FROM|sys_menu|sys_role_menu|seed\s+sql|(?:add|apply|create|execute|generate|implement|include|provide|requires?|run|write)\s+(?:a\s+|an\s+|the\s+)?(?:database|schema|sql)\s+migrations?|(?:database|schema|sql)\s+migrations?\s+(?:is|are)\s+required|migrations?\s+(?:sql|ddl|dml|scripts?|files?)|ddl|dml)\b/i;
+const SQL_INTENT_PATTERN = /\b(?:ALTER\s+TABLE|CREATE\s+TABLE|DROP\s+TABLE|CREATE\s+INDEX|DROP\s+INDEX|INSERT\s+INTO|UPDATE\s+[a-z0-9_."`]+?\s+SET|DELETE\s+FROM|sys_menu|sys_role_menu|seed\s+sql|(?:add|apply|create|execute|generate|implement|include|provide|requires?|run|write)\s+(?:a\s+|an\s+|the\s+)?(?:database|schema|sql)\s+migrations?|(?:database|schema|sql)\s+migrations?\s+(?:(?:is|are)\s+required|files?)|migrations?\s+(?:sql|ddl|dml|scripts?)|ddl|dml)\b/i;
 const SQL_FILE_PATTERN = /\.sql$/i;
 const SQL_KIND_PATTERN = /\b(?:ALTER|CREATE|DROP|INSERT|UPDATE|DELETE|TRUNCATE|MERGE)\b/i;
 
@@ -1013,10 +1013,7 @@ function scanSqlIntent(changeDir) {
     'acceptance.md',
     'tasks.md',
     'development/handoff-to-verify.md',
-    'development/validation-log.jsonl',
-    'development/task-ledger.jsonl',
     'verify/traceability-matrix.json',
-    'verify/evidence-index.jsonl'
   ];
   const taskRoot = path.join(changeDir, 'development', 'tasks');
   try {

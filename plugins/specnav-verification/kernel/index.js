@@ -50,6 +50,9 @@ const {
 const {
   createDecisionEngine
 } = require('./gates');
+const {
+  createV1ToV2Migrator
+} = require('./migration');
 
 module.exports = Object.freeze({
   createCaseCatalogRenderer,
@@ -65,6 +68,7 @@ module.exports = Object.freeze({
   createExecutionOrchestrator,
   createEvidenceStore,
   createEvidenceIntegrityChecker,
+  createV1ToV2Migrator,
   createSecretRedactor,
   createCaseFreshnessEvaluator,
   createCaseRerunPlanner,

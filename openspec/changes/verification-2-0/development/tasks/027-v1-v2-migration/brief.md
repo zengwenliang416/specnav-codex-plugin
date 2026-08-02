@@ -37,9 +37,13 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - plugins/specnav-verification/kernel/migration/**
+- plugins/specnav-verification/kernel/index.js
 - plugins/specnav-verification/scripts/verification-migrate.js
 - plugins/specnav-development/scripts/development-contract.js
+- tests/run-development-plugin-fixtures.sh
 - tests/verification-v2/migration/**
+- tests/verification-v2/kernel/package-boundary.test.js
+- tests/run-verification-v2-migration.sh
 
 ## Interfaces / Seams
 
@@ -59,6 +63,14 @@ listed verification commands and must preserve all earlier artifacts.
 ## Components To Extract
 
 - Artifact backup/restore and migration-step registry
+
+## Pre-Edit Complexity Check
+
+- Safer edit boundary: one host-neutral migration owner, one artifact
+  backup/restore owner, one transformation registry, and one thin CLI.
+- Decision: add owner files under `kernel/migration/`; extend the Kernel public
+  entry and package-boundary test; do not add migration branches to Evidence
+  Store, DecisionEngine, or host adapters.
 
 ## API / Data Flow Contracts
 

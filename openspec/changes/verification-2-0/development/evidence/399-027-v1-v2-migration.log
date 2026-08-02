@@ -1,0 +1,9 @@
+# command: node --check plugins/specnav-verification/kernel/migration/artifact-backup.js && node --check plugins/specnav-verification/kernel/migration/transformation-registry.js && node --check plugins/specnav-verification/kernel/migration/migrator.js && node --check plugins/specnav-verification/kernel/migration/index.js && node --check plugins/specnav-verification/scripts/verification-migrate.js && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' # task027-final-reviewed-syntax-diff
+# exit_status: 0
+# duration_ms: 181
+
+## stdout
+(empty)
+
+## stderr
+(empty)
