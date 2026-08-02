@@ -738,6 +738,100 @@ function mergeById(existing, additions) {
   ));
 }
 
+function mergeIntegrityResults(values) {
+  const blockers = [];
+  const factsById = new Map();
+  for (const value of values) {
+    blockers.push(...(Array.isArray(value?.blockers) ? value.blockers : []));
+    for (const fact of value?.facts?.evidence || []) {
+      if (!fact || typeof fact.evidence_id !== 'string') continue;
+      const prior = factsById.get(fact.evidence_id);
+      if (prior && canonicalJson(prior) !== canonicalJson(fact)) {
+        blockers.push(blocker(
+          'verification-production:integrity-fact-conflict',
+          fact.evidence_id
+        ));
+        continue;
+      }
+      factsById.set(fact.evidence_id, fact);
+    }
+  }
+  const evidence = [...factsById.values()].sort((left, right) => (
+    left.evidence_id.localeCompare(right.evidence_id)
+  ));
+  const intact = evidence.length > 0 && evidence.every((entry) => (
+    entry.integrity === 'intact'
+    && entry.freshness === 'fresh'
+    && entry.exists === true
+    && entry.hash_match === true
+    && entry.size_match === true
+    && entry.producer_recognized === true
+    && entry.store_record_match === true
+    && entry.binding_match === true
+    && entry.path_safe === true
+  ));
+  const uniqueBlockers = new Map();
+  for (const entry of blockers) {
+    const key = canonicalJson(entry);
+    if (!uniqueBlockers.has(key)) uniqueBlockers.set(key, entry);
+  }
+  const stable = [...uniqueBlockers.values()].sort((left, right) => (
+    canonicalJson(left).localeCompare(canonicalJson(right))
+  ));
+  return {
+    ok: stable.length === 0 && intact,
+    facts: {
+      summary: {
+        evidence_count: evidence.length,
+        integrity: intact ? 'intact' : 'broken',
+        freshness: evidence.length > 0 && evidence.every(
+          (entry) => entry.freshness === 'fresh'
+        )
+          ? 'fresh'
+          : 'unknown'
+      },
+      evidence
+    },
+    blockers: stable
+  };
+}
+
+function aggregateRunIntegrity(store, execution, currentIntegrity) {
+  const values = [];
+  const blockers = [];
+  for (const attempt of execution.attempts) {
+    if (attempt.id === execution.attempt.id) {
+      values.push(currentIntegrity);
+      continue;
+    }
+    const relative = [
+      'runs',
+      execution.run.id,
+      'attempts',
+      attempt.id,
+      'integrity.json'
+    ].join('/');
+    const persisted = store.readJson(relative);
+    if (!persisted.ok) {
+      blockers.push(blocker(
+        'verification-production:attempt-integrity-missing',
+        attempt.id,
+        persisted.blockers
+      ));
+      continue;
+    }
+    values.push(persisted.value);
+  }
+  const aggregate = mergeIntegrityResults(values);
+  return {
+    ...aggregate,
+    ok: blockers.length === 0 && aggregate.ok,
+    blockers: [...aggregate.blockers, ...blockers].sort((left, right) => (
+      canonicalJson(left).localeCompare(canonicalJson(right))
+    ))
+  };
+}
+
 function resolveScenario(scenarioRegistry, testCase) {
   if (!['playwright', 'midscene'].includes(testCase.runner.kind)) {
     return { ok: true, value: null, blockers: [] };
@@ -1238,11 +1332,30 @@ function createProductionVerificationRunner(options = {}) {
       readingResult.readings
     );
     if (!readingWrite.ok) blockers.push(...readingWrite.blockers);
-    const integrityWrite = artifactStore.publishJson(
-      `runs/${execution.run.id}/integrity.json`,
+    const attemptIntegrityWrite = artifactStore.publishImmutableJson(
+      [
+        'runs',
+        execution.run.id,
+        'attempts',
+        execution.attempt.id,
+        'integrity.json'
+      ].join('/'),
       finalIntegrity
     );
-    if (!integrityWrite.ok) blockers.push(...integrityWrite.blockers);
+    if (!attemptIntegrityWrite.ok) {
+      blockers.push(...attemptIntegrityWrite.blockers);
+    }
+    const runIntegrity = aggregateRunIntegrity(
+      artifactStore,
+      execution,
+      finalIntegrity
+    );
+    blockers.push(...runIntegrity.blockers);
+    const runIntegrityWrite = artifactStore.publishJson(
+      `runs/${execution.run.id}/integrity.json`,
+      runIntegrity
+    );
+    if (!runIntegrityWrite.ok) blockers.push(...runIntegrityWrite.blockers);
     const failure = failureProjection({
       kernel,
       schemaRegistry,
@@ -1351,6 +1464,7 @@ module.exports = {
   createProductionVerificationRunner,
   exactProtocol,
   evidenceRequests,
+  mergeIntegrityResults,
   makeFollowupRun,
   makeInitialRun
 };

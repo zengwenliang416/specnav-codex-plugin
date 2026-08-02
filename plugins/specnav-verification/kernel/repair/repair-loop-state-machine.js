@@ -150,6 +150,21 @@ function sorted(values) {
   return [...new Set(values)].sort();
 }
 
+function compareAttempts(left, right) {
+  return left.sequence - right.sequence
+    || String(left.completed_at || '').localeCompare(
+      String(right.completed_at || '')
+    )
+    || String(left.started_at || '').localeCompare(
+      String(right.started_at || '')
+    )
+    || left.id.localeCompare(right.id);
+}
+
+function orderedAttempts(values) {
+  return [...values].sort(compareAttempts);
+}
+
 function rerunScopeProjection(plan) {
   return {
     required_cases: sorted(plan.required_cases),
@@ -578,10 +593,10 @@ function validateAttempts(
     }
   }
 
-  const first = attempts[0];
+  const first = attempts.find((attempt) => attempt.id === packet.attempt_id);
   if (
-    first
-    && (
+    !first
+    || (
       first.id !== packet.attempt_id
       || first.kind !== 'initial'
       || first.change_id !== packet.change_id
@@ -592,12 +607,13 @@ function validateAttempts(
   ) {
     blockers.push(blocker(
       'verification-repair-loop:initial-attempt-binding-mismatch',
-      first.id
+      first?.id || packet.attempt_id
     ));
   }
 
   const byId = new Map(attempts.map((attempt) => [attempt.id, attempt]));
-  for (const attempt of attempts.slice(1)) {
+  for (const attempt of attempts) {
+    if (attempt.id === first?.id) continue;
     if (attempt.kind === 'initial') {
       blockers.push(blocker(
         'verification-repair-loop:initial-attempt-repeated',
@@ -653,7 +669,7 @@ function validateAttempts(
   }
   return {
     blockers,
-    attempts,
+    attempts: orderedAttempts(attempts),
     factsByAttempt: factResult.factsByAttempt
   };
 }
@@ -888,7 +904,7 @@ function attemptLabel(attempt, fact) {
 function buildHistory(attempts, factsByAttempt, repairLink) {
   const history = [];
   let repairInserted = false;
-  for (const attempt of attempts) {
+  for (const attempt of orderedAttempts(attempts)) {
     if (
       repairLink
       && !repairInserted
@@ -1058,7 +1074,7 @@ function createRepairLoopStateMachine(options = {}) {
       return blocked(attemptState.blockers);
     }
     const { attempts, factsByAttempt } = attemptState;
-    const first = attempts[0];
+    const first = attempts.find((attempt) => attempt.id === packet.attempt_id);
 
     let repairLink = null;
     if (request.repair_link !== undefined) {
@@ -1091,11 +1107,15 @@ function createRepairLoopStateMachine(options = {}) {
       });
     }
 
-    const retries = attempts.filter((attempt) => attempt.kind === 'retry');
-    const retests = attempts.filter((attempt) => attempt.kind === 'retest');
-    const regressions = attempts.filter((attempt) => (
+    const retries = orderedAttempts(
+      attempts.filter((attempt) => attempt.kind === 'retry')
+    );
+    const retests = orderedAttempts(
+      attempts.filter((attempt) => attempt.kind === 'retest')
+    );
+    const regressions = orderedAttempts(attempts.filter((attempt) => (
       attempt.kind === 'regression'
-    ));
+    )));
 
     if (REPAIR_CLASSIFICATIONS.includes(packet.classification)) {
       if (retries.length > 0) {
@@ -1202,7 +1222,10 @@ function createRepairLoopStateMachine(options = {}) {
             )
           ], history);
         }
-        latestRegressionByCase.set(regression.case_id, regression);
+        const prior = latestRegressionByCase.get(regression.case_id);
+        if (!prior || compareAttempts(prior, regression) < 0) {
+          latestRegressionByCase.set(regression.case_id, regression);
+        }
       }
       const missingCases = rerun.regressionCases.filter((caseId) => (
         !latestRegressionByCase.has(caseId)

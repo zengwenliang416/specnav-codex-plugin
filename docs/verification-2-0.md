@@ -85,6 +85,13 @@ browser INSTALLATION_COMPLETE markers
 preserved .failed-* attempts when installation fails
 ```
 
+The receipt is not only an installation log. It binds the exact package lock,
+the complete managed `node_modules` tree through `module_tree_sha256`, the
+Verification Kernel contract digest, and every managed browser executable
+through `executable_sha256`. Doctor and release proof recalculate these values
+from the live runtime. A saved `runtime-status.json` cannot make a modified,
+missing, or substituted runtime authoritative.
+
 ## Case Approval
 
 Run `specnav-verify-plan` after development handoff. It creates test cases with
@@ -98,6 +105,21 @@ reviewer identity invalidates the approval and requires a new signoff.
 The plan must cover every requirement and acceptance assertion. Empty plans,
 unknown references, incomplete domain mappings, or service-authored approval
 block execution.
+
+The normalized inputs are persisted separately:
+
+```text
+verify/v2/requirements-source.json
+verify/v2/acceptance-source.json
+verify/v2/case-snapshot.json
+verify/v2/case-approval.json
+```
+
+The snapshot hashes the normalized requirements and acceptance sources. The
+approval must bind the exact snapshot id and hash, change id, decision time,
+and an external reviewer identity supplied again at execution. The reviewer
+must be `kind: "human"`; an agent, service, or mismatched reviewer id cannot
+approve its own generated plan.
 
 ## Six-Domain Execution
 
@@ -142,6 +164,22 @@ Playwright or Midscene case uses project-owned scenario code. The registry is
 loaded only after exact snapshot approval passes and must resolve inside the
 project without symbolic links.
 
+Execution is also bound to the current repository state:
+
+- `--change` must name the registered active change and use a safe single path
+  segment;
+- the business repository must have a valid, clean Git `HEAD`;
+- code and test fingerprints are derived from that exact commit;
+- a scenario registry must be a regular
+  `tests/specnav/*.js` or `tests/specnav/*.cjs` file whose working-tree bytes
+  equal `git show HEAD:<path>`;
+- registry top-level code is evaluated in a separate Node permission process
+  with no filesystem-write, network, or subprocess permission.
+
+An unregistered, inactive, dirty, symlinked, untracked, changed, or
+out-of-scope scenario blocks before a run directory or product process is
+created.
+
 ## Midscene Oracle Boundary
 
 Midscene may locate elements, interact with the UI, and interpret visual state.
@@ -156,6 +194,21 @@ Playwright remains the deterministic browser execution and artifact path.
 Screenshots, videos, traces, console records, network records, and assertions
 must bind to the exact run, attempt, case, step or assertion, code SHA, test
 SHA, environment hash, and approved scenario hash.
+
+## Evidence And Attempt Integrity
+
+Evidence is append-only and content addressed. Every attempt writes an
+immutable integrity result at:
+
+```text
+verify/runs/<run-id>/attempts/<attempt-id>/integrity.json
+```
+
+The run-level `verify/runs/<run-id>/integrity.json` aggregates every attempt in
+that run without replacing earlier failures. Finalization derives
+`verify/v2/integrity.json` from the complete persisted history. Missing,
+tampered, stale, cross-run, cross-case, or incorrectly fingerprinted evidence
+blocks the corresponding reading and therefore the six-domain gate.
 
 ## Repair, Retest, And Regression
 
@@ -254,6 +307,13 @@ The Verification Kernel is shared; installation and discovery are host-specific:
 Cross-host release governance compares the locked Kernel, schemas, blockers,
 fixtures, report model, host wrappers, and source provenance. CI detects drift;
 it never rewrites downstream repositories.
+
+Release and archive use a live host authority, not only the persisted
+`operations/cross-host-compatibility.json`. The authority resolves each
+repository's real path, requires a clean worktree, verifies its exact lock-bound
+Git `HEAD`, rebuilds the compatibility snapshot from the current plugin tree,
+manifest, Skill files, and host wrappers, then compares all hosts. Persisted
+green host receipts or compatibility data cannot override a live red result.
 
 ## Blockers And Troubleshooting
 

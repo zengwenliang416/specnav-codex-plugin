@@ -509,6 +509,77 @@ test('labels an unchanged-fingerprint retry pass as flaky', () => {
   assert.equal(result.history.at(-1).label, 'FLAKY');
 });
 
+test('selects initial and latest attempts deterministically from shuffled same-second history', () => {
+  const first = initialAttempt({
+    id: 'attempt-20260802010000-z-initial',
+    started_at: '2026-08-02T01:00:00Z',
+    completed_at: '2026-08-02T01:00:00Z'
+  });
+  const retry = {
+    ...first,
+    id: 'attempt-20260802010000-a-retry',
+    kind: 'retry',
+    sequence: 2,
+    parent_attempt_id: first.id,
+    status: 'failed',
+    exit_status: 1
+  };
+  const latestRetry = {
+    ...retry,
+    id: 'attempt-20260802010000-b-retry',
+    sequence: 3,
+    parent_attempt_id: retry.id,
+    status: 'passed',
+    exit_status: 0
+  };
+  const packet = clone(classificationResult({
+    classification: 'environment_defect'
+  }));
+  packet.packet.attempt_id = first.id;
+  packet.packet.run_id = first.run_id;
+  packet.packet.case_id = first.case_id;
+  packet.packet.change_id = first.change_id;
+  const attempts = [latestRetry, first, retry];
+  const result = factory().evaluate(request({
+    firstAttempt: first,
+    classificationResult: packet,
+    attempts,
+    runs: runHistory([first, retry, latestRetry], packet.packet),
+    attemptFacts: attempts.map((attempt) => attemptFact(attempt))
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'closure_ready');
+  assert.equal(result.label, 'flaky');
+  assert.deepEqual(
+    result.history.map((entry) => entry.attempt_id),
+    [first.id, retry.id, latestRetry.id]
+  );
+});
+
+test('allows parallel regression branches with the same sequence and chooses each case deterministically', () => {
+  const first = initialAttempt();
+  const retest = retestAttempt(first);
+  const baseline = regressionAttempt(retest, {
+    id: 'attempt-regression-z',
+    case_id: 'case-baseline',
+    started_at: '2026-08-01T07:22:00Z',
+    completed_at: '2026-08-01T07:22:01Z'
+  });
+  const attempts = [baseline, first, retest];
+  const result = factory().evaluate(request({
+    attempts,
+    runs: runHistory([first, retest, baseline], classificationResult().packet),
+    attemptFacts: attempts.map((attempt) => attemptFact(attempt)),
+    repairLink: completedRepair(first),
+    rerunPlan: rerunPlan()
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'closure_ready');
+  assert.equal(result.transition_proposal.action, 'close_failure');
+});
+
 test('rejects retry when any immutable retry fingerprint changes', () => {
   const first = initialAttempt();
   const retry = {

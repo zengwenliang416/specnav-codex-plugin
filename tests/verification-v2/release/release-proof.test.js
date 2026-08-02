@@ -13,6 +13,13 @@ const {
   createSixDomainAggregator
 } = require('../../../plugins/specnav-verification/kernel');
 const {
+  createCasePlanner,
+  createCaseSnapshotWriter
+} = require('../../../plugins/specnav-verification/kernel/cases');
+const {
+  loadRuntimeLock
+} = require('../../../plugins/specnav-verification/kernel/runtime/lock-manifest');
+const {
   readySchemaRegistry
 } = require('../contracts/cross-reference/test-helpers');
 const {
@@ -21,10 +28,14 @@ const {
 const {
   createReleaseProofValidator
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-proof');
+const {
+  createHostAuthorityFixture
+} = require('../cross-host/host-authority-test-helpers');
 
 const CHANGE = 'release-proof-change';
 const CASE_ID = 'case-release-proof';
 const HOSTS = ['claude-code', 'codex', 'codefree-o'];
+const RUNTIME_VERSION = loadRuntimeLock().runtime_version;
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -195,7 +206,7 @@ function evidence(source) {
     code_sha: source.code_sha,
     test_sha: source.test_sha,
     environment_hash: '4'.repeat(64),
-    runtime_version: '2.0.0',
+    runtime_version: RUNTIME_VERSION,
     kernel_version: '2.0.0-alpha.1',
     redaction: {
       status: 'not_required',
@@ -251,6 +262,7 @@ function gateInput() {
     case_snapshot_id: 'snapshot-release',
     case_snapshot_hash: 'a'.repeat(64),
     case_approval_id: 'approval-release',
+    case_approval_reviewer_id: 'reviewer-release',
     aggregation_request: aggregationRequest(),
     open_failure_ids: [],
     freshness: {
@@ -260,7 +272,7 @@ function gateInput() {
     },
     integrity_status: 'intact',
     evidence_index_version: 7,
-    runtime_version: '2.0.0',
+    runtime_version: RUNTIME_VERSION,
     kernel_version: '2.0.0-alpha.1',
     policy_version: 'verification-v2.0'
   };
@@ -289,7 +301,7 @@ function createGate(schemaRegistry, input, stage) {
   return result.gate;
 }
 
-function makeProject() {
+function makeProject(options = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-release-proof-'));
   const changeDir = path.join(root, 'openspec', 'changes', CHANGE);
   const verifyV2 = path.join(changeDir, 'verify', 'v2');
@@ -302,7 +314,31 @@ function makeProject() {
   fs.mkdirSync(opsDir, { recursive: true });
 
   const schemaRegistry = readySchemaRegistry();
+  const requirements = [{
+    id: 'REQ-1',
+    statement: 'The release proof uses current approved requirements.'
+  }];
+  const acceptance = [{
+    id: 'AC-1',
+    statement: 'All six domains and release provenance pass.'
+  }];
+  const plan = createCasePlanner({ schemaRegistry }).plan({
+    changeId: CHANGE,
+    requirements,
+    acceptance,
+    cases: [testCase()]
+  });
+  assert.equal(plan.ok, true, JSON.stringify(plan.blockers));
+  const snapshotResult = createCaseSnapshotWriter({ schemaRegistry }).create({
+    plan,
+    createdAt: '2026-08-02T00:00:00Z',
+    createdBy: reviewer()
+  });
+  assert.equal(snapshotResult.ok, true, JSON.stringify(snapshotResult.blockers));
+  const snapshot = snapshotResult.snapshot;
   const input = gateInput();
+  input.case_snapshot_id = snapshot.id;
+  input.case_snapshot_hash = snapshot.snapshot_hash;
   const releaseGate = createGate(schemaRegistry, input, 'release');
   const archiveGate = createGate(schemaRegistry, input, 'archive');
   const aggregate = createSixDomainAggregator({ schemaRegistry })
@@ -319,17 +355,6 @@ function makeProject() {
     source_digest: sha256(rawBytes),
     record_count: input.aggregation_request.evidence.length,
     entries: input.aggregation_request.evidence
-  };
-  const snapshot = {
-    schema: 'specnav.verification.case-snapshot.v1',
-    id: input.case_snapshot_id,
-    change_id: CHANGE,
-    snapshot_hash: input.case_snapshot_hash,
-    cases: [testCase()],
-    created_at: '2026-08-02T00:00:00Z',
-    created_by: reviewer(),
-    requirements_hash: '5'.repeat(64),
-    acceptance_hash: '6'.repeat(64)
   };
   const approval = {
     schema: 'specnav.verification.case-approval.v1',
@@ -366,6 +391,39 @@ function makeProject() {
 
   writeJson(path.join(verifyV2, 'case-snapshot.json'), snapshot);
   writeJson(path.join(verifyV2, 'case-approval.json'), approval);
+  writeJson(path.join(verifyV2, 'requirements-source.json'), requirements);
+  writeJson(path.join(verifyV2, 'acceptance-source.json'), acceptance);
+  const runtimeStatus = {
+    schema: 'specnav.verification.runtime-status.v1',
+    ok: true,
+    readiness: 'ready',
+    runtime_version: RUNTIME_VERSION,
+    runtime_root: schemaRegistry.runtime_root,
+    checks: {
+      lock: { ok: true },
+      runtime: { ok: true, root: schemaRegistry.runtime_root },
+      receipt: { ok: true, path: path.join(
+        schemaRegistry.runtime_root,
+        'install-receipt.json'
+      ) },
+      permissions: [],
+      packages: [],
+      browsers: [],
+      provider: {
+        configured: false,
+        model_name_present: false,
+        model_family_present: false,
+        credential_source: null,
+        base_url_present: false,
+        secret_values_exposed: false
+      }
+    },
+    blockers: [],
+    warnings: [],
+    actions: [],
+    fallback_used: false
+  };
+  writeJson(path.join(verifyV2, 'runtime-status.json'), runtimeStatus);
   writeJson(path.join(verifyV2, 'gate-input.json'), input);
   writeJson(path.join(verifyV2, 'release-gate.json'), releaseGate);
   writeJson(path.join(verifyV2, 'archive-gate.json'), archiveGate);
@@ -414,14 +472,17 @@ function makeProject() {
     ),
     evidence_index_digest: evidenceIndex.source_digest
   };
-  const records = HOSTS.map((host, index) => {
+  const configuredCommits = options.hostCommits || Object.fromEntries(
+    HOSTS.map((host, index) => [host, String(index + 7).repeat(40)])
+  );
+  const records = HOSTS.map((host) => {
     const receiptPath = path.join('operations', 'install-receipts', `${host}.json`);
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
       ...releaseBindings,
       source: `https://github.com/example/specnav-${host}.git`,
-      commit: String(index + 7).repeat(40),
+      commit: configuredCommits[host],
       clean_checkout: true,
       plugin_discovered: true,
       runtime_ready: true,
@@ -461,6 +522,52 @@ function makeProject() {
     recorded_at: '2026-08-02T00:00:06Z'
   });
 
+  const commits = Object.fromEntries(records.map((entry) => [
+    entry.host,
+    entry.commit
+  ]));
+  const defaultHostCompatibilityAuthority = {
+    resolve() {
+      return options.hostAuthorityResult || {
+        ok: true,
+        commits,
+        comparison: {
+          ok: true,
+          blockers: []
+        },
+        summary: {
+          digest: 'd'.repeat(64),
+          lock_sha256: 'e'.repeat(64),
+          commits,
+          heads: commits,
+          snapshots: Object.fromEntries(HOSTS.map((host) => [
+            host,
+            'f'.repeat(64)
+          ])),
+          comparison: 'a'.repeat(64)
+        },
+        blockers: []
+      };
+    }
+  };
+  const hostCompatibilityAuthority = options.hostCompatibilityAuthority
+    || defaultHostCompatibilityAuthority;
+  const runtimeAuthority = {
+    resolve(candidate) {
+      return options.runtimeAuthorityResult || {
+        ok: true,
+        runtimeRoot: schemaRegistry.runtime_root,
+        runtimeStatus: candidate,
+        authority: {
+          schema: 'specnav.verification.runtime-authority.v1',
+          digest: 'b'.repeat(64),
+          runtime_version: RUNTIME_VERSION,
+          runtime_root: schemaRegistry.runtime_root
+        },
+        blockers: []
+      };
+    }
+  };
   return {
     root,
     changeDir,
@@ -470,6 +577,8 @@ function makeProject() {
     schemaRegistry,
     validator: createReleaseProofValidator({
       schemaRegistry,
+      runtimeAuthority,
+      hostCompatibilityAuthority,
       clock: () => '2026-08-02T00:00:07Z'
     })
   };
@@ -506,6 +615,35 @@ test('missing or non-human case approval blocks release', () => {
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(blockers(result).has('verification-release:case-approval-invalid'), true);
+});
+
+test('reviewer source hashes and approval time are revalidated by the Kernel authority', () => {
+  for (const mutation of ['reviewer', 'requirements', 'time']) {
+    const fixture = makeProject();
+    if (mutation === 'reviewer') {
+      const inputPath = path.join(fixture.verifyV2, 'gate-input.json');
+      const input = readJson(inputPath);
+      input.case_approval_reviewer_id = 'reviewer-forged';
+      writeJson(inputPath, input);
+    } else if (mutation === 'requirements') {
+      writeJson(
+        path.join(fixture.verifyV2, 'requirements-source.json'),
+        [{ id: 'REQ-1', statement: 'Tampered after approval.' }]
+      );
+    } else {
+      const approvalPath = path.join(fixture.verifyV2, 'case-approval.json');
+      const approval = readJson(approvalPath);
+      approval.decided_at = '2026-07-31T23:59:59Z';
+      writeJson(approvalPath, approval);
+    }
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    assert.equal(result.ok, false, mutation);
+    assert.equal(
+      blockers(result).has('verification-release:case-approval-invalid'),
+      true,
+      mutation
+    );
+  }
 });
 
 test('partial-domain and light-mode input cannot reuse a persisted green gate', () => {
@@ -770,6 +908,88 @@ test('cross-host compatibility blockers stop release and archive', () => {
   assert.equal(
     blockers(result).has('verification-release:cross-host-compatibility-blocked'),
     true
+  );
+});
+
+test('persisted green host claims cannot bypass a red live host authority', () => {
+  const fixture = makeProject({
+    hostAuthorityResult: {
+      ok: false,
+      commits: {},
+      comparison: {
+        ok: false,
+        blockers: [{
+          id: 'verification-drift:kernel-source-mismatch:claude-code'
+        }]
+      },
+      summary: {
+        digest: '0'.repeat(64)
+      },
+      blockers: [{
+        id: 'verification-release:host-head-mismatch:claude-code',
+        artifact: 'claude-code'
+      }]
+    }
+  });
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has(
+      'verification-release:host-head-mismatch:claude-code'
+    ),
+    true
+  );
+  assert.equal(
+    blockers(result).has(
+      'verification-release:cross-host-compatibility-blocked'
+    ),
+    true
+  );
+});
+
+test('persisted green compatibility cannot bypass real live host wrapper drift', (t) => {
+  const hosts = createHostAuthorityFixture(t);
+  const green = hosts.authority().resolve();
+  assert.equal(green.ok, true, JSON.stringify(green.blockers, null, 2));
+  const fixture = makeProject({
+    hostCompatibilityAuthority: hosts.authority(),
+    hostCommits: green.commits
+  });
+  const wrapper = path.join(
+    hosts.roots['claude-code'],
+    hosts.descriptors['claude-code'].plugin,
+    'scripts/claude-verification-adapter.js'
+  );
+  fs.appendFileSync(wrapper, '\n// live wrapper drift\n');
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  const ids = blockers(result);
+  const persisted = readJson(path.join(
+    fixture.opsDir,
+    'cross-host-compatibility.json'
+  ));
+
+  assert.equal(persisted.ok, true);
+  assert.equal(result.ok, false);
+  assert.equal(
+    ids.has('verification-release:host-worktree-dirty:claude-code'),
+    true
+  );
+  assert.equal(
+    ids.has(
+      'verification-drift:manifest-host-file-digest-mismatch:claude-code'
+    ),
+    true
+  );
+  assert.equal(
+    ids.has('verification-release:cross-host-compatibility-blocked'),
+    true
+  );
+  assert.equal(
+    [...ids].some((id) => id.includes('install-receipt-invalid')),
+    false
   );
 });
 

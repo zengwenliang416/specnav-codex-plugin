@@ -15,6 +15,9 @@ const {
 const {
   probeProvider
 } = require('./provider-contract');
+const {
+  moduleTreeDigest
+} = require('./runtime-integrity');
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -357,6 +360,29 @@ function doctorRuntime(options = {}) {
       packageLockFile
     ));
   }
+  if (receipt) {
+    let actualModuleTreeDigest = null;
+    try {
+      actualModuleTreeDigest = moduleTreeDigest(runtimeRoot);
+    } catch (error) {
+      addUnique(blockers, blocker(
+        'verification-runtime:module-tree-integrity-unavailable',
+        path.join(runtimeRoot, 'node_modules'),
+        error instanceof Error ? error.message : String(error)
+      ));
+    }
+    checks.receipt.module_tree_integrity_ok = (
+      typeof receipt.module_tree_sha256 === 'string'
+      && receipt.module_tree_sha256 === actualModuleTreeDigest
+    );
+    if (!checks.receipt.module_tree_integrity_ok) {
+      checks.receipt.ok = false;
+      addUnique(blockers, blocker(
+        'verification-runtime:module-tree-integrity-mismatch',
+        path.join(runtimeRoot, 'node_modules')
+      ));
+    }
+  }
 
   for (const [name, expected] of Object.entries(runtimeLock.packages)) {
     const packageArtifact = path.join(
@@ -432,6 +458,9 @@ function doctorRuntime(options = {}) {
       ? path.join(browserRoot, 'INSTALLATION_COMPLETE')
       : null;
     const executableExists = !!executable && fs.existsSync(executable);
+    const executableIntegrityOk = executableExists
+      && typeof receiptBrowser?.executable_sha256 === 'string'
+      && sha256File(executable) === receiptBrowser.executable_sha256;
     const markerExists = !!marker && fs.existsSync(marker);
     const executableAllowed = executableExists && adapters.accessPath({
       kind: 'browser-executable',
@@ -450,6 +479,7 @@ function doctorRuntime(options = {}) {
       revision: browser.revision,
       marker_exists: markerExists,
       executable_exists: executableExists,
+      executable_integrity_ok: executableIntegrityOk,
       executable_allowed: executableAllowed,
       probe_ok: probe.ok === true && probe.status === 0,
       probe_exit_status: probe.status
@@ -463,6 +493,11 @@ function doctorRuntime(options = {}) {
     if (!executableExists) {
       addUnique(blockers, blocker(
         `verification-runtime:browser-executable-missing:${browser.name}`,
+        executable
+      ));
+    } else if (!executableIntegrityOk) {
+      addUnique(blockers, blocker(
+        `verification-runtime:browser-executable-integrity-mismatch:${browser.name}`,
         executable
       ));
     } else if (!executableAllowed) {

@@ -34,6 +34,10 @@ const { repairRuntime } = require(path.join(
   ROOT,
   'plugins/specnav-verification/kernel/runtime/repair'
 ));
+const { moduleTreeDigest } = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/runtime/runtime-integrity'
+));
 
 test('doctor probes FFmpeg with its supported version argument', () => {
   const calls = [];
@@ -131,6 +135,7 @@ function runtimeFixture(t) {
         directoryName,
         ...executableRelative.split(path.sep)
       ),
+      executable_sha256: sha256File(executable),
       integrity_verified: true
     });
   }
@@ -149,6 +154,7 @@ function runtimeFixture(t) {
       contract_digest: lock.kernel.contract_digest
     },
     package_lock_sha256: sha256File(path.join(runtimeRoot, 'package-lock.json')),
+    module_tree_sha256: moduleTreeDigest(runtimeRoot),
     packages: Object.entries(lock.packages).map(([name, spec]) => ({
       name,
       version: spec.version,

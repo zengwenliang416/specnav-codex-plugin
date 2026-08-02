@@ -7,6 +7,9 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const { resolveRuntimeLock } = require('./lock-manifest');
+const {
+  moduleTreeDigest
+} = require('./runtime-integrity');
 
 const PROJECT_MANIFESTS = Object.freeze([
   'package.json',
@@ -404,6 +407,7 @@ async function installBrowsers(stagingRoot, lock, platformKey, adapters, emit) {
         directoryName,
         ...executableRelativePath.split(path.sep)
       ),
+      executable_sha256: sha256File(executable),
       integrity_verified: true
     });
   }
@@ -568,6 +572,7 @@ async function installRuntime(options) {
         contract_digest: runtimeLock.kernel.contract_digest
       },
       package_lock_sha256: packageResult.packageLockSha256,
+      module_tree_sha256: moduleTreeDigest(stagingRoot),
       packages: packageResult.packages,
       browsers,
       project_root: path.resolve(projectRoot),

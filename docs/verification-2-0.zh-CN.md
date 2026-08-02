@@ -82,6 +82,12 @@ browser INSTALLATION_COMPLETE markers
 安装失败时保留的 .failed-* attempt
 ```
 
+receipt 不只是安装日志。它会通过 `module_tree_sha256` 绑定准确 package
+lock 和完整托管 `node_modules` 树，同时绑定 Verification Kernel contract
+digest，并通过 `executable_sha256` 绑定每个托管浏览器可执行文件。doctor
+与 release proof 会从实时运行时重新计算这些值。已经保存的
+`runtime-status.json` 不能让被修改、缺失或替换的运行时成为权威。
+
 ## 测试用例批准
 
 开发交接后运行 `specnav-verify-plan`。它会创建包含 actor、前置条件、
@@ -93,6 +99,20 @@ acceptance、用例内容、snapshot hash 或 reviewer identity 变化后，旧�
 
 计划必须覆盖所有 requirement 和 acceptance assertion。空计划、未知引用、
 不完整的域映射或服务身份批准都会阻塞执行。
+
+规范化输入会分别持久化：
+
+```text
+verify/v2/requirements-source.json
+verify/v2/acceptance-source.json
+verify/v2/case-snapshot.json
+verify/v2/case-approval.json
+```
+
+snapshot 会计算规范化 requirements 与 acceptance source 的 hash。approval
+必须绑定准确 snapshot id/hash、change id、决策时间，并绑定一个在执行时再次
+传入的外部 reviewer identity。reviewer 必须是 `kind: "human"`；agent、
+service 或 reviewer id 不匹配时，不能批准其自行生成的计划。
 
 ## 六域执行
 
@@ -136,6 +156,20 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" execute 
 `--scenario-registry "<project-relative-module>"`。注册表只会在准确
 snapshot approval 通过后加载，并且必须位于项目目录内且不能经过符号链接。
 
+执行还会绑定当前仓库状态：
+
+- `--change` 必须是已登记且处于 active 的 change，并且只能是安全的单路径段；
+- 业务仓库必须存在有效且干净的 Git `HEAD`；
+- code 与 test fingerprint 从该准确 commit 推导；
+- scenario registry 必须是普通
+  `tests/specnav/*.js` 或 `tests/specnav/*.cjs` 文件，并且工作区字节必须与
+  `git show HEAD:<path>` 一致；
+- registry 顶层代码会在独立 Node permission 进程中执行，不能写文件、
+  访问网络或创建子进程。
+
+未登记、非 active、dirty、symlink、untracked、已修改或路径范围不符合的
+场景，会在创建 run 目录或启动产品进程前阻塞。
+
 ## Midscene Oracle 边界
 
 Midscene 可以定位元素、操作 UI 和解释视觉状态。视觉理解模型保持为
@@ -148,6 +182,20 @@ credential、init JSON 和 proxy 值都必须从证据与 HTML 中脱敏。
 Playwright 仍是确定性的浏览器执行和制品路径。截图、视频、trace、console、
 network 和 assertion 必须绑定到准确的 run、attempt、case、step/assertion、
 code SHA、test SHA、environment hash 和批准的 scenario hash。
+
+## 证据与 Attempt 完整性
+
+证据采用 append-only 和内容寻址。每个 attempt 都会写入独立不可变的完整性
+结果：
+
+```text
+verify/runs/<run-id>/attempts/<attempt-id>/integrity.json
+```
+
+run 级 `verify/runs/<run-id>/integrity.json` 会聚合该 run 的全部 attempt，
+不会覆盖早期失败。finalize 再从完整持久化历史推导
+`verify/v2/integrity.json`。证据缺失、被篡改、过期、跨 run、跨 case 或
+fingerprint 绑定错误时，会阻塞对应 reading，进而阻塞六域门禁。
 
 ## 修复、复测与回归
 
@@ -244,6 +292,13 @@ Verification Kernel 共享，安装与发现按宿主区分：
 
 跨宿主发布治理会比较锁定 Kernel、schema、blocker、fixture、report model、
 host wrapper 和 source provenance。CI 只检测 drift，不会改写下游仓库。
+
+release 与 archive 使用实时 host authority，不能只信任已落盘的
+`operations/cross-host-compatibility.json`。该 authority 会解析每个仓库的
+真实路径，要求 worktree 干净，校验 lock 绑定的准确 Git `HEAD`，再从当前
+plugin tree、manifest、Skill 文件与 host wrapper 重建 compatibility
+snapshot 并比较所有宿主。已保存的绿色 host receipt 或 compatibility 数据
+不能覆盖实时红色结果。
 
 ## 阻塞与故障排查
 

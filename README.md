@@ -278,6 +278,22 @@ assertions or explicit human signoff decide PASS. HTML reports are review
 projections; `verify/v2/report-model.json`, the release/archive gate decisions,
 and `verify/v2/report-render-manifest.json` are the machine-bound authority.
 
+Runtime readiness is re-established from live files, not trusted from a saved
+status. Doctor and release proof verify the install receipt, package lock,
+complete managed `node_modules` tree hash, and every managed browser executable
+hash. Execution also requires a clean Git `HEAD`, the registered active change,
+normalized `verify/v2/requirements-source.json` and
+`verify/v2/acceptance-source.json`, and an exact external human reviewer
+binding. Project scenario registries are accepted only from HEAD-identical
+`tests/specnav/*.js` or `tests/specnav/*.cjs` files and are loaded in an
+isolated process without write, network, or subprocess permission.
+
+Each attempt receives its own immutable `integrity.json`; run and final
+integrity are derived from the complete attempt history. Release proof
+recomputes live cross-host authority from clean, lock-bound Codex, Claude Code,
+and CodeFree-O checkouts. A persisted green gate or compatibility report cannot
+override a red live runtime or host result.
+
 The complete installation, doctor, approval, execution, repair, report,
 migration, host, and troubleshooting guide is
 [docs/verification-2-0.md](docs/verification-2-0.md).

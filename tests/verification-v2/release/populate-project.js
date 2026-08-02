@@ -7,6 +7,11 @@ const path = require('node:path');
 
 const kernel = require('../../../plugins/specnav-verification/kernel');
 const {
+  createCaseApprovalValidator,
+  createCasePlanner,
+  createCaseSnapshotWriter
+} = require('../../../plugins/specnav-verification/kernel/cases');
+const {
   loadRuntimeLock
 } = require('../../../plugins/specnav-verification/kernel/runtime/lock-manifest');
 const {
@@ -195,9 +200,57 @@ function populateProject(projectRoot, change) {
   const reportsDir = path.join(changeDir, 'verify', 'reports');
   const opsDir = path.join(changeDir, 'operations');
   const caseId = `case-${change}`;
-  const snapshotId = `snapshot-${change}`;
   const approvalId = `approval-${change}`;
+  const reviewerId = 'reviewer-release';
+  const reviewer = { id: reviewerId, kind: 'human' };
   const schemaRegistry = readySchemaRegistry();
+  const requirements = [{
+    id: 'REQ-1',
+    statement: 'The release proof uses current approved requirements.'
+  }];
+  const acceptance = [{
+    id: 'AC-1',
+    statement: 'All six domains and release provenance pass.'
+  }];
+  const plan = createCasePlanner({ schemaRegistry }).plan({
+    changeId: change,
+    requirements,
+    acceptance,
+    cases: [testCase(change, caseId)]
+  });
+  if (!plan.ok) {
+    throw new Error(JSON.stringify(plan.blockers));
+  }
+  const snapshotResult = createCaseSnapshotWriter({
+    schemaRegistry
+  }).create({
+    plan,
+    createdAt: '2026-08-02T00:00:00Z',
+    createdBy: reviewer
+  });
+  if (!snapshotResult.ok) {
+    throw new Error(JSON.stringify(snapshotResult.blockers));
+  }
+  const snapshot = snapshotResult.snapshot;
+  const approval = {
+    schema: 'specnav.verification.case-approval.v1',
+    id: approvalId,
+    change_id: change,
+    snapshot_id: snapshot.id,
+    snapshot_hash: snapshot.snapshot_hash,
+    decision: 'approved',
+    reviewer,
+    decided_at: '2026-08-02T00:00:01Z'
+  };
+  const approvalState = createCaseApprovalValidator({
+    schemaRegistry
+  }).assertExecutionApproved({
+    snapshot,
+    approval,
+    currentRequirements: plan.requirements,
+    currentAcceptance: plan.acceptance,
+    expectedReviewerId: reviewerId
+  });
   const lock = loadRuntimeLock();
   const runtimeStatus = doctorRuntime({
     requestedVersion: lock.runtime_version,
@@ -230,9 +283,10 @@ function populateProject(projectRoot, change) {
     schema: 'specnav.verification.release-gate-input.v1',
     change_id: change,
     lane: 'standard',
-    case_snapshot_id: snapshotId,
-    case_snapshot_hash: 'a'.repeat(64),
+    case_snapshot_id: snapshot.id,
+    case_snapshot_hash: snapshot.snapshot_hash,
     case_approval_id: approvalId,
+    case_approval_reviewer_id: reviewerId,
     aggregation_request: {
       change_id: change,
       case_ids: [caseId],
@@ -295,17 +349,6 @@ function populateProject(projectRoot, change) {
     record_count: evidenceEntries.length,
     entries: evidenceEntries
   };
-  const snapshot = {
-    schema: 'specnav.verification.case-snapshot.v1',
-    id: snapshotId,
-    change_id: change,
-    snapshot_hash: input.case_snapshot_hash,
-    cases: [testCase(change, caseId)],
-    created_at: '2026-08-02T00:00:00Z',
-    created_by: { id: 'reviewer-release', kind: 'human' },
-    requirements_hash: '5'.repeat(64),
-    acceptance_hash: '6'.repeat(64)
-  };
   const model = reidentifyReportModel(reportModel('green', {
     id: `report-model-${change}`,
     change_id: change,
@@ -329,17 +372,16 @@ function populateProject(projectRoot, change) {
   }));
 
   writeJson(path.join(verifyV2, 'runtime-status.json'), runtimeStatus);
+  writeJson(
+    path.join(verifyV2, 'requirements-source.json'),
+    plan.requirements
+  );
+  writeJson(
+    path.join(verifyV2, 'acceptance-source.json'),
+    plan.acceptance
+  );
   writeJson(path.join(verifyV2, 'case-snapshot.json'), snapshot);
-  writeJson(path.join(verifyV2, 'case-approval.json'), {
-    schema: 'specnav.verification.case-approval.v1',
-    id: approvalId,
-    change_id: change,
-    snapshot_id: snapshot.id,
-    snapshot_hash: snapshot.snapshot_hash,
-    decision: 'approved',
-    reviewer: { id: 'reviewer-release', kind: 'human' },
-    decided_at: '2026-08-02T00:00:01Z'
-  });
+  writeJson(path.join(verifyV2, 'case-approval.json'), approval);
   writeJson(path.join(verifyV2, 'gate-input.json'), input);
   writeJson(path.join(verifyV2, 'release-gate.json'), releaseGate);
   writeJson(path.join(verifyV2, 'archive-gate.json'), archiveGate);

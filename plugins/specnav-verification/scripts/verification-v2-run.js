@@ -4,6 +4,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 
 const kernel = require('../kernel');
@@ -55,7 +56,7 @@ function git(projectRoot, args) {
   return result.stdout;
 }
 
-function fingerprints(projectRoot, snapshot, runtimeStatus) {
+function fingerprints(projectRoot, snapshot, runtimeStatus, runtimeAuthority = null) {
   const head = git(projectRoot, ['rev-parse', 'HEAD']).trim();
   if (!/^[a-f0-9]{40}$/.test(head)) {
     throw new Error('verification-production:git-head-invalid');
@@ -89,6 +90,7 @@ function fingerprints(projectRoot, snapshot, runtimeStatus) {
       node: process.version,
       runtime_version: runtimeStatus.runtime_version,
       runtime_root: runtimeStatus.runtime_root,
+      runtime_authority_hash: runtimeAuthority?.digest || null,
       kernel_version: kernel.metadata.version
     }))
     .digest('hex');
@@ -108,7 +110,7 @@ function pathsFor(projectRoot, changeId, args) {
   );
   const verificationRoot = path.join(changeRoot, 'verify');
   const v2 = path.join(verificationRoot, 'v2');
-  return {
+  const values = {
     changeRoot,
     verificationRoot,
     snapshot: path.resolve(argValue(
@@ -137,6 +139,107 @@ function pathsFor(projectRoot, changeId, args) {
       path.join(v2, 'runtime-status.json')
     ))
   };
+  for (const [name, file] of Object.entries({
+    snapshot: values.snapshot,
+    approval: values.approval,
+    requirements: values.requirements,
+    acceptance: values.acceptance,
+    runtimeStatus: values.runtimeStatus
+  })) {
+    const relative = path.relative(changeRoot, file);
+    if (
+      relative.startsWith('..')
+      || path.isAbsolute(relative)
+      || relative.split(path.sep).includes('..')
+    ) {
+      throw new Error(`verification-production:${name}-outside-change`);
+    }
+    let cursor = changeRoot;
+    for (const segment of relative.split(path.sep)) {
+      cursor = path.join(cursor, segment);
+      if (fs.existsSync(cursor) && fs.lstatSync(cursor).isSymbolicLink()) {
+        throw new Error(`verification-production:${name}-path-symlink`);
+      }
+    }
+  }
+  return values;
+}
+
+function cleanChangeId(value) {
+  if (
+    typeof value !== 'string'
+    || value !== value.trim()
+    || value === ''
+    || value === '.'
+    || value === '..'
+    || value.includes('/')
+    || value.includes('\\')
+    || value.includes('..')
+    || /\s/.test(value)
+  ) {
+    return null;
+  }
+  return value;
+}
+
+function changeRegistry(projectRoot) {
+  const changesRoot = path.join(projectRoot, 'openspec', 'changes');
+  const ids = fs.existsSync(changesRoot)
+    ? fs.readdirSync(changesRoot, { withFileTypes: true })
+      .filter((entry) => (
+        entry.isDirectory()
+        && entry.name !== 'archive'
+        && !entry.name.startsWith('.')
+        && cleanChangeId(entry.name) === entry.name
+      ))
+      .map((entry) => entry.name)
+      .sort()
+    : [];
+  let active = null;
+  const activeFile = path.join(
+    projectRoot,
+    'openspec',
+    '.specnav',
+    'active-change'
+  );
+  if (fs.existsSync(activeFile)) {
+    const value = fs.readFileSync(activeFile, 'utf8').replace(/\r?\n$/, '');
+    if (value === value.trim()) active = cleanChangeId(value);
+  } else {
+    const registryFile = path.join(
+      projectRoot,
+      'openspec',
+      '.specnav',
+      'change-registry.json'
+    );
+    try {
+      const registry = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
+      active = cleanChangeId(
+        registry?.current_focus || registry?.active_focus
+      );
+    } catch {
+      active = null;
+    }
+  }
+  return { active, ids };
+}
+
+function assertSelectedChange(projectRoot, changeId) {
+  const selected = cleanChangeId(changeId);
+  if (!selected) {
+    throw new Error('verification-production:change-invalid');
+  }
+  const registry = changeRegistry(projectRoot);
+  if (!registry.ids.includes(selected)) {
+    throw new Error('verification-production:change-not-registered');
+  }
+  if (!registry.active) {
+    throw new Error('verification-production:active-change-required');
+  }
+  if (registry.active !== selected) {
+    throw new Error('verification-production:change-not-active');
+  }
+  return selected;
 }
 
 function isContained(root, candidate) {
@@ -147,6 +250,9 @@ function isContained(root, candidate) {
 
 function loadScenarioRegistry(projectRoot, registryPath) {
   if (!registryPath) return null;
+  if (path.isAbsolute(registryPath)) {
+    throw new Error('verification-production:scenario-registry-absolute');
+  }
   const project = fs.realpathSync(projectRoot);
   const requested = path.resolve(projectRoot, registryPath);
   const file = fs.realpathSync(requested);
@@ -163,8 +269,83 @@ function loadScenarioRegistry(projectRoot, registryPath) {
   if (!fs.lstatSync(file).isFile()) {
     throw new Error('verification-production:scenario-registry-not-file');
   }
-  const loaded = require(file);
-  const scenarios = loaded?.scenarios || loaded;
+  const relative = path.relative(project, file).split(path.sep).join('/');
+  if (
+    !relative.startsWith('tests/specnav/')
+    || !/\.(?:c?js)$/.test(relative)
+  ) {
+    throw new Error('verification-production:scenario-registry-not-approved');
+  }
+  const tracked = spawnSync('git', ['show', `HEAD:${relative}`], {
+    cwd: project,
+    encoding: null,
+    maxBuffer: 32 * 1024 * 1024
+  });
+  if (
+    tracked.status !== 0
+    || !Buffer.isBuffer(tracked.stdout)
+    || !tracked.stdout.equals(fs.readFileSync(file))
+  ) {
+    throw new Error('verification-production:scenario-registry-not-head-bound');
+  }
+  const loader = path.join(__dirname, 'scenario-registry-loader.js');
+  const isolated = spawnSync(process.execPath, [
+    '--permission',
+    `--allow-fs-read=${file}`,
+    `--allow-fs-read=${loader}`,
+    loader,
+    file
+  ], {
+    cwd: project,
+    encoding: 'utf8',
+    timeout: 2000,
+    maxBuffer: 8 * 1024 * 1024,
+    env: {}
+  });
+  if (isolated.status !== 0) {
+    throw new Error(
+      isolated.error?.code === 'ETIMEDOUT'
+        ? 'verification-production:scenario-registry-timeout'
+        : 'verification-production:scenario-registry-isolation-failed'
+    );
+  }
+  const revive = (value) => {
+    if (
+      value
+      && typeof value === 'object'
+      && !Array.isArray(value)
+      && Object.keys(value).length === 1
+      && typeof value.__specnav_function_source === 'string'
+    ) {
+      const source = value.__specnav_function_source;
+      const compiled = new vm.Script(`(${source})`, {
+        filename: 'approved-scenario-registry-function.js'
+      }).runInNewContext({}, {
+        timeout: 1000,
+        contextCodeGeneration: {
+          strings: false,
+          wasm: false
+        }
+      });
+      if (typeof compiled !== 'function') {
+        throw new Error('verification-production:scenario-function-invalid');
+      }
+      return compiled;
+    }
+    if (Array.isArray(value)) return value.map(revive);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, entry]) => [key, revive(entry)])
+      );
+    }
+    return value;
+  };
+  let scenarios;
+  try {
+    scenarios = revive(JSON.parse(isolated.stdout));
+  } catch {
+    throw new Error('verification-production:scenario-registry-invalid');
+  }
   if (!scenarios || typeof scenarios !== 'object' || Array.isArray(scenarios)) {
     throw new Error('verification-production:scenario-registry-invalid');
   }
@@ -196,10 +377,11 @@ function loadContext(args, dependencies = {}) {
     );
   }
   try {
-    const files = pathsFor(projectRoot, changeId, args);
+    const selectedChange = assertSelectedChange(projectRoot, changeId);
+    const files = pathsFor(projectRoot, selectedChange, args);
     const context = {
       projectRoot,
-      changeId,
+      changeId: selectedChange,
       reviewerId,
       ...files,
       snapshotValue: readJson(
@@ -223,11 +405,25 @@ function loadContext(args, dependencies = {}) {
         'verification-production:runtime-status-read-failed'
       )
     };
+    const runtimeAuthority = dependencies.runtimeAuthority
+      || kernel.createRuntimeAuthority();
+    const runtimeResolution = runtimeAuthority.resolve(
+      context.runtimeStatusValue
+    );
+    if (!runtimeResolution.ok) {
+      const error = new Error(
+        'verification-production:runtime-authority-blocked'
+      );
+      error.blockers = runtimeResolution.blockers;
+      throw error;
+    }
+    context.runtimeAuthority = runtimeResolution.authority;
+    context.runtimeStatusValue = runtimeResolution.runtimeStatus;
     const createSchemaRegistry = dependencies.createSchemaRegistry
       || kernel.createSchemaRegistry;
     context.schemaRegistry = createSchemaRegistry({
       runtimeStatus: context.runtimeStatusValue,
-      runtimeRoot: context.runtimeStatusValue.runtime_root
+      runtimeRoot: runtimeResolution.runtimeRoot
     });
     return { ok: true, context, blockers: [] };
   } catch (error) {
@@ -292,7 +488,8 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     current = (dependencies.fingerprints || fingerprints)(
       context.projectRoot,
       context.snapshotValue,
-      context.runtimeStatusValue
+      context.runtimeStatusValue,
+      context.runtimeAuthority
     );
   } catch (error) {
     return {
@@ -450,6 +647,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertSelectedChange,
   fingerprints,
   loadContext,
   loadScenarioRegistry,

@@ -28,26 +28,85 @@ function stableIds(values) {
   return [...new Set(values)].sort();
 }
 
-function mergeIntegrity(verificationRoot, runs) {
+function compareAttempts(left, right) {
+  return left.sequence - right.sequence
+    || String(left.completed_at || '').localeCompare(
+      String(right.completed_at || '')
+    )
+    || String(left.started_at || '').localeCompare(
+      String(right.started_at || '')
+    )
+    || left.id.localeCompare(right.id);
+}
+
+function currentReadings(snapshot, attempts, readings) {
+  const latestAttemptIds = new Set();
+  for (const testCase of snapshot.cases) {
+    const latest = attempts
+      .filter((entry) => entry.case_id === testCase.id)
+      .sort(compareAttempts)
+      .at(-1);
+    if (latest) latestAttemptIds.add(latest.id);
+  }
+  return readings.filter((entry) => latestAttemptIds.has(entry.attempt_id));
+}
+
+function mergeIntegrity(verificationRoot, runs, attempts) {
   const facts = [];
   const blockers = [];
   for (const run of runs) {
-    const file = path.join(
+    const runAttempts = attempts.filter((entry) => entry.run_id === run.id);
+    if (runAttempts.length === 0) {
+      blockers.push(blocker(
+        'verification-production:attempt-history-missing',
+        run.id
+      ));
+      continue;
+    }
+    const attemptValues = [];
+    for (const attempt of runAttempts) {
+      const file = path.join(
+        verificationRoot,
+        'runs',
+        run.id,
+        'attempts',
+        attempt.id,
+        'integrity.json'
+      );
+      const value = readJson(file);
+      if (!value) {
+        blockers.push(blocker(
+          'verification-production:attempt-integrity-missing',
+          attempt.id
+        ));
+        continue;
+      }
+      attemptValues.push(value);
+      facts.push(...(value.facts?.evidence || []));
+      blockers.push(...(value.blockers || []));
+    }
+    const runFile = path.join(
       verificationRoot,
       'runs',
       run.id,
       'integrity.json'
     );
-    const value = readJson(file);
-    if (!value) {
+    const runValue = readJson(runFile);
+    if (!runValue) {
       blockers.push(blocker(
         'verification-production:integrity-missing',
         run.id
       ));
       continue;
     }
-    facts.push(...(value.facts?.evidence || []));
-    blockers.push(...(value.blockers || []));
+    const recomputed = require('./production-runner')
+      .mergeIntegrityResults(attemptValues);
+    if (canonicalJson(runValue) !== canonicalJson(recomputed)) {
+      blockers.push(blocker(
+        'verification-production:run-integrity-mismatch',
+        run.id
+      ));
+    }
   }
   const byId = new Map();
   for (const fact of facts) {
@@ -222,14 +281,15 @@ function createVerificationArtifactPipeline(options = {}) {
         fallback_used: false
       };
     }
-    const integrity = mergeIntegrity(verificationRoot, runs);
+    const integrity = mergeIntegrity(verificationRoot, runs, attempts);
     blockers.push(...integrity.blockers);
     const freshness = freshnessProjection(snapshot, runs, attempts, clock());
     blockers.push(...freshness.blockers);
+    const aggregationReadings = currentReadings(snapshot, attempts, readings);
     const aggregationRequest = {
       change_id: snapshot.change_id,
       case_ids: snapshot.cases.map((entry) => entry.id),
-      readings,
+      readings: aggregationReadings,
       evidence: evidenceIndex.entries,
       integrity,
       policy_facts: {
@@ -264,6 +324,7 @@ function createVerificationArtifactPipeline(options = {}) {
       case_snapshot_id: snapshot.id,
       case_snapshot_hash: snapshot.snapshot_hash,
       case_approval_id: approval.id,
+      case_approval_reviewer_id: approval.reviewer.id,
       aggregation_request: aggregationRequest,
       open_failure_ids: openFailureIds,
       freshness: gateFreshness(freshness),

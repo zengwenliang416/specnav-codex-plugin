@@ -26,6 +26,19 @@ aggregator and DecisionEngine for both `release` and `archive`, and requires
 the recomputed identities and decisions to match the persisted gates. It does
 not edit Readings, own verdict semantics, or infer PASS from Markdown or HTML.
 
+The persisted runtime status is also untrusted. Release proof resolves the
+managed runtime again and verifies the install receipt, runtime lock, package
+lock, complete `node_modules` tree through `module_tree_sha256`, Kernel
+contract digest, and every managed browser executable through
+`executable_sha256`.
+
+Cross-host compatibility is re-established from live repositories. Each
+Codex, Claude Code, and CodeFree-O checkout must have the lock-bound Git
+`HEAD`, a clean worktree, and a current compatibility snapshot of its plugin
+tree, manifest, Skills, and host wrappers. Persisted green receipts,
+compatibility JSON, or gates cannot override a red live runtime or host
+authority.
+
 ## Required Artifacts
 
 For `openspec/changes/<change>/`, release and archive require:
@@ -37,13 +50,22 @@ verify/
     index.json
   v2/
     runtime-status.json
+    requirements-source.json
+    acceptance-source.json
     case-snapshot.json
     case-approval.json
+    integrity.json
     gate-input.json
     release-gate.json
     archive-gate.json
     report-model.json
     migration-status.json
+  runs/
+    <run-id>/
+      integrity.json
+      attempts/
+        <attempt-id>/
+          integrity.json
   reports/
     overview.html
     test-case-catalog.html
@@ -61,6 +83,18 @@ operations/
 When migration is required, `migration-status.json` must reference a
 schema-valid apply receipt with successful validation and an available
 rollback.
+
+The normalized requirements and acceptance source files are independently
+hashed into the immutable case snapshot. `case-approval.json` must bind that
+exact snapshot and an external human reviewer identity that matches the
+reviewer supplied to execution. Service-authored, stale, or mismatched
+approvals block.
+
+Production execution itself requires the registered active change and a clean
+Git `HEAD`. Project-owned scenario code is accepted only from a regular,
+non-symlinked `tests/specnav/*.js` or `tests/specnav/*.cjs` file whose bytes
+match `git show HEAD:<path>`. Its top-level module is loaded in an isolated Node
+permission process with no write, network, or subprocess capability.
 
 ## Validation
 
@@ -83,6 +117,12 @@ Kernel recomputation differs from a persisted gate, a gate identity or source
 binding changes, evidence is missing or stale, repairs remain open, migration
 proof is incomplete, one host receipt is missing or tampered, cross-host
 compatibility is blocked, or any of the three HTML projections is absent.
+
+Attempt integrity is immutable at
+`verify/runs/<run-id>/attempts/<attempt-id>/integrity.json`. Run integrity
+aggregates every attempt, including earlier failures, and final
+`verify/v2/integrity.json` is derived from the complete run history. A later
+retry, retest, or regenerated summary cannot erase a red attempt.
 
 Every host installation receipt and the cross-host compatibility result bind
 the current change id, release gate id, archive gate id, gate-input SHA-256,

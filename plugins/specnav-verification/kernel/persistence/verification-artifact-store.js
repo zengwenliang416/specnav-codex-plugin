@@ -251,12 +251,27 @@ function createVerificationArtifactStore(options = {}) {
         `${values.map((value) => JSON.stringify(value)).join('\n')}\n`
       );
       ensureDirectory(config, resolved.target);
+      const noFollow = fs.constants.O_NOFOLLOW || 0;
       const fd = fs.openSync(
         resolved.target,
-        fs.constants.O_CREAT | fs.constants.O_APPEND | fs.constants.O_WRONLY,
+        fs.constants.O_CREAT
+          | fs.constants.O_APPEND
+          | fs.constants.O_WRONLY
+          | noFollow,
         0o600
       );
       try {
+        const opened = fs.fstatSync(fd);
+        const current = fs.lstatSync(resolved.target);
+        if (
+          !opened.isFile()
+          || current.isSymbolicLink()
+          || !current.isFile()
+          || opened.dev !== current.dev
+          || opened.ino !== current.ino
+        ) {
+          throw new Error('append-target-changed');
+        }
         fs.writeFileSync(fd, bytes);
         fs.fsyncSync(fd);
       } finally {

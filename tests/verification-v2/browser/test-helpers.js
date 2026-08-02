@@ -159,7 +159,12 @@ function browserExecutionFixture(options = {}) {
     status: 'planned',
     created_at: '2026-07-31T00:02:00Z',
     started_at: null,
-    completed_at: null
+    completed_at: null,
+    kind: 'initial',
+    origin_run_id: null,
+    parent_run_id: null,
+    parent_attempt_id: null,
+    failure_id: null
   };
 
   function approveScenario(scenario, origins) {

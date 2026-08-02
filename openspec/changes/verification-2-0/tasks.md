@@ -97,3 +97,12 @@ User Outcome: Users can detect host drift and follow matched English and Chinese
 User Outcome: Release owners can prove clean installation, six-domain evidence, reports, and archive readiness across every host.
 
 - [x] 13.1 Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.
+
+## 14. Production Trust Boundary
+
+User Outcome: Release owners can prove that runtime, source inputs, scenario code, attempt evidence, and host state are live and immutable.
+
+- [x] 14.1 Release owner can reject a persisted ready runtime when the managed module tree or browser executable no longer matches its receipt.
+- [x] 14.2 Reviewer can execute only normalized requirements and acceptance sources approved by the exact external human identity.
+- [x] 14.3 Reviewer can execute only a clean Git HEAD and an isolated, HEAD-identical scenario registry under tests/specnav.
+- [x] 14.4 Release owner can retain immutable per-attempt integrity and reject persisted green host claims when live host authority is red.

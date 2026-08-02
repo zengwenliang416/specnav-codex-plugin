@@ -56,11 +56,18 @@ const {
 } = require('./migration');
 const {
   createCompatibilitySnapshot,
+  createHostCompatibilityAuthority,
   compareCompatibilitySnapshots
 } = require('./governance');
 const {
   createVerificationArtifactStore
 } = require('./persistence');
+const {
+  createRuntimeAuthority
+} = require('./runtime/authority');
+const {
+  createCaseApprovalValidator
+} = require('./cases');
 const {
   PROTOCOL_ENV,
   REPORT_FILES,
@@ -102,7 +109,10 @@ module.exports = Object.freeze({
   createDecisionEngine,
   validateGateDecisionIdentity,
   createCompatibilitySnapshot,
+  createHostCompatibilityAuthority,
   compareCompatibilitySnapshots,
+  createCaseApprovalValidator,
+  createRuntimeAuthority,
   createVerificationArtifactStore,
   PROTOCOL_ENV,
   REPORT_FILES,

@@ -386,6 +386,62 @@ test('retry remains in the same run and rejects changed immutable fingerprints',
   );
 });
 
+test('retry preserves immutable attempt integrity and finalizes the full evidence history', async () => {
+  const source = fixture();
+  const first = await runner(source).executeCase(source.testCase.id);
+  const retry = await runner(source).executeCase(source.testCase.id, {
+    kind: 'retry',
+    parentAttemptId: first.attempt.id
+  });
+
+  assert.equal(first.ok, true, JSON.stringify(first.blockers));
+  assert.equal(retry.ok, true, JSON.stringify(retry.blockers));
+  const firstIntegrityFile = path.join(
+    source.verificationRoot,
+    'runs',
+    first.run.id,
+    'attempts',
+    first.attempt.id,
+    'integrity.json'
+  );
+  const retryIntegrityFile = path.join(
+    source.verificationRoot,
+    'runs',
+    retry.run.id,
+    'attempts',
+    retry.attempt.id,
+    'integrity.json'
+  );
+  const firstIntegrity = JSON.parse(fs.readFileSync(firstIntegrityFile, 'utf8'));
+  const retryIntegrity = JSON.parse(fs.readFileSync(retryIntegrityFile, 'utf8'));
+  const runIntegrity = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'runs',
+    retry.run.id,
+    'integrity.json'
+  ), 'utf8'));
+  assert.equal(firstIntegrity.facts.summary.evidence_count, 3);
+  assert.equal(retryIntegrity.facts.summary.evidence_count, 3);
+  assert.equal(runIntegrity.facts.summary.evidence_count, 6);
+
+  const finalized = kernel.createVerificationArtifactPipeline({
+    kernel,
+    schemaRegistry: source.schemaRegistry,
+    changeRoot: source.changeRoot,
+    verificationRoot: source.verificationRoot,
+    snapshot: source.snapshot,
+    approval: source.approval,
+    clock: clock()
+  }).build();
+  assert.equal(finalized.ok, true, JSON.stringify(finalized.blockers));
+  const finalIntegrity = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'integrity.json'
+  ), 'utf8'));
+  assert.equal(finalIntegrity.facts.summary.evidence_count, 6);
+});
+
 test('retest and regression create new runs with immutable cross-run lineage', async () => {
   const source = fixture({
     runnerSource: [
@@ -724,4 +780,28 @@ test('artifact store rejects traversal and symlinked parent paths', () => {
     'verification-persistence:path-unsafe'
   );
   assert.equal(fs.existsSync(path.join(outside, 'escaped.txt')), false);
+});
+
+test('artifact store refuses a symlinked append target', () => {
+  const source = fixture();
+  const external = path.join(source.projectRoot, 'external.jsonl');
+  fs.writeFileSync(external, 'trusted\n');
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: source.changeRoot,
+    root: source.verificationRoot
+  });
+  const target = path.join(source.verificationRoot, 'events.jsonl');
+  fs.symlinkSync(external, target);
+
+  const result = store.appendJsonl('events.jsonl', { id: 'event-1' });
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    result.blockers.some((entry) => (
+      entry.id === 'verification-persistence:path-unsafe'
+      || entry.id === 'verification-persistence:append-failed'
+    )),
+    true
+  );
+  assert.equal(fs.readFileSync(external, 'utf8'), 'trusted\n');
 });

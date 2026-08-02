@@ -255,6 +255,21 @@ Verification 2.0 没有 light、compact、部分测试域、人工改绿或 fall
 报告只是审阅投影；机器权威由 `verify/v2/report-model.json`、release/archive
 gate decision 和 `verify/v2/report-render-manifest.json` 共同绑定。
 
+运行时 readiness 必须从实时文件重新建立，不能直接信任已保存状态。doctor
+与 release proof 会校验 install receipt、package lock、完整托管
+`node_modules` 树 hash，以及每个托管浏览器可执行文件 hash。执行还要求干净
+Git `HEAD`、已登记且处于 active 的 change、规范化
+`verify/v2/requirements-source.json` 与
+`verify/v2/acceptance-source.json`，以及与外部真实人工 reviewer 的准确
+绑定。项目场景注册表只能来自与 HEAD 字节一致的
+`tests/specnav/*.js` 或 `tests/specnav/*.cjs`，并在无写盘、无网络、无子进程
+权限的隔离进程中加载。
+
+每个 attempt 都会得到独立不可变的 `integrity.json`；run 与最终完整性必须
+从全部 attempt 历史推导。release proof 会从干净、受 lock 绑定的 Codex、
+Claude Code 与 CodeFree-O checkout 实时重算跨宿主权威。已经落盘的绿色
+gate 或 compatibility report 不能覆盖实时红色的 runtime 或 host 结果。
+
 完整的安装、doctor、批准、执行、修复、报告、迁移、宿主和排障说明见
 [docs/verification-2-0.zh-CN.md](docs/verification-2-0.zh-CN.md)。
 

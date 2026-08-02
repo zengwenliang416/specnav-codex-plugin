@@ -11,8 +11,10 @@ const SHARED_SCRIPTS = Object.freeze([
   'evidence-runner.js',
   'host-verification-adapter.js',
   'rerun-scope.js',
+  'scenario-registry-loader.js',
   'verification-migrate.js',
   'verification-runtime.js',
+  'verification-v2-run.js',
   'verify-domains.js'
 ]);
 const HOST_RUNTIME_FILES = Object.freeze({

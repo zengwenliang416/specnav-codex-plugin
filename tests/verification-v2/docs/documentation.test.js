@@ -65,6 +65,12 @@ test('matched English and Chinese guides cover every user-visible contract', () 
     'test-case-results.html',
     'report-model.json',
     'report-render-manifest.json',
+    'module_tree_sha256',
+    'executable_sha256',
+    'requirements-source.json',
+    'acceptance-source.json',
+    'tests/specnav/*.js',
+    'integrity.json',
     'fallback_used: false'
   ];
   requireTokens(english, sharedFacts, 'English guide');
@@ -128,4 +134,19 @@ test('rerun skill uses only Verification 2.0 artifact paths', () => {
     skill,
     /verify\/(?:case-snapshot|case-approval|current-requirements|current-acceptance|case-freshness)\.json/
   );
+});
+
+test('release documentation records live runtime and host authority', () => {
+  const release = read('docs/release-verification-v2.md');
+  requireTokens(release, [
+    'module_tree_sha256',
+    'executable_sha256',
+    'requirements-source.json',
+    'acceptance-source.json',
+    'external human reviewer',
+    'tests/specnav/*.js',
+    'attempts/',
+    'live repositories',
+    'Persisted green'
+  ], 'release guide');
 });
