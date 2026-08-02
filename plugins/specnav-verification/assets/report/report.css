@@ -302,6 +302,8 @@ code {
 
 .status-green,
 .status-pass,
+.status-passed,
+.status-ready,
 .status-released,
 .status-terminal,
 .status-closed,
@@ -312,6 +314,7 @@ code {
 
 .status-red,
 .status-fail,
+.status-failed,
 .status-broken,
 .status-open {
   color: var(--red);
@@ -555,6 +558,178 @@ tbody th {
   font-size: 0.8rem;
 }
 
+.page-heading,
+.case-contract > header,
+.case-result > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-heading h1,
+.case-contract h2,
+.case-result h2 {
+  margin: 2px 0 6px;
+  letter-spacing: 0;
+}
+
+.page-heading p,
+.case-contract p,
+.case-result p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-bar label {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.filter-bar input,
+.filter-bar select {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.case-contract,
+.case-result {
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-meta,
+.contract-columns,
+.result-summary,
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contract-meta {
+  margin: 16px 0;
+}
+
+.contract-meta > div,
+.result-summary {
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+
+.contract-meta dt,
+.evidence-item dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.contract-meta dd,
+.evidence-item dd {
+  margin: 4px 0 0;
+}
+
+.domain-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 20px;
+}
+
+.domain-label {
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.contract-list,
+.history-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contract-list li,
+.history-list li {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-list small,
+.history-list small {
+  color: var(--muted);
+}
+
+.case-index {
+  display: flex;
+  gap: 6px;
+  padding: 16px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.case-index a {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.case-result > section {
+  padding-top: 20px;
+}
+
+.result-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.evidence-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+
+.evidence-item header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evidence-item dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.evidence-item dl > div {
+  min-width: 0;
+}
+
 :focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: 3px;
@@ -568,6 +743,9 @@ tbody th {
 
   .report-header,
   .verdict-band,
+  .page-heading,
+  .case-contract > header,
+  .case-result > header,
   .report-footer {
     align-items: start;
     grid-template-columns: 1fr;
@@ -592,7 +770,11 @@ tbody th {
 
   .health-grid,
   .repair-grid,
-  .source-list {
+  .source-list,
+  .contract-meta,
+  .contract-columns,
+  .evidence-grid,
+  .result-summary {
     grid-template-columns: 1fr;
   }
 
@@ -620,6 +802,17 @@ tbody th {
     align-items: center;
     border-right: 0;
     border-bottom: 1px solid var(--border);
+  }
+
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .contract-list li,
+  .history-list li {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 }
 

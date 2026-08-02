@@ -18,8 +18,14 @@ const {
 const {
   createOverviewRenderer
 } = require('./overview-renderer');
+const {
+  createCaseCatalogRenderer,
+  createCaseResultsRenderer
+} = require('./case-page-renderers');
 
 module.exports = {
+  createCaseCatalogRenderer,
+  createCaseResultsRenderer,
   createEvidenceIndexAuthority,
   createOverviewRenderer,
   createReportFactAuthority,

@@ -2,28 +2,33 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- No Task 025 requirement is missing.
 
 ## Extra Behavior
 
-- None recorded.
+- Client-side filtering is static report behavior only and does not affect gate
+  state.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- None found.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Cross-page accessibility and final HTML security remain Task 026.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- AC-09
+- AC-10
+- AC-11
+- AC-29
+- AC-38
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No further specification fix is required for Task 025.

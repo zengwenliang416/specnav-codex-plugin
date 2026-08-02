@@ -1,9 +1,16 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const {
   readySchemaRegistry
 } = require('../contracts/cross-reference/test-helpers');
 
+const FIXTURE_ROOT = path.resolve(
+  __dirname,
+  '../contracts/fixtures/positive'
+);
 const DOMAIN_NAMES = Object.freeze([
   'facticity',
   'static',
@@ -12,6 +19,13 @@ const DOMAIN_NAMES = Object.freeze([
   'e2e',
   'sensory'
 ]);
+
+function fixture(name) {
+  return JSON.parse(fs.readFileSync(
+    path.join(FIXTURE_ROOT, `${name}.json`),
+    'utf8'
+  ));
+}
 
 function domainStatusFor(verdict) {
   if (verdict === 'green') return 'pass';
@@ -114,11 +128,76 @@ function reportModel(verdict = 'green', overrides = {}) {
   return Object.assign(model, structuredClone(overrides));
 }
 
-function validatedReportModel(verdict = 'green', overrides = {}) {
+function caseHistory() {
+  const testCase = fixture('test-case');
+  const run = {
+    ...fixture('verification-run'),
+    status: 'passed',
+    started_at: '2026-07-31T00:00:00Z',
+    completed_at: '2026-07-31T00:00:02Z'
+  };
+  const attempt = fixture('attempt');
+  const readings = DOMAIN_NAMES.map((domain) => ({
+    ...fixture('reading'),
+    id: `reading-${domain}`,
+    domain,
+    evidence_ids: [`evidence-${domain}`]
+  }));
+  const evidence = readings.map((entry) => ({
+    id: entry.evidence_ids[0],
+    kind: 'structured_comparison',
+    path: `objects/${entry.evidence_ids[0]}.json`,
+    href: `evidence/objects/${entry.evidence_ids[0]}.json`,
+    available: true,
+    integrity: 'intact',
+    freshness: 'fresh',
+    sha256: '3'.repeat(64),
+    size: 42,
+    producer: 'command-runner',
+    captured_at: '2026-07-31T00:00:01Z',
+    run_id: run.id,
+    case_id: testCase.id,
+    attempt_id: attempt.id,
+    code_sha: attempt.code_sha,
+    test_sha: attempt.test_sha,
+    redaction: {
+      status: 'not_required',
+      redacted_fields: []
+    }
+  }));
+  return {
+    catalog: [testCase],
+    results: [{
+      case_id: testCase.id,
+      status: 'pass',
+      freshness: 'fresh',
+      command: {
+        runner: testCase.runner.kind,
+        entrypoint: testCase.runner.entrypoint,
+        args: testCase.runner.args,
+        cwd: testCase.runner.cwd,
+        env_keys: testCase.runner.env_keys
+      },
+      runs: [run],
+      attempts: [attempt],
+      readings,
+      evidence,
+      failures: [],
+      repairs: [],
+      blockers: []
+    }]
+  };
+}
+
+function validatedReportModel(verdict = 'green', overrides = {}, options = {}) {
   const registry = readySchemaRegistry();
+  const history = options.includeCaseHistory ? caseHistory() : {};
   const validation = registry.validate(
     'report-model',
-    reportModel(verdict, overrides)
+    reportModel(verdict, {
+      ...history,
+      ...overrides
+    })
   );
   if (!validation.ok) {
     throw new Error(JSON.stringify(validation.blockers));
@@ -131,6 +210,7 @@ function validatedReportModel(verdict = 'green', overrides = {}) {
 
 module.exports = {
   DOMAIN_NAMES,
+  caseHistory,
   reportModel,
   validatedReportModel
 };

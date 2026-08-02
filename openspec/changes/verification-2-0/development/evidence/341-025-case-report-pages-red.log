@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: catalog renders approved case contracts with shared navigation
+not ok 1 - catalog renders approved case contracts with shared navigation
+  ---
+  duration_ms: 831.60775
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:26:1'
+  failureType: 'testCodeFailure'
+  error: '[{"id":"verification-contract:schema-invalid","artifact_path":"memory://report-model","entity_type":"report-model","field":"/includeCaseHistory","keyword":"additionalProperties","schema_path":"#/additionalProperties","message":"must NOT have additional properties"}]'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    validatedReportModel (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-test-helpers.js:124:11)
+    renderers (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:12:37)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:27:30)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: results render immutable run attempt reading and evidence history
+not ok 2 - results render immutable run attempt reading and evidence history
+  ---
+  duration_ms: 0.200959
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:42:1'
+  failureType: 'testCodeFailure'
+  error: '[{"id":"verification-contract:schema-invalid","artifact_path":"memory://report-model","entity_type":"report-model","field":"/includeCaseHistory","keyword":"additionalProperties","schema_path":"#/additionalProperties","message":"must NOT have additional properties"}]'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    validatedReportModel (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-test-helpers.js:124:11)
+    renderers (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:12:37)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:43:30)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: empty and blocked pages remain complete instead of hiding state
+not ok 3 - empty and blocked pages remain complete instead of hiding state
+  ---
+  duration_ms: 0.804583
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:65:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseCatalogRenderer is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:71:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: all verdicts keep the same page responsibilities and hierarchy
+not ok 4 - all verdicts keep the same page responsibilities and hierarchy
+  ---
+  duration_ms: 0.181042
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:84:1'
+  failureType: 'testCodeFailure'
+  error: '[{"id":"verification-contract:schema-invalid","artifact_path":"memory://report-model","entity_type":"report-model","field":"/includeCaseHistory","keyword":"additionalProperties","schema_path":"#/additionalProperties","message":"must NOT have additional properties"}]'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    validatedReportModel (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/report-test-helpers.js:124:11)
+    renderers (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:12:37)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:95:41)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: renderers reject invalid models and expose no fallback pages
+not ok 5 - renderers reject invalid models and expose no fallback pages
+  ---
+  duration_ms: 0.277041
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:105:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCaseCatalogRenderer is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/reports/case-pages.test.js:112:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 904.983458

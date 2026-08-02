@@ -25,6 +25,8 @@ const {
   createCaseFreshnessEvaluator
 } = require('./evidence');
 const {
+  createCaseCatalogRenderer,
+  createCaseResultsRenderer,
   createEvidenceIndexAuthority,
   createOverviewRenderer,
   createReportFactAuthority,
@@ -50,6 +52,8 @@ const {
 } = require('./gates');
 
 module.exports = Object.freeze({
+  createCaseCatalogRenderer,
+  createCaseResultsRenderer,
   metadata,
   serviceContracts,
   createServices,
