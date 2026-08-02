@@ -1,0 +1,502 @@
+# command: node --test tests/verification-v2/cross-host/codefree-o-adapter.test.js # task030-quality-review-fixes-red
+# exit_status: 1
+# duration_ms: 1823
+
+## stdout
+TAP version 13
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 1 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 1.900875
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 2 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.994583
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 3 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.196292
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 4 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.332917
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 5 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.175542
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 6 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.249416
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 7 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.196
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+not ok 8 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 301.940541
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:318:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        'assets/icon.svg',
+        'assets/logo.svg',
+        'assets/report/report-security-contract.json',
+        'assets/report/report.css',
+    ...
+        'schemas/verification-run.schema.json',
+    +   'scripts/.gitkeep',
+        'scripts/anchor-scan.js',
+        'scripts/codefree-o-verification-adapter.js',
+        'scripts/evidence-runner.js',
+        'scripts/host-verification-adapter.js',
+        'scripts/plugin-runtime.js',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'assets/icon.svg'
+    1: 'assets/logo.svg'
+    2: 'assets/report/report-security-contract.json'
+    3: 'assets/report/report.css'
+    4: 'assets/runtime/verification-runtime-lock.json'
+    5: 'kernel/adapters/command-adapter.js'
+    6: 'kernel/adapters/midscene-adapter.js'
+    7: 'kernel/adapters/playwright-adapter.js'
+    8: 'kernel/cases/approval-checks.js'
+    9: 'kernel/cases/approval-validator.js'
+    10: 'kernel/cases/canonical.js'
+    11: 'kernel/cases/case-validation.js'
+    12: 'kernel/cases/index.js'
+    13: 'kernel/cases/normalize.js'
+    14: 'kernel/cases/planner.js'
+    15: 'kernel/cases/snapshot-writer.js'
+    16: 'kernel/contracts.js'
+    17: 'kernel/contracts/artifact-binding-validator.js'
+    18: 'kernel/contracts/attempt-binding-validator.js'
+    19: 'kernel/contracts/case-internal-validator.js'
+    20: 'kernel/contracts/case-member-binding-validator.js'
+    21: 'kernel/contracts/cross-reference-validator.js'
+    22: 'kernel/contracts/graph-binding-validator.js'
+    23: 'kernel/contracts/reading-evidence-binding-validator.js'
+    24: 'kernel/contracts/reference-utils.js'
+    25: 'kernel/contracts/retry-identity-validator.js'
+    26: 'kernel/contracts/schema-registry.js'
+    27: 'kernel/contracts/validate-fixtures.js'
+    28: 'kernel/evaluation/index.js'
+    29: 'kernel/evaluation/not-applicable-validator.js'
+    30: 'kernel/evaluation/oracle-registry.js'
+    31: 'kernel/evaluation/reading-evaluator.js'
+    32: 'kernel/evaluation/six-domain-aggregator.js'
+    33: 'kernel/evaluation/terminal-state.js'
+    34: 'kernel/evidence/blockers.js'
+    35: 'kernel/evidence/case-freshness.js'
+    36: 'kernel/evidence/content-addressed-writer.js'
+    37: 'kernel/evidence/evidence-store.js'
+    38: 'kernel/evidence/fingerprint-comparator.js'
+    39: 'kernel/evidence/freshness.js'
+    40: 'kernel/evidence/identity.js'
+    41: 'kernel/evidence/index-builder.js'
+    42: 'kernel/evidence/index.js'
+    43: 'kernel/evidence/integrity-checker.js'
+    44: 'kernel/evidence/object-reader.js'
+    45: 'kernel/evidence/paths.js'
+    46: 'kernel/evidence/raw-store.js'
+    47: 'kernel/evidence/redaction-constants.js'
+    48: 'kernel/evidence/secret-redactor.js'
+    49: 'kernel/evidence/structured-redactor.js'
+    50: 'kernel/evidence/text-redactor.js'
+    51: 'kernel/execution/browser-access-policy.js'
+    52: 'kernel/execution/command-contract.js'
+    53: 'kernel/execution/event-sequence.js'
+    54: 'kernel/execution/index.js'
+    55: 'kernel/execution/lifecycle.js'
+    56: 'kernel/execution/midscene-oracle.js'
+    57: 'kernel/execution/midscene-prompt.js'
+    58: 'kernel/execution/orchestrator.js'
+    59: 'kernel/execution/playwright-api-guard.js'
+    60: 'kernel/execution/playwright-scenario.js'
+    61: 'kernel/execution/playwright-worker.js'
+    62: 'kernel/execution/preflight.js'
+    63: 'kernel/gates/decision-engine.js'
+    64: 'kernel/gates/index.js'
+    65: 'kernel/index.js'
+    66: 'kernel/metadata.js'
+    67: 'kernel/migration/artifact-backup.js'
+    68: 'kernel/migration/index.js'
+    69: 'kernel/migration/migrator.js'
+    70: 'kernel/migration/transformation-registry.js'
+    71: 'kernel/repair/case-rerun-planner.js'
+    72: 'kernel/repair/development-repair-bridge.js'
+    73: 'kernel/repair/failure-classifier.js'
+    74: 'kernel/repair/index.js'
+    75: 'kernel/repair/repair-loop-state-machine.js'
+    76: 'kernel/reporting/case-page-renderers.js'
+    77: 'kernel/reporting/evidence-link-resolver.js'
+    78: 'kernel/reporting/index.js'
+    79: 'kernel/reporting/overview-renderer.js'
+    80: 'kernel/reporting/report-assets.js'
+    81: 'kernel/reporting/report-authorities.js'
+    82: 'kernel/reporting/report-components.js'
+    83: 'kernel/reporting/report-model-builder.js'
+    84: 'kernel/reporting/report-script-assets.js'
+    85: 'kernel/reporting/report-security.js'
+    86: 'kernel/reporting/report-selectors.js'
+    87: 'kernel/reporting/report-shell.js'
+    88: 'kernel/reporting/safe-html-text.js'
+    89: 'kernel/runtime/doctor.js'
+    90: 'kernel/runtime/installer.js'
+    91: 'kernel/runtime/lock-manifest.js'
+    92: 'kernel/runtime/provider-contract.js'
+    93: 'kernel/runtime/repair.js'
+    94: 'package.json'
+    95: 'schemas/attempt.schema.json'
+    96: 'schemas/case-approval.schema.json'
+    97: 'schemas/case-snapshot.schema.json'
+    98: 'schemas/common.schema.json'
+    99: 'schemas/evidence-index.schema.json'
+    100: 'schemas/evidence.schema.json'
+    101: 'schemas/failure-packet.schema.json'
+    102: 'schemas/gate-decision.schema.json'
+    103: 'schemas/migration-receipt.schema.json'
+    104: 'schemas/reading.schema.json'
+    105: 'schemas/repair-link.schema.json'
+    106: 'schemas/report-model.schema.json'
+    107: 'schemas/runtime-status.schema.json'
+    108: 'schemas/test-case.schema.json'
+    109: 'schemas/transition-proposal.schema.json'
+    110: 'schemas/trusted-fact-envelope.schema.json'
+    111: 'schemas/verification-run.schema.json'
+    112: 'scripts/anchor-scan.js'
+    113: 'scripts/codefree-o-verification-adapter.js'
+    114: 'scripts/evidence-runner.js'
+    115: 'scripts/host-verification-adapter.js'
+    116: 'scripts/plugin-runtime.js'
+    117: 'scripts/rerun-scope.js'
+    118: 'scripts/verification-migrate.js'
+    119: 'scripts/verification-runtime.js'
+    120: 'scripts/verify-domains.js'
+    121: 'skills/specnav-html-report/SKILL.md'
+    122: 'skills/specnav-verification-runtime-setup/SKILL.md'
+    123: 'skills/specnav-verification-runtime-status/SKILL.md'
+    124: 'skills/specnav-verification/SKILL.md'
+    125: 'skills/specnav-verify-e2e/SKILL.md'
+    126: 'skills/specnav-verify-e2e/assets/report.json'
+    127: 'skills/specnav-verify-e2e/assets/report.md'
+    128: 'skills/specnav-verify-e2e/references/e2e-rubric.md'
+    129: 'skills/specnav-verify-facticity/SKILL.md'
+    130: 'skills/specnav-verify-facticity/assets/report.json'
+    131: 'skills/specnav-verify-facticity/assets/report.md'
+    132: 'skills/specnav-verify-facticity/references/facticity-rubric.md'
+    133: 'skills/specnav-verify-plan/SKILL.md'
+    134: 'skills/specnav-verify-plan/assets/behavior-evals/report.json'
+    135: 'skills/specnav-verify-plan/assets/behavior-evals/report.md'
+    136: 'skills/specnav-verify-plan/assets/behavior-evals/scenarios.json'
+    137: 'skills/specnav-verify-plan/assets/behavior-evals/transcripts/verify-runs-six-domains.md'
+    138: 'skills/specnav-verify-plan/assets/blocker-classification.jsonl'
+    139: 'skills/specnav-verify-plan/assets/domain-case-matrix.json'
+    140: 'skills/specnav-verify-plan/assets/evidence-index.jsonl'
+    141: 'skills/specnav-verify-plan/assets/plan.json'
+    142: 'skills/specnav-verify-plan/assets/plan.md'
+    143: 'skills/specnav-verify-plan/assets/receipt.json'
+    144: 'skills/specnav-verify-plan/assets/receipt.md'
+    145: 'skills/specnav-verify-plan/assets/root-cause-checks.jsonl'
+    146: 'skills/specnav-verify-plan/assets/runtime-evidence.json'
+    147: 'skills/specnav-verify-plan/assets/traceability-matrix.json'
+    148: 'skills/specnav-verify-plan/assets/user-test-case-signoff.json'
+    149: 'skills/specnav-verify-plan/assets/user-test-cases.json'
+    150: 'skills/specnav-verify-plan/assets/user-test-cases.md'
+    151: 'skills/specnav-verify-plan/references/domain-report-schema.md'
+    152: 'skills/specnav-verify-plan/references/review-report-style.md'
+    153: 'skills/specnav-verify-plan/references/verification-model.md'
+    154: 'skills/specnav-verify-plan/scripts/case-contract.js'
+    155: 'skills/specnav-verify-plan/scripts/create-verify-plan.js'
+    156: 'skills/specnav-verify-redteam/SKILL.md'
+    157: 'skills/specnav-verify-redteam/assets/report.json'
+    158: 'skills/specnav-verify-redteam/assets/report.md'
+    159: 'skills/specnav-verify-redteam/references/redteam-rubric.md'
+    160: 'skills/specnav-verify-rerun/SKILL.md'
+    161: 'skills/specnav-verify-sensory/SKILL.md'
+    162: 'skills/specnav-verify-sensory/assets/report.json'
+    163: 'skills/specnav-verify-sensory/assets/report.md'
+    164: 'skills/specnav-verify-sensory/references/sensory-rubric.md'
+    165: 'skills/specnav-verify-static/SKILL.md'
+    166: 'skills/specnav-verify-static/assets/report.json'
+    167: 'skills/specnav-verify-static/assets/report.md'
+    168: 'skills/specnav-verify-static/references/static-rubric.md'
+    169: 'skills/specnav-verify-unit/SKILL.md'
+    170: 'skills/specnav-verify-unit/assets/report.json'
+    171: 'skills/specnav-verify-unit/assets/report.md'
+    172: 'skills/specnav-verify-unit/references/unit-rubric.md'
+    173: 'specnav-kernel-source.json'
+    174: 'specnav-stage.json'
+  actual:
+    0: 'assets/icon.svg'
+    1: 'assets/logo.svg'
+    2: 'assets/report/report-security-contract.json'
+    3: 'assets/report/report.css'
+    4: 'assets/runtime/verification-runtime-lock.json'
+    5: 'kernel/adapters/command-adapter.js'
+    6: 'kernel/adapters/midscene-adapter.js'
+    7: 'kernel/adapters/playwright-adapter.js'
+    8: 'kernel/cases/approval-checks.js'
+    9: 'kernel/cases/approval-validator.js'
+    10: 'kernel/cases/canonical.js'
+    11: 'kernel/cases/case-validation.js'
+    12: 'kernel/cases/index.js'
+    13: 'kernel/cases/normalize.js'
+    14: 'kernel/cases/planner.js'
+    15: 'kernel/cases/snapshot-writer.js'
+    16: 'kernel/contracts.js'
+    17: 'kernel/contracts/artifact-binding-validator.js'
+    18: 'kernel/contracts/attempt-binding-validator.js'
+    19: 'kernel/contracts/case-internal-validator.js'
+    20: 'kernel/contracts/case-member-binding-validator.js'
+    21: 'kernel/contracts/cross-reference-validator.js'
+    22: 'kernel/contracts/graph-binding-validator.js'
+    23: 'kernel/contracts/reading-evidence-binding-validator.js'
+    24: 'kernel/contracts/reference-utils.js'
+    25: 'kernel/contracts/retry-identity-validator.js'
+    26: 'kernel/contracts/schema-registry.js'
+    27: 'kernel/contracts/validate-fixtures.js'
+    28: 'kernel/evaluation/index.js'
+    29: 'kernel/evaluation/not-applicable-validator.js'
+    30: 'kernel/evaluation/oracle-registry.js'
+    31: 'kernel/evaluation/reading-evaluator.js'
+    32: 'kernel/evaluation/six-domain-aggregator.js'
+    33: 'kernel/evaluation/terminal-state.js'
+    34: 'kernel/evidence/blockers.js'
+    35: 'kernel/evidence/case-freshness.js'
+    36: 'kernel/evidence/content-addressed-writer.js'
+    37: 'kernel/evidence/evidence-store.js'
+    38: 'kernel/evidence/fingerprint-comparator.js'
+    39: 'kernel/evidence/freshness.js'
+    40: 'kernel/evidence/identity.js'
+    41: 'kernel/evidence/index-builder.js'
+    42: 'kernel/evidence/index.js'
+    43: 'kernel/evidence/integrity-checker.js'
+    44: 'kernel/evidence/object-reader.js'
+    45: 'kernel/evidence/paths.js'
+    46: 'kernel/evidence/raw-store.js'
+    47: 'kernel/evidence/redaction-constants.js'
+    48: 'kernel/evidence/secret-redactor.js'
+    49: 'kernel/evidence/structured-redactor.js'
+    50: 'kernel/evidence/text-redactor.js'
+    51: 'kernel/execution/browser-access-policy.js'
+    52: 'kernel/execution/command-contract.js'
+    53: 'kernel/execution/event-sequence.js'
+    54: 'kernel/execution/index.js'
+    55: 'kernel/execution/lifecycle.js'
+    56: 'kernel/execution/midscene-oracle.js'
+    57: 'kernel/execution/midscene-prompt.js'
+    58: 'kernel/execution/orchestrator.js'
+    59: 'kernel/execution/playwright-api-guard.js'
+    60: 'kernel/execution/playwright-scenario.js'
+    61: 'kernel/execution/playwright-worker.js'
+    62: 'kernel/execution/preflight.js'
+    63: 'kernel/gates/decision-engine.js'
+    64: 'kernel/gates/index.js'
+    65: 'kernel/index.js'
+    66: 'kernel/metadata.js'
+    67: 'kernel/migration/artifact-backup.js'
+    68: 'kernel/migration/index.js'
+    69: 'kernel/migration/migrator.js'
+    70: 'kernel/migration/transformation-registry.js'
+    71: 'kernel/repair/case-rerun-planner.js'
+    72: 'kernel/repair/development-repair-bridge.js'
+    73: 'kernel/repair/failure-classifier.js'
+    74: 'kernel/repair/index.js'
+    75: 'kernel/repair/repair-loop-state-machine.js'
+    76: 'kernel/reporting/case-page-renderers.js'
+    77: 'kernel/reporting/evidence-link-resolver.js'
+    78: 'kernel/reporting/index.js'
+    79: 'kernel/reporting/overview-renderer.js'
+    80: 'kernel/reporting/report-assets.js'
+    81: 'kernel/reporting/report-authorities.js'
+    82: 'kernel/reporting/report-components.js'
+    83: 'kernel/reporting/report-model-builder.js'
+    84: 'kernel/reporting/report-script-assets.js'
+    85: 'kernel/reporting/report-security.js'
+    86: 'kernel/reporting/report-selectors.js'
+    87: 'kernel/reporting/report-shell.js'
+    88: 'kernel/reporting/safe-html-text.js'
+    89: 'kernel/runtime/doctor.js'
+    90: 'kernel/runtime/installer.js'
+    91: 'kernel/runtime/lock-manifest.js'
+    92: 'kernel/runtime/provider-contract.js'
+    93: 'kernel/runtime/repair.js'
+    94: 'package.json'
+    95: 'schemas/attempt.schema.json'
+    96: 'schemas/case-approval.schema.json'
+    97: 'schemas/case-snapshot.schema.json'
+    98: 'schemas/common.schema.json'
+    99: 'schemas/evidence-index.schema.json'
+    100: 'schemas/evidence.schema.json'
+    101: 'schemas/failure-packet.schema.json'
+    102: 'schemas/gate-decision.schema.json'
+    103: 'schemas/migration-receipt.schema.json'
+    104: 'schemas/reading.schema.json'
+    105: 'schemas/repair-link.schema.json'
+    106: 'schemas/report-model.schema.json'
+    107: 'schemas/runtime-status.schema.json'
+    108: 'schemas/test-case.schema.json'
+    109: 'schemas/transition-proposal.schema.json'
+    110: 'schemas/trusted-fact-envelope.schema.json'
+    111: 'schemas/verification-run.schema.json'
+    112: 'scripts/.gitkeep'
+    113: 'scripts/anchor-scan.js'
+    114: 'scripts/codefree-o-verification-adapter.js'
+    115: 'scripts/evidence-runner.js'
+    116: 'scripts/host-verification-adapter.js'
+    117: 'scripts/plugin-runtime.js'
+    118: 'scripts/rerun-scope.js'
+    119: 'scripts/verification-migrate.js'
+    120: 'scripts/verification-runtime.js'
+    121: 'scripts/verify-domains.js'
+    122: 'skills/specnav-html-report/SKILL.md'
+    123: 'skills/specnav-verification-runtime-setup/SKILL.md'
+    124: 'skills/specnav-verification-runtime-status/SKILL.md'
+    125: 'skills/specnav-verification/SKILL.md'
+    126: 'skills/specnav-verify-e2e/SKILL.md'
+    127: 'skills/specnav-verify-e2e/assets/report.json'
+    128: 'skills/specnav-verify-e2e/assets/report.md'
+    129: 'skills/specnav-verify-e2e/references/e2e-rubric.md'
+    130: 'skills/specnav-verify-facticity/SKILL.md'
+    131: 'skills/specnav-verify-facticity/assets/report.json'
+    132: 'skills/specnav-verify-facticity/assets/report.md'
+    133: 'skills/specnav-verify-facticity/references/facticity-rubric.md'
+    134: 'skills/specnav-verify-plan/SKILL.md'
+    135: 'skills/specnav-verify-plan/assets/behavior-evals/report.json'
+    136: 'skills/specnav-verify-plan/assets/behavior-evals/report.md'
+    137: 'skills/specnav-verify-plan/assets/behavior-evals/scenarios.json'
+    138: 'skills/specnav-verify-plan/assets/behavior-evals/transcripts/verify-runs-six-domains.md'
+    139: 'skills/specnav-verify-plan/assets/blocker-classification.jsonl'
+    140: 'skills/specnav-verify-plan/assets/domain-case-matrix.json'
+    141: 'skills/specnav-verify-plan/assets/evidence-index.jsonl'
+    142: 'skills/specnav-verify-plan/assets/plan.json'
+    143: 'skills/specnav-verify-plan/assets/plan.md'
+    144: 'skills/specnav-verify-plan/assets/receipt.json'
+    145: 'skills/specnav-verify-plan/assets/receipt.md'
+    146: 'skills/specnav-verify-plan/assets/root-cause-checks.jsonl'
+    147: 'skills/specnav-verify-plan/assets/runtime-evidence.json'
+    148: 'skills/specnav-verify-plan/assets/traceability-matrix.json'
+    149: 'skills/specnav-verify-plan/assets/user-test-case-signoff.json'
+    150: 'skills/specnav-verify-plan/assets/user-test-cases.json'
+    151: 'skills/specnav-verify-plan/assets/user-test-cases.md'
+    152: 'skills/specnav-verify-plan/references/domain-report-schema.md'
+    153: 'skills/specnav-verify-plan/references/review-report-style.md'
+    154: 'skills/specnav-verify-plan/references/verification-model.md'
+    155: 'skills/specnav-verify-plan/scripts/case-contract.js'
+    156: 'skills/specnav-verify-plan/scripts/create-verify-plan.js'
+    157: 'skills/specnav-verify-redteam/SKILL.md'
+    158: 'skills/specnav-verify-redteam/assets/report.json'
+    159: 'skills/specnav-verify-redteam/assets/report.md'
+    160: 'skills/specnav-verify-redteam/references/redteam-rubric.md'
+    161: 'skills/specnav-verify-rerun/SKILL.md'
+    162: 'skills/specnav-verify-sensory/SKILL.md'
+    163: 'skills/specnav-verify-sensory/assets/report.json'
+    164: 'skills/specnav-verify-sensory/assets/report.md'
+    165: 'skills/specnav-verify-sensory/references/sensory-rubric.md'
+    166: 'skills/specnav-verify-static/SKILL.md'
+    167: 'skills/specnav-verify-static/assets/report.json'
+    168: 'skills/specnav-verify-static/assets/report.md'
+    169: 'skills/specnav-verify-static/references/static-rubric.md'
+    170: 'skills/specnav-verify-unit/SKILL.md'
+    171: 'skills/specnav-verify-unit/assets/report.json'
+    172: 'skills/specnav-verify-unit/assets/report.md'
+    173: 'skills/specnav-verify-unit/references/unit-rubric.md'
+    174: 'specnav-kernel-source.json'
+    175: 'specnav-stage.json'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:357:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 9 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 493.366958
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 10 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 80.496334
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+not ok 11 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 336.521875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:398:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:418:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 12 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 64.407875
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 13 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 302.924416
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 11
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1781.024791
+
+
+## stderr
+(empty)

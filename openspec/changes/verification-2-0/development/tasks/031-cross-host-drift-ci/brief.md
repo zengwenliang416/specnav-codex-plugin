@@ -37,8 +37,14 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - tests/verification-v2/cross-host/**
+- tests/run-smoke.sh
+- tests/run-verification-v2-cross-host.sh
 - .github/workflows/ci.yml
 - plugins/specnav-verification/kernel/**
+- integrations/claude-code/sync-verification-plugin.js
+- integrations/codefree-o/sync-verification-module.js
+
+The additive scope rationale is recorded in `scope-correction.json`.
 
 ## Interfaces / Seams
 

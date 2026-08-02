@@ -1,0 +1,444 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const test = require('node:test');
+
+const ROOT = path.resolve(__dirname, '../../..');
+const FIXTURE_ROOT = path.join(
+  ROOT,
+  'tests/verification-v2/contracts/fixtures'
+);
+const CODEX_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
+const CLAUDE_ROOT = path.resolve(
+  process.env.SPECNAV_CLAUDE_ROOT
+    || path.join(ROOT, '../specnav-claude-plugin')
+);
+const CODEFREE_ROOT = path.resolve(
+  process.env.SPECNAV_CODEFREE_O_ROOT
+    || path.join(ROOT, '../specnav-codefree-o-plugin')
+);
+const kernel = require(CODEX_PLUGIN);
+const CLAUDE_HOST_FILES = Object.freeze([
+  'commands/specnav-verification.md',
+  'commands/specnav-verify.md',
+  'scripts/claude-verification-adapter.js',
+  'scripts/plugin-runtime.js',
+  'specnav-stage.json',
+  '.claude-plugin/plugin.json'
+]);
+const CODEFREE_HOST_FILES = Object.freeze([
+  'scripts/codefree-o-verification-adapter.js',
+  'scripts/plugin-runtime.js',
+  'specnav-stage.json'
+]);
+const HOST_LOCK = JSON.parse(fs.readFileSync(
+  path.join(__dirname, 'host-lock.json'),
+  'utf8'
+));
+
+function copyTree(t, source) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-drift-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const target = path.join(root, 'plugin');
+  fs.cpSync(source, target, { recursive: true });
+  return target;
+}
+
+function copyFixtures(t) {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-drift-fixtures-')
+  );
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.cpSync(FIXTURE_ROOT, root, { recursive: true });
+  return root;
+}
+
+function snapshot(options = {}) {
+  return kernel.createCompatibilitySnapshot({
+    host: options.host || 'fixture',
+    pluginRoot: options.pluginRoot || CODEX_PLUGIN,
+    fixtureRoot: options.fixtureRoot || FIXTURE_ROOT,
+    manifestFile: options.manifestFile || null,
+    hostFiles: options.hostFiles || [],
+    expectedSourceCommit: options.expectedSourceCommit || null
+  });
+}
+
+function compare(reference, candidate) {
+  return kernel.compareCompatibilitySnapshots(reference, [candidate]);
+}
+
+function blockerIds(result) {
+  return result.blockers.map((entry) => entry.id);
+}
+
+test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', () => {
+  const reference = snapshot({
+    host: 'codex',
+    hostFiles: ['scripts/codex-verification-adapter.js']
+  });
+  const claudePlugin = path.join(
+    CLAUDE_ROOT,
+    'plugins/specnav-verification'
+  );
+  const codefreePlugin = path.join(
+    CODEFREE_ROOT,
+    'modules/specnav-verification'
+  );
+  const result = kernel.compareCompatibilitySnapshots(reference, [
+    snapshot({
+      host: 'claude-code',
+      pluginRoot: claudePlugin,
+      manifestFile: path.join(
+        claudePlugin,
+        'specnav-kernel-source.json'
+      ),
+      hostFiles: CLAUDE_HOST_FILES,
+      expectedSourceCommit: HOST_LOCK.source_commit
+    }),
+    snapshot({
+      host: 'codefree-o',
+      pluginRoot: codefreePlugin,
+      manifestFile: path.join(
+        codefreePlugin,
+        'specnav-kernel-source.json'
+      ),
+      hostFiles: CODEFREE_HOST_FILES,
+      expectedSourceCommit: HOST_LOCK.source_commit
+    })
+  ]);
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers, null, 2));
+  assert.deepEqual(result.blockers, []);
+  assert.deepEqual(result.hosts, ['claude-code', 'codefree-o']);
+});
+
+test('kernel identity drift returns a stable release blocker', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const metadataFile = path.join(pluginRoot, 'kernel/metadata.js');
+  fs.writeFileSync(
+    metadataFile,
+    fs.readFileSync(metadataFile, 'utf8')
+      .replace(
+        "const version = '2.0.0-alpha.1';",
+        "const version = '2.0.0-alpha.0';"
+      )
+  );
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:kernel-identity-mismatch:drifted'
+  ]);
+});
+
+test('unversioned Kernel source drift cannot bypass compatibility CI', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  fs.appendFileSync(
+    path.join(pluginRoot, 'kernel/runtime/doctor.js'),
+    '\n// unversioned-kernel-drift\n'
+  );
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:kernel-source-mismatch:drifted'
+  ]);
+});
+
+test('schema checksum drift identifies the affected schema', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const schemaFile = path.join(pluginRoot, 'schemas/test-case.schema.json');
+  const schema = JSON.parse(fs.readFileSync(schemaFile, 'utf8'));
+  schema.title = 'Drifted test case';
+  fs.writeFileSync(schemaFile, `${JSON.stringify(schema, null, 2)}\n`);
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:schema-mismatch:drifted:test-case.schema.json'
+  ]);
+});
+
+test('blocker registry drift cannot be hidden by a matching version', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  fs.appendFileSync(
+    path.join(pluginRoot, 'kernel/evidence/blockers.js'),
+    "\nconst undeclared = 'verification-evidence:drift-fixture';\n"
+  );
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:blocker-registry-mismatch:drifted'
+  ]);
+});
+
+test('normalized fixture drift is release blocking', (t) => {
+  const fixtureRoot = copyFixtures(t);
+  const fixtureFile = path.join(fixtureRoot, 'positive/test-case.json');
+  const fixture = JSON.parse(fs.readFileSync(fixtureFile, 'utf8'));
+  fixture.goal = 'Drifted fixture goal';
+  fs.writeFileSync(fixtureFile, `${JSON.stringify(fixture, null, 2)}\n`);
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    fixtureRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:fixture-output-mismatch:drifted'
+  ]);
+});
+
+test('generated report model drift is release blocking', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const builderFile = path.join(
+    pluginRoot,
+    'kernel/reporting/report-model-builder.js'
+  );
+  fs.appendFileSync(builderFile, '\n// report-model-drift\n');
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:report-model-mismatch:drifted'
+  ]);
+});
+
+test('host-owned code cannot bypass or duplicate Kernel boundaries', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const hostFile = 'scripts/unsafe-host-adapter.js';
+  fs.writeFileSync(
+    path.join(pluginRoot, hostFile),
+    [
+      "'use strict';",
+      "const { createDecisionEngine } = require('../kernel/gates');",
+      'module.exports = { createDecisionEngine };',
+      ''
+    ].join('\n')
+  );
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot,
+    hostFiles: [hostFile]
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:architecture-boundary-violation:drifted:scripts/unsafe-host-adapter.js'
+  ]);
+});
+
+test('missing host input fails closed without fallback', () => {
+  assert.throws(
+    () => kernel.createCompatibilitySnapshot({
+      host: 'missing',
+      pluginRoot: '/tmp/specnav-host-does-not-exist',
+      fixtureRoot: FIXTURE_ROOT
+    }),
+    /verification-drift:plugin-root-missing:missing/
+  );
+});
+
+test('omitted roots return stable input blockers', () => {
+  assert.throws(
+    () => kernel.createCompatibilitySnapshot({
+      host: 'missing',
+      fixtureRoot: FIXTURE_ROOT
+    }),
+    /verification-drift:plugin-root-missing:missing/
+  );
+  assert.throws(
+    () => kernel.createCompatibilitySnapshot({
+      host: 'missing',
+      pluginRoot: CODEX_PLUGIN
+    }),
+    /verification-drift:fixture-root-missing:missing/
+  );
+});
+
+test('manifest paths cannot escape the synchronized plugin root', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const outside = path.join(pluginRoot, '../outside.txt');
+  const manifestFile = path.join(pluginRoot, 'unsafe-manifest.json');
+  fs.writeFileSync(outside, 'must not be read\n');
+  fs.writeFileSync(manifestFile, `${JSON.stringify({
+    schema: 'specnav.verification.kernel-sync.v1',
+    kernel: {
+      name: kernel.metadata.name,
+      version: kernel.metadata.version,
+      api_version: kernel.metadata.apiVersion,
+      contract_version: kernel.metadata.contractVersion,
+      contract_digest: kernel.metadata.contractDigest
+    },
+    files: ['../outside.txt'],
+    source_tree_digest: '0'.repeat(64),
+    host_files: []
+  }, null, 2)}\n`);
+
+  assert.throws(
+    () => snapshot({
+      host: 'unsafe',
+      pluginRoot,
+      manifestFile,
+      hostFiles: ['scripts/codex-verification-adapter.js']
+    }),
+    /verification-drift:manifest-path-unsafe:unsafe/
+  );
+});
+
+test('manifest cannot omit required host-owned files or hide rogue files', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
+  );
+  const manifestFile = path.join(
+    pluginRoot,
+    'specnav-kernel-source.json'
+  );
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.host_files = manifest.host_files.filter((entry) => (
+    entry.target !== 'scripts/claude-verification-adapter.js'
+  ));
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+  fs.writeFileSync(
+    path.join(pluginRoot, 'scripts/rogue-host-adapter.js'),
+    "'use strict';\nmodule.exports = {};\n"
+  );
+
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CLAUDE_HOST_FILES
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:manifest-file-set-mismatch:drifted',
+    'verification-drift:manifest-host-files-mismatch:drifted'
+  ]);
+});
+
+test('host-owned wrapper bytes must match synchronized provenance', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CODEFREE_ROOT, 'modules/specnav-verification')
+  );
+  const manifestFile = path.join(
+    pluginRoot,
+    'specnav-kernel-source.json'
+  );
+  fs.appendFileSync(
+    path.join(pluginRoot, 'scripts/codefree-o-verification-adapter.js'),
+    '\n// subtle-host-drift\n'
+  );
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'drifted',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CODEFREE_HOST_FILES
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:manifest-host-file-digest-mismatch:drifted'
+  ]);
+});
+
+test('missing manifest returns a stable drift blocker', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  assert.throws(
+    () => snapshot({
+      host: 'missing-manifest',
+      pluginRoot,
+      manifestFile: path.join(pluginRoot, 'missing-manifest.json'),
+      hostFiles: ['scripts/codex-verification-adapter.js']
+    }),
+    /verification-drift:manifest-missing:missing-manifest/
+  );
+});
+
+test('host manifests must bind to a clean locked source commit', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CODEFREE_ROOT, 'modules/specnav-verification')
+  );
+  const manifestFile = path.join(
+    pluginRoot,
+    'specnav-kernel-source.json'
+  );
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.source_dirty = true;
+  manifest.source_commit = '0'.repeat(40);
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const result = snapshot({
+    host: 'drifted',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CODEFREE_HOST_FILES,
+    expectedSourceCommit: '1'.repeat(40)
+  });
+
+  assert.deepEqual(result.manifest.blockers, [
+    'manifest-source-commit-mismatch',
+    'manifest-source-dirty'
+  ]);
+});
+
+test('candidate JavaScript is treated as data and never executed', (t) => {
+  const pluginRoot = copyTree(t, CODEX_PLUGIN);
+  const sentinel = path.join(pluginRoot, '../candidate-executed.txt');
+  const metadataFile = path.join(pluginRoot, 'kernel/metadata.js');
+  const canonicalFile = path.join(pluginRoot, 'kernel/cases/canonical.js');
+  fs.writeFileSync(
+    metadataFile,
+    [
+      "'use strict';",
+      `require('node:fs').writeFileSync(${JSON.stringify(sentinel)}, 'metadata');`,
+      fs.readFileSync(metadataFile, 'utf8')
+    ].join('\n')
+  );
+  fs.writeFileSync(
+    canonicalFile,
+    [
+      "'use strict';",
+      `require('node:fs').writeFileSync(${JSON.stringify(sentinel)}, 'canonical');`,
+      fs.readFileSync(canonicalFile, 'utf8')
+    ].join('\n')
+  );
+
+  snapshot({ host: 'untrusted', pluginRoot });
+  assert.equal(fs.existsSync(sentinel), false);
+});
+
+test('CI pins both downstream host repositories to immutable commits', () => {
+  const workflow = fs.readFileSync(
+    path.join(ROOT, '.github/workflows/ci.yml'),
+    'utf8'
+  );
+  assert.equal(
+    HOST_LOCK.schema,
+    'specnav.verification.cross-host-lock.v1'
+  );
+  assert.match(HOST_LOCK.source_commit, /^[a-f0-9]{40}$/);
+  for (const [host, output] of [
+    ['claude-code', 'claude_ref'],
+    ['codefree-o', 'codefree_ref']
+  ]) {
+    assert.match(HOST_LOCK.hosts[host].ref, /^[a-f0-9]{40}$/);
+    assert.match(workflow, new RegExp(`ref: \\\${{ steps\\.host-lock\\.outputs\\.${output} }}`));
+  }
+  assert.match(workflow, /host-lock\.json/);
+});

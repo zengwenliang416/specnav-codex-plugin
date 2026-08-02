@@ -1,0 +1,9 @@
+# command: node --check integrations/claude-code/claude-verification-adapter.js && node --check integrations/claude-code/sync-verification-plugin.js && node --check plugins/specnav-verification/scripts/host-verification-adapter.js && node --check plugins/specnav-verification/scripts/codex-verification-adapter.js && node --check plugins/specnav-verification/scripts/verification-runtime.js && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' # task029-final-syntax-diff
+# exit_status: 0
+# duration_ms: 190
+
+## stdout
+(empty)
+
+## stderr
+(empty)

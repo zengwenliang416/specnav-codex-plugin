@@ -1,6 +1,6 @@
 ---
 name: specnav-verification-runtime-setup
-description: Use this skill only when the user explicitly asks to install the locked SpecNav Verification Runtime, including Playwright, managed browser binaries, Midscene, and AJV.
+description: Use this skill when the user explicitly asks to install or repair the locked SpecNav Verification Runtime, including Playwright, managed browser binaries, Midscene, and AJV.
 ---
 
 # SpecNav Verification Runtime Setup
@@ -44,3 +44,8 @@ runtime.
 - The target runtime version directory already exists.
 - A package or browser fails integrity validation.
 - The business repository manifest or lockfile changes.
+
+## Validation
+
+- Run `specnav-verification-runtime-status` against the installed version.
+- Confirm the install receipt, package lock, browser markers, executable probes, Kernel identity, and unchanged business-project manifests all pass with `fallback_used: false`.

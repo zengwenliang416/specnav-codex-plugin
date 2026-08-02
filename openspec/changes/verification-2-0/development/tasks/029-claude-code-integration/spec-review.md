@@ -2,28 +2,31 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- No Task 029 requirement is missing.
 
 ## Extra Behavior
 
-- None recorded.
+- The host-neutral adapter extraction and host-aware runtime guidance are
+  required by AC-40 and are bounded by `scope-correction.json`.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- No Task 029 requirement was misunderstood.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- None. Receipts `419-422` provide direct downstream execution, full
+  Verification 2.0, cross-plugin contracts, syntax, and diff evidence.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-37`
+- `AC-40`
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No required fix remains.

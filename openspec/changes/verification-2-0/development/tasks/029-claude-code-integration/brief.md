@@ -37,6 +37,13 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - integrations/claude-code/**
+- plugins/specnav-verification/scripts/host-verification-adapter.js
+- plugins/specnav-verification/scripts/codex-verification-adapter.js
+- plugins/specnav-verification/scripts/verification-runtime.js
+- plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md
+- plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md
+- plugins/specnav-verification/skills/specnav-verification/SKILL.md
+- tests/run-verification-v2-claude-adapter.sh
 - tests/verification-v2/cross-host/**
 - docs/host-integration-claude-code.md
 

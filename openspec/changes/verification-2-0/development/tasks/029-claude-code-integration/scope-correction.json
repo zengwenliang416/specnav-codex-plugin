@@ -1,0 +1,25 @@
+{
+  "schema": "specnav.task-scope-correction.v1",
+  "task_id": "029-claude-code-integration",
+  "recorded_at": "2026-08-02T14:50:34Z",
+  "reason": "AC-40 requires Claude Code to consume one shared host adapter instead of duplicating the Codex adapter. The original packet allowed the Claude integration wrapper but omitted the canonical shared adapter extraction, the existing Codex wrapper update, host-aware runtime guidance, and the focused executable runner.",
+  "added_allowed_files": [
+    "plugins/specnav-verification/scripts/host-verification-adapter.js",
+    "plugins/specnav-verification/scripts/codex-verification-adapter.js",
+    "plugins/specnav-verification/scripts/verification-runtime.js",
+    "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+    "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+    "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+    "tests/run-verification-v2-claude-adapter.sh"
+  ],
+  "constraints": [
+    "The shared adapter may contain host-neutral invocation and projection only.",
+    "Claude Code remains a generated or synchronized downstream consumer.",
+    "Reading, evidence, aggregation, DecisionEngine, freshness, report, and release semantics remain owned by the Verification Kernel.",
+    "No fallback, simplified lane, manual green, or business-project dependency mutation is introduced."
+  ],
+  "acceptance_assertions": [
+    "AC-37",
+    "AC-40"
+  ]
+}

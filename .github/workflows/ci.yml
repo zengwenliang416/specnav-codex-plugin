@@ -28,6 +28,53 @@ jobs:
         run: |
           set -euo pipefail
           for suite in tests/run-*.sh; do
+            if [[ "$suite" == "tests/run-verification-v2-cross-host.sh" ]]; then
+              continue
+            fi
             echo "RUN $suite"
             bash "$suite"
           done
+
+  cross-host-drift:
+    name: Verification cross-host drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve immutable host lock
+        id: host-lock
+        run: |
+          set -euo pipefail
+          lock="tests/verification-v2/cross-host/host-lock.json"
+          jq -e '
+            .schema == "specnav.verification.cross-host-lock.v1"
+            and (.source_commit | test("^[a-f0-9]{40}$"))
+            and (.hosts["claude-code"].ref | test("^[a-f0-9]{40}$"))
+            and (.hosts["codefree-o"].ref | test("^[a-f0-9]{40}$"))
+          ' "$lock" >/dev/null
+          echo "claude_ref=$(jq -r '.hosts["claude-code"].ref' "$lock")" >> "$GITHUB_OUTPUT"
+          echo "codefree_ref=$(jq -r '.hosts["codefree-o"].ref' "$lock")" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Claude Code host
+        uses: actions/checkout@v4
+        with:
+          repository: zengwenliang416/specnav-claude-plugin
+          ref: ${{ steps.host-lock.outputs.claude_ref }}
+          path: hosts/claude
+
+      - name: Checkout CodeFree-O host
+        uses: actions/checkout@v4
+        with:
+          repository: zengwenliang416/specnav-codefree-o-plugin
+          ref: ${{ steps.host-lock.outputs.codefree_ref }}
+          path: hosts/codefree-o
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Detect Verification Kernel drift
+        env:
+          SPECNAV_CLAUDE_ROOT: ${{ github.workspace }}/hosts/claude
+          SPECNAV_CODEFREE_O_ROOT: ${{ github.workspace }}/hosts/codefree-o
+        run: npm test

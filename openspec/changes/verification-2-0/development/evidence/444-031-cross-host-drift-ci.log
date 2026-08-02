@@ -1,0 +1,110 @@
+# command: node --test tests/verification-v2/cross-host/drift-detector.test.js # task031-kernel-source-red
+# exit_status: 1
+# duration_ms: 1057
+
+## stdout
+TAP version 13
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+ok 1 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 275.130834
+  type: 'test'
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 2 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 106.000459
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+not ok 3 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 80.11075
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:118:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'verification-drift:kernel-source-mismatch:drifted'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:kernel-source-mismatch:drifted'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:129:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 4 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 78.450917
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 5 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 84.347084
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 6 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 48.662833
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 7 - generated report model drift is release blocking
+  ---
+  duration_ms: 77.3435
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 8 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 71.214583
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 9 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.392375
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 10 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.234333
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+ok 11 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 64.832709
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 10
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1000.932833
+
+
+## stderr
+(empty)

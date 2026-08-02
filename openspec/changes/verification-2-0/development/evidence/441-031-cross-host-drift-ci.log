@@ -1,0 +1,196 @@
+# command: node --test tests/verification-v2/cross-host/drift-detector.test.js # task031-red
+# exit_status: 1
+# duration_ms: 1453
+
+## stdout
+TAP version 13
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+not ok 1 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 0.643084
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:60:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:61:21)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+not ok 2 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 322.995792
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:97:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:108:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+not ok 3 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 164.210208
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:118:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:124:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+not ok 4 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 197.588917
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:134:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:140:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: normalized fixture drift is release blocking
+not ok 5 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 108.923625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:150:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:156:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generated report model drift is release blocking
+not ok 6 - generated report model drift is release blocking
+  ---
+  duration_ms: 169.788334
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:166:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:173:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+not ok 7 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 169.923542
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:183:1'
+  failureType: 'testCodeFailure'
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:43:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:195:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing host input fails closed without fallback
+not ok 8 - missing host input fails closed without fallback
+  ---
+  duration_ms: 1.542208
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:206:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /verification-drift:plugin-root-missing:missing/. Input:
+    
+    'TypeError: kernel.createCompatibilitySnapshot is not a function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'kernel.createCompatibilitySnapshot is not a function'
+  name: 'TypeError'
+  stack: |-
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:208:18
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:207:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:207:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1369.368208
+
+
+## stderr
+(empty)

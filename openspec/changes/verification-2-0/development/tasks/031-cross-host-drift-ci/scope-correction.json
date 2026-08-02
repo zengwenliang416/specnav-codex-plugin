@@ -1,0 +1,23 @@
+{
+  "schema": "specnav.task-scope-correction.v1",
+  "task_id": "031-cross-host-drift-ci",
+  "recorded_at": "2026-08-02T17:03:30Z",
+  "reason": "Independent review found that immutable cross-host CI could still accept incomplete host manifests, floating source provenance, and host wrappers whose bytes were not bound to the sync receipt. The generated packet omitted the synchronization writers and root smoke entry needed to repair those release-blocking gaps.",
+  "added_allowed_files": [
+    "tests/run-smoke.sh",
+    "tests/run-verification-v2-cross-host.sh",
+    "integrations/claude-code/sync-verification-plugin.js",
+    "integrations/codefree-o/sync-verification-module.js"
+  ],
+  "constraints": [
+    "CI detects drift and blocks release; it never synchronizes downstream repositories.",
+    "Candidate JavaScript is treated as untrusted data and is never executed by compatibility inspection.",
+    "Every synchronized host tree is exact, every host-owned file is declared with a digest, and source provenance binds to a clean immutable commit.",
+    "No fallback, simplified lane, partial-domain gate, manual green, or unrelated downstream mutation is introduced."
+  ],
+  "acceptance_assertions": [
+    "AC-37",
+    "AC-39",
+    "AC-40"
+  ]
+}

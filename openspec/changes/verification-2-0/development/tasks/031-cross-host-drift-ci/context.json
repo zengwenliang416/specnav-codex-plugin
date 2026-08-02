@@ -3,6 +3,7 @@
   "goal": "Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI.",
   "must_read": [
     "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/brief.md",
+    "openspec/changes/verification-2-0/development/tasks/031-cross-host-drift-ci/scope-correction.json",
     "openspec/specs/ui-design/design.md",
     "openspec/specs/system-architecture/design.md",
     "openspec/specs/frontend-backend-data-flow/design.md",
@@ -18,8 +19,12 @@
   ],
   "allowed_files": [
     "tests/verification-v2/cross-host/**",
+    "tests/run-smoke.sh",
+    "tests/run-verification-v2-cross-host.sh",
     ".github/workflows/ci.yml",
-    "plugins/specnav-verification/kernel/**"
+    "plugins/specnav-verification/kernel/**",
+    "integrations/claude-code/sync-verification-plugin.js",
+    "integrations/codefree-o/sync-verification-module.js"
   ],
   "test_paths": [
     "bash tests/run-verification-v2-cross-host.sh",

@@ -37,6 +37,8 @@ listed verification commands and must preserve all earlier artifacts.
 ## Files Allowed
 
 - integrations/codefree-o/**
+- plugins/specnav-verification/scripts/verification-runtime.js
+- tests/run-verification-v2-codefree-o-adapter.sh
 - tests/verification-v2/cross-host/**
 - docs/host-integration-codefree-o.md
 

@@ -53,6 +53,10 @@ const {
 const {
   createV1ToV2Migrator
 } = require('./migration');
+const {
+  createCompatibilitySnapshot,
+  compareCompatibilitySnapshots
+} = require('./governance');
 
 module.exports = Object.freeze({
   createCaseCatalogRenderer,
@@ -85,6 +89,8 @@ module.exports = Object.freeze({
   createReadingEvaluator,
   createSixDomainAggregator,
   createDecisionEngine,
+  createCompatibilitySnapshot,
+  compareCompatibilitySnapshots,
   renderSafeHtmlAttribute,
   renderSafeHtmlText
 });

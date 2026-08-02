@@ -1,0 +1,10 @@
+# command: grep -Fq 'No Task 029 requirement is missing.' openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/spec-review.md && grep -Fq 'No required fix remains.' openspec/changes/verification-2-0/development/tasks/029-claude-code-integration/spec-review.md && bash tests/run-development-plugin-fixtures.sh # task029-review-document-contract-fix
+# exit_status: 0
+# duration_ms: 19076
+
+## stdout
+specnav development plugin fixtures ok
+
+
+## stderr
+(empty)

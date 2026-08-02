@@ -2,28 +2,33 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- No Task 030 requirement is missing.
 
 ## Extra Behavior
 
-- None recorded.
+- Empty trusted staging, exact-tree validation, and explicit plugin-runtime
+  identity are required to satisfy AC-40 provenance and do not expand product
+  behavior.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- No Task 030 requirement was misunderstood.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- Historical pre-task hashes for the live README and discovery dirty files were
+  not recorded. The scope correction and focused fixture directly prove the
+  owned-path-only preservation contract.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-37`
+- `AC-40`
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- No required specification fix remains.

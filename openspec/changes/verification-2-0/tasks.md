@@ -82,8 +82,8 @@ User Outcome: Maintainers can migrate or roll back V1 artifacts without manufact
 User Outcome: Codex, Claude Code, and CodeFree-O users can run the same Verification Kernel through native adapters.
 
 - [x] 11.1 Codex user can discover and run Verification 2.0 through the Codex marketplace adapter.
-- [ ] 11.2 Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter.
-- [ ] 11.3 CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes.
+- [x] 11.2 Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter.
+- [x] 11.3 CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes.
 
 ## 12. Cross-Host Quality And Documentation
 

@@ -37,6 +37,48 @@ function command(parts) {
   return parts.map((part) => JSON.stringify(String(part))).join(' ');
 }
 
+function pluginRepairCommand(pluginRoot = path.resolve(__dirname, '..')) {
+  const claudeManifest = path.join(
+    pluginRoot,
+    '.claude-plugin',
+    'plugin.json'
+  );
+  if (require('node:fs').existsSync(claudeManifest)) {
+    return '/plugin marketplace update specnav-marketplace';
+  }
+  const codeFreeManifest = path.resolve(
+    pluginRoot,
+    '../..',
+    'specnav.manifest.json'
+  );
+  if (require('node:fs').existsSync(codeFreeManifest)) {
+    try {
+      const manifest = JSON.parse(
+        require('node:fs').readFileSync(codeFreeManifest, 'utf8')
+      );
+      if (
+        manifest.schema === 'specnav.hostPackage.v1'
+        && Array.isArray(manifest.modules)
+        && manifest.modules.some((entry) => (
+          entry
+          && entry.name === 'specnav-verification'
+          && entry.path === 'modules/specnav-verification'
+        ))
+      ) {
+        return (
+          'codefree-o plugin '
+          + 'github:zengwenliang416/specnav-codefree-o-plugin -g'
+        );
+      }
+    } catch {
+      throw new Error(
+        'verification-runtime:invalid-codefree-o-manifest'
+      );
+    }
+  }
+  return 'codex plugin marketplace upgrade specnav-marketplace --json';
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const action = args[0];
@@ -109,7 +151,7 @@ async function main() {
       runtimeBase,
       installCommand,
       repairCommand,
-      pluginRepairCommand: 'codex plugin marketplace upgrade specnav-marketplace --json',
+      pluginRepairCommand: pluginRepairCommand(),
       environmentRepairCommand: (
         `Use Node.js 20-24 on darwin-arm64, then rerun: ${doctorCommand}`
       )
@@ -151,5 +193,6 @@ module.exports = {
   argValue,
   command,
   currentEnvironment,
-  main
+  main,
+  pluginRepairCommand
 };

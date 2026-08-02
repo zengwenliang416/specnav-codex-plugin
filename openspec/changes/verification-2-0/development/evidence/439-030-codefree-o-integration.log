@@ -1,0 +1,9 @@
+# command: node --check integrations/codefree-o/codefree-o-verification-adapter.js && node --check integrations/codefree-o/sync-verification-module.js && node --check plugins/specnav-verification/scripts/host-verification-adapter.js && node --check plugins/specnav-verification/scripts/verification-runtime.js && git diff --check -- . ':(exclude)openspec/changes/verification-2-0/development/evidence/*.log' ':(exclude)openspec/changes/verification-2-0/codegraph/*.json' && git -C /Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin diff --check && git -C /Volumes/zwl/AI/ai-coding/specnav-claude-plugin diff --check # task030-security-fixes-syntax-diff
+# exit_status: 0
+# duration_ms: 370
+
+## stdout
+(empty)
+
+## stderr
+(empty)

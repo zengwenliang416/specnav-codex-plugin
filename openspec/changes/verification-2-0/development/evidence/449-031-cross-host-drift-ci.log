@@ -1,0 +1,324 @@
+# command: node --test tests/verification-v2/cross-host/drift-detector.test.js # task031-review-findings-red
+# exit_status: 1
+# duration_ms: 1381
+
+## stdout
+TAP version 13
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+ok 1 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 187.995083
+  type: 'test'
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 2 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 175.192167
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+ok 3 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 93.632917
+  type: 'test'
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 4 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 86.534583
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 5 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 83.726709
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 6 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 48.9635
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 7 - generated report model drift is release blocking
+  ---
+  duration_ms: 80.973042
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 8 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 83.787834
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 9 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.400833
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 10 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.257292
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+ok 11 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 74.405583
+  type: 'test'
+  ...
+# Subtest: manifest cannot omit required host-owned files or hide rogue files
+not ok 12 - manifest cannot omit required host-owned files or hide rogue files
+  ---
+  duration_ms: 104.512292
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:294:1'
+  failureType: 'testCodeFailure'
+  error: 'verification-drift:manifest-path-unsafe:drifted'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    safeRelativePath (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:103:11)
+    confinedFile (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:109:16)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:315:24)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:384:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:55:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:313:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+  ...
+# Subtest: missing manifest returns a stable drift blocker
+not ok 13 - missing manifest returns a stable drift blocker
+  ---
+  duration_ms: 88.456875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:326:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /verification-drift:manifest-missing:missing-manifest/. Input:
+    
+    'Error: verification-drift:manifest-path-unsafe:missing-manifest'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'verification-drift:manifest-path-unsafe:missing-manifest'
+  stack: |-
+    safeRelativePath (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:103:11)
+    confinedFile (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:109:16)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:315:24)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:384:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:55:17)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:329:11
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:328:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:328:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: candidate JavaScript is treated as data and never executed
+not ok 14 - candidate JavaScript is treated as data and never executed
+  ---
+  duration_ms: 103.377584
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:339:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:362:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CI pins both downstream host repositories to immutable commits
+not ok 15 - CI pins both downstream host repositories to immutable commits
+  ---
+  duration_ms: 1.667417
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:365:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /repository: zengwenliang416\/specnav-claude-plugin\n\s+ref: [a-f0-9]{40}\n\s+path:/. Input:
+    
+    'name: CI\n' +
+      '\n' +
+      'on:\n' +
+      '  push:\n' +
+      '    branches: [main]\n' +
+      '  pull_request:\n' +
+      '\n' +
+      'jobs:\n' +
+      '  fixtures:\n' +
+      '    name: Fixture suites\n' +
+      '    runs-on: ubuntu-latest\n' +
+      '    steps:\n' +
+      '      - uses: actions/checkout@v4\n' +
+      '\n' +
+      '      - uses: actions/setup-node@v4\n' +
+      '        with:\n' +
+      '          node-version: 22\n' +
+      '\n' +
+      '      - name: Install OpenSpec CLI (version verified locally)\n' +
+      '        run: npm install -g @fission-ai/openspec@1.2.0\n' +
+      '\n' +
+      '      - name: Syntax-check all plugin scripts\n' +
+      '        run: |\n' +
+      '          set -euo pipefail\n' +
+      "          find plugins -name '*.js' -print0 | xargs -0 -n1 node --check\n" +
+      '\n' +
+      '      - name: Run fixture suites\n' +
+      '        run: |\n' +
+      '          set -euo pipefail\n' +
+      '          for suite in tests/run-*.sh; do\n' +
+      '            if [[ "$suite" == "tests/run-verification-v2-cross-host.sh" ]]; then\n' +
+      '              continue\n' +
+      '            fi\n' +
+      '            echo "RUN $suite"\n' +
+      '            bash "$suite"\n' +
+      '          done\n' +
+      '\n' +
+      '  cross-host-drift:\n' +
+      '    name: Verification cross-host drift\n' +
+      '    runs-on: ubuntu-latest\n' +
+      '    steps:\n' +
+      '      - uses: actions/checkout@v4\n' +
+      '\n' +
+      '      - name: Checkout Claude Code host\n' +
+      '        uses: actions/checkout@v4\n' +
+      '        with:\n' +
+      '          repository: zengwenliang416/specnav-claude-plugin\n' +
+      '          path: hosts/claude\n' +
+      '\n' +
+      '      - name: Checkout CodeFree-O host\n' +
+      '        uses: actions/checkout@v4\n' +
+      '        with:\n' +
+      '          repository: zengwenliang416/specnav-codefree-o-plugin\n' +
+      '          path: hosts/codefree-o\n' +
+      '\n' +
+      '      - uses: actions/setup-node@v4\n' +
+      '        with:\n' +
+      '          node-version: 22\n' +
+      '\n' +
+      '      - name: Detect Verification Kernel drift\n' +
+      '        env:\n' +
+      '          SPECNAV_CLAUDE_ROOT: ${{ github.workspace }}/hosts/claude\n' +
+      '          SPECNAV_CODEFREE_O_ROOT: ${{ github.workspace }}/hosts/codefree-o\n' +
+      '        run: bash tests/run-verification-v2-cross-host.sh\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    name: CI
+    
+    on:
+      push:
+        branches: [main]
+      pull_request:
+    
+    jobs:
+      fixtures:
+        name: Fixture suites
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+    
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 22
+    
+          - name: Install OpenSpec CLI (version verified locally)
+            run: npm install -g @fission-ai/openspec@1.2.0
+    
+          - name: Syntax-check all plugin scripts
+            run: |
+              set -euo pipefail
+              find plugins -name '*.js' -print0 | xargs -0 -n1 node --check
+    
+          - name: Run fixture suites
+            run: |
+              set -euo pipefail
+              for suite in tests/run-*.sh; do
+                if [[ "$suite" == "tests/run-verification-v2-cross-host.sh" ]]; then
+                  continue
+                fi
+                echo "RUN $suite"
+                bash "$suite"
+              done
+    
+      cross-host-drift:
+        name: Verification cross-host drift
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+    
+          - name: Checkout Claude Code host
+            uses: actions/checkout@v4
+            with:
+              repository: zengwenliang416/specnav-claude-plugin
+              path: hosts/claude
+    
+          - name: Checkout CodeFree-O host
+            uses: actions/checkout@v4
+            with:
+              repository: zengwenliang416/specnav-codefree-o-plugin
+              path: hosts/codefree-o
+    
+          - uses: actions/setup-node@v4
+            with:
+              node-version: 22
+    
+          - name: Detect Verification Kernel drift
+            env:
+              SPECNAV_CLAUDE_ROOT: ${{ github.workspace }}/hosts/claude
+              SPECNAV_CODEFREE_O_ROOT: ${{ github.workspace }}/hosts/codefree-o
+            run: bash tests/run-verification-v2-cross-host.sh
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:375:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 11
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1344.511625
+
+
+## stderr
+(empty)

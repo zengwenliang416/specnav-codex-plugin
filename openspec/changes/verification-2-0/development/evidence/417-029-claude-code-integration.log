@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 1.719459
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.831208
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.230334
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.215
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.547583
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 278.216125
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 7 - Claude host code remains invocation-only
+  ---
+  duration_ms: 0.360958
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 469.190958
+verification v2 claude adapter ok
+exit_status=0

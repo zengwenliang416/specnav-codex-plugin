@@ -1,0 +1,198 @@
+# command: bash tests/run-verification-v2-claude-adapter.sh && bash tests/run-verification-v2-codefree-o-adapter.sh && npm test # task031-host-contracts
+# exit_status: 0
+# duration_ms: 15500
+
+## stdout
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 1.978667
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.764125
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.22475
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.213709
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.242333
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 128.872208
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects the wrong repository before writes
+ok 7 - Claude synchronizer rejects the wrong repository before writes
+  ---
+  duration_ms: 94.392208
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer refuses dirty targets and dirty overrides
+ok 8 - Claude synchronizer refuses dirty targets and dirty overrides
+  ---
+  duration_ms: 115.995375
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects ancestor symlink escapes
+ok 9 - Claude synchronizer rejects ancestor symlink escapes
+  ---
+  duration_ms: 66.005
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer leaves no partial writes when staging fails
+ok 10 - Claude synchronizer leaves no partial writes when staging fails
+  ---
+  duration_ms: 415.624667
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer commits one validated tree with host provenance
+ok 11 - Claude synchronizer commits one validated tree with host provenance
+  ---
+  duration_ms: 458.687125
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 12 - Claude host code remains invocation-only
+  ---
+  duration_ms: 4.793709
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1450.825375
+verification v2 claude adapter ok
+TAP version 13
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 1 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 0.938791
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 2 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.394041
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 3 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.183583
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 4 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.290041
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 5 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.163084
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 6 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.219916
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 7 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.182208
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+ok 8 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 208.961792
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 9 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 346.94125
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 10 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 108.971666
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+ok 11 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 359.289875
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 12 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 108.90425
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 13 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 433.7125
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1652.416334
+verification v2 CodeFree-O adapter ok
+
+> specnav-codex-plugin@0.3.0 test
+> bash tests/run-smoke.sh
+
+codex marketplace fixtures ok
+codex plugin fixtures ok
+codex skill fixtures ok
+codex hook fixtures ok
+codex development fixtures ok
+plugin suite resolver fixtures ok
+task checkbox contract fixtures ok
+codex lane-routing fixtures ok
+operations archive action fixtures ok
+specnav codegraph policy fixtures ok
+specnav codegraph context fixtures ok
+specnav light compact gate fixtures ok
+specnav codex smoke ok
+
+
+## stderr
+(empty)

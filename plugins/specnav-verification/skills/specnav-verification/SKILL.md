@@ -1,6 +1,6 @@
 ---
 name: specnav-verification
-description: Use this skill as the Codex entrypoint for the complete SpecNav Verification 2.0 lifecycle, including runtime readiness, approved cases, six-domain execution, repair loops, gates, and reports.
+description: Use this skill when a Codex user starts, resumes, or reviews the complete SpecNav Verification 2.0 lifecycle, including runtime readiness, approved cases, six-domain execution, repair loops, gates, and reports.
 ---
 
 ## Runtime Paths
@@ -66,3 +66,8 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
 - Any request asks for fallback, manual green, or fewer than all six domains.
 - A failed, stale, blocked, running, or canceled attempt is presented as PASS.
 - A report is treated as gate authority.
+
+## Validation
+
+- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate --project "$PWD" --json`.
+- Confirm the adapter reports `verification_mode: "full"`, all six required domains, `fallback_used: false`, and exact blockers or machine-authoritative artifacts.

@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 1 - CodeFree-O describes the canonical full Verification contract
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 2 - CodeFree-O preserves shared blockers and artifacts
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 3 - CodeFree-O blocks partial, fallback, and manual-green requests
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 4 - CodeFree-O host wrapper remains invocation-only
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+not ok 5 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  error: "ENOENT: no such file or directory, open '/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/modules/specnav-verification/specnav-kernel-source.json'"
+  code: 'ENOENT'
+  ...
+1..5
+# tests 5
+# pass 4
+# fail 1
+# duration_ms 148.585417

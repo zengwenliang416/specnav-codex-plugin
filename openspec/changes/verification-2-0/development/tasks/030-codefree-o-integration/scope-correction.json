@@ -1,0 +1,33 @@
+{
+  "schema": "specnav.task-scope-correction.v1",
+  "task_id": "030-codefree-o-integration",
+  "recorded_at": "2026-08-02T15:13:30Z",
+  "reason": "The generated packet omitted the executable focused runner and host-aware runtime repair guidance required for direct CodeFree-O execution. The downstream repository already contains unrelated README and discovery-test edits, so this task uses path-owned clean checks instead of requiring an entirely clean repository.",
+  "added_allowed_files": [
+    "plugins/specnav-verification/scripts/verification-runtime.js",
+    "tests/run-verification-v2-codefree-o-adapter.sh"
+  ],
+  "external_owned_paths": [
+    "modules/specnav-verification/**",
+    "runtime/commands.mjs",
+    "tests/plugin.test.mjs",
+    "tests/run-smoke.sh",
+    "modules/specnav-core/scripts/specnav-route.js",
+    "modules/specnav-core/skills/specnav-route/SKILL.md"
+  ],
+  "external_preserved_dirty_paths": [
+    "README.md",
+    "README.zh-CN.md",
+    "tests/run-codefree-discovery.sh"
+  ],
+  "constraints": [
+    "Unrelated downstream changes must remain byte-for-byte preserved.",
+    "Owned downstream paths must be clean before synchronization or direct edits.",
+    "CodeFree-O injects host identity and discovery only; Verification Kernel semantics remain canonical.",
+    "No fallback, simplified lane, manual green, or business-project dependency mutation is introduced."
+  ],
+  "acceptance_assertions": [
+    "AC-37",
+    "AC-40"
+  ]
+}

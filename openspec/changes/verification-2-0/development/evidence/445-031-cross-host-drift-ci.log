@@ -1,0 +1,85 @@
+# command: bash tests/run-verification-v2-cross-host.sh # task031-security-source-green
+# exit_status: 0
+# duration_ms: 1053
+
+## stdout
+TAP version 13
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+ok 1 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 269.052625
+  type: 'test'
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 2 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 96.072667
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+ok 3 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 87.808958
+  type: 'test'
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 4 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 92.465
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 5 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 87.384333
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 6 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 45.535792
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 7 - generated report model drift is release blocking
+  ---
+  duration_ms: 79.485666
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 8 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 81.434625
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 9 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.388542
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 10 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.24675
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+ok 11 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 64.791125
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1009.338667
+
+
+## stderr
+(empty)

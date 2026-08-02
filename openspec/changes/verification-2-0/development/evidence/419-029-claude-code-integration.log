@@ -1,0 +1,92 @@
+# command: bash tests/run-verification-v2-claude-adapter.sh # task029-final-focused
+# exit_status: 0
+# duration_ms: 4046
+
+## stdout
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 1.203875
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.589667
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.21775
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.219167
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.241125
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 121.754958
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects the wrong repository before writes
+ok 7 - Claude synchronizer rejects the wrong repository before writes
+  ---
+  duration_ms: 83.641958
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer refuses dirty targets and dirty overrides
+ok 8 - Claude synchronizer refuses dirty targets and dirty overrides
+  ---
+  duration_ms: 119.856958
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects ancestor symlink escapes
+ok 9 - Claude synchronizer rejects ancestor symlink escapes
+  ---
+  duration_ms: 68.680458
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer leaves no partial writes when staging fails
+ok 10 - Claude synchronizer leaves no partial writes when staging fails
+  ---
+  duration_ms: 421.81425
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer commits one validated tree with host provenance
+ok 11 - Claude synchronizer commits one validated tree with host provenance
+  ---
+  duration_ms: 284.763875
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 12 - Claude host code remains invocation-only
+  ---
+  duration_ms: 0.196416
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1250.360291
+verification v2 claude adapter ok
+
+
+## stderr
+(empty)

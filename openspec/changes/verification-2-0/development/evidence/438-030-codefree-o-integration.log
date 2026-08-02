@@ -1,0 +1,124 @@
+# command: bash /Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/tests/run-smoke.sh && bash tests/run-verification-plugin-fixtures.sh && bash tests/run-development-plugin-fixtures.sh && bash tests/run-verification-v2-no-light.sh # task030-security-fixes-contracts
+# exit_status: 0
+# duration_ms: 121698
+
+## stdout
+
+> specnav-codefree-o-plugin@0.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: manifest exposes seven isolated SpecNav modules
+ok 1 - manifest exposes seven isolated SpecNav modules
+  ---
+  duration_ms: 1.328167
+  type: 'test'
+  ...
+# Subtest: runtime environment uses package module roots
+ok 2 - runtime environment uses package module roots
+  ---
+  duration_ms: 0.919292
+  type: 'test'
+  ...
+# Subtest: CodeFree-O config hook registers commands and unique skill roots
+ok 3 - CodeFree-O config hook registers commands and unique skill roots
+  ---
+  duration_ms: 1.262
+  type: 'test'
+  ...
+# Subtest: system transform reports inactive projects without writing artifacts
+ok 4 - system transform reports inactive projects without writing artifacts
+  ---
+  duration_ms: 0.581125
+  type: 'test'
+  ...
+# Subtest: strict pre-tool gate blocks writes for marked projects without OpenSpec
+ok 5 - strict pre-tool gate blocks writes for marked projects without OpenSpec
+  ---
+  duration_ms: 32.068333
+  type: 'test'
+  ...
+# Subtest: plugin suite resolves all modules from specnav.manifest.json
+ok 6 - plugin suite resolves all modules from specnav.manifest.json
+  ---
+  duration_ms: 34.027583
+  type: 'test'
+  ...
+# Subtest: CodeGraph setup previews CodeFree-O config without writing
+ok 7 - CodeGraph setup previews CodeFree-O config without writing
+  ---
+  duration_ms: 39.762542
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 123.279
+
+> specnav-codefree-o-plugin@0.1.0 test:codefree
+> bash tests/run-codefree-discovery.sh
+
+CodeFree-O discovery fixture passed.
+{
+  "schema": "specnav.codefreeDoctor.v1",
+  "generated_at": "2026-08-02T16:04:20.825Z",
+  "ok": true,
+  "host": "codefree-o",
+  "package_root": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin",
+  "project_root": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin",
+  "project_state": {
+    "openspec": false,
+    "marker": false
+  },
+  "checks": [
+    {
+      "id": "host-codefree-o",
+      "ok": true,
+      "detail": "1.5.2"
+    },
+    {
+      "id": "openspec-cli",
+      "ok": true,
+      "detail": "1.2.0"
+    },
+    {
+      "id": "package-manifest",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/specnav.manifest.json"
+    },
+    {
+      "id": "plugin-entry",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/plugin/index.mjs"
+    },
+    {
+      "id": "module-suite",
+      "ok": true,
+      "detail": "7 modules"
+    },
+    {
+      "id": "guard-selfcheck",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "project-directory",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin"
+    }
+  ],
+  "blockers": []
+}
+specnav CodeFree-O smoke ok
+specnav verification plugin fixtures ok
+specnav development plugin fixtures ok
+verification v2 no-light contract ok
+
+
+## stderr
+(empty)

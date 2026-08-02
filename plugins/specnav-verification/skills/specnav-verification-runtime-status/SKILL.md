@@ -1,6 +1,6 @@
 ---
 name: specnav-verification-runtime-status
-description: Use this skill to inspect the locked SpecNav Verification Runtime readiness, including packages, browsers, install receipt, permissions, Kernel identity, and redacted Midscene provider configuration.
+description: Use this skill when a user asks to inspect, diagnose, or explain locked SpecNav Verification Runtime readiness, including packages, browsers, install receipt, permissions, Kernel identity, and redacted Midscene provider configuration.
 ---
 
 # SpecNav Verification Runtime Status
@@ -47,3 +47,8 @@ warning applies to the selected cases.
   provider probe is incomplete.
 - Any suggested path would use global packages, `npx`, system browsers, global
   Playwright caches, or another runtime version.
+
+## Validation
+
+- Run the doctor command again with the same runtime version and project root.
+- Confirm it reports `fallback_used: false`, exact Kernel identity, and either `ok: true` or stable blocker ids with explicit repair actions.
