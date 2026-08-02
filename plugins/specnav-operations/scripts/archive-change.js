@@ -3,10 +3,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const crypto = require('node:crypto');
 const childProcess = require('child_process');
 const runtime = require('./plugin-runtime');
 const { writeArchiveGate } = require('./operations-gate');
+const archiveTransaction = require('./archive-transaction');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 
 function splitRawArgs(value) {
@@ -141,70 +141,48 @@ function gitBranch(root, fallback = null) {
   return branch || fallback;
 }
 
-function archiveCandidates(root, change) {
-  const archiveRoot = path.join(lib.openspecDir(root), 'changes', 'archive');
-  return lib.listDirs(archiveRoot)
-    .filter((dir) => path.basename(dir).endsWith(`-${change}`))
-    .map((dir) => path.resolve(dir))
-    .sort();
+function readOptionalText(root, file, blockerId) {
+  const bytes = archiveTransaction.readRegularFile(
+    root,
+    file,
+    blockerId,
+    true
+  );
+  return bytes === null ? null : bytes.toString('utf8');
 }
 
-function sha256(bytes) {
-  return crypto.createHash('sha256').update(bytes).digest('hex');
-}
-
-function captureEvidence(changeDir) {
-  const files = [
-    'verify/evidence/raw.jsonl',
-    'verify/evidence/index.json',
-    'verify/evidence-index.jsonl'
-  ];
-  return files.flatMap((relative) => {
-    const file = path.join(changeDir, relative);
-    if (!fs.existsSync(file)) return [];
-    if (!fs.statSync(file).isFile()) {
-      throw new Error(`verification-operations:archive-evidence-not-file:${relative}`);
-    }
-    return [{
-      path: relative,
-      sha256: sha256(fs.readFileSync(file))
-    }];
-  });
-}
-
-function verifyArchivedEvidence(archiveDir, captured) {
-  const files = [];
-  const blockers = [];
-  for (const entry of captured) {
-    const file = path.join(archiveDir, entry.path);
-    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) {
-      blockers.push(`verification-operations:archive-evidence-missing:${entry.path}`);
-      continue;
-    }
-    const digest = sha256(fs.readFileSync(file));
-    files.push({ path: entry.path, sha256: digest });
-    if (digest !== entry.sha256) {
-      blockers.push(`verification-operations:archive-evidence-mutation:${entry.path}`);
-    }
+function readRegistryBeforeArchive(root) {
+  const file = lib.changeRegistryFile(root);
+  const text = readOptionalText(
+    root,
+    file,
+    'verification-operations:archive-registry-unsafe'
+  );
+  if (text === null) {
+    return { schema_version: 1, current_focus: null, changes: [] };
   }
-  return {
-    ok: blockers.length === 0,
-    immutable: true,
-    files,
-    blockers
-  };
+  let value;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    throw new Error('verification-operations:archive-registry-invalid');
+  }
+  if (!value || typeof value !== 'object' || !Array.isArray(value.changes)) {
+    throw new Error('verification-operations:archive-registry-invalid');
+  }
+  return value;
 }
 
 function writeRegistryAfterArchive(root, change, archiveRel, beforeRegistry, archivedAt) {
   const activeIds = new Set(lib.listChangeIds(root));
   const existingById = new Map((beforeRegistry.changes || []).map((item) => [item.id, item]));
   const entries = [];
-  let activeFileChange = null;
-  try {
-    activeFileChange = fs.readFileSync(path.join(lib.specnavDir(root), 'active-change'), 'utf8').trim();
-  } catch {
-    activeFileChange = null;
-  }
+  const activeText = readOptionalText(
+    root,
+    path.join(lib.specnavDir(root), 'active-change'),
+    'verification-operations:archive-active-change-unsafe'
+  );
+  const activeFileChange = activeText === null ? null : activeText.trim();
 
   for (const id of Array.from(activeIds).sort()) {
     const previous = existingById.get(id) || {};
@@ -246,28 +224,47 @@ function writeRegistryAfterArchive(root, change, archiveRel, beforeRegistry, arc
     current_focus: currentFocus,
     changes: entries.sort((a, b) => a.id.localeCompare(b.id))
   };
-  lib.writeChangeRegistry(root, registry);
-  return lib.buildChangeRegistry(root);
+  archiveTransaction.atomicWriteJson(
+    root,
+    lib.changeRegistryFile(root),
+    {
+      schema_version: 1,
+      generated_at: archivedAt,
+      current_focus: registry.current_focus,
+      changes: registry.changes
+    },
+    'verification-operations:archive-registry-write'
+  );
+  return registry;
 }
 
 function updateActiveChangeFile(root, archivedChange, nextFocus) {
   const file = path.join(lib.specnavDir(root), 'active-change');
-  let existing = null;
-  try {
-    existing = fs.readFileSync(file, 'utf8').trim();
-  } catch {
-    existing = null;
-  }
+  const activeText = readOptionalText(
+    root,
+    file,
+    'verification-operations:archive-active-change-unsafe'
+  );
+  const existing = activeText === null ? null : activeText.trim();
   if (existing && existing !== archivedChange) {
     return { changed: false, path: path.relative(root, file).split(path.sep).join('/'), value: existing };
   }
   lib.ensureDir(path.dirname(file));
   if (nextFocus) {
-    fs.writeFileSync(file, `${nextFocus}\n`);
+    archiveTransaction.atomicWriteFile(
+      root,
+      file,
+      Buffer.from(`${nextFocus}\n`),
+      'verification-operations:archive-active-change-write'
+    );
     return { changed: true, path: path.relative(root, file).split(path.sep).join('/'), value: nextFocus };
   }
   try {
-    fs.unlinkSync(file);
+    archiveTransaction.removeRegularFile(
+      root,
+      file,
+      'verification-operations:archive-active-change-write'
+    );
     return { changed: true, path: path.relative(root, file).split(path.sep).join('/'), value: null };
   } catch {
     return { changed: false, path: path.relative(root, file).split(path.sep).join('/'), value: null };
@@ -276,8 +273,12 @@ function updateActiveChangeFile(root, archivedChange, nextFocus) {
 
 function writeReceipt(root, archiveDir, receipt) {
   const opsDir = path.join(archiveDir, 'operations');
-  lib.ensureDir(opsDir);
-  lib.writeJson(path.join(opsDir, 'archive-receipt.json'), receipt);
+  archiveTransaction.atomicWriteJson(
+    archiveDir,
+    path.join(opsDir, 'archive-receipt.json'),
+    receipt,
+    'verification-operations:archive-receipt-write'
+  );
   const lines = [
     '# SpecNav Archive Receipt',
     '',
@@ -287,12 +288,50 @@ function writeReceipt(root, archiveDir, receipt) {
     `- openspec_validate: ${receipt.commands.openspec_validate.ok ? 'pass' : 'fail'}`,
     `- openspec_archive: ${receipt.commands.openspec_archive.ok ? 'pass' : 'fail'}`
   ];
-  fs.writeFileSync(path.join(opsDir, 'archive-receipt.md'), `${lines.join('\n')}\n`);
+  archiveTransaction.atomicWriteFile(
+    archiveDir,
+    path.join(opsDir, 'archive-receipt.md'),
+    Buffer.from(`${lines.join('\n')}\n`),
+    'verification-operations:archive-receipt-write'
+  );
+}
+
+function appendArchiveEvent(root, archivedAt, payload) {
+  const file = path.join(lib.specnavDir(root), 'events.jsonl');
+  const existing = archiveTransaction.readRegularFile(
+    root,
+    file,
+    'verification-operations:archive-events-write',
+    true
+  ) || Buffer.alloc(0);
+  const line = Buffer.from(`${JSON.stringify({
+    ts: archivedAt,
+    type: 'operations.archive-change',
+    payload
+  })}\n`);
+  archiveTransaction.atomicWriteFile(
+    root,
+    file,
+    Buffer.concat([existing, line]),
+    'verification-operations:archive-events-write'
+  );
 }
 
 function fail(result, json) {
   emit({ ok: false, ...result }, json);
   return 2;
+}
+
+function failWithRollback(transaction, result, json) {
+  const rollback = transaction.rollback();
+  return fail({
+    ...result,
+    rollback,
+    blockers: [
+      ...(result.blockers || []),
+      ...rollback.blockers
+    ]
+  }, json);
 }
 
 function run(options = parseArgs()) {
@@ -324,21 +363,31 @@ function run(options = parseArgs()) {
     return fail({ project_root: root, active_change: change, blockers: [`missing-change-dir:${change}`] }, options.json);
   }
 
-  const beforeRegistry = lib.buildChangeRegistry(root);
-  const beforeArchives = new Set(archiveCandidates(root, change));
+  let beforeRegistry;
+  let transaction;
   let evidenceBefore;
-  try {
-    evidenceBefore = captureEvidence(changeDir);
-  } catch (error) {
-    return fail({
-      project_root: root,
-      active_change: change,
-      phase: 'archive-evidence-preflight',
-      blockers: [error instanceof Error
-        ? error.message
-        : 'verification-operations:archive-evidence-preflight-failed']
-    }, options.json);
+  if (!options.dryRun) {
+    try {
+      transaction = archiveTransaction.createArchiveTransaction(
+        root,
+        changeDir,
+        change
+      );
+      beforeRegistry = readRegistryBeforeArchive(root);
+      evidenceBefore = archiveTransaction.captureEvidence(changeDir);
+    } catch (error) {
+      if (transaction) transaction.rollback();
+      return fail({
+        project_root: root,
+        active_change: change,
+        phase: 'archive-transaction-preflight',
+        blockers: [error instanceof Error
+          ? error.message
+          : 'verification-operations:archive-transaction-preflight-failed']
+      }, options.json);
+    }
   }
+
   const coreRoot = runtime.resolvePluginRoot('specnav-core');
   const tasksResult = runNodeScript(path.join(coreRoot, 'scripts', 'tasks-md.js'), [
     'normalize',
@@ -356,24 +405,30 @@ function run(options = parseArgs()) {
     tasksPayload = null;
   }
   if (!tasksResult.ok) {
-    return fail({
+    const result = {
       project_root: root,
       active_change: change,
       phase: 'tasks-md',
       blockers: tasksPayload && Array.isArray(tasksPayload.blockers) ? tasksPayload.blockers : ['tasks-md'],
       commands: { tasks_md: tasksResult }
-    }, options.json);
+    };
+    return transaction
+      ? failWithRollback(transaction, result, options.json)
+      : fail(result, options.json);
   }
 
   const gate = withSpecNavChange(change, () => writeArchiveGate(root));
   if (!gate || gate.verdict !== 'green') {
-    return fail({
+    const result = {
       project_root: root,
       active_change: change,
       phase: 'archive-gate',
       blockers: gate && Array.isArray(gate.blockers) ? gate.blockers : ['archive-gate'],
       archive_gate: gate
-    }, options.json);
+    };
+    return transaction
+      ? failWithRollback(transaction, result, options.json)
+      : fail(result, options.json);
   }
 
   if (options.dryRun) {
@@ -390,7 +445,7 @@ function run(options = parseArgs()) {
 
   const validateResult = runOpenSpec(root, ['--no-color', 'validate', change, '--type', 'change', '--strict', '--json', '--no-interactive']);
   if (!validateResult.ok) {
-    return fail({
+    return failWithRollback(transaction, {
       project_root: root,
       active_change: change,
       phase: 'openspec-validate',
@@ -403,7 +458,7 @@ function run(options = parseArgs()) {
   if (options.skipSpecs) archiveArgs.push('--skip-specs');
   const archiveResult = runOpenSpec(root, archiveArgs);
   if (!archiveResult.ok) {
-    return fail({
+    return failWithRollback(transaction, {
       project_root: root,
       active_change: change,
       phase: 'openspec-archive',
@@ -412,10 +467,26 @@ function run(options = parseArgs()) {
     }, options.json);
   }
 
-  const newArchives = archiveCandidates(root, change)
-    .filter((candidate) => !beforeArchives.has(candidate));
+  const afterInventory = archiveTransaction.archiveInventory(root, change);
+  const beforeNames = new Set(transaction.beforeInventory.names);
+  const unsafeNewArchives = afterInventory.unsafe
+    .filter((candidate) => !beforeNames.has(path.basename(candidate)));
+  if (unsafeNewArchives.length > 0) {
+    return failWithRollback(transaction, {
+      project_root: root,
+      active_change: change,
+      phase: 'archive-discovery',
+      blockers: ['verification-operations:archive-output-symlink'],
+      archive_candidates: unsafeNewArchives.map((candidate) => (
+        path.relative(root, candidate).split(path.sep).join('/')
+      )),
+      commands: { openspec_validate: validateResult, openspec_archive: archiveResult }
+    }, options.json);
+  }
+  const newArchives = afterInventory.safe
+    .filter((candidate) => !beforeNames.has(path.basename(candidate)));
   if (newArchives.length !== 1) {
-    return fail({
+    return failWithRollback(transaction, {
       project_root: root,
       active_change: change,
       phase: 'archive-discovery',
@@ -432,9 +503,12 @@ function run(options = parseArgs()) {
 
   const archiveRel = path.relative(root, archiveDir).split(path.sep).join('/');
   const archivedAt = new Date().toISOString();
-  const evidenceIntegrity = verifyArchivedEvidence(archiveDir, evidenceBefore);
+  const evidenceIntegrity = archiveTransaction.verifyEvidence(
+    archiveDir,
+    evidenceBefore
+  );
   if (!evidenceIntegrity.ok) {
-    return fail({
+    return failWithRollback(transaction, {
       project_root: root,
       active_change: change,
       phase: 'archive-evidence-integrity',
@@ -443,34 +517,60 @@ function run(options = parseArgs()) {
       commands: { openspec_validate: validateResult, openspec_archive: archiveResult }
     }, options.json);
   }
-  const registry = writeRegistryAfterArchive(root, change, archiveRel, beforeRegistry, archivedAt);
-  const activeFile = updateActiveChangeFile(root, change, registry.current_focus);
-  const receipt = {
-    schema: 'specnav.ops.archiveReceipt.v1',
-    archived_at: archivedAt,
-    change,
-    archive_path: archiveRel,
-    active_change_after: registry.current_focus,
-    skip_specs: options.skipSpecs,
-    tasks_md: tasksPayload,
-    archive_gate: gate,
-    evidence_integrity: evidenceIntegrity,
-    registry: {
-      path: path.relative(root, lib.changeRegistryFile(root)).split(path.sep).join('/'),
-      current_focus: registry.current_focus
-    },
-    active_change_file: activeFile,
-    commands: {
-      openspec_validate: validateResult,
-      openspec_archive: archiveResult
-    }
-  };
-  writeReceipt(root, archiveDir, receipt);
-  lib.event(root, 'operations.archive-change', {
-    change,
-    archive_path: archiveRel,
-    active_change_after: registry.current_focus
-  });
+  let registry;
+  let activeFile;
+  let receipt;
+  try {
+    registry = writeRegistryAfterArchive(
+      root,
+      change,
+      archiveRel,
+      beforeRegistry,
+      archivedAt
+    );
+    activeFile = updateActiveChangeFile(
+      root,
+      change,
+      registry.current_focus
+    );
+    receipt = {
+      schema: 'specnav.ops.archiveReceipt.v1',
+      archived_at: archivedAt,
+      change,
+      archive_path: archiveRel,
+      active_change_after: registry.current_focus,
+      skip_specs: options.skipSpecs,
+      tasks_md: tasksPayload,
+      archive_gate: gate,
+      evidence_integrity: evidenceIntegrity,
+      registry: {
+        path: path.relative(root, lib.changeRegistryFile(root)).split(path.sep).join('/'),
+        current_focus: registry.current_focus
+      },
+      active_change_file: activeFile,
+      commands: {
+        openspec_validate: validateResult,
+        openspec_archive: archiveResult
+      }
+    };
+    writeReceipt(root, archiveDir, receipt);
+    appendArchiveEvent(root, archivedAt, {
+      change,
+      archive_path: archiveRel,
+      active_change_after: registry.current_focus
+    });
+  } catch (error) {
+    return failWithRollback(transaction, {
+      project_root: root,
+      active_change: change,
+      phase: 'archive-commit',
+      blockers: [error instanceof Error
+        ? error.message
+        : 'verification-operations:archive-commit-failed'],
+      commands: { openspec_validate: validateResult, openspec_archive: archiveResult }
+    }, options.json);
+  }
+  transaction.cleanup();
 
   emit({
     ok: true,

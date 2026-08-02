@@ -4,6 +4,14 @@
 
 DONE
 
+## Files Changed
+
+- `plugins/specnav-verification/**`
+- `integrations/claude-code/sync-verification-plugin.js`
+- `tests/verification-v2/cross-host/**`
+- `tests/run-verification-v2-claude-adapter.sh`
+- Claude Code plugin synchronization targets and Task 029 lifecycle evidence.
+
 ## Delivered Slice
 
 Claude Code discovers `/specnav-verification`, executes the installed

@@ -1,0 +1,9 @@
+# command: node --check plugins/specnav-operations/scripts/verification-v2-proof.js && node --check plugins/specnav-operations/scripts/operations-gate.js && node --check plugins/specnav-operations/scripts/archive-change.js && node --check plugins/specnav-operations/scripts/archive-transaction.js && node --check plugins/specnav-operations/scripts/safe-filesystem.js && python3 -c 'compile(open("plugins/specnav-operations/scripts/safe-filesystem.py", "rb").read(), "safe-filesystem.py", "exec")' && bash -n tests/run-light-compact-gate-fixtures.sh tests/run-verification-v2-release.sh tests/run-operations-archive-action-fixtures.sh && git diff --check && git -C ../specnav-claude-plugin diff --check && git -C ../specnav-codefree-o-plugin diff --check # task033-final-syntax-diff
+# exit_status: 0
+# duration_ms: 313
+
+## stdout
+(empty)
+
+## stderr
+(empty)

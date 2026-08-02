@@ -34,7 +34,7 @@ approved
 
 ## Required Fixes
 
-- None.
+- No required specification fix remains.
 
 ## Lifecycle Contract Re-review
 

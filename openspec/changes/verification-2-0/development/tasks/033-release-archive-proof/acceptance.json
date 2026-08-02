@@ -1,0 +1,111 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "task_id": "033-release-archive-proof",
+  "recorded_at": "2026-08-02T20:12:20Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-03",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "development/evidence/479-033-release-archive-proof.log",
+        "tests/run-light-compact-gate-fixtures.sh",
+        "tests/verification-v2/release/release-proof.test.js"
+      ],
+      "reused_evidence": [
+        "development/tasks/016-six-domain-aggregation/report.md",
+        "development/tasks/016-six-domain-aggregation/spec-review.md"
+      ],
+      "claim": "Every release and archive lane rejects light, compact, fallback, partial-domain, and forged persisted-gate paths."
+    },
+    {
+      "id": "AC-28",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "plugins/specnav-operations/scripts/verification-v2-proof.js",
+        "plugins/specnav-operations/scripts/archive-transaction.js",
+        "plugins/specnav-operations/scripts/safe-filesystem.js",
+        "plugins/specnav-operations/scripts/safe-filesystem.py",
+        "tests/verification-v2/release/safe-filesystem.test.js",
+        "tests/run-operations-archive-action-fixtures.sh"
+      ],
+      "reused_evidence": [
+        "development/tasks/020-retest-regression-loop/report.md",
+        "development/tasks/026-report-accessibility-security/report.md",
+        "development/tasks/027-v1-v2-migration/report.md"
+      ],
+      "claim": "Release and archive fail closed for incomplete gates or evidence, and archive-time failures restore the complete pre-archive state."
+    },
+    {
+      "id": "AC-29",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "tests/verification-v2/release/release-proof.test.js"
+      ],
+      "reused_evidence": [
+        "development/tasks/023-report-model/report.md",
+        "development/tasks/024-overview-report/report.md",
+        "development/tasks/025-case-report-pages/report.md",
+        "development/tasks/026-report-accessibility-security/report.md"
+      ],
+      "claim": "All three HTML reports are required release artifacts, while Kernel JSON and evidence remain the only verdict authority."
+    },
+    {
+      "id": "AC-33",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "plugins/specnav-operations/scripts/verification-v2-proof.js"
+      ],
+      "reused_evidence": [
+        "development/tasks/027-v1-v2-migration/report.md",
+        "development/tasks/027-v1-v2-migration/spec-review.md",
+        "development/evidence/396-027-v1-v2-migration.log",
+        "development/evidence/400-027-v1-v2-migration-spec-review-approved.md",
+        "development/evidence/401-027-v1-v2-migration-quality-review-approved.md"
+      ],
+      "claim": "The release proof consumes the successful migration receipt and rollback contract implemented and approved by Task 027."
+    },
+    {
+      "id": "AC-35",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "plugins/specnav-operations/scripts/verification-v2-proof.js",
+        "tests/verification-v2/release/release-proof.test.js"
+      ],
+      "reused_evidence": [
+        "development/tasks/016-six-domain-aggregation/report.md"
+      ],
+      "claim": "Persisted release and archive gates are identity-validated, rebound to their source versions, and independently recomputed through the Kernel."
+    },
+    {
+      "id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/478-033-release-archive-proof.log",
+        "development/evidence/479-033-release-archive-proof.log",
+        "development/evidence/480-033-release-archive-proof.log"
+      ],
+      "reused_evidence": [
+        "development/tasks/031-cross-host-drift-ci/report.md",
+        "development/evidence/457-031-cross-host-drift-ci.log",
+        "development/evidence/464-031-cross-host-drift-ci.log",
+        "development/evidence/465-031-cross-host-drift-ci-quality-security-review-approved.md",
+        "development/evidence/466-031-cross-host-drift-ci-spec-review-approved.md"
+      ],
+      "claim": "Codex, Claude Code, and CodeFree-O are bound to distinct clean host identities and the same immutable Kernel contract."
+    }
+  ],
+  "reused_task_range": [
+    "023-report-model",
+    "024-overview-report",
+    "025-case-report-pages",
+    "026-report-accessibility-security",
+    "027-v1-v2-migration"
+  ],
+  "fallback_used": false
+}

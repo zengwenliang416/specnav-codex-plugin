@@ -55,7 +55,7 @@ approved
 
 ## Required Fixes
 
-- None.
+- No required quality or security fix remains.
 
 ## Security Review
 

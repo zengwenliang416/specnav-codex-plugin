@@ -96,4 +96,4 @@ User Outcome: Users can detect host drift and follow matched English and Chinese
 
 User Outcome: Release owners can prove clean installation, six-domain evidence, reports, and archive readiness across every host.
 
-- [ ] 13.1 Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.
+- [x] 13.1 Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.

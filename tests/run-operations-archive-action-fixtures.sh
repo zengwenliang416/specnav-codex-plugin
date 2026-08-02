@@ -4,7 +4,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OPS="$ROOT/plugins/specnav-operations"
 TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
+if [[ "${SPECNAV_KEEP_TMP:-0}" == "1" ]]; then
+  printf 'SpecNav archive fixture temp: %s\n' "$TMP_DIR" >&2
+else
+  trap 'rm -rf "$TMP_DIR"' EXIT
+fi
 
 write_fake_openspec() {
   local bin="$1"
@@ -55,7 +59,21 @@ case "$cmd" in
     if [[ "${SPECNAV_FAKE_MUTATE_EVIDENCE:-0}" == "1" && -f "$dest/verify/evidence/raw.jsonl" ]]; then
       printf '%s\n' '{"tampered":true}' >>"$dest/verify/evidence/raw.jsonl"
     fi
+    if [[ "${SPECNAV_FAKE_ARCHIVE_EVIDENCE_SYMLINK:-0}" == "1" ]]; then
+      rm -f "$dest/verify/evidence/raw.jsonl"
+      ln -s "${SPECNAV_FAKE_EVIDENCE_LINK_TARGET:?missing evidence link target}" \
+        "$dest/verify/evidence/raw.jsonl"
+    fi
+    if [[ "${SPECNAV_FAKE_ARCHIVE_SYMLINK:-0}" == "1" ]]; then
+      rm -rf "$dest"
+      ln -s "${SPECNAV_FAKE_ARCHIVE_LINK_TARGET:?missing symlink target}" "$dest"
+    fi
     printf '# Archived %s\n' "$change" >"openspec/specs/$change/spec.md"
+    if [[ "${SPECNAV_FAKE_CREATE_UNRELATED_SPEC:-0}" == "1" ]]; then
+      mkdir -p "openspec/specs/unrelated"
+      printf '%s\n' '# Concurrent unrelated specification' \
+        >"openspec/specs/unrelated/spec.md"
+    fi
     ;;
   *)
     echo "unexpected openspec command: $cmd" >&2
@@ -226,6 +244,13 @@ grep -Fq '"path":"verify/evidence/screenshot.json"' "$PROJECT/openspec/changes/a
 MUTATED="$TMP_DIR/mutated"
 write_archive_ready_project "$MUTATED"
 node "$ROOT/tests/verification-v2/release/populate-project.js" "$MUTATED" add-dashboard
+mkdir -p "$MUTATED/openspec/specs/existing"
+printf '%s\n' '# Existing specification' >"$MUTATED/openspec/specs/existing/spec.md"
+cp "$MUTATED/openspec/.specnav/change-registry.json" "$TMP_DIR/mutated-registry.before"
+cp "$MUTATED/openspec/.specnav/active-change" "$TMP_DIR/mutated-active.before"
+cp "$MUTATED/openspec/changes/add-dashboard/verify/evidence/raw.jsonl" \
+  "$TMP_DIR/mutated-evidence.before"
+cp "$MUTATED/openspec/specs/existing/spec.md" "$TMP_DIR/mutated-spec.before"
 set +e
 PROJECT_DIR="$MUTATED" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
   SPECNAV_FAKE_ARCHIVE_DATE="2026-06-30" SPECNAV_FAKE_MUTATE_EVIDENCE=1 \
@@ -239,6 +264,122 @@ if [[ "$status" != "2" ]]; then
 fi
 jq -e '.blockers[] | select(startswith("verification-operations:archive-evidence-mutation:"))' \
   "$TMP_DIR/mutated.json" >/dev/null
+test -d "$MUTATED/openspec/changes/add-dashboard"
+test ! -e "$MUTATED/openspec/changes/archive/2026-06-30-add-dashboard"
+test ! -e "$MUTATED/openspec/specs/add-dashboard/spec.md"
+cmp "$TMP_DIR/mutated-registry.before" "$MUTATED/openspec/.specnav/change-registry.json"
+cmp "$TMP_DIR/mutated-active.before" "$MUTATED/openspec/.specnav/active-change"
+cmp "$TMP_DIR/mutated-evidence.before" \
+  "$MUTATED/openspec/changes/add-dashboard/verify/evidence/raw.jsonl"
+cmp "$TMP_DIR/mutated-spec.before" "$MUTATED/openspec/specs/existing/spec.md"
+
+GRANULAR="$TMP_DIR/granular"
+write_archive_ready_project "$GRANULAR"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$GRANULAR" add-dashboard
+cat >"$GRANULAR/openspec/changes/add-dashboard/tasks.md" <<'MD'
+# Development Tasks
+
+- user can view dashboard summary with loading empty and error states
+MD
+cp "$GRANULAR/openspec/changes/add-dashboard/tasks.md" \
+  "$TMP_DIR/granular-tasks.before"
+set +e
+PROJECT_DIR="$GRANULAR" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/granular.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected granular rollback fixture to block, got $status" >&2
+  cat "$TMP_DIR/granular.json" >&2
+  exit 1
+fi
+cmp "$TMP_DIR/granular-tasks.before" \
+  "$GRANULAR/openspec/changes/add-dashboard/tasks.md"
+
+CONCURRENT="$TMP_DIR/concurrent"
+write_archive_ready_project "$CONCURRENT"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$CONCURRENT" add-dashboard
+set +e
+PROJECT_DIR="$CONCURRENT" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  SPECNAV_FAKE_ARCHIVE_DATE="2026-06-30" \
+  SPECNAV_FAKE_MUTATE_EVIDENCE=1 \
+  SPECNAV_FAKE_CREATE_UNRELATED_SPEC=1 \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/concurrent.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected concurrent spec rollback fixture to block, got $status" >&2
+  cat "$TMP_DIR/concurrent.json" >&2
+  exit 1
+fi
+grep -Fxq '# Concurrent unrelated specification' \
+  "$CONCURRENT/openspec/specs/unrelated/spec.md"
+test ! -e "$CONCURRENT/openspec/specs/add-dashboard"
+
+SYMLINK_EVIDENCE="$TMP_DIR/symlink-evidence"
+write_archive_ready_project "$SYMLINK_EVIDENCE"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$SYMLINK_EVIDENCE" add-dashboard
+printf '%s\n' '{"external":true}' >"$TMP_DIR/external-evidence.jsonl"
+rm "$SYMLINK_EVIDENCE/openspec/changes/add-dashboard/verify/evidence/raw.jsonl"
+ln -s "$TMP_DIR/external-evidence.jsonl" \
+  "$SYMLINK_EVIDENCE/openspec/changes/add-dashboard/verify/evidence/raw.jsonl"
+set +e
+PROJECT_DIR="$SYMLINK_EVIDENCE" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/symlink-evidence.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected symlinked evidence to block, got $status" >&2
+  cat "$TMP_DIR/symlink-evidence.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(. == "verification-operations:archive-source-unsafe:symlink")' \
+  "$TMP_DIR/symlink-evidence.json" >/dev/null
+test -d "$SYMLINK_EVIDENCE/openspec/changes/add-dashboard"
+
+ARCHIVE_EVIDENCE_SYMLINK="$TMP_DIR/archive-evidence-symlink"
+write_archive_ready_project "$ARCHIVE_EVIDENCE_SYMLINK"
+node "$ROOT/tests/verification-v2/release/populate-project.js" \
+  "$ARCHIVE_EVIDENCE_SYMLINK" add-dashboard
+set +e
+PROJECT_DIR="$ARCHIVE_EVIDENCE_SYMLINK" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  SPECNAV_FAKE_ARCHIVE_DATE="2026-07-01" \
+  SPECNAV_FAKE_ARCHIVE_EVIDENCE_SYMLINK=1 \
+  SPECNAV_FAKE_EVIDENCE_LINK_TARGET="$TMP_DIR/external-evidence.jsonl" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/archive-evidence-symlink.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected archived evidence symlink to block, got $status" >&2
+  cat "$TMP_DIR/archive-evidence-symlink.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(. == "verification-operations:archive-evidence-symlink:verify/evidence/raw.jsonl")' \
+  "$TMP_DIR/archive-evidence-symlink.json" >/dev/null
+test -d "$ARCHIVE_EVIDENCE_SYMLINK/openspec/changes/add-dashboard"
+test ! -e "$ARCHIVE_EVIDENCE_SYMLINK/openspec/changes/archive/2026-07-01-add-dashboard"
+
+SYMLINK_ARCHIVE="$TMP_DIR/symlink-archive"
+EXTERNAL_ARCHIVE="$TMP_DIR/external-archive"
+write_archive_ready_project "$SYMLINK_ARCHIVE"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$SYMLINK_ARCHIVE" add-dashboard
+mkdir -p "$EXTERNAL_ARCHIVE"
+set +e
+PROJECT_DIR="$SYMLINK_ARCHIVE" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  SPECNAV_FAKE_ARCHIVE_DATE="2026-07-02" SPECNAV_FAKE_ARCHIVE_SYMLINK=1 \
+  SPECNAV_FAKE_ARCHIVE_LINK_TARGET="$EXTERNAL_ARCHIVE" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/symlink-archive.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected symlinked archive candidate to block, got $status" >&2
+  cat "$TMP_DIR/symlink-archive.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(. == "verification-operations:archive-output-symlink")' \
+  "$TMP_DIR/symlink-archive.json" >/dev/null
+test -d "$SYMLINK_ARCHIVE/openspec/changes/add-dashboard"
+test ! -e "$EXTERNAL_ARCHIVE/operations/archive-receipt.json"
 
 AMBIGUOUS="$TMP_DIR/ambiguous"
 write_archive_ready_project "$AMBIGUOUS"
@@ -253,5 +394,41 @@ if [[ "$status" != "2" ]]; then
   exit 1
 fi
 jq -e '.blockers[] | select(. == "ambiguous-change")' "$TMP_DIR/ambiguous.json" >/dev/null
+
+LOCKED="$TMP_DIR/locked"
+write_archive_ready_project "$LOCKED"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$LOCKED" add-dashboard
+printf '%s\n' 'other-process:lock-token' >"$LOCKED/openspec/.specnav/archive.lock"
+set +e
+PROJECT_DIR="$LOCKED" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/locked.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected concurrent archive lock to block, got $status" >&2
+  cat "$TMP_DIR/locked.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(. == "verification-operations:archive-lock:exists")' \
+  "$TMP_DIR/locked.json" >/dev/null
+test -d "$LOCKED/openspec/changes/add-dashboard"
+grep -Fxq 'other-process:lock-token' "$LOCKED/openspec/.specnav/archive.lock"
+
+NO_PYTHON="$TMP_DIR/no-python"
+write_archive_ready_project "$NO_PYTHON"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$NO_PYTHON" add-dashboard
+set +e
+PROJECT_DIR="$NO_PYTHON" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  SPECNAV_PYTHON_BIN="$TMP_DIR/python-does-not-exist" \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/no-python.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected missing safe filesystem runtime to block, got $status" >&2
+  cat "$TMP_DIR/no-python.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(. == "verification-operations:safe-fs-python-unavailable")' \
+  "$TMP_DIR/no-python.json" >/dev/null
 
 echo "operations archive action fixtures ok"

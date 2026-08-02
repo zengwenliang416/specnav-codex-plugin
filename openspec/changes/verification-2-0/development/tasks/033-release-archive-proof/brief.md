@@ -41,16 +41,22 @@ listed verification commands and must preserve all earlier artifacts.
 - docs/release-verification-v2.md
 - .github/workflows/ci.yml
 - tests/run-verification-v2-release.sh
+- tests/run-verification-v2-cross-host.sh
 - tests/run-smoke.sh
+- tests/run-light-compact-gate-fixtures.sh
 - tests/run-operations-plugin-fixtures.sh
 - tests/run-operations-archive-action-fixtures.sh
+- tests/verification-v2/cross-host/host-lock.json
 
 The additive runner and regression-fixture scope is recorded in
 `scope-correction.json`.
 
 ## Interfaces / Seams
 
-- Operations consumes kernel gate decisions and never recomputes or edits readings.
+- Operations treats persisted gates as untrusted release artifacts. It reruns
+  the public Kernel six-domain aggregator and DecisionEngine from
+  `verify/v2/gate-input.json`, compares the recomputed identities and decisions
+  with the persisted gates, and never edits Readings or owns verdict semantics.
 
 ## Components To Create
 
@@ -88,8 +94,11 @@ The additive runner and regression-fixture scope is recorded in
 ## Verification Commands
 
 - `bash tests/run-verification-v2-release.sh`
+- `bash tests/run-verification-v2-cross-host.sh`
+- `bash tests/run-operations-archive-action-fixtures.sh`
 - `bash tests/run-operations-plugin-fixtures.sh`
 - `npm test`
+- `node --test $(find tests/verification-v2 -type f -name '*.test.js' | sort)`
 
 ## Stop Conditions
 

@@ -341,11 +341,21 @@ function populateProject(projectRoot, change) {
     );
   }
 
+  const releaseBindings = {
+    change_id: change,
+    release_gate_id: releaseGate.id,
+    archive_gate_id: archiveGate.id,
+    gate_input_sha256: sha256(
+      fs.readFileSync(path.join(verifyV2, 'gate-input.json'))
+    ),
+    evidence_index_digest: evidenceIndex.source_digest
+  };
   const hosts = HOSTS.map((host, index) => {
     const receiptPath = `operations/install-receipts/${host}.json`;
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
+      ...releaseBindings,
       source: `https://github.com/example/specnav-${host}.git`,
       commit: String(index + 7).repeat(40),
       clean_checkout: true,
@@ -375,7 +385,7 @@ function populateProject(projectRoot, change) {
   });
   writeJson(path.join(opsDir, 'cross-host-compatibility.json'), {
     schema: 'specnav.verification.cross-host-release-result.v1',
-    change_id: change,
+    ...releaseBindings,
     ok: true,
     hosts: hosts.map((entry) => ({
       host: entry.host,

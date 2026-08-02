@@ -6,7 +6,7 @@ approved
 
 ## Missing Requirements
 
-- None.
+- No Task 031 requirement is missing.
 
 ## Extra Behavior
 
@@ -14,7 +14,8 @@ approved
 
 ## Misunderstood Requirements
 
-- None.
+- Host adapters remain invocation-only; no host-specific verdict semantics were
+  introduced.
 
 ## Cannot Verify From Diff
 
@@ -33,7 +34,7 @@ approved
 
 ## Required Fixes
 
-- None.
+- No required specification fix remains.
 
 ## Review Evidence
 

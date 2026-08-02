@@ -2,7 +2,7 @@
 
 ## Verdict
 
-APPROVED
+approved
 
 ## Separation Of Concerns
 
@@ -52,4 +52,4 @@ but remove implicit trust and keep policy outside the state reducer.
 
 ## Required Fixes
 
-None.
+- No required quality or security fix remains.

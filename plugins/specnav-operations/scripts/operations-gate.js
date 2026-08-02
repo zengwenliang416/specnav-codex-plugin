@@ -627,6 +627,7 @@ function validateOperations(root = lib.projectRoot()) {
   const change = changeState.change;
   const changeDir = change ? lib.changeDir(projectRoot, change) : null;
   const opsDir = changeDir ? path.join(changeDir, 'operations') : null;
+  const lane = changeDir ? lib.readLane(changeDir).lane : 'standard';
   const artifacts = [];
   const blockers = [];
   const warnings = [];
@@ -648,6 +649,7 @@ function validateOperations(root = lib.projectRoot()) {
       change_dir: changeDir,
       operations_dir: opsDir,
       release_target: null,
+      lane,
       blockers: unique(blockers),
       warnings: unique(warnings),
       codegraph: null,
@@ -732,6 +734,7 @@ function validateOperations(root = lib.projectRoot()) {
     operations_dir: opsDir,
     release_target: target,
     risk_tier: risk.tier || 'standard',
+    lane,
     blockers: unique(blockers),
     warnings: unique(warnings),
     codegraph,

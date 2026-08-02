@@ -30,6 +30,40 @@ function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
+function canonicalValue(value) {
+  if (Array.isArray(value)) return value.map(canonicalValue);
+  if (value === null || typeof value !== 'object') return value;
+  return Object.fromEntries(
+    Object.keys(value).sort().map((key) => [key, canonicalValue(value[key])])
+  );
+}
+
+function canonicalJson(value) {
+  return JSON.stringify(canonicalValue(value));
+}
+
+function reidentifyGate(gate) {
+  const semantic = {
+    change_id: gate.change_id,
+    stage: gate.stage,
+    decision: gate.decision,
+    source_case_ids: [...new Set(gate.source_case_ids)].sort(),
+    source_reading_ids: [...new Set(gate.source_reading_ids)].sort(),
+    evidence_index_version: gate.evidence_index_version,
+    runtime_version: gate.runtime_version,
+    kernel_version: gate.kernel_version,
+    freshness: gate.freshness,
+    integrity_status: gate.integrity_status,
+    policy_version: gate.policy_version,
+    blockers: gate.blockers,
+    warnings: gate.warnings
+  };
+  return {
+    ...gate,
+    id: `gate-${sha256(canonicalJson(semantic))}`
+  };
+}
+
 function writeJson(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
@@ -337,11 +371,21 @@ function makeProject() {
     fs.writeFileSync(path.join(reportsDir, name), `<!doctype html><title>${name}</title>\n`);
   }
 
+  const releaseBindings = {
+    change_id: CHANGE,
+    release_gate_id: releaseGate.id,
+    archive_gate_id: archiveGate.id,
+    gate_input_sha256: sha256(
+      fs.readFileSync(path.join(verifyV2, 'gate-input.json'))
+    ),
+    evidence_index_digest: evidenceIndex.source_digest
+  };
   const records = HOSTS.map((host, index) => {
     const receiptPath = path.join('operations', 'install-receipts', `${host}.json`);
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
+      ...releaseBindings,
       source: `https://github.com/example/specnav-${host}.git`,
       commit: String(index + 7).repeat(40),
       clean_checkout: true,
@@ -371,7 +415,7 @@ function makeProject() {
   });
   writeJson(path.join(opsDir, 'cross-host-compatibility.json'), {
     schema: 'specnav.verification.cross-host-release-result.v1',
-    change_id: CHANGE,
+    ...releaseBindings,
     ok: true,
     hosts: records.map((entry) => ({
       host: entry.host,
@@ -441,7 +485,67 @@ test('partial-domain and light-mode input cannot reuse a persisted green gate', 
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(blockers(result).has('verification-release:light-mode-not-supported'), true);
-  assert.equal(blockers(result).has('verification-release:gate-binding-mismatch:release'), true);
+  assert.equal(blockers(result).has('verification-release:gate-input-invalid'), true);
+});
+
+test('full lane uses the same complete six-domain release and archive proof', () => {
+  const fixture = makeProject();
+  const inputPath = path.join(fixture.verifyV2, 'gate-input.json');
+  const input = readJson(inputPath);
+  input.lane = 'full';
+  writeJson(inputPath, input);
+
+  const gateInputSha256 = sha256(fs.readFileSync(inputPath));
+  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
+  const index = readJson(indexPath);
+  for (const entry of index.hosts) {
+    const receiptPath = path.join(fixture.changeDir, entry.receipt_path);
+    const receipt = readJson(receiptPath);
+    receipt.gate_input_sha256 = gateInputSha256;
+    writeJson(receiptPath, receipt);
+    entry.receipt_sha256 = sha256(fs.readFileSync(receiptPath));
+  }
+  writeJson(indexPath, index);
+  const compatibilityPath = path.join(
+    fixture.opsDir,
+    'cross-host-compatibility.json'
+  );
+  const compatibility = readJson(compatibilityPath);
+  compatibility.gate_input_sha256 = gateInputSha256;
+  writeJson(compatibilityPath, compatibility);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+});
+
+test('standard-lane missing-domain input cannot use self-consistent forged pass gates', () => {
+  const fixture = makeProject();
+  const inputPath = path.join(fixture.verifyV2, 'gate-input.json');
+  const input = readJson(inputPath);
+  const removed = input.aggregation_request.readings.find(
+    (entry) => entry.domain === 'sensory'
+  );
+  input.aggregation_request.readings = input.aggregation_request.readings
+    .filter((entry) => entry.id !== removed.id);
+  writeJson(inputPath, input);
+
+  for (const stage of ['release', 'archive']) {
+    const gatePath = path.join(fixture.verifyV2, `${stage}-gate.json`);
+    const gate = readJson(gatePath);
+    gate.source_reading_ids = gate.source_reading_ids
+      .filter((id) => id !== removed.id);
+    writeJson(gatePath, reidentifyGate(gate));
+  }
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  const ids = blockers(result);
+  assert.equal(result.ok, false);
+  assert.equal(ids.has('verification-release:gate-identity-invalid:release'), false);
+  assert.equal(ids.has('verification-release:gate-binding-mismatch:release'), false);
+  assert.equal(ids.has('verification-release:gate-recompute-mismatch:release'), true);
+  assert.equal(ids.has('verification-release:kernel-gate-not-pass:release'), true);
+  assert.equal(ids.has('verification-release:gate-recompute-mismatch:archive'), true);
+  assert.equal(ids.has('verification-release:kernel-gate-not-pass:archive'), true);
 });
 
 test('stale evidence and open failures block both persisted pass decisions', () => {
@@ -501,6 +605,55 @@ test('required migration needs one successful schema-valid apply receipt', () =>
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(blockers(result).has('verification-release:migration-receipt-missing'), true);
+});
+
+test('required migration accepts one successful schema-valid apply receipt', () => {
+  const fixture = makeProject();
+  const receiptPath = path.join(fixture.verifyV2, 'migration-receipt.json');
+  writeJson(path.join(fixture.verifyV2, 'migration-status.json'), {
+    schema: 'specnav.verification.migration-status.v1',
+    change_id: CHANGE,
+    required: true,
+    legacy_artifacts: ['verify/legacy/report.json'],
+    source_inventory_digest: 'c'.repeat(64),
+    receipt_path: 'verify/v2/migration-receipt.json',
+    scanned_at: '2026-08-02T00:00:00Z',
+    fallback_used: false
+  });
+  writeJson(receiptPath, {
+    schema: 'specnav.verification.migration-receipt.v1',
+    id: 'migration-release-proof',
+    change_id: CHANGE,
+    from_version: 'v1',
+    to_version: 'v2',
+    mode: 'apply',
+    status: 'succeeded',
+    started_at: '2026-08-02T00:00:00Z',
+    completed_at: '2026-08-02T00:00:01Z',
+    backup_ref: {
+      id: 'backup-release-proof',
+      path: 'verify/v2/backups/release-proof.json'
+    },
+    transformed_artifacts: [],
+    validation: {
+      ok: true,
+      validated_entities: ['case-snapshot', 'reading'],
+      blockers: []
+    },
+    rollback: {
+      available: true,
+      instructions: 'Restore the referenced verification backup.',
+      receipt_ref: null
+    },
+    fallback_used: false
+  });
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.proof.migration.required, true);
+  assert.equal(result.proof.migration.receipt.id, 'migration-release-proof');
+  assert.equal(result.proof.migration.receipt.path, 'verify/v2/migration-receipt.json');
+  assert.match(result.proof.migration.receipt.sha256, /^[a-f0-9]{64}$/);
 });
 
 test('tampered clean-install receipt and a missing host fail closed', () => {
@@ -590,5 +743,120 @@ test('persisted gate edits cannot bypass Kernel-owned gate identity', () => {
   assert.equal(
     blockers(result).has('verification-release:gate-identity-invalid:release'),
     true
+  );
+});
+
+test('explicit change ids cannot escape or bypass the active change registry', () => {
+  const fixture = makeProject();
+  const result = fixture.validator.validate(fixture.root, '../release-proof-change');
+  assert.equal(result.ok, false);
+  assert.equal(result.proof, null);
+  assert.equal(
+    blockers(result).has('verification-release:change-invalid'),
+    true
+  );
+});
+
+test('a symlinked change directory is rejected before any proof is written', () => {
+  const fixture = makeProject();
+  const external = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-release-external-'));
+  fs.renameSync(fixture.changeDir, external);
+  fs.symlinkSync(external, fixture.changeDir, 'dir');
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
+  assert.equal(result.proof, null);
+  assert.equal(
+    blockers(result).has('verification-release:change-path-symlink'),
+    true
+  );
+  assert.equal(
+    fs.existsSync(path.join(external, 'operations', 'verification-v2-proof.json')),
+    false
+  );
+});
+
+test('duplicate host identities cannot satisfy the clean-install contract', () => {
+  const fixture = makeProject();
+  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
+  const index = readJson(indexPath);
+  index.hosts.push({ ...index.hosts[0] });
+  writeJson(indexPath, index);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:host-installation-index-invalid'),
+    true
+  );
+});
+
+test('duplicate compatibility hosts cannot masquerade as all three hosts', () => {
+  const fixture = makeProject();
+  const file = path.join(fixture.opsDir, 'cross-host-compatibility.json');
+  const compatibility = readJson(file);
+  compatibility.hosts = [
+    { ...compatibility.hosts[0] },
+    { ...compatibility.hosts[0] },
+    { ...compatibility.hosts[0] }
+  ];
+  writeJson(file, compatibility);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:cross-host-compatibility-blocked'),
+    true
+  );
+});
+
+test('host receipts and compatibility cannot be replayed across gate inputs', () => {
+  const fixture = makeProject();
+  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
+  const index = readJson(indexPath);
+  const codex = index.hosts.find((entry) => entry.host === 'codex');
+  const receiptFile = path.join(fixture.changeDir, codex.receipt_path);
+  const receipt = readJson(receiptFile);
+  receipt.release_gate_id = 'gate-from-an-older-release';
+  writeJson(receiptFile, receipt);
+  codex.receipt_sha256 = sha256(fs.readFileSync(receiptFile));
+  writeJson(indexPath, index);
+
+  const compatibilityFile = path.join(
+    fixture.opsDir,
+    'cross-host-compatibility.json'
+  );
+  const compatibility = readJson(compatibilityFile);
+  compatibility.gate_input_sha256 = '0'.repeat(64);
+  writeJson(compatibilityFile, compatibility);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:install-receipt-invalid:codex'),
+    true
+  );
+  assert.equal(
+    blockers(result).has('verification-release:cross-host-compatibility-blocked'),
+    true
+  );
+});
+
+test('a symlinked operations directory cannot receive a blocked proof write', () => {
+  const fixture = makeProject();
+  const external = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-release-ops-'));
+  const externalOps = path.join(external, 'operations');
+  fs.renameSync(fixture.opsDir, externalOps);
+  fs.symlinkSync(externalOps, fixture.opsDir, 'dir');
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:proof-path-symlink'),
+    true
+  );
+  assert.equal(
+    fs.existsSync(path.join(externalOps, 'verification-v2-proof.json')),
+    false
   );
 });

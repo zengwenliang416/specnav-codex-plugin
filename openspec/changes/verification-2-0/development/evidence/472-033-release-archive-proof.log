@@ -1,0 +1,10 @@
+# command: node --check plugins/specnav-operations/scripts/verification-v2-proof.js && node --check plugins/specnav-operations/scripts/operations-gate.js && node --check plugins/specnav-operations/scripts/archive-change.js && node --check plugins/specnav-verification/kernel/gates/decision-engine.js && ruby -e 'require "yaml"; YAML.load_file(".github/workflows/ci.yml")' && git diff --check && git -C ../specnav-claude-plugin diff --check && git -C ../specnav-codefree-o-plugin diff --check # task033-syntax-diff-green
+# exit_status: 0
+# duration_ms: 300
+
+## stdout
+(empty)
+
+## stderr
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0/universal-darwin25/rbconfig.rb:21: warning: Insecure world writable dir /opt/homebrew/bin in PATH, mode 040777
+

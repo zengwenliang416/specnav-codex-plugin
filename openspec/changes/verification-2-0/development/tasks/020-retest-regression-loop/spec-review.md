@@ -2,7 +2,26 @@
 
 ## Verdict
 
-APPROVED
+approved
+
+## Missing Requirements
+
+- No Task 020 requirement is missing.
+
+## Extra Behavior
+
+- No behavior was added outside the repair, retry, retest, regression, and
+  transition-proposal contract.
+
+## Misunderstood Requirements
+
+- Task 020 proposes lifecycle transitions but does not execute Core-owned close,
+  reopen, or break-loop state changes.
+
+## Cannot Verify From Diff
+
+- Host-specific trust and rerun-scope adapters remain owned by Tasks 028-030;
+  Task 020 verifies only the host-neutral Kernel contract.
 
 ## Requirements Verified
 
@@ -37,4 +56,4 @@ APPROVED
 
 ## Required Fixes
 
-None.
+- No required specification fix remains.

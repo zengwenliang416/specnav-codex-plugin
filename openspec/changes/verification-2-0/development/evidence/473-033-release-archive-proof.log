@@ -1,0 +1,221 @@
+# command: bash tests/run-verification-v2-release.sh # task033-security-review-red
+# exit_status: 1
+# duration_ms: 1209
+
+## stdout
+TAP version 13
+# Subtest: complete Kernel-derived release and archive proof passes and writes digests
+ok 1 - complete Kernel-derived release and archive proof passes and writes digests
+  ---
+  duration_ms: 955.052542
+  type: 'test'
+  ...
+# Subtest: missing or non-human case approval blocks release
+ok 2 - missing or non-human case approval blocks release
+  ---
+  duration_ms: 6.805791
+  type: 'test'
+  ...
+# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate
+ok 3 - partial-domain and light-mode input cannot reuse a persisted green gate
+  ---
+  duration_ms: 5.517709
+  type: 'test'
+  ...
+# Subtest: stale evidence and open failures block both persisted pass decisions
+ok 4 - stale evidence and open failures block both persisted pass decisions
+  ---
+  duration_ms: 5.241458
+  type: 'test'
+  ...
+# Subtest: all three HTML projections are required but never used as verdict authority
+ok 5 - all three HTML projections are required but never used as verdict authority
+  ---
+  duration_ms: 5.784792
+  type: 'test'
+  ...
+# Subtest: missing evidence index cannot reuse green gates and reports
+ok 6 - missing evidence index cannot reuse green gates and reports
+  ---
+  duration_ms: 6.987458
+  type: 'test'
+  ...
+# Subtest: required migration needs one successful schema-valid apply receipt
+ok 7 - required migration needs one successful schema-valid apply receipt
+  ---
+  duration_ms: 5.511083
+  type: 'test'
+  ...
+# Subtest: tampered clean-install receipt and a missing host fail closed
+ok 8 - tampered clean-install receipt and a missing host fail closed
+  ---
+  duration_ms: 5.693625
+  type: 'test'
+  ...
+# Subtest: placeholder clean-install claims fail closed
+ok 9 - placeholder clean-install claims fail closed
+  ---
+  duration_ms: 5.9125
+  type: 'test'
+  ...
+# Subtest: cross-host compatibility blockers stop release and archive
+ok 10 - cross-host compatibility blockers stop release and archive
+  ---
+  duration_ms: 4.997875
+  type: 'test'
+  ...
+# Subtest: report model must bind to the release gate, readings, evidence index, and versions
+ok 11 - report model must bind to the release gate, readings, evidence index, and versions
+  ---
+  duration_ms: 5.775417
+  type: 'test'
+  ...
+# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity
+ok 12 - persisted gate edits cannot bypass Kernel-owned gate identity
+  ---
+  duration_ms: 4.773666
+  type: 'test'
+  ...
+# Subtest: explicit change ids cannot escape or bypass the active change registry
+not ok 13 - explicit change ids cannot escape or bypass the active change registry
+  ---
+  duration_ms: 3.473208
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:596:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:601:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a symlinked change directory is rejected before any proof is written
+not ok 14 - a symlinked change directory is rejected before any proof is written
+  ---
+  duration_ms: 5.107959
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:607:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:614:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: duplicate host identities cannot satisfy the clean-install contract
+not ok 15 - duplicate host identities cannot satisfy the clean-install contract
+  ---
+  duration_ms: 5.733166
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:626:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:634:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts
+not ok 16 - duplicate compatibility hosts cannot masquerade as all three hosts
+  ---
+  duration_ms: 4.973875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:641:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:653:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a symlinked operations directory cannot receive a blocked proof write
+not ok 17 - a symlinked operations directory cannot receive a blocked proof write
+  ---
+  duration_ms: 5.024
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:660:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/release-proof.test.js:669:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 12
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1159.208667
+
+
+## stderr
+(empty)

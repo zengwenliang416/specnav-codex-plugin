@@ -2,7 +2,18 @@
 
 ## Status
 
-COMPLETE
+DONE
+
+## Files Changed
+
+- `plugins/specnav-verification/kernel/governance/**`
+- `integrations/claude-code/sync-verification-plugin.js`
+- `integrations/codefree-o/sync-verification-module.js`
+- `tests/verification-v2/cross-host/**`
+- `tests/run-verification-v2-cross-host.sh`
+- `tests/run-smoke.sh`
+- `.github/workflows/ci.yml`
+- Task 031 lifecycle and evidence artifacts.
 
 ## Delivered Slice
 

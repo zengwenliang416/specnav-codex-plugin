@@ -4,6 +4,14 @@
 
 DONE
 
+## Files Changed
+
+- `plugins/specnav-verification/**`
+- `integrations/codefree-o/sync-verification-module.js`
+- `tests/verification-v2/cross-host/**`
+- `tests/run-verification-v2-codefree-o-adapter.sh`
+- CodeFree-O module synchronization targets and Task 030 lifecycle evidence.
+
 ## Delivered Slice
 
 CodeFree-O discovers `/specnav-verification`, executes the downstream adapter,

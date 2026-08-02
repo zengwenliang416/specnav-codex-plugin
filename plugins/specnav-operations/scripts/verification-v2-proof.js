@@ -5,6 +5,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const runtime = require('./plugin-runtime');
+const safeFs = require('./safe-filesystem');
 
 const kernel = runtime.requirePluginScript('specnav-verification', 'kernel');
 const core = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
@@ -94,6 +95,78 @@ function pathInside(base, relative, artifact) {
   return target;
 }
 
+function resolveChangeDirectory(projectRoot, changeId, blockers) {
+  let root;
+  try {
+    root = fs.realpathSync(path.resolve(projectRoot));
+  } catch {
+    blockers.push(blocker('verification-release:project-root-invalid'));
+    return { root: null, change: null, changeDir: null };
+  }
+
+  const state = changeId === null
+    ? core.activeChangeState(root)
+    : core.activeChangeState(root, { change: changeId });
+  if (!state.change) {
+    blockers.push(blocker(
+      changeId === null
+        ? 'verification-release:active-change-missing'
+        : 'verification-release:change-invalid'
+    ));
+    return { root, change: null, changeDir: null };
+  }
+
+  const change = state.change;
+  const changesRoot = path.join(root, 'openspec', 'changes');
+  const changeDir = path.join(changesRoot, change);
+  try {
+    const relative = path.relative(root, changeDir);
+    pathInside(root, relative, `openspec/changes/${change}`);
+    if (!fs.existsSync(changeDir)) {
+      blockers.push(blocker(
+        'verification-release:change-missing',
+        `openspec/changes/${change}`
+      ));
+      return { root, change, changeDir: null };
+    }
+    if (fs.lstatSync(changeDir).isSymbolicLink()) {
+      blockers.push(blocker(
+        'verification-release:change-path-symlink',
+        `openspec/changes/${change}`
+      ));
+      return { root, change, changeDir: null };
+    }
+    if (!fs.statSync(changeDir).isDirectory()) {
+      blockers.push(blocker(
+        'verification-release:change-path-invalid',
+        `openspec/changes/${change}`
+      ));
+      return { root, change, changeDir: null };
+    }
+    const realChangesRoot = fs.realpathSync(changesRoot);
+    const realChangeDir = fs.realpathSync(changeDir);
+    if (
+      realChangeDir === realChangesRoot
+      || !realChangeDir.startsWith(`${realChangesRoot}${path.sep}`)
+    ) {
+      blockers.push(blocker(
+        'verification-release:change-path-escape',
+        `openspec/changes/${change}`
+      ));
+      return { root, change, changeDir: null };
+    }
+  } catch (error) {
+    blockers.push(blocker(
+      error?.message?.includes('path-symlink')
+        ? 'verification-release:change-path-symlink'
+        : 'verification-release:change-path-invalid',
+      `openspec/changes/${change}`
+    ));
+    return { root, change, changeDir: null };
+  }
+  return { root, change, changeDir };
+}
+
 function readFile(base, relative, artifact, blockers) {
   let file;
   try {
@@ -103,17 +176,21 @@ function readFile(base, relative, artifact, blockers) {
     return null;
   }
   try {
-    const stat = fs.statSync(file);
-    if (!stat.isFile()) {
-      blockers.push(blocker(`verification-release:artifact-not-file:${artifact}`, artifact));
-      return null;
-    }
-    return fs.readFileSync(file);
+    return safeFs.readRegularFile(
+      base,
+      file,
+      `verification-release:artifact:${artifact}`
+    );
   } catch (error) {
+    const message = error instanceof Error ? error.message : '';
     blockers.push(blocker(
-      error && error.code === 'ENOENT'
+      message.endsWith(':missing')
         ? `verification-release:artifact-missing:${artifact}`
-        : `verification-release:artifact-unreadable:${artifact}`,
+        : message.includes(':symlink') || message.includes(':root-changed')
+          ? `verification-release:path-symlink:${artifact}`
+          : message.endsWith(':not-file')
+            ? `verification-release:artifact-not-file:${artifact}`
+          : `verification-release:artifact-unreadable:${artifact}`,
       artifact
     ));
     return null;
@@ -192,6 +269,51 @@ function automaticSchemaRegistry(changeDir, blockers) {
   }
 }
 
+function gateRequest(input, stage) {
+  return {
+    change_id: input.change_id,
+    stage,
+    aggregation_request: input.aggregation_request,
+    open_failure_ids: input.open_failure_ids,
+    freshness: input.freshness,
+    integrity_status: input.integrity_status,
+    evidence_index_version: input.evidence_index_version,
+    runtime_version: input.runtime_version,
+    kernel_version: input.kernel_version,
+    policy_version: input.policy_version
+  };
+}
+
+function completeGateInput(input, change) {
+  const aggregation = input?.aggregation_request;
+  return isRecord(input)
+    && input.schema === 'specnav.verification.release-gate-input.v1'
+    && input.change_id === change
+    && ['standard', 'full'].includes(input.lane)
+    && isConcreteString(input.case_snapshot_id)
+    && /^[a-f0-9]{64}$/.test(input.case_snapshot_hash || '')
+    && isConcreteString(input.case_approval_id)
+    && isRecord(aggregation)
+    && aggregation.change_id === change
+    && Array.isArray(aggregation.case_ids)
+    && Array.isArray(aggregation.readings)
+    && Array.isArray(aggregation.evidence)
+    && isRecord(aggregation.integrity)
+    && isRecord(aggregation.policy_facts)
+    && Array.isArray(input.open_failure_ids)
+    && isRecord(input.freshness)
+    && isConcreteString(input.freshness.status)
+    && isConcreteString(input.freshness.checked_at)
+    && !Number.isNaN(Date.parse(input.freshness.checked_at))
+    && Array.isArray(input.freshness.reasons)
+    && isConcreteString(input.integrity_status)
+    && Number.isInteger(input.evidence_index_version)
+    && input.evidence_index_version >= 0
+    && isConcreteString(input.runtime_version)
+    && input.kernel_version === kernel.metadata.version
+    && isConcreteString(input.policy_version);
+}
+
 function validatePersistedGate(schemaRegistry, input, persisted, stage, blockers) {
   const artifact = `verify/v2/${stage}-gate.json`;
   if (!persisted) return null;
@@ -242,7 +364,55 @@ function validatePersistedGate(schemaRegistry, input, persisted, stage, blockers
       validated.blockers
     ));
   }
-  return validated;
+
+  let recomputed = null;
+  try {
+    const aggregator = kernel.createSixDomainAggregator({ schemaRegistry });
+    const engine = kernel.createDecisionEngine({
+      schemaRegistry,
+      aggregator,
+      clock: () => validated.decided_at
+    });
+    const result = engine.decide(gateRequest(input, stage));
+    recomputed = result.gate;
+    if (!recomputed) {
+      blockers.push(blocker(
+        `verification-release:gate-recompute-failed:${stage}`,
+        artifact,
+        result.blockers
+      ));
+    } else {
+      if (
+        recomputed.id !== validated.id
+        || recomputed.decision !== validated.decision
+      ) {
+        blockers.push(blocker(
+          `verification-release:gate-recompute-mismatch:${stage}`,
+          artifact,
+          {
+            persisted_id: validated.id,
+            persisted_decision: validated.decision,
+            recomputed_id: recomputed.id,
+            recomputed_decision: recomputed.decision
+          }
+        ));
+      }
+      if (!result.ok) {
+        blockers.push(blocker(
+          `verification-release:kernel-gate-not-pass:${stage}`,
+          artifact,
+          result.blockers
+        ));
+      }
+    }
+  } catch (error) {
+    blockers.push(blocker(
+      `verification-release:gate-recompute-failed:${stage}`,
+      artifact,
+      error instanceof Error ? error.message : String(error)
+    ));
+  }
+  return recomputed || validated;
 }
 
 function validateApproval(
@@ -380,6 +550,11 @@ function validateEvidenceIndex(
   if (!index || !rawBytes) return index;
   const inputEvidenceIds = input.aggregation_request.evidence
     .map((entry) => entry.id);
+  const indexEvidence = [...index.entries].sort((left, right) => (
+    left.id.localeCompare(right.id)
+  ));
+  const inputEvidence = [...input.aggregation_request.evidence]
+    .sort((left, right) => left.id.localeCompare(right.id));
   if (
     index.change_id !== input.change_id
     || index.source_raw !== 'raw.jsonl'
@@ -387,6 +562,7 @@ function validateEvidenceIndex(
     || index.index_version !== input.evidence_index_version
     || index.record_count !== index.entries.length
     || !sameIds(index.entries.map((entry) => entry.id), inputEvidenceIds)
+    || canonicalJson(indexEvidence) !== canonicalJson(inputEvidence)
   ) {
     blockers.push(blocker(
       'verification-release:evidence-index-binding-mismatch',
@@ -504,8 +680,14 @@ function validateMigration(
   };
 }
 
-function validateHostInstallations(changeDir, index, blockers) {
+function validateHostInstallations(changeDir, index, bindings, blockers) {
   const artifact = 'operations/host-installation-receipts.json';
+  const hostIds = Array.isArray(index?.hosts)
+    ? index.hosts.map((entry) => entry?.host)
+    : [];
+  const exactHosts = hostIds.length === REQUIRED_HOSTS.length
+    && new Set(hostIds).size === REQUIRED_HOSTS.length
+    && REQUIRED_HOSTS.every((host) => hostIds.includes(host));
   if (
     !index
     || index.schema !== 'specnav.verification.host-installation-index.v1'
@@ -517,6 +699,12 @@ function validateHostInstallations(changeDir, index, blockers) {
       artifact
     ));
     return [];
+  }
+  if (!exactHosts) {
+    blockers.push(blocker(
+      'verification-release:host-installation-index-invalid',
+      artifact
+    ));
   }
   const records = [];
   for (const host of REQUIRED_HOSTS) {
@@ -546,6 +734,11 @@ function validateHostInstallations(changeDir, index, blockers) {
     const receipt = parsed.value;
     const valid = receipt.schema === 'specnav.verification.host-install-receipt.v1'
       && receipt.host === host
+      && receipt.change_id === bindings.change_id
+      && receipt.release_gate_id === bindings.release_gate_id
+      && receipt.archive_gate_id === bindings.archive_gate_id
+      && receipt.gate_input_sha256 === bindings.gate_input_sha256
+      && receipt.evidence_index_digest === bindings.evidence_index_digest
       && receipt.commit === entry.commit
       && /^https:\/\/github\.com\/[^/]+\/[^/]+(?:\.git)?$/.test(receipt.source || '')
       && /^[a-f0-9]{40}$/.test(receipt.commit || '')
@@ -579,11 +772,16 @@ function validateHostInstallations(changeDir, index, blockers) {
   return records.sort((left, right) => left.host.localeCompare(right.host));
 }
 
-function validateCompatibility(candidate, input, hosts, blockers) {
+function validateCompatibility(candidate, input, hosts, bindings, blockers) {
   const artifact = 'operations/cross-host-compatibility.json';
   const commits = new Map(hosts.map((entry) => [entry.host, entry.commit]));
+  const candidateHostIds = Array.isArray(candidate?.hosts)
+    ? candidate.hosts.map((entry) => entry?.host)
+    : [];
   const validHosts = Array.isArray(candidate?.hosts)
     && candidate.hosts.length === REQUIRED_HOSTS.length
+    && new Set(candidateHostIds).size === REQUIRED_HOSTS.length
+    && REQUIRED_HOSTS.every((host) => candidateHostIds.includes(host))
     && candidate.hosts.every((entry) => (
       REQUIRED_HOSTS.includes(entry?.host)
       && commits.get(entry.host) === entry.commit
@@ -592,6 +790,10 @@ function validateCompatibility(candidate, input, hosts, blockers) {
     !candidate
     || candidate.schema !== 'specnav.verification.cross-host-release-result.v1'
     || candidate.change_id !== input.change_id
+    || candidate.release_gate_id !== bindings.release_gate_id
+    || candidate.archive_gate_id !== bindings.archive_gate_id
+    || candidate.gate_input_sha256 !== bindings.gate_input_sha256
+    || candidate.evidence_index_digest !== bindings.evidence_index_digest
     || candidate.ok !== true
     || candidate.kernel_version !== input.kernel_version
     || !validHosts
@@ -613,20 +815,37 @@ function validateCompatibility(candidate, input, hosts, blockers) {
   } : null;
 }
 
-function atomicWriteJson(file, value) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  if (fs.existsSync(file) && fs.lstatSync(file).isSymbolicLink()) {
-    throw new Error('verification-release:proof-path-symlink');
+function proofPath(changeDir, relative) {
+  try {
+    return pathInside(changeDir, relative, relative);
+  } catch (error) {
+    throw new Error(
+      error?.message?.includes('path-symlink')
+        ? 'verification-release:proof-path-symlink'
+        : 'verification-release:proof-path-unsafe'
+    );
   }
-  const temporary = path.join(
-    path.dirname(file),
-    `.${path.basename(file)}.${process.pid}.${crypto.randomBytes(6).toString('hex')}.tmp`
-  );
-  fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, {
-    flag: 'wx',
-    mode: 0o600
-  });
-  fs.renameSync(temporary, file);
+}
+
+function atomicWriteJson(changeDir, relative, value) {
+  const file = proofPath(changeDir, relative);
+  try {
+    safeFs.atomicWriteJson(
+      changeDir,
+      file,
+      value,
+      'verification-release:proof-path'
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    if (message.includes(':symlink') || message.includes(':root-changed')) {
+      throw new Error('verification-release:proof-path-symlink');
+    }
+    if (message.includes(':path-escape')) {
+      throw new Error('verification-release:proof-path-unsafe');
+    }
+    throw new Error('verification-release:proof-write-failed');
+  }
 }
 
 function createReleaseProofValidator(options = {}) {
@@ -636,27 +855,15 @@ function createReleaseProofValidator(options = {}) {
   }
 
   function validate(projectRoot, changeId = null) {
-    const root = path.resolve(projectRoot);
-    const change = changeId || core.activeChange(root);
     const blockers = [];
-    if (!change) {
-      return {
-        ok: false,
-        change_id: null,
-        proof: null,
-        blockers: [blocker('verification-release:active-change-missing')]
-      };
-    }
-    const changeDir = path.join(root, 'openspec', 'changes', change);
-    if (!fs.existsSync(changeDir)) {
+    const resolved = resolveChangeDirectory(projectRoot, changeId, blockers);
+    const { root, change, changeDir } = resolved;
+    if (!change || !changeDir) {
       return {
         ok: false,
         change_id: change,
         proof: null,
-        blockers: [blocker(
-          'verification-release:change-missing',
-          `openspec/changes/${change}`
-        )]
+        blockers: stableBlockers(blockers)
       };
     }
     const schemaRegistry = options.schemaRegistry
@@ -677,20 +884,17 @@ function createReleaseProofValidator(options = {}) {
       blockers
     );
     const input = inputRead.value;
-    if (
-      !input
-      || input.schema !== 'specnav.verification.release-gate-input.v1'
-      || input.change_id !== change
-      || !isRecord(input.aggregation_request)
-      || !Array.isArray(input.open_failure_ids)
-      || !isRecord(input.freshness)
-    ) {
+    const inputComplete = completeGateInput(input, change);
+    if (!inputComplete) {
       blockers.push(blocker(
         'verification-release:gate-input-invalid',
         'verify/v2/gate-input.json'
       ));
     }
-    if (input?.lane === 'light') {
+    if (
+      input?.lane !== undefined
+      && !['standard', 'full'].includes(input.lane)
+    ) {
       blockers.push(blocker(
         'verification-release:light-mode-not-supported',
         'verify/v2/gate-input.json'
@@ -766,7 +970,7 @@ function createReleaseProofValidator(options = {}) {
     let migration = { required: null, receipt: null };
     let hosts = [];
     let compatibility = null;
-    if (input) {
+    if (inputComplete) {
       approval = validateApproval(
         schemaRegistry,
         snapshotRead.value,
@@ -811,15 +1015,24 @@ function createReleaseProofValidator(options = {}) {
         input,
         blockers
       );
+      const releaseBindings = {
+        change_id: input.change_id,
+        release_gate_id: releaseGate?.id || null,
+        archive_gate_id: archiveGate?.id || null,
+        gate_input_sha256: inputRead.bytes ? sha256(inputRead.bytes) : null,
+        evidence_index_digest: evidenceIndex?.source_digest || null
+      };
       hosts = validateHostInstallations(
         changeDir,
         installRead.value,
+        releaseBindings,
         blockers
       );
       compatibility = validateCompatibility(
         compatibilityRead.value,
         input,
         hosts,
+        releaseBindings,
         blockers
       );
     }
@@ -885,7 +1098,8 @@ function createReleaseProofValidator(options = {}) {
     };
     try {
       atomicWriteJson(
-        path.join(changeDir, 'operations', 'verification-v2-proof.json'),
+        changeDir,
+        'operations/verification-v2-proof.json',
         proof
       );
     } catch (error) {

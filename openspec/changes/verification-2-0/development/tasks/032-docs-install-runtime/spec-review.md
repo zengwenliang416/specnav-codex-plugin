@@ -15,7 +15,8 @@ approved
 
 ## Misunderstood Requirements
 
-- None.
+- Documentation describes the existing runtime and verification contract
+  without claiming host installation or release evidence owned by Task 033.
 
 ## Cannot Verify From Diff
 
@@ -37,7 +38,7 @@ approved
 
 ## Required Fixes
 
-- None.
+- No required specification fix remains.
 
 ## Review Evidence
 
