@@ -15,6 +15,16 @@ Build the final operations readiness decision.
 
 ## Workflow
 
+Before declaring readiness, run the Verification 2.0 release/archive proof:
+
+```bash
+node "$SPECNAV_OPERATIONS_ROOT/scripts/verification-v2-proof.js" --json
+```
+
+Treat every returned blocker as release-blocking. Do not accept legacy green
+aggregates, HTML text, light verification, partial-domain evidence, fallback,
+or a manual green override.
+
 1. Read verification aggregate report, receipt, blocker classification, development handoff, `tasks.md`, `development/migrations/manifest.json`, release plan, git state, and operations artifacts.
 2. Write readiness from direct evidence only.
 3. Read `references/operations-readiness.md` before writing readiness.

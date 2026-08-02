@@ -41,5 +41,5 @@ approved
   mapping, scope correction, current diff, and locked Codex/Claude/CodeFree-O
   commits.
 - The reviewer executed `bash tests/run-verification-v2-cross-host.sh` and
-  `npm test`; both passed.
+  `npm test`; both passed, including 54/54 cross-host tests.
 - Final verdict: `APPROVED`.

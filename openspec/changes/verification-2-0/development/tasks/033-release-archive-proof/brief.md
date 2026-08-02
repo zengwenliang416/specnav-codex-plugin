@@ -40,6 +40,13 @@ listed verification commands and must preserve all earlier artifacts.
 - tests/verification-v2/release/**
 - docs/release-verification-v2.md
 - .github/workflows/ci.yml
+- tests/run-verification-v2-release.sh
+- tests/run-smoke.sh
+- tests/run-operations-plugin-fixtures.sh
+- tests/run-operations-archive-action-fixtures.sh
+
+The additive runner and regression-fixture scope is recorded in
+`scope-correction.json`.
 
 ## Interfaces / Seams
 

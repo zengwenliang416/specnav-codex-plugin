@@ -2,7 +2,7 @@
 
 ## Status
 
-IMPLEMENTED_AWAITING_FINAL_REVIEW
+COMPLETE
 
 ## Delivered Slice
 
@@ -31,9 +31,9 @@ clean immutable source provenance before release.
 
 ## Repository Checkpoints
 
-- Canonical source: `c92d7e88d7978d7942368fbac2d0779be9e17466`
-- Claude Code host: `df3134f08fab0af6026fdf1e6f8d2de96d346f6b`
-- CodeFree-O host: `403f14d3ecfb49fa3b8c32d65a151abbe6974002`
+- Canonical source: `e07b343483886ad5d13b84bcd79b164a3a3e0fbb`
+- Claude Code host: `35d188be4f188b84f261760226ca174af0785870`
+- CodeFree-O host: `72527bd25e47d3b39dc6b94c092d2f917ce7d048`
 
 ## TDD Evidence
 
@@ -48,6 +48,14 @@ clean immutable source provenance before release.
 - `452` passes root `npm test`.
 - `453` passes Claude smoke and CodeFree-O tests, discovery, and doctor.
 - `454` passes syntax, workflow YAML, and three-repository diff validation.
+- `456` preserves the trusted-provenance bypass RED.
+- `457` passes all 54 cross-host tests after trusted provenance is recomputed.
+- `458` preserves the full-suite RED caused by the Kernel governance boundary
+  classification.
+- `459` through `463` pass root smoke, downstream host validation, syntax,
+  documentation, and README contracts.
+- `464` passes all 548 Verification 2.0 tests after the governance boundary is
+  classified without exporting host-specific control-plane code.
 
 ## Verification Commands
 
@@ -60,7 +68,6 @@ clean immutable source provenance before release.
 
 ## Concerns
 
-- Final independent specification and quality/security reviews are in progress.
 - GitHub Actions execution against remote immutable commits cannot occur until
   the already-authorized local checkpoints are eventually pushed; local tests
   validate the workflow contract and exact locked commits without claiming a
@@ -75,10 +82,13 @@ clean immutable source provenance before release.
 
 ## Follow-up Needed
 
-- Record both final independent review verdicts.
-- Only after approval, mark Task 12.1 complete and run lifecycle maintenance.
+- Task 033 consumes this compatibility proof for final release and archive
+  governance.
 
 ## Adjudication
 
 Receipt `449` remains append-only and is explicitly overturned by `450`; no
 failed evidence was removed or rewritten.
+
+Receipt `456` remains append-only and is explicitly overturned by `457`.
+Receipt `458` remains append-only and is explicitly overturned by `464`.

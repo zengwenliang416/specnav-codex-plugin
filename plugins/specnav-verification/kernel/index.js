@@ -48,7 +48,8 @@ const {
   createSixDomainAggregator
 } = require('./evaluation');
 const {
-  createDecisionEngine
+  createDecisionEngine,
+  validateGateDecisionIdentity
 } = require('./gates');
 const {
   createV1ToV2Migrator
@@ -89,6 +90,7 @@ module.exports = Object.freeze({
   createReadingEvaluator,
   createSixDomainAggregator,
   createDecisionEngine,
+  validateGateDecisionIdentity,
   createCompatibilitySnapshot,
   compareCompatibilitySnapshots,
   renderSafeHtmlAttribute,

@@ -1,9 +1,11 @@
 'use strict';
 
 const {
-  createDecisionEngine
+  createDecisionEngine,
+  validateGateDecisionIdentity
 } = require('./decision-engine');
 
 module.exports = {
-  createDecisionEngine
+  createDecisionEngine,
+  validateGateDecisionIdentity
 };

@@ -1,0 +1,30 @@
+{
+  "schema": "specnav.task-scope-correction.v1",
+  "task_id": "033-release-archive-proof",
+  "recorded_at": "2026-08-02T18:10:20Z",
+  "reason": "The task packet requires an executable release proof command, root smoke integration, and regression coverage for the existing operations and archive actions, but its allowed file list omitted the named release runner, root smoke runner, and existing operations fixture surfaces.",
+  "added_allowed_files": [
+    "plugins/specnav-verification/kernel/gates/**",
+    "plugins/specnav-verification/kernel/index.js",
+    "tests/run-verification-v2-release.sh",
+    "tests/run-smoke.sh",
+    "tests/run-operations-plugin-fixtures.sh",
+    "tests/run-operations-archive-action-fixtures.sh"
+  ],
+  "constraints": [
+    "Operations consumes Kernel gate decisions and source artifacts; it does not edit or replace Readings.",
+    "Kernel owns persisted gate identity validation; Operations may call that public validation contract but may not invoke aggregation or decision semantics.",
+    "Release and archive require the complete six-domain Verification 2.0 contract for every lane.",
+    "HTML remains a human projection and never becomes the verdict authority.",
+    "Missing, stale, tampered, unapproved, open-repair, migration, host-installation, or compatibility evidence fails closed.",
+    "No fallback, light verification, partial-domain gate, manual green, or remote push is introduced."
+  ],
+  "acceptance_assertions": [
+    "AC-03",
+    "AC-28",
+    "AC-29",
+    "AC-33",
+    "AC-35",
+    "AC-37"
+  ]
+}

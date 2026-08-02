@@ -256,6 +256,7 @@ jq -e 'has("planned_contracts") | not' "$OPS/specnav-stage.json" >/dev/null
 
 PROJECT="$TMP_DIR/ops-project"
 write_verified_project "$PROJECT"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$PROJECT" add-dashboard
 run_gate operations-gate.js "$PROJECT" "$TMP_DIR/missing-ops.json" 2
 assert_blocker "$TMP_DIR/missing-ops.json" 'missing-operations-artifact:readiness.json'
 
@@ -316,8 +317,8 @@ test -f "$ARCHIVE_PROJECT/openspec/changes/archive/2026-06-28-add-dashboard/oper
 jq -e '.current_focus == "next-change"' "$ARCHIVE_PROJECT/openspec/.specnav/change-registry.json" >/dev/null
 jq -e '.changes[] | select(.id == "add-dashboard" and .status == "archived" and .archive_path == "openspec/changes/archive/2026-06-28-add-dashboard")' "$ARCHIVE_PROJECT/openspec/.specnav/change-registry.json" >/dev/null
 grep -Fxq 'next-change' "$ARCHIVE_PROJECT/openspec/.specnav/active-change"
-grep -Fq 'openspec/changes/archive/2026-06-28-add-dashboard/requirements.md' "$ARCHIVE_PROJECT/openspec/changes/archive/2026-06-28-add-dashboard/verify/evidence-index.jsonl"
-grep -Fq 'openspec/changes/archive/2026-06-28-add-dashboard/verify/evidence/screenshot.json' "$ARCHIVE_PROJECT/openspec/changes/archive/2026-06-28-add-dashboard/verify/evidence-index.jsonl"
+grep -Fq 'openspec/changes/add-dashboard/requirements.md' "$ARCHIVE_PROJECT/openspec/changes/archive/2026-06-28-add-dashboard/verify/evidence-index.jsonl"
+grep -Fq '"path":"verify/evidence/screenshot.json"' "$ARCHIVE_PROJECT/openspec/changes/archive/2026-06-28-add-dashboard/verify/evidence-index.jsonl"
 
 NO_CHECKBOX="$TMP_DIR/no-checkbox"
 cp -R "$PROJECT" "$NO_CHECKBOX"
@@ -344,16 +345,17 @@ assert_blocker "$TMP_DIR/incomplete-tasks.json" 'tasks-md:no-completed-checkboxe
 
 VERIFY_FAIL="$TMP_DIR/verify-fail"
 cp -R "$PROJECT" "$VERIFY_FAIL"
-jq '.verdict = "red"' "$VERIFY_FAIL/openspec/changes/add-dashboard/verify/aggregate-report.json" >"$TMP_DIR/verify-fail.tmp"
-mv "$TMP_DIR/verify-fail.tmp" "$VERIFY_FAIL/openspec/changes/add-dashboard/verify/aggregate-report.json"
+jq '.decision = "block"' "$VERIFY_FAIL/openspec/changes/add-dashboard/verify/v2/release-gate.json" >"$TMP_DIR/verify-fail.tmp"
+mv "$TMP_DIR/verify-fail.tmp" "$VERIFY_FAIL/openspec/changes/add-dashboard/verify/v2/release-gate.json"
 run_gate operations-gate.js "$VERIFY_FAIL" "$TMP_DIR/verify-fail.json" 2
-assert_blocker "$TMP_DIR/verify-fail.json" 'verification-not-green'
+assert_blocker "$TMP_DIR/verify-fail.json" 'verification-release:gate-identity-invalid:release'
 
 UNRESOLVED="$TMP_DIR/unresolved"
 cp -R "$PROJECT" "$UNRESOLVED"
-printf '%s\n' '{"domain":"facticity","blocker_class":"insufficient-evidence","status":"unresolved"}' >"$UNRESOLVED/openspec/changes/add-dashboard/verify/blocker-classification.jsonl"
+jq '.open_failure_ids = ["failure-open"]' "$UNRESOLVED/openspec/changes/add-dashboard/verify/v2/gate-input.json" >"$TMP_DIR/unresolved.tmp"
+mv "$TMP_DIR/unresolved.tmp" "$UNRESOLVED/openspec/changes/add-dashboard/verify/v2/gate-input.json"
 run_gate operations-gate.js "$UNRESOLVED" "$TMP_DIR/unresolved.json" 2
-assert_blocker "$TMP_DIR/unresolved.json" 'unresolved-verification-blocker:facticity'
+assert_blocker "$TMP_DIR/unresolved.json" 'verification-release:kernel-gate-not-pass:release'
 
 MISSING_INSTALL="$TMP_DIR/missing-install"
 cp -R "$PROJECT" "$MISSING_INSTALL"

@@ -52,6 +52,9 @@ case "$cmd" in
     fi
     mkdir -p "$(dirname "$dest")" "openspec/specs/$change"
     mv "$src" "$dest"
+    if [[ "${SPECNAV_FAKE_MUTATE_EVIDENCE:-0}" == "1" && -f "$dest/verify/evidence/raw.jsonl" ]]; then
+      printf '%s\n' '{"tampered":true}' >>"$dest/verify/evidence/raw.jsonl"
+    fi
     printf '# Archived %s\n' "$change" >"openspec/specs/$change/spec.md"
     ;;
   *)
@@ -204,6 +207,8 @@ FAKE_OPENSPEC="$TMP_DIR/openspec"
 PROJECT="$TMP_DIR/project"
 write_fake_openspec "$FAKE_OPENSPEC"
 write_archive_ready_project "$PROJECT"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$PROJECT" add-dashboard
+mkdir -p "$PROJECT/openspec/changes/archive/2026-06-01-add-dashboard"
 
 PROJECT_DIR="$PROJECT" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" SPECNAV_FAKE_ARCHIVE_DATE="2026-06-29" \
   node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/archive-action.json"
@@ -215,8 +220,25 @@ test -f "$PROJECT/openspec/changes/archive/2026-06-29-add-dashboard/operations/a
 jq -e '.current_focus == "next-change"' "$PROJECT/openspec/.specnav/change-registry.json" >/dev/null
 jq -e '.changes[] | select(.id == "add-dashboard" and .status == "archived" and .archive_path == "openspec/changes/archive/2026-06-29-add-dashboard")' "$PROJECT/openspec/.specnav/change-registry.json" >/dev/null
 grep -Fxq 'next-change' "$PROJECT/openspec/.specnav/active-change"
-grep -Fq 'openspec/changes/archive/2026-06-29-add-dashboard/requirements.md' "$PROJECT/openspec/changes/archive/2026-06-29-add-dashboard/verify/evidence-index.jsonl"
-grep -Fq 'openspec/changes/archive/2026-06-29-add-dashboard/verify/evidence/screenshot.json' "$PROJECT/openspec/changes/archive/2026-06-29-add-dashboard/verify/evidence-index.jsonl"
+grep -Fq 'openspec/changes/add-dashboard/requirements.md' "$PROJECT/openspec/changes/archive/2026-06-29-add-dashboard/verify/evidence-index.jsonl"
+grep -Fq '"path":"verify/evidence/screenshot.json"' "$PROJECT/openspec/changes/archive/2026-06-29-add-dashboard/verify/evidence-index.jsonl"
+
+MUTATED="$TMP_DIR/mutated"
+write_archive_ready_project "$MUTATED"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$MUTATED" add-dashboard
+set +e
+PROJECT_DIR="$MUTATED" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+  SPECNAV_FAKE_ARCHIVE_DATE="2026-06-30" SPECNAV_FAKE_MUTATE_EVIDENCE=1 \
+  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/mutated.json"
+status=$?
+set -e
+if [[ "$status" != "2" ]]; then
+  echo "expected mutated archive evidence to block, got $status" >&2
+  cat "$TMP_DIR/mutated.json" >&2
+  exit 1
+fi
+jq -e '.blockers[] | select(startswith("verification-operations:archive-evidence-mutation:"))' \
+  "$TMP_DIR/mutated.json" >/dev/null
 
 AMBIGUOUS="$TMP_DIR/ambiguous"
 write_archive_ready_project "$AMBIGUOUS"

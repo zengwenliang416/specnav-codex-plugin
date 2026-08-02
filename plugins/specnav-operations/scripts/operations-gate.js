@@ -6,6 +6,9 @@ const path = require('path');
 const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
+const {
+  createReleaseProofValidator
+} = require('./verification-v2-proof');
 
 const TARGETS = new Set(['local-only', 'plugin-marketplace', 'package', 'host-compatibility', 'project-deploy']);
 const RECEIPT_CONFIDENCE = new Set(['A', 'B', 'C']);
@@ -244,6 +247,25 @@ function validateVerification(changeDir, change, hasSignoff, lane = 'standard') 
 
   blockers.push(...artifacts.flatMap((item) => item.blockers));
   return { blockers: unique(blockers), artifacts };
+}
+
+function validateVerificationV2Proof(projectRoot, change) {
+  const result = createReleaseProofValidator().validate(projectRoot, change);
+  const proof = result.proof;
+  const proofBlockers = result.blockers.map((entry) => entry.id);
+  return {
+    result,
+    artifact: changeArtifact(
+      change,
+      'operations/verification-v2-proof.json',
+      proofBlockers,
+      {
+        proof_id: proof?.id || null,
+        release_gate_id: proof?.release_gate?.id || null,
+        archive_gate_id: proof?.archive_gate?.id || null
+      }
+    )
+  };
 }
 
 function validateLightGate(changeDir, change) {
@@ -613,9 +635,6 @@ function validateOperations(root = lib.projectRoot()) {
     blockers.push(...(changeState.blockers && changeState.blockers.length ? changeState.blockers : ['active-change']));
   }
   const risk = changeDir ? lib.readJson(path.join(changeDir, 'risk-tier.json'), { tier: 'standard' }) : { tier: 'standard' };
-  if (change && changeDir && fs.existsSync(changeDir) && lib.readLane(changeDir).lane === 'light') {
-    return validateLightOperations(projectRoot, change, changeDir, risk);
-  }
   if (!opsDir) {
     return {
       ok: false,
@@ -637,14 +656,18 @@ function validateOperations(root = lib.projectRoot()) {
   }
 
   const signoff = fs.existsSync(path.join(opsDir, 'signoff.yaml')) || fs.existsSync(path.join(changeDir, 'signoff.yaml'));
-  const verification = validateVerification(changeDir, change, signoff);
-  artifacts.push(...verification.artifacts);
-  blockers.push(...verification.blockers);
+  const verificationV2 = validateVerificationV2Proof(projectRoot, change);
+  artifacts.push(verificationV2.artifact);
+  blockers.push(...verificationV2.artifact.blockers);
   if (risk.tier === 'high-risk' && !signoff) blockers.push('high-risk-signoff');
 
   artifacts.push(validateTasksMarkdown(changeDir, change));
   artifacts.push(validateText(opsDir, change, 'readiness.md', ['Operations Scope', 'Readiness Decision', 'Evidence']));
-  const readinessResult = validateReadiness(opsDir, change, verification.blockers);
+  const readinessResult = validateReadiness(
+    opsDir,
+    change,
+    verificationV2.artifact.blockers
+  );
   artifacts.push(readinessResult.artifact);
   const readiness = readinessResult.readiness;
   const target = readiness && TARGETS.has(readiness.release_target) ? readiness.release_target : null;
@@ -712,6 +735,7 @@ function validateOperations(root = lib.projectRoot()) {
     blockers: unique(blockers),
     warnings: unique(warnings),
     codegraph,
+    verification_v2_proof: verificationV2.result.proof || null,
     artifacts
   };
 }
@@ -730,6 +754,7 @@ function writeArchiveGate(root = lib.projectRoot()) {
     blockers: validation.blockers,
     warnings: validation.warnings || [],
     codegraph: validation.codegraph || null,
+    verification_v2_proof_id: validation.verification_v2_proof?.id || null,
     operations_ready: validation.ok
   };
 
@@ -779,4 +804,9 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validateOperations, writeArchiveGate, TARGETS };
+module.exports = {
+  TARGETS,
+  validateOperations,
+  validateVerificationV2Proof,
+  writeArchiveGate
+};

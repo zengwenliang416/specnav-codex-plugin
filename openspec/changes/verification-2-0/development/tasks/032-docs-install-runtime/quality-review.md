@@ -2,32 +2,50 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Separation Of Concerns
 
-- Replace this scaffold with direct review.
+- README files provide concise entry and routing guidance.
+- Detailed English and Chinese guides own the complete user-facing contract.
+- One focused test file and two runners enforce the documentation contract
+  without embedding runtime behavior in documentation.
 
 ## Component Cohesion / Coupling
 
-- Confirm high cohesion, low coupling, and required extraction.
+- Both language guides use the same section and command contract.
+- Tests assert shared semantics while allowing host-specific installation text.
 
 ## Test Quality
 
-- Replace this scaffold with direct review.
+- The RED proves the missing route and missing detailed guides.
+- The final tests assert installation, status/setup, six domains, evidence
+  authority, three report paths, migration, repair loop, no fallback, and no
+  simplified verification in both languages.
 
 ## Error Handling
 
-- Replace this scaffold with direct review.
+- Troubleshooting tables preserve exact blocker families and direct users to
+  repair runtime, evidence, migration, or host discovery instead of bypassing
+  the gate.
 
 ## Reuse / Duplication
 
-- Replace this scaffold with direct review.
+- Shared facts and command names remain aligned across README and detailed
+  guides; host-specific commands are isolated to installation sections.
 
 ## Complexity Delta
 
-- Replace this scaffold with direct review.
+- Documentation tests add a small deterministic contract and prevent semantic
+  drift between English and Chinese surfaces.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- None.
+
+## Review Evidence
+
+- `462-032-docs-install-runtime.log`: documentation contract 3/3.
+- `463-032-docs-install-runtime.log`: README contract 1/1.
+- Independent rereview found no remaining quality or documentation-governance
+  gap.

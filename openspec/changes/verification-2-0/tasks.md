@@ -89,8 +89,8 @@ User Outcome: Codex, Claude Code, and CodeFree-O users can run the same Verifica
 
 User Outcome: Users can detect host drift and follow matched English and Chinese installation and operation guidance.
 
-- [ ] 12.1 Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI.
-- [ ] 12.2 User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation.
+- [x] 12.1 Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI.
+- [x] 12.2 User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation.
 
 ## 13. Release And Archive Proof
 

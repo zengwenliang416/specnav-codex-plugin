@@ -35,6 +35,53 @@ function stableIds(values) {
   return [...new Set(values)].sort();
 }
 
+function gateSemantic(gate) {
+  return {
+    change_id: gate.change_id,
+    stage: gate.stage,
+    decision: gate.decision,
+    source_case_ids: stableIds(gate.source_case_ids || []),
+    source_reading_ids: stableIds(gate.source_reading_ids || []),
+    evidence_index_version: gate.evidence_index_version,
+    runtime_version: gate.runtime_version,
+    kernel_version: gate.kernel_version,
+    freshness: gate.freshness,
+    integrity_status: gate.integrity_status,
+    policy_version: gate.policy_version,
+    blockers: stableBlockers(gate.blockers || []),
+    warnings: stableBlockers(gate.warnings || [])
+  };
+}
+
+function validateGateDecisionIdentity(gate) {
+  if (!isRecord(gate) || typeof gate.id !== 'string') {
+    return deepFreeze({
+      ok: false,
+      blockers: [blocker(
+        'verification-gate:identity-invalid',
+        gate?.id || 'gate-decision',
+        'gate-shape-invalid'
+      )]
+    });
+  }
+  const expectedId = `gate-${sha256(canonicalJson(gateSemantic(gate)))}`;
+  if (gate.id !== expectedId) {
+    return deepFreeze({
+      ok: false,
+      blockers: [blocker(
+        'verification-gate:identity-mismatch',
+        gate.id,
+        expectedId
+      )]
+    });
+  }
+  return deepFreeze({
+    ok: true,
+    expected_id: expectedId,
+    blockers: []
+  });
+}
+
 function invalidResult(detail) {
   return deepFreeze({
     ok: false,
@@ -130,12 +177,12 @@ function createDecisionEngine(options = {}) {
     }
 
     const gateBlockers = stableBlockers(blockers);
-    const semantic = {
+    const semantic = gateSemantic({
       change_id: input.change_id,
       stage: input.stage,
       decision: gateBlockers.length === 0 ? 'pass' : 'block',
-      source_case_ids: stableIds(aggregation.source_case_ids),
-      source_reading_ids: stableIds(aggregation.source_reading_ids),
+      source_case_ids: aggregation.source_case_ids,
+      source_reading_ids: aggregation.source_reading_ids,
       evidence_index_version: input.evidence_index_version,
       runtime_version: input.runtime_version,
       kernel_version: input.kernel_version,
@@ -144,7 +191,7 @@ function createDecisionEngine(options = {}) {
       policy_version: input.policy_version,
       blockers: gateBlockers,
       warnings: []
-    };
+    });
     const gate = {
       schema: 'specnav.verification.gate-decision.v1',
       id: `gate-${sha256(canonicalJson(semantic))}`,
@@ -179,5 +226,6 @@ function createDecisionEngine(options = {}) {
 }
 
 module.exports = {
-  createDecisionEngine
+  createDecisionEngine,
+  validateGateDecisionIdentity
 };

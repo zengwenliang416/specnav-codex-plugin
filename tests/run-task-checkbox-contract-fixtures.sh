@@ -130,6 +130,7 @@ JSON
 
 PROJECT="$TMP_DIR/project"
 write_project "$PROJECT"
+node "$ROOT/tests/verification-v2/release/populate-project.js" "$PROJECT" add-dashboard
 run_gate "$PROJECT" "$TMP_DIR/ok.json" 0
 jq -e '.ok == true' "$TMP_DIR/ok.json" >/dev/null
 

@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 const childProcess = require('child_process');
 const runtime = require('./plugin-runtime');
 const { writeArchiveGate } = require('./operations-gate');
@@ -140,48 +141,57 @@ function gitBranch(root, fallback = null) {
   return branch || fallback;
 }
 
-function findArchivedDir(root, change) {
+function archiveCandidates(root, change) {
   const archiveRoot = path.join(lib.openspecDir(root), 'changes', 'archive');
-  const candidates = lib.listDirs(archiveRoot)
+  return lib.listDirs(archiveRoot)
     .filter((dir) => path.basename(dir).endsWith(`-${change}`))
-    .map((dir) => ({
-      dir,
-      name: path.basename(dir),
-      mtimeMs: fs.statSync(dir).mtimeMs
-    }))
-    .sort((a, b) => b.mtimeMs - a.mtimeMs || b.name.localeCompare(a.name));
-  return candidates.length ? candidates[0].dir : null;
+    .map((dir) => path.resolve(dir))
+    .sort();
 }
 
-function rewriteEvidenceIndex(root, archiveDir, archiveRel, change) {
-  const file = path.join(archiveDir, 'verify', 'evidence-index.jsonl');
-  if (!fs.existsSync(file)) return { file: null, changed: false, rewritten: 0 };
-  const before = fs.readFileSync(file, 'utf8');
-  let rewritten = 0;
-  const lines = before.split(/\r?\n/).map((line) => {
-    if (!line.trim()) return line;
-    let entry;
-    try {
-      entry = JSON.parse(line);
-    } catch {
-      return line;
+function sha256(bytes) {
+  return crypto.createHash('sha256').update(bytes).digest('hex');
+}
+
+function captureEvidence(changeDir) {
+  const files = [
+    'verify/evidence/raw.jsonl',
+    'verify/evidence/index.json',
+    'verify/evidence-index.jsonl'
+  ];
+  return files.flatMap((relative) => {
+    const file = path.join(changeDir, relative);
+    if (!fs.existsSync(file)) return [];
+    if (!fs.statSync(file).isFile()) {
+      throw new Error(`verification-operations:archive-evidence-not-file:${relative}`);
     }
-    if (!entry || typeof entry !== 'object' || typeof entry.path !== 'string') return line;
-    const oldPath = entry.path;
-    if (oldPath.startsWith(`openspec/changes/${change}/`)) {
-      entry.path = `${archiveRel}/${oldPath.slice(`openspec/changes/${change}/`.length)}`;
-    } else if (oldPath.startsWith('verify/')) {
-      entry.path = `${archiveRel}/${oldPath}`;
-    }
-    if (entry.path !== oldPath) rewritten += 1;
-    return JSON.stringify(entry);
+    return [{
+      path: relative,
+      sha256: sha256(fs.readFileSync(file))
+    }];
   });
-  const after = lines.join('\n');
-  if (after !== before) fs.writeFileSync(file, after.endsWith('\n') ? after : `${after}\n`);
+}
+
+function verifyArchivedEvidence(archiveDir, captured) {
+  const files = [];
+  const blockers = [];
+  for (const entry of captured) {
+    const file = path.join(archiveDir, entry.path);
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) {
+      blockers.push(`verification-operations:archive-evidence-missing:${entry.path}`);
+      continue;
+    }
+    const digest = sha256(fs.readFileSync(file));
+    files.push({ path: entry.path, sha256: digest });
+    if (digest !== entry.sha256) {
+      blockers.push(`verification-operations:archive-evidence-mutation:${entry.path}`);
+    }
+  }
   return {
-    file: path.relative(root, file).split(path.sep).join('/'),
-    changed: after !== before,
-    rewritten
+    ok: blockers.length === 0,
+    immutable: true,
+    files,
+    blockers
   };
 }
 
@@ -315,6 +325,20 @@ function run(options = parseArgs()) {
   }
 
   const beforeRegistry = lib.buildChangeRegistry(root);
+  const beforeArchives = new Set(archiveCandidates(root, change));
+  let evidenceBefore;
+  try {
+    evidenceBefore = captureEvidence(changeDir);
+  } catch (error) {
+    return fail({
+      project_root: root,
+      active_change: change,
+      phase: 'archive-evidence-preflight',
+      blockers: [error instanceof Error
+        ? error.message
+        : 'verification-operations:archive-evidence-preflight-failed']
+    }, options.json);
+  }
   const coreRoot = runtime.resolvePluginRoot('specnav-core');
   const tasksResult = runNodeScript(path.join(coreRoot, 'scripts', 'tasks-md.js'), [
     'normalize',
@@ -388,20 +412,37 @@ function run(options = parseArgs()) {
     }, options.json);
   }
 
-  const archiveDir = findArchivedDir(root, change);
-  if (!archiveDir) {
+  const newArchives = archiveCandidates(root, change)
+    .filter((candidate) => !beforeArchives.has(candidate));
+  if (newArchives.length !== 1) {
     return fail({
       project_root: root,
       active_change: change,
       phase: 'archive-discovery',
-      blockers: ['archive-output-missing'],
+      blockers: [newArchives.length === 0
+        ? 'archive-output-missing'
+        : 'archive-output-ambiguous'],
+      archive_candidates: newArchives.map((candidate) => (
+        path.relative(root, candidate).split(path.sep).join('/')
+      )),
       commands: { openspec_validate: validateResult, openspec_archive: archiveResult }
     }, options.json);
   }
+  const archiveDir = newArchives[0];
 
   const archiveRel = path.relative(root, archiveDir).split(path.sep).join('/');
   const archivedAt = new Date().toISOString();
-  const evidenceRewrite = rewriteEvidenceIndex(root, archiveDir, archiveRel, change);
+  const evidenceIntegrity = verifyArchivedEvidence(archiveDir, evidenceBefore);
+  if (!evidenceIntegrity.ok) {
+    return fail({
+      project_root: root,
+      active_change: change,
+      phase: 'archive-evidence-integrity',
+      blockers: evidenceIntegrity.blockers,
+      archive_path: archiveRel,
+      commands: { openspec_validate: validateResult, openspec_archive: archiveResult }
+    }, options.json);
+  }
   const registry = writeRegistryAfterArchive(root, change, archiveRel, beforeRegistry, archivedAt);
   const activeFile = updateActiveChangeFile(root, change, registry.current_focus);
   const receipt = {
@@ -413,7 +454,7 @@ function run(options = parseArgs()) {
     skip_specs: options.skipSpecs,
     tasks_md: tasksPayload,
     archive_gate: gate,
-    evidence_index: evidenceRewrite,
+    evidence_integrity: evidenceIntegrity,
     registry: {
       path: path.relative(root, lib.changeRegistryFile(root)).split(path.sep).join('/'),
       current_focus: registry.current_focus
@@ -439,7 +480,7 @@ function run(options = parseArgs()) {
     active_change_after: registry.current_focus,
     blockers: [],
     receipt_path: `${archiveRel}/operations/archive-receipt.json`,
-    evidence_index: evidenceRewrite,
+    evidence_integrity: evidenceIntegrity,
     commands: {
       openspec_validate: validateResult,
       openspec_archive: archiveResult

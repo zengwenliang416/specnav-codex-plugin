@@ -3,6 +3,7 @@
   "goal": "Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.",
   "must_read": [
     "openspec/changes/verification-2-0/development/tasks/033-release-archive-proof/brief.md",
+    "openspec/changes/verification-2-0/development/tasks/033-release-archive-proof/scope-correction.json",
     "openspec/specs/ui-design/design.md",
     "openspec/specs/system-architecture/design.md",
     "openspec/specs/frontend-backend-data-flow/design.md",
@@ -20,7 +21,11 @@
     "plugins/specnav-operations/**",
     "tests/verification-v2/release/**",
     "docs/release-verification-v2.md",
-    ".github/workflows/ci.yml"
+    ".github/workflows/ci.yml",
+    "tests/run-verification-v2-release.sh",
+    "tests/run-smoke.sh",
+    "tests/run-operations-plugin-fixtures.sh",
+    "tests/run-operations-archive-action-fixtures.sh"
   ],
   "test_paths": [
     "bash tests/run-verification-v2-release.sh",
