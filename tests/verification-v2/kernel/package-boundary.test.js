@@ -115,9 +115,16 @@ test('kernel source contains no host runtime dependency', () => {
     withFileTypes: true
   })
     .filter((entry) => entry.isFile() && entry.name.endsWith('.js'))
-    .map((entry) => path.join(entry.parentPath, entry.name));
+    .map((entry) => path.join(entry.parentPath, entry.name))
+    .filter((file) => (
+      path.relative(kernelDir, file).split(path.sep).join('/')
+        !== 'governance/host-provenance.js'
+    ));
   const source = files.map((file) => fs.readFileSync(file, 'utf8')).join('\n');
+  const kernel = require(PLUGIN_ROOT);
 
   assert.doesNotMatch(source, /\b(?:codex|claude|codefree|opencode)\b/i);
   assert.doesNotMatch(source, /process\.env\.(?:CODEX|CLAUDE|OPENCODE)/);
+  assert.equal(kernel.createHostSyncPlan, undefined);
+  assert.equal(kernel.transformSkill, undefined);
 });

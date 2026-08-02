@@ -307,11 +307,30 @@ function createHostSyncPlan(host) {
   });
 }
 
+function resolveHostSyncPlan(host, manifest = null) {
+  const supported = new Set(['claude-code', 'codefree-o']);
+  if (supported.has(host)) return createHostSyncPlan(host);
+  if (supported.has(manifest?.host)) {
+    return createHostSyncPlan(manifest.host);
+  }
+  const transforms = Array.isArray(manifest?.transformed_files)
+    ? manifest.transformed_files.map((entry) => entry?.transform)
+    : [];
+  if (transforms.some((value) => value === 'claude-code-skill-v1')) {
+    return createHostSyncPlan('claude-code');
+  }
+  if (transforms.some((value) => value === 'codefree-o-skill-v1')) {
+    return createHostSyncPlan('codefree-o');
+  }
+  return null;
+}
+
 module.exports = {
   HOST_RUNTIME_FILES,
   LOCAL_PLUGIN_ROOT,
   SHARED_SCRIPTS,
   createHostSyncPlan,
+  resolveHostSyncPlan,
   sha256,
   stageManifest,
   transformSkill

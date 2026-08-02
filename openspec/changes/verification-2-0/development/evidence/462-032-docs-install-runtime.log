@@ -1,0 +1,37 @@
+# command: bash tests/run-verification-v2-docs.sh # task032-docs-green
+# exit_status: 0
+# duration_ms: 91
+
+## stdout
+TAP version 13
+# Subtest: README files route users to the same full Verification 2.0 flow
+ok 1 - README files route users to the same full Verification 2.0 flow
+  ---
+  duration_ms: 0.677042
+  type: 'test'
+  ...
+# Subtest: matched English and Chinese guides cover every user-visible contract
+ok 2 - matched English and Chinese guides cover every user-visible contract
+  ---
+  duration_ms: 0.82825
+  type: 'test'
+  ...
+# Subtest: documentation preserves runtime, report, and no-fallback authority
+ok 3 - documentation preserves runtime, report, and no-fallback authority
+  ---
+  duration_ms: 0.739084
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 48.205625
+
+
+## stderr
+(empty)

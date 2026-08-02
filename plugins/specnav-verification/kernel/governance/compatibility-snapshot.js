@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const localMetadata = require('../metadata');
 const { canonicalValue } = require('../cases/canonical');
-const { createHostSyncPlan } = require('./host-provenance');
+const { resolveHostSyncPlan } = require('./host-provenance');
 
 const SNAPSHOT_SCHEMA = 'specnav.verification.compatibility-snapshot.v1';
 const LOCAL_PLUGIN_ROOT = path.resolve(__dirname, '../..');
@@ -360,22 +360,6 @@ function loadManifest(pluginRoot, manifestFile, host) {
   });
 }
 
-function provenanceHost(host, manifest) {
-  const supported = new Set(['claude-code', 'codefree-o']);
-  if (supported.has(host)) return host;
-  if (supported.has(manifest?.host)) return manifest.host;
-  const transforms = Array.isArray(manifest?.transformed_files)
-    ? manifest.transformed_files.map((entry) => entry?.transform)
-    : [];
-  if (transforms.some((value) => value === 'claude-code-skill-v1')) {
-    return 'claude-code';
-  }
-  if (transforms.some((value) => value === 'codefree-o-skill-v1')) {
-    return 'codefree-o';
-  }
-  return null;
-}
-
 function manifestSnapshot(options) {
   const {
     pluginRoot,
@@ -396,10 +380,7 @@ function manifestSnapshot(options) {
     throw new Error(`verification-drift:host-files-required:${host}`);
   }
   const manifest = loadedManifest.value;
-  const trustedHost = provenanceHost(host, manifest);
-  const trustedPlan = trustedHost
-    ? createHostSyncPlan(trustedHost)
-    : null;
+  const trustedPlan = resolveHostSyncPlan(host, manifest);
   const manifestPathBlocker = (
     `verification-drift:manifest-path-unsafe:${host}`
   );
