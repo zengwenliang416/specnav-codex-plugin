@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -39,6 +40,13 @@ const HOST_LOCK = JSON.parse(fs.readFileSync(
   'utf8'
 ));
 
+function fileDigest(root, relative) {
+  return crypto
+    .createHash('sha256')
+    .update(fs.readFileSync(path.join(root, relative)))
+    .digest('hex');
+}
+
 function copyTree(t, source) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-drift-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -73,6 +81,17 @@ function compare(reference, candidate) {
 
 function blockerIds(result) {
   return result.blockers.map((entry) => entry.id);
+}
+
+function rewriteManifest(pluginRoot, mutate) {
+  const manifestFile = path.join(
+    pluginRoot,
+    'specnav-kernel-source.json'
+  );
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  mutate(manifest);
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+  return manifestFile;
 }
 
 test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', () => {
@@ -353,6 +372,89 @@ test('host-owned wrapper bytes must match synchronized provenance', (t) => {
 
   assert.deepEqual(blockerIds(result), [
     'verification-drift:manifest-host-file-digest-mismatch:drifted'
+  ]);
+});
+
+test('updated manifest hash cannot hide transformed skill tampering', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
+  );
+  const target = 'skills/specnav-verification/SKILL.md';
+  fs.appendFileSync(path.join(pluginRoot, target), '\nTampered skill.\n');
+  const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
+    const entry = manifest.transformed_files.find((item) => (
+      item.target === target
+    ));
+    entry.target_sha256 = fileDigest(pluginRoot, target);
+  });
+
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'claude-code',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CLAUDE_HOST_FILES
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+  ]);
+});
+
+test('updated manifest hash cannot hide generated host-file tampering', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
+  );
+  const target = 'commands/specnav-verification.md';
+  fs.appendFileSync(path.join(pluginRoot, target), '\nTampered command.\n');
+  const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
+    const entry = manifest.host_files.find((item) => (
+      item.target === target
+    ));
+    entry.target_sha256 = fileDigest(pluginRoot, target);
+  });
+
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'claude-code',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CLAUDE_HOST_FILES
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+  ]);
+});
+
+test('updated tree digest cannot hide exact canonical file tampering', (t) => {
+  const pluginRoot = copyTree(
+    t,
+    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
+  );
+  const target = 'assets/icon.svg';
+  fs.appendFileSync(path.join(pluginRoot, target), '\n<!-- tampered -->\n');
+  const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
+    const records = manifest.files
+      .map((relative) => (
+        `${relative}\0${fileDigest(pluginRoot, relative)}`
+      ))
+      .sort();
+    manifest.source_tree_digest = crypto
+      .createHash('sha256')
+      .update(records.join('\n'))
+      .digest('hex');
+  });
+
+  const result = compare(snapshot({ host: 'codex' }), snapshot({
+    host: 'claude-code',
+    pluginRoot,
+    manifestFile,
+    hostFiles: CLAUDE_HOST_FILES
+  }));
+
+  assert.deepEqual(blockerIds(result), [
+    'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
   ]);
 });
 

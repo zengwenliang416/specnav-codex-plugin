@@ -14,6 +14,7 @@
   <a href="#how-the-flow-works">Flow</a> ·
   <a href="#stage-atlas">Stage Atlas</a> ·
   <a href="#skills">Skills</a> ·
+  <a href="docs/verification-2-0.md">Verification 2.0</a> ·
   <a href="docs/design.md">Design</a>
 </p>
 
@@ -34,7 +35,7 @@ This repository is a Codex marketplace that ships seven installable plugins:
 | `specnav-requirements` | Repository discovery, foundation specs, requirements questioning |
 | `specnav-prototype` | Runnable prototype artifacts, prototype verification, handoff |
 | `specnav-development` | Scope lock, vertical slices, fix/debug/break-loop workflows |
-| `specnav-verification` | Six-domain verification and stakeholder HTML reports |
+| `specnav-verification` | Full Verification 2.0 runtime, approved cases, six-domain evidence, repair loop, gates, and stakeholder reports |
 | `specnav-operations` | Release readiness, deploy, rollback, monitor, archive action |
 | `specnav-codegraph` | CodeGraph policy, context, claims, impact, and evidence artifacts |
 
@@ -227,9 +228,11 @@ the `light` lane and load `$specnav-light-change`.
 
 Light lane still requires an OpenSpec project, a clean active change, standard
 checkbox `tasks.md`, a bounded `scope.json`, and machine-checkable
-`acceptance.json`. It may skip foundation-spec blocking, runnable prototype
-approval, per-slice review packets, and the full six-domain verification set.
-Verification is reduced to static + unit evidence.
+`acceptance.json`. It may reduce requirements, prototype, and per-slice
+development paperwork for a bounded low-risk edit. It does not reduce the
+verification gate: every lane enters Verification 2.0 with an approved case
+snapshot, all six domains, evidence integrity, freshness, repair/regression,
+and the same release decision.
 
 The lane escalates back to standard or full when the request touches auth,
 permissions, billing, security, database, API routes, deployment, package
@@ -261,7 +264,24 @@ declare ownership, props/contracts, state boundaries, and allowed dependencies.
 If any foundation spec is missing, SpecNav blocks feature requirements and
 guides the user to create or repair the missing spec. There is no fallback.
 
-## Verification Model
+## Verification 2.0
+
+Verification 2.0 has no light, compact, partial-domain, manual-green, or
+fallback route. Start with `specnav-verification-runtime-status`; run
+`specnav-verification-runtime-setup` only after explicit approval; then use
+`specnav-verify-plan` and execute all six domains.
+
+The locked runtime installs Playwright, Midscene, AJV, managed Chromium, and
+FFmpeg under `~/.specnav/runtime/verification/<version>/`, outside the
+business repository. Midscene may assist UI interaction, but deterministic
+assertions or explicit human signoff decide PASS. HTML reports are review
+projections; `verify/aggregate-report.json` remains the machine authority.
+
+The complete installation, doctor, approval, execution, repair, report,
+migration, host, and troubleshooting guide is
+[docs/verification-2-0.md](docs/verification-2-0.md).
+
+The verification stage has six independent test domains:
 
 The verification stage has six independent test domains:
 
@@ -360,6 +380,9 @@ specnav-break-loop
 Verification:
 
 ```text
+specnav-verification
+specnav-verification-runtime-status
+specnav-verification-runtime-setup
 specnav-verify-plan
 specnav-verify-facticity
 specnav-verify-static
@@ -434,6 +457,7 @@ bash tests/run-operations-archive-action-fixtures.sh
 ## References
 
 - [System design](docs/design.md)
+- [Verification 2.0 guide](docs/verification-2-0.md)
 - [Visual style memory](docs/memory/specnav-visual-style.md)
 - [Codex marketplace manifest](.agents/plugins/marketplace.json)
 - [4K transparent logo](docs/assets/specnav-logo-4k.png)

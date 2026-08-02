@@ -10,15 +10,14 @@ const ROOT = path.resolve(__dirname, '../..');
 const SOURCE_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
 const DEFAULT_TARGET = path.resolve(ROOT, '../specnav-codefree-o-plugin');
 const OWNED_PATH = 'modules/specnav-verification';
-const SHARED_SCRIPTS = Object.freeze([
-  'anchor-scan.js',
-  'evidence-runner.js',
-  'host-verification-adapter.js',
-  'rerun-scope.js',
-  'verification-migrate.js',
-  'verification-runtime.js',
-  'verify-domains.js'
-]);
+const {
+  SHARED_SCRIPTS,
+  createHostSyncPlan,
+  transformSkill: transformHostSkill
+} = require(path.join(
+  SOURCE_PLUGIN,
+  'kernel/governance/host-provenance'
+));
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -234,69 +233,11 @@ function writeJson(file, value) {
 }
 
 function transformSkill(source) {
-  return source
-    .replace(/when a Codex user/g, 'when a CodeFree-O user')
-    .replace(/as the Codex entrypoint/g, 'as the CodeFree-O entrypoint')
-    .replace(
-      /owning Codex plugin resolver/g,
-      'owning CodeFree-O module resolver'
-    )
-    .replace(
-      /owning SpecNav Codex plugin resolver/g,
-      'owning SpecNav CodeFree-O module resolver'
-    )
-    .replace(
-      /Codex plugin code must use `PLUGIN_ROOT` and explicit /g,
-      'CodeFree-O skills must resolve module roots from `shell.env` and explicit '
-    )
-    .replace(
-      /scripts\/codex-verification-adapter\.js/g,
-      'scripts/codefree-o-verification-adapter.js'
-    );
-}
-
-function stageManifest() {
-  return {
-    schema: 'specnav.stagePlugin.v1',
-    plugin: 'specnav-verification',
-    stage: 'verification',
-    required: true,
-    depends_on: [
-      'specnav-core',
-      'specnav-requirements',
-      'specnav-prototype',
-      'specnav-development'
-    ],
-    commands: [
-      'specnav-verification',
-      'specnav-verify'
-    ],
-    skills: [
-      'specnav-verification',
-      'specnav-verification-runtime-status',
-      'specnav-verification-runtime-setup',
-      'specnav-verify-plan',
-      'specnav-verify-facticity',
-      'specnav-verify-static',
-      'specnav-verify-unit',
-      'specnav-verify-redteam',
-      'specnav-verify-e2e',
-      'specnav-verify-sensory',
-      'specnav-verify-rerun',
-      'specnav-html-report'
-    ],
-    contracts: {
-      verification: 'scripts/verify-domains.js',
-      codefree_o_adapter: 'scripts/codefree-o-verification-adapter.js',
-      kernel: 'kernel/index.js'
-    },
-    state_outputs: [
-      'openspec/changes/<change>/verify/'
-    ]
-  };
+  return transformHostSkill(source, 'codefree-o');
 }
 
 function validateStagedModule(stagingModule, manifest) {
+  const plan = createHostSyncPlan('codefree-o');
   for (const relative of manifest.files) {
     if (
       sha256(path.join(SOURCE_PLUGIN, relative))
@@ -307,13 +248,20 @@ function validateStagedModule(stagingModule, manifest) {
       );
     }
   }
-  for (const entry of [
-    ...manifest.transformed_files,
-    ...manifest.host_files
-  ]) {
+  for (const entry of plan.transformedFiles) {
     if (
-      sha256(path.join(stagingModule, entry.target))
-      !== entry.target_sha256
+      !fs.readFileSync(path.join(stagingModule, entry.target))
+        .equals(entry.content)
+    ) {
+      throw new Error(
+        `codefree-o-verification-sync:staged-file-mismatch:${entry.target}`
+      );
+    }
+  }
+  for (const entry of plan.hostFiles) {
+    if (
+      !fs.readFileSync(path.join(stagingModule, entry.target))
+        .equals(entry.content)
     ) {
       throw new Error(
         `codefree-o-verification-sync:staged-file-mismatch:${entry.target}`
@@ -324,6 +272,7 @@ function validateStagedModule(stagingModule, manifest) {
     ...manifest.files,
     ...manifest.transformed_files.map((entry) => entry.target),
     ...manifest.host_files.map((entry) => entry.target),
+    ...manifest.host_runtime_files.map((entry) => entry.target),
     'specnav-kernel-source.json'
   ]);
   const actualFiles = listFiles(stagingModule).map((file) => (
@@ -342,93 +291,32 @@ function validateStagedModule(stagingModule, manifest) {
 }
 
 function buildStagedModule(stagingModule) {
-  const exactFiles = new Set();
-  const transformedFiles = [];
+  const plan = createHostSyncPlan('codefree-o');
   rejectSymlinks(SOURCE_PLUGIN, 'source');
   rejectSymlinks(stagingModule, 'staging');
 
-  copyFile(
-    path.join(SOURCE_PLUGIN, 'package.json'),
-    path.join(stagingModule, 'package.json')
-  );
-  exactFiles.add('package.json');
-
-  for (const directory of ['kernel', 'schemas', 'assets']) {
-    copyTree(
-      path.join(SOURCE_PLUGIN, directory),
-      path.join(stagingModule, directory)
-    );
-    for (const file of listFiles(path.join(SOURCE_PLUGIN, directory))) {
-      exactFiles.add(path.relative(SOURCE_PLUGIN, file));
-    }
-  }
-
-  for (const script of SHARED_SCRIPTS) {
+  for (const relative of plan.exactFiles) {
     copyFile(
-      path.join(SOURCE_PLUGIN, 'scripts', script),
-      path.join(stagingModule, 'scripts', script)
+      path.join(SOURCE_PLUGIN, relative),
+      path.join(stagingModule, relative)
     );
-    exactFiles.add(path.posix.join('scripts', script));
   }
-  copyFile(
-    path.join(__dirname, 'codefree-o-verification-adapter.js'),
-    path.join(
-      stagingModule,
-      'scripts/codefree-o-verification-adapter.js'
-    )
-  );
-
-  for (const sourceSkill of fs.readdirSync(
-    path.join(SOURCE_PLUGIN, 'skills'),
-    { withFileTypes: true }
-  ).filter((entry) => entry.isDirectory())) {
-    const sourceRoot = path.join(
-      SOURCE_PLUGIN,
-      'skills',
-      sourceSkill.name
+  for (const entry of plan.transformedFiles) {
+    fs.mkdirSync(
+      path.dirname(path.join(stagingModule, entry.target)),
+      { recursive: true }
     );
-    const targetRoot = path.join(
-      stagingModule,
-      'skills',
-      sourceSkill.name
-    );
-    copyTree(sourceRoot, targetRoot);
-    for (const file of listFiles(sourceRoot)) {
-      const relative = path.relative(SOURCE_PLUGIN, file);
-      if (path.basename(file) === 'SKILL.md') {
-        const targetFile = path.join(stagingModule, relative);
-        fs.writeFileSync(
-          targetFile,
-          transformSkill(fs.readFileSync(file, 'utf8'))
-        );
-        transformedFiles.push({
-          source: relative,
-          target: relative,
-          transform: 'codefree-o-skill-v1',
-          source_sha256: sha256(file),
-          target_sha256: sha256(targetFile)
-        });
-      } else {
-        exactFiles.add(relative);
-      }
-    }
+    fs.writeFileSync(path.join(stagingModule, entry.target), entry.content);
   }
-
-  writeJson(
-    path.join(stagingModule, 'specnav-stage.json'),
-    stageManifest()
-  );
+  for (const entry of plan.hostFiles) {
+    fs.mkdirSync(
+      path.dirname(path.join(stagingModule, entry.target)),
+      { recursive: true }
+    );
+    fs.writeFileSync(path.join(stagingModule, entry.target), entry.content);
+  }
 
   const kernel = require(path.join(SOURCE_PLUGIN, 'kernel'));
-  const synchronizedFiles = [...exactFiles].sort();
-  const hostFiles = [
-    'scripts/codefree-o-verification-adapter.js',
-    'scripts/plugin-runtime.js',
-    'specnav-stage.json'
-  ].map((target) => ({
-    target,
-    target_sha256: sha256(path.join(stagingModule, target))
-  }));
   const manifest = {
     schema: 'specnav.verification.kernel-sync.v1',
     generated: true,
@@ -438,7 +326,7 @@ function buildStagedModule(stagingModule) {
     source_commit: gitOutput(ROOT, ['rev-parse', 'HEAD']),
     source_dirty: gitOutput(ROOT, ['status', '--porcelain']) !== '',
     source_path: 'plugins/specnav-verification',
-    source_tree_digest: treeDigest(SOURCE_PLUGIN, synchronizedFiles),
+    source_tree_digest: plan.sourceTreeDigest,
     kernel: {
       name: kernel.metadata.name,
       version: kernel.metadata.version,
@@ -446,11 +334,22 @@ function buildStagedModule(stagingModule) {
       contract_version: kernel.metadata.contractVersion,
       contract_digest: kernel.metadata.contractDigest
     },
-    files: synchronizedFiles,
-    transformed_files: transformedFiles.sort((left, right) => (
-      left.target.localeCompare(right.target)
-    )),
-    host_files: hostFiles
+    files: [...plan.exactFiles],
+    transformed_files: plan.transformedFiles.map((entry) => ({
+      source: entry.source,
+      target: entry.target,
+      transform: entry.transform,
+      source_sha256: entry.source_sha256,
+      target_sha256: entry.target_sha256
+    })),
+    host_files: plan.hostFiles.map((entry) => ({
+      target: entry.target,
+      target_sha256: entry.target_sha256
+    })),
+    host_runtime_files: plan.hostRuntimeFiles.map((target) => ({
+      target,
+      target_sha256: sha256(path.join(stagingModule, target))
+    }))
   };
   writeJson(
     path.join(stagingModule, 'specnav-kernel-source.json'),

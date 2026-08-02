@@ -9,15 +9,14 @@ const { spawnSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '../..');
 const SOURCE_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
 const DEFAULT_TARGET = path.resolve(ROOT, '../specnav-claude-plugin');
-const SHARED_SCRIPTS = Object.freeze([
-  'anchor-scan.js',
-  'evidence-runner.js',
-  'host-verification-adapter.js',
-  'rerun-scope.js',
-  'verification-migrate.js',
-  'verification-runtime.js',
-  'verify-domains.js'
-]);
+const {
+  SHARED_SCRIPTS,
+  createHostSyncPlan,
+  transformSkill: transformHostSkill
+} = require(path.join(
+  SOURCE_PLUGIN,
+  'kernel/governance/host-provenance'
+));
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -227,92 +226,7 @@ function assertCleanTarget(targetRepository) {
 }
 
 function transformSkill(source) {
-  return source
-    .replace(
-      /as the Codex entrypoint/g,
-      'as the Claude Code entrypoint'
-    )
-    .replace(
-      /owning Codex plugin resolver/g,
-      'owning Claude Code plugin resolver'
-    )
-    .replace(
-      /owning SpecNav Codex plugin resolver/g,
-      'owning SpecNav Claude Code plugin resolver'
-    )
-    .replace(
-      /Codex plugin code must use `PLUGIN_ROOT` and explicit /g,
-      'Claude Code skills must resolve installed plugin roots and explicit '
-    )
-    .replace(
-      /scripts\/codex-verification-adapter\.js/g,
-      'scripts/claude-verification-adapter.js'
-    );
-}
-
-function commandTemplate(templateName) {
-  return fs.readFileSync(
-    path.join(__dirname, 'templates', templateName),
-    'utf8'
-  );
-}
-
-function pluginManifest(targetPlugin) {
-  const file = path.join(targetPlugin, '.claude-plugin', 'plugin.json');
-  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
-  manifest.description = (
-    'Full Verification 2.0 for Claude Code with approved cases, six-domain '
-    + 'evidence, repair loops, gates, and review reports.'
-  );
-  manifest.keywords = [
-    'claude-code',
-    'openspec',
-    'verification',
-    'testing',
-    'html-report'
-  ];
-  return manifest;
-}
-
-function stageManifest() {
-  return {
-    schema: 'specnav.stagePlugin.v1',
-    plugin: 'specnav-verification',
-    stage: 'verification',
-    required: true,
-    depends_on: [
-      'specnav-core',
-      'specnav-requirements',
-      'specnav-prototype',
-      'specnav-development'
-    ],
-    commands: [
-      'specnav-verification',
-      'specnav-verify'
-    ],
-    skills: [
-      'specnav-verification',
-      'specnav-verification-runtime-status',
-      'specnav-verification-runtime-setup',
-      'specnav-verify-plan',
-      'specnav-verify-facticity',
-      'specnav-verify-static',
-      'specnav-verify-unit',
-      'specnav-verify-redteam',
-      'specnav-verify-e2e',
-      'specnav-verify-sensory',
-      'specnav-verify-rerun',
-      'specnav-html-report'
-    ],
-    contracts: {
-      verification: 'scripts/verify-domains.js',
-      claude_adapter: 'scripts/claude-verification-adapter.js',
-      kernel: 'kernel/index.js'
-    },
-    state_outputs: [
-      'openspec/changes/<change>/verify/'
-    ]
-  };
+  return transformHostSkill(source, 'claude-code');
 }
 
 function writeJson(file, value) {
@@ -321,6 +235,7 @@ function writeJson(file, value) {
 }
 
 function validateStagedPlugin(stagingPlugin, manifest) {
+  const plan = createHostSyncPlan('claude-code');
   for (const relative of manifest.files) {
     if (
       sha256(path.join(SOURCE_PLUGIN, relative))
@@ -331,15 +246,21 @@ function validateStagedPlugin(stagingPlugin, manifest) {
       );
     }
   }
-  for (const entry of manifest.transformed_files) {
-    if (sha256(path.join(stagingPlugin, entry.target)) !== entry.target_sha256) {
+  for (const entry of plan.transformedFiles) {
+    if (
+      !fs.readFileSync(path.join(stagingPlugin, entry.target))
+        .equals(entry.content)
+    ) {
       throw new Error(
         `claude-verification-sync:staged-transform-mismatch:${entry.target}`
       );
     }
   }
-  for (const entry of manifest.host_files) {
-    if (sha256(path.join(stagingPlugin, entry.target)) !== entry.target_sha256) {
+  for (const entry of plan.hostFiles) {
+    if (
+      !fs.readFileSync(path.join(stagingPlugin, entry.target))
+        .equals(entry.content)
+    ) {
       throw new Error(
         `claude-verification-sync:staged-host-file-mismatch:${entry.target}`
       );
@@ -349,6 +270,7 @@ function validateStagedPlugin(stagingPlugin, manifest) {
     ...manifest.files,
     ...manifest.transformed_files.map((entry) => entry.target),
     ...manifest.host_files.map((entry) => entry.target),
+    ...manifest.host_runtime_files.map((entry) => entry.target),
     'specnav-kernel-source.json'
   ]);
   const actualFiles = listFiles(stagingPlugin).map((file) => (
@@ -367,126 +289,44 @@ function validateStagedPlugin(stagingPlugin, manifest) {
 }
 
 function buildStagedPlugin(stagingPlugin) {
-  const exactFiles = new Set();
-  const transformedFiles = [];
+  const plan = createHostSyncPlan('claude-code');
   rejectSymlinks(SOURCE_PLUGIN, 'source');
   rejectSymlinks(stagingPlugin, 'staging');
 
-  copyFile(
-    path.join(SOURCE_PLUGIN, 'package.json'),
-    path.join(stagingPlugin, 'package.json')
-  );
-  exactFiles.add('package.json');
-
-  for (const directory of ['kernel', 'schemas', 'assets']) {
-    copyTree(
-      path.join(SOURCE_PLUGIN, directory),
-      path.join(stagingPlugin, directory)
-    );
-    for (const file of listFiles(path.join(SOURCE_PLUGIN, directory))) {
-      exactFiles.add(path.relative(SOURCE_PLUGIN, file));
-    }
-  }
-
-  for (const script of SHARED_SCRIPTS) {
+  for (const relative of plan.exactFiles) {
     copyFile(
-      path.join(SOURCE_PLUGIN, 'scripts', script),
-      path.join(stagingPlugin, 'scripts', script)
+      path.join(SOURCE_PLUGIN, relative),
+      path.join(stagingPlugin, relative)
     );
-    exactFiles.add(path.posix.join('scripts', script));
   }
-
-  copyFile(
-    path.join(__dirname, 'claude-verification-adapter.js'),
-    path.join(
-      stagingPlugin,
-      'scripts/claude-verification-adapter.js'
-    )
-  );
-
-  for (const sourceSkill of fs.readdirSync(
-    path.join(SOURCE_PLUGIN, 'skills'),
-    { withFileTypes: true }
-  ).filter((entry) => entry.isDirectory())) {
-    const sourceRoot = path.join(
-      SOURCE_PLUGIN,
-      'skills',
-      sourceSkill.name
+  for (const entry of plan.transformedFiles) {
+    fs.mkdirSync(
+      path.dirname(path.join(stagingPlugin, entry.target)),
+      { recursive: true }
     );
-    const targetRoot = path.join(
-      stagingPlugin,
-      'skills',
-      sourceSkill.name
-    );
-    copyTree(sourceRoot, targetRoot);
-    for (const file of listFiles(sourceRoot)) {
-      const relative = path.relative(SOURCE_PLUGIN, file);
-      if (path.basename(file) === 'SKILL.md') {
-        const targetFile = path.join(
-          stagingPlugin,
-          relative
-        );
-        const transformed = transformSkill(
-          fs.readFileSync(file, 'utf8')
-        );
-        fs.writeFileSync(targetFile, transformed);
-        transformedFiles.push({
-          source: relative,
-          target: relative,
-          transform: 'claude-code-skill-v1',
-          source_sha256: sha256(file),
-          target_sha256: sha256(targetFile)
-        });
-      } else {
-        exactFiles.add(relative);
-      }
-    }
+    fs.writeFileSync(path.join(stagingPlugin, entry.target), entry.content);
   }
-
-  const command = commandTemplate('specnav-verification.md');
-  fs.mkdirSync(path.join(stagingPlugin, 'commands'), { recursive: true });
-  fs.writeFileSync(
-    path.join(stagingPlugin, 'commands/specnav-verification.md'),
-    command
-  );
-  fs.writeFileSync(
-    path.join(stagingPlugin, 'commands/specnav-verify.md'),
-    command.replace(
-      'description: Run the complete SpecNav Verification 2.0 lifecycle',
-      'description: Alias for the complete SpecNav Verification 2.0 lifecycle'
-    )
-  );
-
-  writeJson(
-    path.join(stagingPlugin, '.claude-plugin/plugin.json'),
-    pluginManifest(stagingPlugin)
-  );
-  writeJson(
-    path.join(stagingPlugin, 'specnav-stage.json'),
-    stageManifest()
-  );
+  for (const entry of plan.hostFiles) {
+    fs.mkdirSync(
+      path.dirname(path.join(stagingPlugin, entry.target)),
+      { recursive: true }
+    );
+    fs.writeFileSync(path.join(stagingPlugin, entry.target), entry.content);
+  }
 
   const kernel = require(path.join(SOURCE_PLUGIN, 'kernel'));
   const sourceCommit = gitOutput(ROOT, ['rev-parse', 'HEAD']);
   const sourceDirty = gitOutput(ROOT, ['status', '--porcelain']) !== '';
-  const synchronizedFiles = [...exactFiles].sort();
-  const hostFilePaths = [
-    'commands/specnav-verification.md',
-    'commands/specnav-verify.md',
-    'scripts/claude-verification-adapter.js',
-    'scripts/plugin-runtime.js',
-    'specnav-stage.json',
-    '.claude-plugin/plugin.json'
-  ];
   const manifest = {
     schema: 'specnav.verification.kernel-sync.v1',
     generated: true,
     generated_at: new Date().toISOString(),
+    host: 'claude-code',
     source_repository: 'specnav-codex-plugin',
     source_commit: sourceCommit,
     source_dirty: sourceDirty,
     source_path: 'plugins/specnav-verification',
-    source_tree_digest: treeDigest(SOURCE_PLUGIN, synchronizedFiles),
+    source_tree_digest: plan.sourceTreeDigest,
     kernel: {
       name: kernel.metadata.name,
       version: kernel.metadata.version,
@@ -494,11 +334,19 @@ function buildStagedPlugin(stagingPlugin) {
       contract_version: kernel.metadata.contractVersion,
       contract_digest: kernel.metadata.contractDigest
     },
-    files: synchronizedFiles,
-    transformed_files: transformedFiles.sort((left, right) => (
-      left.target.localeCompare(right.target)
-    )),
-    host_files: hostFilePaths.map((target) => ({
+    files: [...plan.exactFiles],
+    transformed_files: plan.transformedFiles.map((entry) => ({
+      source: entry.source,
+      target: entry.target,
+      transform: entry.transform,
+      source_sha256: entry.source_sha256,
+      target_sha256: entry.target_sha256
+    })),
+    host_files: plan.hostFiles.map((entry) => ({
+      target: entry.target,
+      target_sha256: entry.target_sha256
+    })),
+    host_runtime_files: plan.hostRuntimeFiles.map((target) => ({
       target,
       target_sha256: sha256(path.join(stagingPlugin, target))
     }))
@@ -539,10 +387,6 @@ function synchronize(targetRepository, options = {}) {
     copyFile(
       path.join(target.targetPlugin, 'scripts/plugin-runtime.js'),
       path.join(stagingPlugin, 'scripts/plugin-runtime.js')
-    );
-    copyFile(
-      path.join(target.targetPlugin, '.claude-plugin/plugin.json'),
-      path.join(stagingPlugin, '.claude-plugin/plugin.json')
     );
     const manifest = buildStagedPlugin(stagingPlugin);
     if (typeof options.beforeCommit === 'function') {

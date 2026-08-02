@@ -6,8 +6,14 @@ const {
 const {
   compareCompatibilitySnapshots
 } = require('./cross-host-drift');
+const {
+  createHostSyncPlan,
+  transformSkill
+} = require('./host-provenance');
 
 module.exports = {
   createCompatibilitySnapshot,
-  compareCompatibilitySnapshots
+  compareCompatibilitySnapshots,
+  createHostSyncPlan,
+  transformSkill
 };

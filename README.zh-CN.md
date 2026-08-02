@@ -14,6 +14,7 @@
   <a href="#流程如何运行">流程</a> ·
   <a href="#阶段图谱">阶段图谱</a> ·
   <a href="#skills">Skills</a> ·
+  <a href="docs/verification-2-0.zh-CN.md">Verification 2.0</a> ·
   <a href="docs/design.md">设计文档</a>
 </p>
 
@@ -31,7 +32,7 @@ SpecNav 把 AI 编码从开放式聊天，收束成有文件证据、有阶段�
 | `specnav-requirements` | 仓库发现、foundation specs、需求问需 |
 | `specnav-prototype` | 可运行原型、原型验证、开发交接 |
 | `specnav-development` | Scope lock、垂直切片、fix/debug/break-loop 流程 |
-| `specnav-verification` | 六域验证和面向审阅人的 HTML 报告 |
+| `specnav-verification` | 完整 Verification 2.0 运行时、批准用例、六域证据、修复循环、门禁和审阅报告 |
 | `specnav-operations` | 发布准备、部署、回滚、监控、归档动作 |
 | `specnav-codegraph` | CodeGraph policy、context、claims、impact 和证据产物 |
 
@@ -214,7 +215,12 @@ claims-map.json
 README，以及极小范围的低风险样式或配置调整，会进入 `light` lane
 并加载 `$specnav-light-change`。
 
-Light lane 仍然要求目标项目已有 OpenSpec、存在明确 active change、使用标准 checkbox `tasks.md`、写出有边界的 `scope.json`，并提供机器可检查的 `acceptance.json`。它可以跳过 foundation spec 阻塞、可运行原型批准、逐切片评审包和完整六域验证。验证范围降为 static + unit。
+Light lane 仍然要求目标项目已有 OpenSpec、存在明确 active change、使用标准
+checkbox `tasks.md`、写出有边界的 `scope.json`，并提供机器可检查的
+`acceptance.json`。它只能缩减低风险小改动的需求、原型和逐切片开发文档，
+不能降低测试门禁：所有 lane 都必须进入 Verification 2.0，批准不可变用例
+快照，执行全部六个测试域，校验证据完整性和新鲜度，完成 repair/regression，
+并使用同一个 release decision。
 
 如果请求触碰 auth、permission、billing、security、database、API route、deployment、package manifest、SpecNav 内部文件，或者预计超过三个路径、实际超过十个生产文件，必须升级回 standard 或 full lane。如果预计修改路径不清楚，SpecNav 需要先问清范围，再创建 light 制品。
 
@@ -236,7 +242,22 @@ Standard lane 开发必须先存在一个已跟踪批准版 `tasks.md` 的 Git `
 
 如果任何 foundation spec 缺失，SpecNav 会阻塞功能问需，并引导用户创建或修复缺失 spec。这里没有 fallback。
 
-## 验证模型
+## Verification 2.0
+
+Verification 2.0 没有 light、compact、部分测试域、人工改绿或 fallback
+路径。先运行 `specnav-verification-runtime-status`；只有得到明确批准后才能
+运行 `specnav-verification-runtime-setup`；然后使用 `specnav-verify-plan`
+并执行全部六个测试域。
+
+锁定运行时会把 Playwright、Midscene、AJV、托管 Chromium 和 FFmpeg 安装到
+`~/.specnav/runtime/verification/<version>/`，不会修改业务仓库。Midscene
+可以辅助 UI 交互，但 PASS 必须由确定性断言或明确人工 signoff 决定。HTML
+报告只是审阅投影，机器权威仍是 `verify/aggregate-report.json`。
+
+完整的安装、doctor、批准、执行、修复、报告、迁移、宿主和排障说明见
+[docs/verification-2-0.zh-CN.md](docs/verification-2-0.zh-CN.md)。
+
+验证阶段包含六个独立测试域：
 
 验证阶段包含六个独立测试域：
 
@@ -327,6 +348,9 @@ specnav-break-loop
 Verification:
 
 ```text
+specnav-verification
+specnav-verification-runtime-status
+specnav-verification-runtime-setup
 specnav-verify-plan
 specnav-verify-facticity
 specnav-verify-static
@@ -401,6 +425,7 @@ bash tests/run-operations-archive-action-fixtures.sh
 ## 参考
 
 - [系统设计](docs/design.md)
+- [Verification 2.0 指南](docs/verification-2-0.zh-CN.md)
 - [视觉风格记忆](docs/memory/specnav-visual-style.md)
 - [Codex marketplace manifest](.agents/plugins/marketplace.json)
 - [4K 透明 logo](docs/assets/specnav-logo-4k.png)

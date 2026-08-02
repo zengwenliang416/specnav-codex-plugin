@@ -2,28 +2,44 @@
 
 ## Verdict
 
-blocked
+approved
 
 ## Missing Requirements
 
-- Replace this scaffold with direct review.
+- None.
 
 ## Extra Behavior
 
-- None recorded.
+- None outside the additive scope correction.
 
 ## Misunderstood Requirements
 
-- None recorded.
+- None.
 
 ## Cannot Verify From Diff
 
-- Replace this scaffold with direct review.
+- A remote GitHub Actions run remains unavailable until the local checkpoint
+  commits are pushed. Static workflow assertions, immutable lock checks, and
+  local execution cover the contract without claiming remote CI evidence.
 
 ## Acceptance Assertions Verified
 
-- Replace this scaffold with the acceptance.json assertion ids verified during review (e.g. A1, A3), or "not applicable" when the change has no acceptance.json.
+- `AC-37`: all three host adapters execute through the cross-host runner and
+  root `npm test`.
+- `AC-39`: host wrappers remain invocation-only and architecture checks reject
+  duplicated Kernel behavior.
+- `AC-40`: exact synchronized trees, host digests, stable blockers, clean
+  source provenance, and immutable downstream commits are enforced.
 
 ## Required Fixes
 
-- Replace this scaffold with direct review.
+- None.
+
+## Review Evidence
+
+- Independent read-only review checked the Task 031 specification, acceptance
+  mapping, scope correction, current diff, and locked Codex/Claude/CodeFree-O
+  commits.
+- The reviewer executed `bash tests/run-verification-v2-cross-host.sh` and
+  `npm test`; both passed.
+- Final verdict: `APPROVED`.

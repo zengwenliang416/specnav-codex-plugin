@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const localMetadata = require('../metadata');
 const { canonicalValue } = require('../cases/canonical');
+const { createHostSyncPlan } = require('./host-provenance');
 
 const SNAPSHOT_SCHEMA = 'specnav.verification.compatibility-snapshot.v1';
 const LOCAL_PLUGIN_ROOT = path.resolve(__dirname, '../..');
@@ -359,6 +360,22 @@ function loadManifest(pluginRoot, manifestFile, host) {
   });
 }
 
+function provenanceHost(host, manifest) {
+  const supported = new Set(['claude-code', 'codefree-o']);
+  if (supported.has(host)) return host;
+  if (supported.has(manifest?.host)) return manifest.host;
+  const transforms = Array.isArray(manifest?.transformed_files)
+    ? manifest.transformed_files.map((entry) => entry?.transform)
+    : [];
+  if (transforms.some((value) => value === 'claude-code-skill-v1')) {
+    return 'claude-code';
+  }
+  if (transforms.some((value) => value === 'codefree-o-skill-v1')) {
+    return 'codefree-o';
+  }
+  return null;
+}
+
 function manifestSnapshot(options) {
   const {
     pluginRoot,
@@ -379,6 +396,10 @@ function manifestSnapshot(options) {
     throw new Error(`verification-drift:host-files-required:${host}`);
   }
   const manifest = loadedManifest.value;
+  const trustedHost = provenanceHost(host, manifest);
+  const trustedPlan = trustedHost
+    ? createHostSyncPlan(trustedHost)
+    : null;
   const manifestPathBlocker = (
     `verification-drift:manifest-path-unsafe:${host}`
   );
@@ -406,6 +427,12 @@ function manifestSnapshot(options) {
       ))
       .sort()
     : [];
+  if (
+    trustedPlan
+    && canonicalJson(files) !== canonicalJson(trustedPlan.exactFiles)
+  ) {
+    blockers.push('manifest-file-set-mismatch');
+  }
   const missing = files.filter((relative) => (
     !fs.existsSync(
       confinedFile(pluginRoot, relative, manifestPathBlocker).file
@@ -413,44 +440,98 @@ function manifestSnapshot(options) {
   ));
   if (missing.length > 0) {
     blockers.push('manifest-file-missing');
-  } else if (typeof manifest.source_tree_digest === 'string') {
+  } else {
     const records = files.map((relative) => (
       `${relative}\0${fileDigest(pluginRoot, relative)}`
     ));
     if (sha256(records.join('\n')) !== manifest.source_tree_digest) {
       blockers.push('manifest-tree-mismatch');
+    } else if (
+      trustedPlan
+      && (
+      manifest.source_tree_digest !== trustedPlan.sourceTreeDigest
+      || files.some((relative) => (
+        fileDigest(pluginRoot, relative)
+          !== fileDigest(LOCAL_PLUGIN_ROOT, relative)
+      ))
+      )
+    ) {
+      blockers.push('manifest-exact-file-provenance-mismatch');
     }
   }
-  const hostFiles = Array.isArray(manifest.host_files)
+  const hostFileEntries = Array.isArray(manifest.host_files)
     ? manifest.host_files
+    : [];
+  const hostFiles = hostFileEntries
       .map((entry) => entry?.target)
       .filter((entry) => typeof entry === 'string')
       .map((relative) => (
         safeRelativePath(relative, manifestPathBlocker)
       ))
-      .sort()
+      .sort();
+  const trustedHostFiles = trustedPlan
+    ? trustedPlan.hostFiles.map((entry) => entry.target).sort()
+    : hostFiles;
+  if (
+    trustedPlan
+    && canonicalJson(hostFiles) !== canonicalJson(trustedHostFiles)
+  ) {
+    blockers.push('manifest-host-files-mismatch');
+  }
+  const hostRuntimeEntries = Array.isArray(manifest.host_runtime_files)
+    ? manifest.host_runtime_files
     : [];
+  const hostRuntimeFiles = hostRuntimeEntries
+    .map((entry) => entry?.target)
+    .filter((entry) => typeof entry === 'string')
+    .map((relative) => (
+      safeRelativePath(relative, manifestPathBlocker)
+    ))
+    .sort();
+  const trustedHostRuntimeFiles = trustedPlan
+    ? [...trustedPlan.hostRuntimeFiles].sort()
+    : hostRuntimeFiles;
+  if (
+    trustedPlan
+    &&
+    canonicalJson(hostRuntimeFiles)
+      !== canonicalJson(trustedHostRuntimeFiles)
+  ) {
+    blockers.push('manifest-host-runtime-files-mismatch');
+  }
   const required = [...new Set(requiredHostFiles)]
     .map((relative) => (
       safeRelativePath(relative, manifestPathBlocker)
     ))
     .sort();
-  if (canonicalJson(hostFiles) !== canonicalJson(required)) {
+  if (
+    canonicalJson([...hostFiles, ...hostRuntimeFiles].sort())
+      !== canonicalJson(required)
+  ) {
     blockers.push('manifest-host-files-mismatch');
   }
-  const transformedFiles = Array.isArray(manifest.transformed_files)
+  const transformedEntries = Array.isArray(manifest.transformed_files)
     ? manifest.transformed_files
+    : [];
+  const transformedFiles = transformedEntries
       .map((entry) => entry?.target)
       .filter((entry) => typeof entry === 'string')
       .map((relative) => (
         safeRelativePath(relative, manifestPathBlocker)
       ))
-      .sort()
-    : [];
-  for (const entry of [
-    ...(manifest.transformed_files || []),
-    ...(manifest.host_files || [])
-  ]) {
+      .sort();
+  const trustedTransformedFiles = trustedPlan
+    ? trustedPlan.transformedFiles.map((entry) => entry.target).sort()
+    : transformedFiles;
+  if (
+    trustedPlan
+    &&
+    canonicalJson(transformedFiles)
+      !== canonicalJson(trustedTransformedFiles)
+  ) {
+    blockers.push('manifest-transformed-files-mismatch');
+  }
+  for (const entry of transformedEntries) {
     if (
       !entry
       || typeof entry.target !== 'string'
@@ -469,12 +550,88 @@ function manifestSnapshot(options) {
       || sha256(fs.readFileSync(target)) !== entry.target_sha256
     ) {
       blockers.push('manifest-host-file-digest-mismatch');
+      continue;
+    }
+    const trusted = trustedPlan
+      ? trustedPlan.transformedFiles.find((candidate) => (
+          candidate.target === entry.target
+        ))
+      : null;
+    if (
+      trusted
+      && (
+        entry.source !== trusted.source
+        || entry.transform !== trusted.transform
+        || entry.source_sha256 !== trusted.source_sha256
+        || entry.target_sha256 !== trusted.target_sha256
+        || !fs.readFileSync(target).equals(trusted.content)
+      )
+    ) {
+      blockers.push('manifest-transformed-file-provenance-mismatch');
+    }
+  }
+  for (const entry of hostFileEntries) {
+    if (
+      !entry
+      || typeof entry.target !== 'string'
+      || typeof entry.target_sha256 !== 'string'
+    ) {
+      blockers.push('manifest-host-file-digest-mismatch');
+      continue;
+    }
+    const target = confinedFile(
+      pluginRoot,
+      entry.target,
+      manifestPathBlocker
+    ).file;
+    if (
+      !fs.existsSync(target)
+      || sha256(fs.readFileSync(target)) !== entry.target_sha256
+    ) {
+      blockers.push('manifest-host-file-digest-mismatch');
+      continue;
+    }
+    const trusted = trustedPlan
+      ? trustedPlan.hostFiles.find((candidate) => (
+          candidate.target === entry.target
+        ))
+      : null;
+    if (
+      trusted
+      && (
+        entry.target_sha256 !== trusted.target_sha256
+        || !fs.readFileSync(target).equals(trusted.content)
+      )
+    ) {
+      blockers.push('manifest-host-file-provenance-mismatch');
+    }
+  }
+  for (const entry of hostRuntimeEntries) {
+    if (
+      !entry
+      || typeof entry.target !== 'string'
+      || typeof entry.target_sha256 !== 'string'
+    ) {
+      blockers.push('manifest-host-runtime-file-digest-mismatch');
+      continue;
+    }
+    const target = confinedFile(
+      pluginRoot,
+      entry.target,
+      manifestPathBlocker
+    ).file;
+    if (
+      !fs.existsSync(target)
+      || sha256(fs.readFileSync(target)) !== entry.target_sha256
+    ) {
+      blockers.push('manifest-host-runtime-file-digest-mismatch');
     }
   }
   const expectedFiles = [...new Set([
     ...files,
     ...transformedFiles,
     ...hostFiles,
+    ...hostRuntimeFiles,
     loadedManifest.relative
   ])].sort();
   const actualFiles = listFiles(pluginRoot);

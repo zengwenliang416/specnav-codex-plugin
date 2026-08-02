@@ -3,6 +3,7 @@
   "goal": "User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation.",
   "must_read": [
     "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/brief.md",
+    "openspec/changes/verification-2-0/development/tasks/032-docs-install-runtime/scope-correction.json",
     "openspec/specs/ui-design/design.md",
     "openspec/specs/system-architecture/design.md",
     "openspec/specs/frontend-backend-data-flow/design.md",
@@ -20,7 +21,10 @@
     "README.md",
     "README.zh-CN.md",
     "docs/**",
-    "plugins/specnav-verification/skills/**"
+    "plugins/specnav-verification/skills/**",
+    "tests/run-readme-contract.sh",
+    "tests/run-verification-v2-docs.sh",
+    "tests/verification-v2/docs/**"
   ],
   "test_paths": [
     "bash tests/run-readme-contract.sh",

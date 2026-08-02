@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.task-scope-correction.v1",
+  "task_id": "032-docs-install-runtime",
+  "recorded_at": "2026-08-02T17:20:00Z",
+  "reason": "The task packet requires executable README and Verification 2.0 documentation contracts, but its allowed file list omitted both required runner paths and the focused documentation test. Without those files, matched English/Chinese semantics and the no-light policy cannot be verified by TDD.",
+  "added_allowed_files": [
+    "tests/run-readme-contract.sh",
+    "tests/run-verification-v2-docs.sh",
+    "tests/verification-v2/docs/**"
+  ],
+  "constraints": [
+    "Documentation tests validate source facts and bilingual semantic alignment without treating prose as runtime evidence.",
+    "Verification 2.0 remains full six-domain verification for every lane.",
+    "Runtime installation remains explicit, locked, side-by-side, and outside the business repository.",
+    "No fallback, manual green, partial-domain gate, global package, system browser, or business-project dependency mutation is documented."
+  ],
+  "acceptance_assertions": [
+    "AC-04",
+    "AC-05",
+    "AC-08",
+    "AC-09",
+    "AC-10"
+  ]
+}

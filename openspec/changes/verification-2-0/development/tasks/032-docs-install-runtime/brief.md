@@ -40,6 +40,11 @@ listed verification commands and must preserve all earlier artifacts.
 - README.zh-CN.md
 - docs/**
 - plugins/specnav-verification/skills/**
+- tests/run-readme-contract.sh
+- tests/run-verification-v2-docs.sh
+- tests/verification-v2/docs/**
+
+The additive test scope is recorded in `scope-correction.json`.
 
 ## Interfaces / Seams
 

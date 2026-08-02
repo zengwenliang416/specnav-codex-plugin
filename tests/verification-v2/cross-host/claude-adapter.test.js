@@ -139,6 +139,7 @@ function expectedSynchronizedFiles(manifest) {
     ...manifest.files,
     ...manifest.transformed_files.map((entry) => entry.target),
     ...manifest.host_files.map((entry) => entry.target),
+    ...manifest.host_runtime_files.map((entry) => entry.target),
     'specnav-kernel-source.json'
   ].sort();
 }
@@ -454,7 +455,7 @@ test('Claude synchronizer commits one validated tree with host provenance', (t) 
   const manifest = synchronize(root);
 
   assert.equal(fs.existsSync(path.join(pluginRoot, 'local-marker.txt')), false);
-  assert.ok(manifest.host_files.length >= 6);
+  assert.ok(manifest.host_files.length >= 5);
   for (const entry of manifest.host_files) {
     assert.match(entry.target_sha256, /^[a-f0-9]{64}$/);
     assert.equal(
@@ -463,6 +464,10 @@ test('Claude synchronizer commits one validated tree with host provenance', (t) 
       entry.target
     );
   }
+  assert.deepEqual(
+    manifest.host_runtime_files.map((entry) => entry.target),
+    ['scripts/plugin-runtime.js']
+  );
   assert.deepEqual(
     JSON.parse(
       fs.readFileSync(

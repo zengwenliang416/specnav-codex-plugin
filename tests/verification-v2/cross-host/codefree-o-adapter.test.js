@@ -118,6 +118,7 @@ function expectedSynchronizedFiles(manifest) {
     ...manifest.files,
     ...manifest.transformed_files.map((entry) => entry.target),
     ...manifest.host_files.map((entry) => entry.target),
+    ...manifest.host_runtime_files.map((entry) => entry.target),
     'specnav-kernel-source.json'
   ].sort();
 }

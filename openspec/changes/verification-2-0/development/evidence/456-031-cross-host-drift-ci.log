@@ -1,0 +1,394 @@
+# command: node --test tests/verification-v2/cross-host/drift-detector.test.js # task031-provenance-bypass-red
+# exit_status: 1
+# duration_ms: 2544
+
+## stdout
+TAP version 13
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+not ok 1 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 374.158708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "id": "verification-drift:kernel-source-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": {
+          "expected": "7143ae5b92265699f0c9ddac62fe2217cafe450ead737b51898c3d74c6bdbf0b",
+          "actual": "564a56b5cf456234bda3baad6c49ffd3092fe82c85bed0695ce6ab6dc4fb0f4c"
+        }
+      },
+      {
+        "id": "verification-drift:kernel-source-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": {
+          "expected": "7143ae5b92265699f0c9ddac62fe2217cafe450ead737b51898c3d74c6bdbf0b",
+          "actual": "564a56b5cf456234bda3baad6c49ffd3092fe82c85bed0695ce6ab6dc4fb0f4c"
+        }
+      },
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-file-set-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-file-set-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-host-files-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-host-files-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-host-runtime-files-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-host-runtime-files-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      }
+    ]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:133:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 2 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 169.1455
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+ok 3 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 203.551125
+  type: 'test'
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 4 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 117.982792
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 5 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 133.922292
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 6 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 118.526292
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 7 - generated report model drift is release blocking
+  ---
+  duration_ms: 119.18725
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 8 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 108.88075
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 9 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.98025
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 10 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.291916
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+not ok 11 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 89.937125
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:291:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /verification-drift:manifest-path-unsafe:unsafe/. Input:
+    
+    'Error: verification-provenance:unsupported-host:unsafe'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'verification-provenance:unsupported-host:unsafe'
+  stack: |-
+    transformSkill (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:91:9)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:287:33
+    Array.map (<anonymous>)
+    createHostSyncPlan (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:282:46)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:382:23)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:639:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:68:17)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:311:11
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:310:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: manifest cannot omit required host-owned files or hide rogue files
+not ok 12 - manifest cannot omit required host-owned files or hide rogue files
+  ---
+  duration_ms: 100.161708
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:321:1'
+  failureType: 'testCodeFailure'
+  error: 'verification-provenance:unsupported-host:drifted'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    transformSkill (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:91:9)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:287:33
+    Array.map (<anonymous>)
+    createHostSyncPlan (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:282:46)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:382:23)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:639:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:68:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:340:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: host-owned wrapper bytes must match synchronized provenance
+not ok 13 - host-owned wrapper bytes must match synchronized provenance
+  ---
+  duration_ms: 139.685375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:353:1'
+  failureType: 'testCodeFailure'
+  error: 'verification-provenance:unsupported-host:drifted'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    transformSkill (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:91:9)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:287:33
+    Array.map (<anonymous>)
+    createHostSyncPlan (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:282:46)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:382:23)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:639:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:68:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:366:55)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: updated manifest hash cannot hide transformed skill tampering
+not ok 14 - updated manifest hash cannot hide transformed skill tampering
+  ---
+  duration_ms: 167.910625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:378:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:kernel-source-mismatch:claude-code',
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:claude-code',
+    +   'verification-drift:manifest-file-set-mismatch:claude-code',
+    +   'verification-drift:manifest-host-files-mismatch:claude-code',
+    +   'verification-drift:manifest-host-runtime-files-mismatch:claude-code',
+        'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+  actual:
+    0: 'verification-drift:kernel-source-mismatch:claude-code'
+    1: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+    2: 'verification-drift:manifest-file-set-mismatch:claude-code'
+    3: 'verification-drift:manifest-host-files-mismatch:claude-code'
+    4: 'verification-drift:manifest-host-runtime-files-mismatch:claude-code'
+    5: 'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:399:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: updated manifest hash cannot hide generated host-file tampering
+not ok 15 - updated manifest hash cannot hide generated host-file tampering
+  ---
+  duration_ms: 137.869375
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:404:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:kernel-source-mismatch:claude-code',
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:claude-code',
+    +   'verification-drift:manifest-file-set-mismatch:claude-code',
+        'verification-drift:manifest-host-file-provenance-mismatch:claude-code',
+    +   'verification-drift:manifest-host-files-mismatch:claude-code',
+    +   'verification-drift:manifest-host-runtime-files-mismatch:claude-code'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+  actual:
+    0: 'verification-drift:kernel-source-mismatch:claude-code'
+    1: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+    2: 'verification-drift:manifest-file-set-mismatch:claude-code'
+    3: 'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+    4: 'verification-drift:manifest-host-files-mismatch:claude-code'
+    5: 'verification-drift:manifest-host-runtime-files-mismatch:claude-code'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:425:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: updated tree digest cannot hide exact canonical file tampering
+not ok 16 - updated tree digest cannot hide exact canonical file tampering
+  ---
+  duration_ms: 131.857625
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:430:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:kernel-source-mismatch:claude-code',
+        'verification-drift:manifest-exact-file-provenance-mismatch:claude-code',
+    +   'verification-drift:manifest-file-set-mismatch:claude-code',
+    +   'verification-drift:manifest-host-files-mismatch:claude-code',
+    +   'verification-drift:manifest-host-runtime-files-mismatch:claude-code'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+  actual:
+    0: 'verification-drift:kernel-source-mismatch:claude-code'
+    1: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+    2: 'verification-drift:manifest-file-set-mismatch:claude-code'
+    3: 'verification-drift:manifest-host-files-mismatch:claude-code'
+    4: 'verification-drift:manifest-host-runtime-files-mismatch:claude-code'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:456:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing manifest returns a stable drift blocker
+ok 17 - missing manifest returns a stable drift blocker
+  ---
+  duration_ms: 74.600708
+  type: 'test'
+  ...
+# Subtest: host manifests must bind to a clean locked source commit
+not ok 18 - host manifests must bind to a clean locked source commit
+  ---
+  duration_ms: 76.465833
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:474:1'
+  failureType: 'testCodeFailure'
+  error: 'verification-provenance:unsupported-host:drifted'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    transformSkill (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:91:9)
+    /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:287:33
+    Array.map (<anonymous>)
+    createHostSyncPlan (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/host-provenance.js:282:46)
+    manifestSnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:382:23)
+    Object.createCompatibilitySnapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/plugins/specnav-verification/kernel/governance/compatibility-snapshot.js:639:20)
+    snapshot (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:68:17)
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:488:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+  ...
+# Subtest: candidate JavaScript is treated as data and never executed
+ok 19 - candidate JavaScript is treated as data and never executed
+  ---
+  duration_ms: 86.976625
+  type: 'test'
+  ...
+# Subtest: CI pins both downstream host repositories to immutable commits
+ok 20 - CI pins both downstream host repositories to immutable commits
+  ---
+  duration_ms: 0.735416
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 12
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2490.445083
+
+
+## stderr
+(empty)
