@@ -2,9 +2,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT/tests/verification-v2/command-result-protocol.sh"
 VERIFY="$ROOT/plugins/specnav-verification"
 TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
+trap 'status=$?; specnav_verification_emit_assertions "$status"; rm -rf "$TMP_DIR"; exit "$status"' EXIT
 
 cd "$ROOT"
 

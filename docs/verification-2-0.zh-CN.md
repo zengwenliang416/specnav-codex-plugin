@@ -6,9 +6,10 @@ Verification 2.0 是开发完成后的强制证据门禁。它没有 light、com
 部分测试域、人工改绿或 fallback 路径。简单需求可以使用更轻量的需求或
 开发制品包，但发布或归档前仍然必须执行完整批准用例和全部六个测试域。
 
-HTML is not the source of truth（HTML 不是事实源）。机器权威是
-`verify/aggregate-report.json`，它由批准用例、attempt、reading、证据
-完整性、新鲜度和 DecisionEngine 推导。
+HTML is not the source of truth（HTML 不是事实源）。机器权威是经过校验的
+`verify/v2/report-model.json` 与 release/archive gate decision。
+`verify/v2/report-render-manifest.json` 会把该模型绑定到三页 HTML 的准确
+hash 和 size。
 
 ```mermaid
 flowchart LR
@@ -113,11 +114,27 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" describe
 
 node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate \
   --project "$PWD" \
+  --change "<change-id>" \
+  --reviewer-id "<authenticated-human-id>" \
   --json
 ```
 
 最终 green 必须同时满足 `verification_mode: "full"`、全部六域、最新的
 内容寻址证据和 `fallback_used: false`。
+
+执行已批准快照：
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" execute \
+  --project "$PWD" \
+  --change "<change-id>" \
+  --reviewer-id "<authenticated-human-id>" \
+  --json
+```
+
+批准的 Playwright 或 Midscene case 使用项目场景代码时，增加
+`--scenario-registry "<project-relative-module>"`。注册表只会在准确
+snapshot approval 通过后加载，并且必须位于项目目录内且不能经过符号链接。
 
 ## Midscene Oracle 边界
 
@@ -150,6 +167,18 @@ FAIL
 指纹未变化的 retry 后通过应标记为 `FLAKY`，不能写成普通 PASS。代码修复后
 通过应标记为 `PASS AFTER FIX`。反复无进展时进入 break-loop governance。
 
+Retry 保留在原 run 内。Retest 与 regression 必须创建新 run，并通过
+`origin_run_id`、`parent_run_id`、`parent_attempt_id`、`failure_id`
+绑定冻结的失败历史。执行时必须明确传入 lineage：
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+  execute --project "$PWD" --change "<change-id>" \
+  --reviewer-id "<human-id>" --case "<case-id>" \
+  --attempt-kind retest --parent-attempt "<failed-attempt-id>" \
+  --failure-id "<failure-id>" --json
+```
+
 ## 报告
 
 机器门禁计算完成后，`specnav-html-report` 生成：
@@ -168,6 +197,19 @@ verify/reports/test-case-results.html
 
 green、red、blocked、running、canceled、stale、flaky 和 pass-after-fix
 使用同一导航和信息层级。修改 HTML 不能改变 DecisionEngine 结果。
+
+finalize 还会写入：
+
+```text
+verify/v2/gate-input.json
+verify/v2/release-gate.json
+verify/v2/archive-gate.json
+verify/v2/report-model.json
+verify/v2/report-render-manifest.json
+```
+
+release proof 会重新计算 gate 与 report identity，并按 manifest 校验每一页
+HTML。
 
 ## V1 迁移
 
@@ -210,9 +252,10 @@ host wrapper 和 source provenance。CI 只检测 drift，不会改写下游仓�
 | `verification-runtime:*` | runtime、lock、package、browser、permission、receipt 或 provider 问题 | 运行 `specnav-verification-runtime-status`，执行返回的准确 action |
 | `verify:user-test-cases-unapproved` | 当前不可变用例快照没有有效人工批准 | 审阅并批准当前 snapshot |
 | `verification-evidence:*` | evidence 缺失、过期、篡改、未绑定或无效 | 修复证据生产并重跑受影响用例 |
+| `verification-production:*` | approval、assertion protocol、scenario registry、执行持久化或报告推导问题 | 修复准确制品或已批准 runner 输入，不得绕过执行 |
+| `verification-release:*` | gate、report model、render manifest、host receipt 或发布绑定不一致 | 从当前 V2 facts 重新生成并重跑 release proof |
 | `verification-drift:*` | host Kernel、schema、manifest、source、fixture、blocker 或 report drift | 从干净 canonical commit 同步、提交 host、更新 immutable lock |
 | `verification-migration:*` | V1 request、runtime、integrity、transformation 或 rollback 问题 | 修复 migration request 或 runtime，不得制造 V2 green |
 
 阻塞时必须报告准确 blocker id 和 artifact。不得改走 fallback、减少测试域、
 手工修改绿色 JSON、相信 agent prose 或把 HTML 当作 gate。
-

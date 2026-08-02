@@ -2,8 +2,11 @@
 
 ## User Test Case Scope
 
-- Snapshot ID: `snapshot-8275e3773c02cde842362ae2`
-- Snapshot SHA-256: `8275e3773c02cde842362ae26936912e0f6fc57c2431eda9b50279053125b44b`
+- Snapshot ID: `snapshot-5be49e798f6b94dcb4822a60`
+- Snapshot SHA-256: `5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a`
+- Supersedes unapproved snapshots: `snapshot-8275e3773c02cde842362ae2`,
+  `snapshot-a18241eab51c454d56b5f369`,
+  `snapshot-a29c5899fe1661cd2ad9991b`
 - Requirements: 7
 - Acceptance assertions: 40
 - Test cases: 8
@@ -61,7 +64,8 @@ change invalidates approval and requires a new snapshot.
   accessible, responsive, print-safe, escaped, and secret-safe presentation.
 - Runner: `bash tests/run-verification-v2-report-browser.sh`
 - Acceptance: `AC-08` through `AC-12`, `AC-29`, `AC-30`, `AC-38`
-- Evidence: real Playwright assertions, screenshots, and traces.
+- Evidence: real Playwright test results, screenshots, command output, and the
+  browser artifact manifest.
 
 ### CASE-06: V1-To-V2 Migration
 

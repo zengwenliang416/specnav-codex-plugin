@@ -37,4 +37,7 @@ Audit claims against current repository evidence.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Confirm every facticity assertion is present in the approved V2 snapshot and
+  has a terminal reading with content-addressed evidence.
+- Run the V2 adapter `validate` action. V1 `verify-domains.js` output cannot
+  satisfy the Verification 2.0 gate.

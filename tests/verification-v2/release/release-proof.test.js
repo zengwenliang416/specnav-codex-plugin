@@ -64,6 +64,23 @@ function reidentifyGate(gate) {
   };
 }
 
+function reidentifyReportModel(model) {
+  const semantic = {
+    change_id: model.change_id,
+    verdict: model.verdict,
+    sources: model.sources,
+    summary: model.summary,
+    catalog: model.catalog,
+    results: model.results,
+    blockers: model.blockers,
+    warnings: model.warnings
+  };
+  return {
+    ...model,
+    id: `report-model-${sha256(canonicalJson(semantic))}`
+  };
+}
+
 function writeJson(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
@@ -288,6 +305,8 @@ function makeProject() {
   const input = gateInput();
   const releaseGate = createGate(schemaRegistry, input, 'release');
   const archiveGate = createGate(schemaRegistry, input, 'archive');
+  const aggregate = createSixDomainAggregator({ schemaRegistry })
+    .aggregate(input.aggregation_request);
   const rawBytes = Buffer.from(
     `${input.aggregation_request.evidence.map((entry) => JSON.stringify(entry)).join('\n')}\n`
   );
@@ -323,7 +342,7 @@ function makeProject() {
     decided_at: '2026-08-02T00:00:01Z'
   };
   const readingIds = input.aggregation_request.readings.map((entry) => entry.id);
-  const model = reportModel('green', {
+  const model = reidentifyReportModel(reportModel('green', {
     id: 'report-model-release',
     change_id: CHANGE,
     sources: {
@@ -335,7 +354,7 @@ function makeProject() {
       evidence_ids: input.aggregation_request.evidence.map((entry) => entry.id),
       evidence_index_version: input.evidence_index_version,
       evidence_index_digest: evidenceIndex.source_digest,
-      aggregate_id: releaseGate.id.replace(/^gate-/, 'verification-aggregate-'),
+      aggregate_id: aggregate.id,
       gate_decision_id: releaseGate.id
     },
     summary: {
@@ -343,7 +362,7 @@ function makeProject() {
       runtime_version: input.runtime_version,
       kernel_version: input.kernel_version
     }
-  });
+  }));
 
   writeJson(path.join(verifyV2, 'case-snapshot.json'), snapshot);
   writeJson(path.join(verifyV2, 'case-approval.json'), approval);
@@ -363,13 +382,28 @@ function makeProject() {
     scanned_at: '2026-08-02T00:00:00Z',
     fallback_used: false
   });
+  const renderedReports = [];
   for (const name of [
     'overview.html',
     'test-case-catalog.html',
     'test-case-results.html'
   ]) {
-    fs.writeFileSync(path.join(reportsDir, name), `<!doctype html><title>${name}</title>\n`);
+    const bytes = Buffer.from(`<!doctype html><title>${name}</title>\n`);
+    fs.writeFileSync(path.join(reportsDir, name), bytes);
+    renderedReports.push({
+      name,
+      path: `verify/reports/${name}`,
+      sha256: sha256(bytes),
+      size: bytes.length
+    });
   }
+  writeJson(path.join(verifyV2, 'report-render-manifest.json'), {
+    schema: 'specnav.verification.report-render-manifest.v1',
+    change_id: CHANGE,
+    report_model_id: model.id,
+    generated_at: '2026-08-02T00:00:05Z',
+    reports: renderedReports
+  });
 
   const releaseBindings = {
     change_id: CHANGE,
@@ -573,6 +607,31 @@ test('all three HTML projections are required but never used as verdict authorit
   assert.equal(result.ok, false);
   assert.equal(
     blockers(result).has('verification-release:report-missing:test-case-results.html'),
+    true
+  );
+  assert.equal(
+    blockers(result).has('verification-release:report-render-mismatch:overview.html'),
+    true
+  );
+});
+
+test('report render manifest is required and must bind the current report model', () => {
+  const fixture = makeProject();
+  const manifestPath = path.join(
+    fixture.verifyV2,
+    'report-render-manifest.json'
+  );
+  const manifest = readJson(manifestPath);
+  manifest.report_model_id = 'report-model-forged';
+  writeJson(manifestPath, manifest);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has(
+      'verification-release:report-render-manifest-invalid'
+    ),
     true
   );
 });

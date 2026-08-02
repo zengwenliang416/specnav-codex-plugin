@@ -17,10 +17,11 @@ case ids.
 
 ## Workflow
 
-1. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json`; a `stale-verify-report` blocker means re-run is required.
-2. Require `verify/case-snapshot.json`, `verify/case-approval.json`,
-   `verify/current-requirements.json`, `verify/current-acceptance.json`,
-   `verify/case-freshness.json`, `verify/rerun-policy.json`, and
+1. Run the V2 adapter `validate` action against the exact approved snapshot.
+   Freshness or open-failure blockers mean rerun planning is required.
+2. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
+   `verify/v2/requirements-source.json`, `verify/v2/acceptance-source.json`,
+   `verify/v2/freshness.json`, `verify/rerun-policy.json`, and
    `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
    valid `codegraph/impact-report.json`.
 3. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json`.
@@ -36,9 +37,35 @@ case ids.
 6. Task 020 executes the returned cases as retest or regression attempts.
    Preserve prior failed attempts and evidence; do not edit the stale marker
    by hand.
-7. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate
-   --json` only after every `required_cases` member has fresh terminal
-   evidence and the required six-domain readings.
+7. Execute every returned case through the V2 `execute` action using the
+   required retry, retest, or regression identity. Never overwrite the first
+   failed attempt.
+   - Retry uses the original run and requires unchanged fingerprints:
+
+     ```bash
+     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+       execute --project "$PWD" --change "<change-id>" \
+       --reviewer-id "<authenticated-human-id>" --case "<case-id>" \
+       --attempt-kind retry --parent-attempt "<failed-attempt-id>" --json
+     ```
+
+   - Retest and regression each create a new run with immutable parent lineage:
+
+     ```bash
+     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+       execute --project "$PWD" --change "<change-id>" \
+       --reviewer-id "<authenticated-human-id>" --case "<case-id>" \
+       --attempt-kind retest --parent-attempt "<failed-attempt-id>" \
+       --failure-id "<failure-id>" --json
+
+     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+       execute --project "$PWD" --change "<change-id>" \
+       --reviewer-id "<authenticated-human-id>" --case "<regression-case-id>" \
+       --attempt-kind regression --parent-attempt "<retest-attempt-id>" \
+       --failure-id "<failure-id>" --json
+     ```
+8. Run the V2 `finalize` action only after every `required_cases` member has
+   fresh terminal evidence and all required six-domain readings.
 
 ## Required Outputs
 
@@ -46,8 +73,8 @@ case ids.
   `repaired_cases`, `stale_cases`, `reasons_by_case`, CodeGraph refs, and
   policy refs.
 - Fresh attempts and readings for every required case.
-- Refreshed domain reports derived from those case readings.
-- A recomputed `verify/aggregate-report.json` with `stale` false once the marker is cleared.
+- Refreshed aggregate, release/archive gates, report model, and render manifest
+  derived from those case readings.
 
 ## Stop Conditions
 
@@ -61,4 +88,6 @@ case ids.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` and confirm `stale-verify-report` is gone and the aggregate is green.
+- Run V2 `validate`, then `finalize`, and confirm freshness is `fresh`, open
+  failure and repair IDs are empty, both gates pass, and `fallback_used` is
+  `false`.

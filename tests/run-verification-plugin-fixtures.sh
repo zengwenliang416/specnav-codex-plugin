@@ -790,6 +790,7 @@ if [[ "${SPECNAV_FIXTURE_LIBRARY_ONLY:-0}" == "1" ]]; then
 fi
 
 test -f "$VERIFY/scripts/verify-domains.js"
+test -f "$VERIFY/scripts/verification-v2-run.js"
 test -f "$VERIFY/skills/specnav-verify-plan/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-facticity/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-static/SKILL.md"
@@ -798,12 +799,12 @@ test -f "$VERIFY/skills/specnav-verify-redteam/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-e2e/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-sensory/SKILL.md"
 test -f "$VERIFY/skills/specnav-verify-rerun/SKILL.md"
-jq -e '.contracts.verification == "scripts/verify-domains.js"' "$VERIFY/specnav-stage.json" >/dev/null
+jq -e '.contracts.verification == "scripts/verification-v2-run.js"' "$VERIFY/specnav-stage.json" >/dev/null
+jq -e '.contracts.verification_v1_legacy == "scripts/verify-domains.js"' "$VERIFY/specnav-stage.json" >/dev/null
 jq -e 'has("planned_contracts") | not' "$VERIFY/specnav-stage.json" >/dev/null
-# Codex has no commands/ layer (commands are exposed via interface.defaultPrompt +
-# skills). The verify-domains aggregate invocation is wired in the html-report
-# skill; the development handoff is enforced inside verify-domains.js itself.
-grep -Fq 'node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json' "$VERIFY/skills/specnav-html-report/SKILL.md"
+# V2 report generation is routed through the production finalizer. The V1
+# renderer remains available only through explicit legacy host actions.
+grep -Fq 'codex-verification-adapter.js" finalize' "$VERIFY/skills/specnav-html-report/SKILL.md"
 
 PROJECT="$TMP_DIR/verify-project"
 write_base_project "$PROJECT"

@@ -11,6 +11,7 @@ const {
 
 const REQUEST_FIELDS = Object.freeze([
   'classification_result',
+  'runs',
   'attempts',
   'attempt_facts',
   'repair_link',
@@ -348,7 +349,7 @@ function validateFacts(
       {
         failure_id: packet.id,
         change_id: packet.change_id,
-        run_id: packet.run_id,
+        run_id: attempt?.run_id,
         case_id: attempt?.case_id,
         attempt_id: attempt?.id
       }
@@ -421,10 +422,119 @@ function validateFacts(
   return { blockers, factsByAttempt };
 }
 
+function validateRuns(schemaRegistry, packet, rawRuns, attempts) {
+  if (!Array.isArray(rawRuns) || rawRuns.length === 0) {
+    return {
+      blockers: [blocker(
+        'verification-repair-loop:run-history-missing',
+        packet.id
+      )],
+      runsById: new Map()
+    };
+  }
+  const blockers = [];
+  const runsById = new Map();
+  for (const rawRun of rawRuns) {
+    const run = schemaValue(schemaRegistry, 'verification-run', rawRun);
+    if (!run) {
+      blockers.push(blocker(
+        'verification-repair-loop:run-schema-invalid',
+        rawRun?.id || 'verification-run'
+      ));
+      continue;
+    }
+    if (runsById.has(run.id)) {
+      blockers.push(blocker(
+        'verification-repair-loop:run-duplicate',
+        run.id
+      ));
+      continue;
+    }
+    runsById.set(run.id, run);
+  }
+  const initialRun = runsById.get(packet.run_id);
+  if (
+    !initialRun
+    || initialRun.change_id !== packet.change_id
+    || initialRun.kind !== 'initial'
+    || initialRun.origin_run_id !== null
+    || initialRun.parent_run_id !== null
+    || initialRun.parent_attempt_id !== null
+    || initialRun.failure_id !== null
+  ) {
+    blockers.push(blocker(
+      'verification-repair-loop:initial-run-binding-mismatch',
+      packet.run_id
+    ));
+  }
+
+  const attemptsById = new Map(attempts.map((attempt) => [
+    attempt.id,
+    attempt
+  ]));
+  for (const attempt of attempts) {
+    const run = runsById.get(attempt.run_id);
+    if (!run) {
+      blockers.push(blocker(
+        'verification-repair-loop:attempt-run-missing',
+        attempt.id
+      ));
+      continue;
+    }
+    if (
+      attempt.change_id !== run.change_id
+      || attempt.case_snapshot_hash !== run.case_snapshot_hash
+      || attempt.code_sha !== run.code_sha
+      || attempt.test_sha !== run.test_sha
+      || attempt.environment_hash !== run.environment_hash
+      || attempt.runtime_version !== run.runtime_version
+      || attempt.kernel_version !== run.kernel_version
+      || !run.case_ids.includes(attempt.case_id)
+    ) {
+      blockers.push(blocker(
+        'verification-repair-loop:attempt-run-identity-mismatch',
+        attempt.id
+      ));
+      continue;
+    }
+    if (attempt.kind === 'initial' || attempt.kind === 'retry') {
+      if (
+        run.id !== packet.run_id
+        || run.kind !== 'initial'
+      ) {
+        blockers.push(blocker(
+          'verification-repair-loop:attempt-run-lineage-mismatch',
+          attempt.id
+        ));
+      }
+      continue;
+    }
+    const parentAttempt = attempt.parent_attempt_id
+      ? attemptsById.get(attempt.parent_attempt_id)
+      : null;
+    if (
+      run.kind !== attempt.kind
+      || run.id === packet.run_id
+      || run.origin_run_id !== packet.run_id
+      || run.failure_id !== packet.id
+      || !parentAttempt
+      || run.parent_run_id !== parentAttempt.run_id
+      || run.parent_attempt_id !== parentAttempt.id
+    ) {
+      blockers.push(blocker(
+        'verification-repair-loop:attempt-run-lineage-mismatch',
+        attempt.id
+      ));
+    }
+  }
+  return { blockers, runsById };
+}
+
 function validateAttempts(
   schemaRegistry,
   trustVerifier,
   packet,
+  rawRuns,
   rawAttempts,
   rawFacts
 ) {
@@ -443,8 +553,6 @@ function validateAttempts(
   const blockers = [];
   const attempts = [];
   const ids = new Set();
-  const sequences = new Set();
-  let previousSequence = 0;
   for (const rawAttempt of rawAttempts) {
     const attempt = schemaValue(schemaRegistry, 'attempt', rawAttempt);
     if (!attempt) {
@@ -460,23 +568,9 @@ function validateAttempts(
         attempt.id
       ));
     }
-    if (
-      sequences.has(attempt.sequence)
-      || attempt.sequence <= previousSequence
-    ) {
-      blockers.push(blocker(
-        'verification-repair-loop:attempt-sequence-invalid',
-        attempt.id
-      ));
-    }
     ids.add(attempt.id);
-    sequences.add(attempt.sequence);
-    previousSequence = attempt.sequence;
     attempts.push(attempt);
-    if (
-      attempt.change_id !== packet.change_id
-      || attempt.run_id !== packet.run_id
-    ) {
+    if (attempt.change_id !== packet.change_id) {
       blockers.push(blocker(
         'verification-repair-loop:attempt-context-mismatch',
         attempt.id
@@ -515,11 +609,14 @@ function validateAttempts(
       attempt.parent_attempt_id
       && (
         !byId.has(attempt.parent_attempt_id)
-        || byId.get(attempt.parent_attempt_id).sequence >= attempt.sequence
+        || attempt.sequence
+          !== byId.get(attempt.parent_attempt_id).sequence + 1
       )
     ) {
       blockers.push(blocker(
-        'verification-repair-loop:attempt-parent-missing',
+        byId.has(attempt.parent_attempt_id)
+          ? 'verification-repair-loop:attempt-sequence-invalid'
+          : 'verification-repair-loop:attempt-parent-missing',
         attempt.id
       ));
     }
@@ -531,6 +628,13 @@ function validateAttempts(
       blockers.push(...retryResult.blockers);
     }
   }
+  const runResult = validateRuns(
+    schemaRegistry,
+    packet,
+    rawRuns,
+    attempts
+  );
+  blockers.push(...runResult.blockers);
 
   const factResult = validateFacts(
     schemaRegistry,
@@ -946,6 +1050,7 @@ function createRepairLoopStateMachine(options = {}) {
       schemaRegistry,
       trustVerifier,
       packet,
+      request.runs,
       request.attempts,
       request.attempt_facts
     );

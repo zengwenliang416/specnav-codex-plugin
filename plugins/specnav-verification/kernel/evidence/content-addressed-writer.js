@@ -86,19 +86,14 @@ function writeContentAddressed(options) {
     fs.fsyncSync(fd);
     fs.closeSync(fd);
     fd = undefined;
+    fs.copyFileSync(tempFile, objectFile, fs.constants.COPYFILE_EXCL);
+    const published = fs.openSync(objectFile, 'r');
     try {
-      fs.linkSync(tempFile, objectFile);
-      fs.unlinkSync(tempFile);
-    } catch (error) {
-      if (
-        error?.code === 'EEXIST'
-        && existingObjectMatches(objectFile, bytes, digest)
-      ) {
-        fs.rmSync(tempFile, { force: true });
-      } else {
-        throw error;
-      }
+      fs.fsyncSync(published);
+    } finally {
+      fs.closeSync(published);
     }
+    fs.unlinkSync(tempFile);
     return {
       ok: true,
       reused: false,
@@ -115,6 +110,30 @@ function writeContentAddressed(options) {
     }
     try {
       fs.rmSync(tempFile, { force: true });
+    } catch {
+      // Do not replace the primary blocker with cleanup detail.
+    }
+    if (
+      error?.code === 'EEXIST'
+      && existingObjectMatches(objectFile, bytes, digest)
+    ) {
+      return {
+        ok: true,
+        reused: true,
+        path: relativePath,
+        sha256: digest,
+        size: bytes.length,
+        blockers: []
+      };
+    }
+    try {
+      if (
+        error?.code !== 'EEXIST'
+        && fs.existsSync(objectFile)
+        && !existingObjectMatches(objectFile, bytes, digest)
+      ) {
+        fs.rmSync(objectFile, { force: true });
+      }
     } catch {
       // Do not replace the primary blocker with cleanup detail.
     }

@@ -40,4 +40,7 @@ Validate complete user and business flows across boundaries.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Confirm each E2E flow is an approved command, Playwright, or Midscene case
+  with deterministic assertions and bound runtime artifacts.
+- Run the V2 adapter `validate` action. V1 `verify-domains.js` output cannot
+  satisfy the Verification 2.0 gate.

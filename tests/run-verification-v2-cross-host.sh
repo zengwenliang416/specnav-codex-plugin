@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$ROOT/tests/verification-v2/command-result-protocol.sh"
+trap 'status=$?; specnav_verification_emit_assertions "$status"; exit "$status"' EXIT
 
 export SPECNAV_CLAUDE_ROOT="${SPECNAV_CLAUDE_ROOT:-$ROOT/../specnav-claude-plugin}"
 export SPECNAV_CODEFREE_O_ROOT="${SPECNAV_CODEFREE_O_ROOT:-$ROOT/../specnav-codefree-o-plugin}"

@@ -200,6 +200,39 @@ test('evidence and gate schemas directly enforce AC-31 and AC-35 fields', () => 
   }
 });
 
+test('verification run schema requires immutable repair lineage fields', () => {
+  const runtimeStatus = readyRuntime();
+  const registry = createSchemaRegistry({
+    runtimeStatus,
+    runtimeRoot: runtimeStatus.runtime_root,
+    schemaRoot: SCHEMA_ROOT
+  });
+  const run = JSON.parse(fs.readFileSync(
+    path.join(FIXTURE_ROOT, 'positive/verification-run.json'),
+    'utf8'
+  ));
+
+  for (const field of [
+    'kind',
+    'origin_run_id',
+    'parent_run_id',
+    'parent_attempt_id',
+    'failure_id'
+  ]) {
+    const invalid = structuredClone(run);
+    delete invalid[field];
+    const result = registry.validate('verification-run', invalid, {
+      artifactPath: `memory://verification-run/missing-${field}`
+    });
+    assert.equal(result.ok, false, field);
+    assert.equal(
+      result.blockers.some((entry) => entry.field === `/${field}`),
+      true,
+      JSON.stringify(result.blockers)
+    );
+  }
+});
+
 test('failure packet schema supports only the constrained unclassified open state', () => {
   const runtimeStatus = readyRuntime();
   const registry = createSchemaRegistry({

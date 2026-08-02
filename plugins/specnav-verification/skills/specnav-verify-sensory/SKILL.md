@@ -36,4 +36,7 @@ Run evidence-backed human review that automation cannot fully cover.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Confirm sensory findings map to approved assertions and either deterministic
+  evidence or an allowed exact human signoff.
+- Run the V2 adapter `validate` action. V1 `verify-domains.js` output cannot
+  satisfy the Verification 2.0 gate.

@@ -252,12 +252,11 @@ Verification 2.0 没有 light、compact、部分测试域、人工改绿或 fall
 锁定运行时会把 Playwright、Midscene、AJV、托管 Chromium 和 FFmpeg 安装到
 `~/.specnav/runtime/verification/<version>/`，不会修改业务仓库。Midscene
 可以辅助 UI 交互，但 PASS 必须由确定性断言或明确人工 signoff 决定。HTML
-报告只是审阅投影，机器权威仍是 `verify/aggregate-report.json`。
+报告只是审阅投影；机器权威由 `verify/v2/report-model.json`、release/archive
+gate decision 和 `verify/v2/report-render-manifest.json` 共同绑定。
 
 完整的安装、doctor、批准、执行、修复、报告、迁移、宿主和排障说明见
 [docs/verification-2-0.zh-CN.md](docs/verification-2-0.zh-CN.md)。
-
-验证阶段包含六个独立测试域：
 
 验证阶段包含六个独立测试域：
 

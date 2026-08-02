@@ -1,8 +1,8 @@
 {
   "schema": "specnav.verification.case-snapshot.v1",
-  "id": "snapshot-5be49e798f6b94dcb4822a60",
+  "id": "snapshot-a18241eab51c454d56b5f369",
   "change_id": "verification-2-0",
-  "snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+  "snapshot_hash": "a18241eab51c454d56b5f369472bcb5b4d9ed52c58530c8a697f573b2f3c393e",
   "cases": [
     {
       "schema": "specnav.verification.test-case.v1",
@@ -155,11 +155,7 @@
           "tests/run-verification-v2-case-approval.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -333,11 +329,7 @@
           "tests/run-verification-v2-codex.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -520,11 +512,7 @@
           "tests/run-smoke.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -699,11 +687,7 @@
           "tests/run-verification-v2-repair-loop.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -883,11 +867,8 @@
         ],
         "cwd": ".",
         "env_keys": [
-          "PATH",
           "SPECNAV_REPORT_ARTIFACT_ROOT",
-          "SPECNAV_REPORT_ARTIFACT_RUN_ID",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+          "SPECNAV_REPORT_ARTIFACT_RUN_ID"
         ],
         "requires_midscene": false
       },
@@ -1060,11 +1041,7 @@
           "tests/run-verification-v2-migration.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -1237,11 +1214,7 @@
           "tests/run-verification-v2-cross-host.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {
@@ -1417,11 +1390,7 @@
           "tests/run-verification-v2-release.sh"
         ],
         "cwd": ".",
-        "env_keys": [
-          "PATH",
-          "SPECNAV_VERIFICATION_ASSERTION_IDS",
-          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
-        ],
+        "env_keys": [],
         "requires_midscene": false
       },
       "evidence_policy": {

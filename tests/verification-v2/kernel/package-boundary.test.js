@@ -22,7 +22,15 @@ test('kernel package exposes one versioned public entry and schema-only subpath'
     './schemas/*': './schemas/*',
     './package.json': './package.json'
   });
-  assert.deepEqual(manifest.files, ['assets/', 'kernel/', 'schemas/']);
+  assert.deepEqual(manifest.files, [
+    'assets/',
+    'kernel/',
+    'schemas/',
+    'scripts/verification-v2-run.js'
+  ]);
+  assert.deepEqual(manifest.bin, {
+    'specnav-verification-execute': './scripts/verification-v2-run.js'
+  });
 });
 
 test('public entry exposes immutable metadata and explicit service contracts', () => {
@@ -34,6 +42,9 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.match(kernel.metadata.contractDigest, /^[a-f0-9]{64}$/);
   assert.equal(Object.isFrozen(kernel.metadata), true);
   assert.equal(typeof kernel.createEvidenceStore, 'function');
+  assert.equal(typeof kernel.createVerificationArtifactStore, 'function');
+  assert.equal(typeof kernel.createProductionVerificationRunner, 'function');
+  assert.equal(typeof kernel.createVerificationArtifactPipeline, 'function');
   assert.equal(typeof kernel.createEvidenceIntegrityChecker, 'function');
   assert.equal(typeof kernel.createV1ToV2Migrator, 'function');
   assert.equal(typeof kernel.createSecretRedactor, 'function');

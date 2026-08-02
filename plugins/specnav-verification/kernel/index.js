@@ -58,6 +58,16 @@ const {
   createCompatibilitySnapshot,
   compareCompatibilitySnapshots
 } = require('./governance');
+const {
+  createVerificationArtifactStore
+} = require('./persistence');
+const {
+  PROTOCOL_ENV,
+  REPORT_FILES,
+  REGISTERED_PRODUCERS,
+  createVerificationArtifactPipeline,
+  createProductionVerificationRunner
+} = require('./pipeline');
 
 module.exports = Object.freeze({
   createCaseCatalogRenderer,
@@ -93,6 +103,12 @@ module.exports = Object.freeze({
   validateGateDecisionIdentity,
   createCompatibilitySnapshot,
   compareCompatibilitySnapshots,
+  createVerificationArtifactStore,
+  PROTOCOL_ENV,
+  REPORT_FILES,
+  REGISTERED_PRODUCERS,
+  createVerificationArtifactPipeline,
+  createProductionVerificationRunner,
   renderSafeHtmlAttribute,
   renderSafeHtmlText
 });

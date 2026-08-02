@@ -216,6 +216,7 @@ function retestAttempt(baseAttempt = initialAttempt(), overrides = {}) {
   return {
     ...baseAttempt,
     id: 'attempt-retest',
+    run_id: 'run-retest',
     kind: 'retest',
     sequence: 2,
     parent_attempt_id: baseAttempt.id,
@@ -229,10 +230,12 @@ function retestAttempt(baseAttempt = initialAttempt(), overrides = {}) {
 }
 
 function regressionAttempt(baseAttempt = retestAttempt(), overrides = {}) {
+  const caseId = overrides.case_id || 'case-baseline';
   return {
     ...baseAttempt,
     id: 'attempt-regression-baseline',
-    case_id: 'case-baseline',
+    run_id: overrides.run_id || `run-regression-${caseId}`,
+    case_id: caseId,
     kind: 'regression',
     sequence: 3,
     parent_attempt_id: baseAttempt.id,
@@ -242,6 +245,49 @@ function regressionAttempt(baseAttempt = retestAttempt(), overrides = {}) {
     exit_status: 0,
     ...overrides
   };
+}
+
+function runHistory(attempts, packet) {
+  const base = fixture('verification-run');
+  const attemptsById = new Map(attempts.map((attempt) => [
+    attempt.id,
+    attempt
+  ]));
+  const groups = new Map();
+  for (const attempt of attempts) {
+    const values = groups.get(attempt.run_id) || [];
+    values.push(attempt);
+    groups.set(attempt.run_id, values);
+  }
+  return [...groups.entries()].map(([runId, runAttempts]) => {
+    const first = runAttempts[0];
+    const latest = runAttempts.at(-1);
+    const parent = latest.parent_attempt_id
+      ? attemptsById.get(latest.parent_attempt_id)
+      : null;
+    const linked = ['retest', 'regression'].includes(latest.kind);
+    return {
+      ...base,
+      id: runId,
+      change_id: first.change_id,
+      case_snapshot_hash: first.case_snapshot_hash,
+      case_ids: [...new Set(runAttempts.map((entry) => entry.case_id))],
+      code_sha: first.code_sha,
+      test_sha: first.test_sha,
+      environment_hash: first.environment_hash,
+      runtime_version: first.runtime_version,
+      kernel_version: first.kernel_version,
+      status: latest.status,
+      created_at: first.started_at,
+      started_at: first.started_at,
+      completed_at: latest.completed_at,
+      kind: linked ? latest.kind : 'initial',
+      origin_run_id: linked ? packet.run_id : null,
+      parent_run_id: linked ? parent?.run_id || null : null,
+      parent_attempt_id: linked ? parent?.id || null : null,
+      failure_id: linked ? packet.id : null
+    };
+  });
 }
 
 function rerunPlan(overrides = {}) {
@@ -340,10 +386,12 @@ function request(options = {}) {
         fact,
         {
           ...baseBindings,
+          run_id: attempts[index].run_id,
           case_id: attempts[index].case_id,
           attempt_id: attempts[index].id
         }
       )),
+    runs: options.runs || runHistory(attempts, packet),
     ...(options.repairLink === undefined && options.repairEnvelope === undefined
       ? {}
       : {
@@ -762,9 +810,17 @@ test('rejects forged repair rerun and attempt-fact envelopes', () => {
 test('rejects foreign run or change attempts and unplanned regression cases', () => {
   const first = initialAttempt();
   const retest = retestAttempt(first);
-  for (const mutation of [
-    { run_id: 'run-foreign' },
-    { change_id: 'change-foreign' }
+  const packet = classificationResult().packet;
+  const trustedRuns = runHistory([first, retest], packet);
+  for (const [mutation, expectedBlocker] of [
+    [
+      { run_id: 'run-foreign' },
+      'verification-repair-loop:attempt-run-missing'
+    ],
+    [
+      { change_id: 'change-foreign' },
+      'verification-repair-loop:attempt-context-mismatch'
+    ]
   ]) {
     const foreignRetest = {
       ...retest,
@@ -776,13 +832,14 @@ test('rejects foreign run or change attempts and unplanned regression cases', ()
         attemptFact(first),
         attemptFact(foreignRetest)
       ],
+      runs: trustedRuns,
       repairLink: completedRepair(first),
       rerunPlan: rerunPlan()
     }));
     assert.equal(result.ok, false);
     assert.equal(
       blockerIds(result).includes(
-        'verification-repair-loop:attempt-context-mismatch'
+        expectedBlocker
       ),
       true,
       JSON.stringify(result.blockers)

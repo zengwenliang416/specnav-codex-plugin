@@ -6,28 +6,31 @@
     {
       "surface": "runtime",
       "required": true,
-      "status": "blocked",
-      "command": "<decision-required>",
+      "status": "pass",
+      "command": "node plugins/specnav-verification/scripts/verification-runtime.js doctor --version 2.0.0-alpha.1 --project \"$PWD\" --json",
       "evidence_refs": [
-        "<decision-required>"
+        "verify/v2/runtime-status.json"
       ],
       "notes": [
-        "Start the application or service under the target runtime and capture the command, output, logs, or health check."
+        "Verification Runtime 2.0.0-alpha.1 is ready.",
+        "Playwright 1.62.1, Midscene 1.10.8, AJV 8.20.0, AJV Formats 3.0.1, Chromium, Chromium Headless Shell, and FFmpeg passed lock, load, permission, and probe checks.",
+        "The Midscene provider is not configured, but none of the current approved-candidate cases requires the Midscene runner. No fallback is allowed or used."
       ]
     },
     {
       "surface": "browser",
       "required": true,
       "status": "blocked",
-      "command": "<decision-required>",
+      "command": "bash tests/run-verification-v2-report-browser.sh",
       "evidence_refs": [
-        "<decision-required>"
+        "verify/v2/case-snapshot.json"
       ],
       "artifact_refs": [
-        "<decision-required>"
+        "pending:user-approval-required-before-browser-case-execution"
       ],
       "notes": [
-        "Use Playwright or equivalent browser automation for the approved user test cases. Screenshot or trace artifacts are required."
+        "Browser binaries passed runtime probes.",
+        "Execution of the approved user-facing report case is blocked until a human approves the exact case snapshot."
       ]
     }
   ]

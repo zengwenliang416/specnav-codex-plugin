@@ -37,15 +37,28 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
    runtime installation.
 4. Use `specnav-verify-plan` to create the complete case contract and obtain
    explicit approval for the current immutable case snapshot.
-5. Execute all six domain skills: `specnav-verify-facticity`,
+5. Use all six domain skills to audit the approved case coverage:
+   `specnav-verify-facticity`,
    `specnav-verify-static`, `specnav-verify-unit`,
    `specnav-verify-redteam`, `specnav-verify-e2e`, and
    `specnav-verify-sensory`.
-6. On failure, preserve the failed attempt and use `specnav-verify-rerun`.
+6. Execute the approved snapshot through the V2 adapter:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" execute \
+     --project "$PWD" \
+     --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --json
+   ```
+
+   Add `--scenario-registry "<project-relative-module>"` only when an approved
+   Playwright or Midscene case requires project-owned scenario code.
+7. On failure, preserve the failed attempt and use `specnav-verify-rerun`.
    Repair, retest, and regression evidence must remain separate.
-7. Re-run adapter validation. Do not infer green from agent prose, a
+8. Re-run adapter validation. Do not infer green from agent prose, a
    screenshot path, or HTML.
-8. Generate stakeholder reports only through `specnav-html-report` after the
+9. Generate stakeholder reports only through `specnav-html-report` after the
    machine gate passes.
 
 ## Required Outputs
@@ -53,10 +66,11 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
 - Approved case snapshot and signoff.
 - Six-domain readings and content-addressed evidence.
 - Runtime, freshness, integrity, repair-loop, and gate artifacts.
+- `verify/v2/report-model.json` as the machine report authority.
+- `verify/v2/report-render-manifest.json` binding all rendered pages.
 - `verify/reports/overview.html`.
 - `verify/reports/test-case-catalog.html`.
 - `verify/reports/test-case-results.html`.
-- `verify/aggregate-report.json` as the machine authority.
 
 ## Stop Conditions
 
@@ -69,5 +83,5 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate --project "$PWD" --json`.
+- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate --project "$PWD" --change "<change-id>" --reviewer-id "<authenticated-human-id>" --json`.
 - Confirm the adapter reports `verification_mode: "full"`, all six required domains, `fallback_used: false`, and exact blockers or machine-authoritative artifacts.

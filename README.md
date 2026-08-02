@@ -275,13 +275,12 @@ The locked runtime installs Playwright, Midscene, AJV, managed Chromium, and
 FFmpeg under `~/.specnav/runtime/verification/<version>/`, outside the
 business repository. Midscene may assist UI interaction, but deterministic
 assertions or explicit human signoff decide PASS. HTML reports are review
-projections; `verify/aggregate-report.json` remains the machine authority.
+projections; `verify/v2/report-model.json`, the release/archive gate decisions,
+and `verify/v2/report-render-manifest.json` are the machine-bound authority.
 
 The complete installation, doctor, approval, execution, repair, report,
 migration, host, and troubleshooting guide is
 [docs/verification-2-0.md](docs/verification-2-0.md).
-
-The verification stage has six independent test domains:
 
 The verification stage has six independent test domains:
 

@@ -1,0 +1,125 @@
+{
+  "schema": "specnav.verification.runtime-status.v1",
+  "ok": true,
+  "readiness": "ready",
+  "runtime_version": "2.0.0-alpha.1",
+  "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1",
+  "requires_midscene": false,
+  "checks": {
+    "lock": {
+      "ok": true,
+      "schema": "specnav.verification.runtime-lock.v1",
+      "runtime_version": "2.0.0-alpha.1"
+    },
+    "runtime": {
+      "ok": true,
+      "root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1"
+    },
+    "receipt": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/install-receipt.json"
+    },
+    "permissions": [
+      {
+        "kind": "runtime-base",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification",
+        "ok": true
+      },
+      {
+        "kind": "runtime-root",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1",
+        "ok": true
+      }
+    ],
+    "packages": [
+      {
+        "name": "@playwright/test",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "playwright",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "@midscene/web",
+        "expected_version": "1.10.8",
+        "installed_version": "1.10.8",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv",
+        "expected_version": "8.20.0",
+        "installed_version": "8.20.0",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv-formats",
+        "expected_version": "3.0.1",
+        "installed_version": "3.0.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      }
+    ],
+    "browsers": [
+      {
+        "name": "chromium",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "chromium-headless-shell",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "ffmpeg",
+        "revision": "1011",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      }
+    ],
+    "provider": {
+      "configured": false,
+      "model_name_present": false,
+      "model_family_present": false,
+      "credential_source": null,
+      "base_url_present": false,
+      "configuration_fingerprint": null,
+      "secret_values_exposed": false
+    }
+  },
+  "blockers": [],
+  "warnings": [
+    {
+      "id": "verification-runtime:midscene-provider-not-configured",
+      "artifact": "environment",
+      "detail": null
+    }
+  ],
+  "actions": [],
+  "fallback_used": false
+}

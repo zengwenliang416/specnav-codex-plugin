@@ -8,9 +8,10 @@ fallback path. A simple change may use a lighter requirements or development
 packet, but it still runs the complete approved case contract and all six test
 domains before release or archive.
 
-HTML is not the source of truth. The machine authority is
-`verify/aggregate-report.json`, derived from approved cases, attempts,
-readings, evidence integrity, freshness, and the DecisionEngine.
+HTML is not the source of truth. The machine authority is the validated
+`verify/v2/report-model.json` plus the release and archive gate decisions.
+`verify/v2/report-render-manifest.json` binds that model to the exact hashes
+and sizes of the three HTML projections.
 
 ```mermaid
 flowchart LR
@@ -118,11 +119,28 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" describe
 
 node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate \
   --project "$PWD" \
+  --change "<change-id>" \
+  --reviewer-id "<authenticated-human-id>" \
   --json
 ```
 
 A final green result requires `verification_mode: "full"`, all six domains,
 fresh content-addressed evidence, and `fallback_used: false`.
+
+Execute the approved snapshot:
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" execute \
+  --project "$PWD" \
+  --change "<change-id>" \
+  --reviewer-id "<authenticated-human-id>" \
+  --json
+```
+
+Add `--scenario-registry "<project-relative-module>"` when an approved
+Playwright or Midscene case uses project-owned scenario code. The registry is
+loaded only after exact snapshot approval passes and must resolve inside the
+project without symbolic links.
 
 ## Midscene Oracle Boundary
 
@@ -159,6 +177,18 @@ An unchanged-fingerprint retry that later passes is `FLAKY`, not plain PASS.
 A repaired case that passes is `PASS AFTER FIX`. Repeated no-progress attempts
 route to break-loop governance.
 
+Retry stays inside the original run. Retest and regression always create new
+runs whose `origin_run_id`, `parent_run_id`, `parent_attempt_id`, and
+`failure_id` bind them to the frozen failure history. Execute them explicitly:
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+  execute --project "$PWD" --change "<change-id>" \
+  --reviewer-id "<human-id>" --case "<case-id>" \
+  --attempt-kind retest --parent-attempt "<failed-attempt-id>" \
+  --failure-id "<failure-id>" --json
+```
+
 ## Reports
 
 After the machine gate is computed, `specnav-html-report` renders:
@@ -177,7 +207,18 @@ verify/reports/test-case-results.html
 
 Reports render green, red, blocked, running, canceled, stale, flaky, and
 pass-after-fix states with the same navigation. Editing HTML cannot change the
-DecisionEngine result.
+DecisionEngine result. Finalization also writes:
+
+```text
+verify/v2/gate-input.json
+verify/v2/release-gate.json
+verify/v2/archive-gate.json
+verify/v2/report-model.json
+verify/v2/report-render-manifest.json
+```
+
+The release proof recomputes gate and report identities and verifies every
+rendered page against the manifest.
 
 ## V1 Migration
 
@@ -221,9 +262,10 @@ it never rewrites downstream repositories.
 | `verification-runtime:*` | Runtime, lock, package, browser, permission, receipt, or provider problem | Run `specnav-verification-runtime-status`; use the exact returned action |
 | `verify:user-test-cases-unapproved` | Current immutable case snapshot has no valid human approval | Review and approve the current snapshot |
 | `verification-evidence:*` | Missing, stale, tampered, unbound, or invalid evidence | Repair evidence production and rerun affected cases |
+| `verification-production:*` | Approval, assertion protocol, scenario registry, execution persistence, or report derivation problem | Repair the exact artifact or approved runner input; do not bypass execution |
+| `verification-release:*` | Gate, report model, render manifest, host receipt, or release binding mismatch | Regenerate from current V2 facts and rerun release proof |
 | `verification-drift:*` | Host Kernel, schema, manifest, source, fixture, blocker, or report drift | Synchronize from a clean canonical commit, commit the host, and update the immutable lock |
 | `verification-migration:*` | V1 request, runtime, integrity, transformation, or rollback problem | Repair the migration request or runtime; do not manufacture V2 green |
 
 When blocked, report the exact blocker id and artifact. Do not continue with a
 fallback, fewer domains, an edited green JSON file, agent prose, or HTML.
-

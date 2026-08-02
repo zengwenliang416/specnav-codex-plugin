@@ -17,15 +17,36 @@ Generate the stakeholder-facing HTML report for the six-domain verification resu
 
 1. Confirm `SPECNAV_VERIFICATION_ROOT` is resolved.
 2. Confirm an active OpenSpec change exists.
-3. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json`.
+3. Validate the exact approved V2 snapshot:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate \
+     --project "$PWD" \
+     --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --json
+   ```
+
 4. If validation reports blockers, report the exact blockers and stop.
-5. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" aggregate --json --render` (md/html renders are only written with `--render`).
+5. Run the V2 finalizer:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" finalize \
+     --project "$PWD" \
+     --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --json
+   ```
+
 6. Report the generated HTML paths and the aggregate verdict.
 
 ## Required Outputs
 
-- `openspec/changes/<change>/verify/aggregate-report.html`
-- `openspec/changes/<change>/verify-report.html`
+- `openspec/changes/<change>/verify/v2/report-model.json`
+- `openspec/changes/<change>/verify/v2/report-render-manifest.json`
+- `openspec/changes/<change>/verify/reports/overview.html`
+- `openspec/changes/<change>/verify/reports/test-case-catalog.html`
+- `openspec/changes/<change>/verify/reports/test-case-results.html`
 - The aggregate verdict, blockers, and stale status in chat.
 
 ## Stop Conditions
@@ -36,5 +57,7 @@ Generate the stakeholder-facing HTML report for the six-domain verification resu
 
 ## Validation
 
-- The aggregate JSON must include `html_report`.
-- The generated HTML files must exist and be non-empty.
+- The report model ID must be valid and bind the current aggregate, release
+  gate, readings, evidence index, runtime, and Kernel.
+- The render manifest must bind all three exact HTML paths, hashes, sizes, and
+  the current report model ID.

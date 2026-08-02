@@ -108,6 +108,17 @@ function addRetryBindings(graph, attemptLookup, collector) {
       attempt.parent_attempt_id
       && !attemptLookup.has(attempt.parent_attempt_id)
     ) {
+      const externalParentIsBoundByRun = (
+        ['retest', 'regression'].includes(attempt.kind)
+        && graph.run.kind === attempt.kind
+        && graph.run.parent_attempt_id === attempt.parent_attempt_id
+        && typeof graph.run.parent_run_id === 'string'
+        && graph.run.parent_run_id !== graph.run.id
+        && typeof graph.run.origin_run_id === 'string'
+        && graph.run.origin_run_id !== graph.run.id
+        && typeof graph.run.failure_id === 'string'
+      );
+      if (externalParentIsBoundByRun) continue;
       collector.add(makeBlocker({
         entityType: 'attempt',
         entityId: attempt.id,

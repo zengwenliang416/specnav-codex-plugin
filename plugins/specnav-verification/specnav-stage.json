@@ -28,7 +28,8 @@
     "specnav-html-report"
   ],
   "contracts": {
-    "verification": "scripts/verify-domains.js",
+    "verification": "scripts/verification-v2-run.js",
+    "verification_v1_legacy": "scripts/verify-domains.js",
     "codex_adapter": "scripts/codex-verification-adapter.js",
     "kernel": "kernel/index.js"
   },

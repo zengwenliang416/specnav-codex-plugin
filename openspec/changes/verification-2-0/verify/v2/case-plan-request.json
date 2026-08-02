@@ -102,7 +102,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-01-A01", "CASE-01-A02", "CASE-01-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-case-approval.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-case-approval.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -136,7 +136,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-02-A01", "CASE-02-A02", "CASE-02-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-codex.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-codex.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -170,7 +170,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-03-A01", "CASE-03-A02", "CASE-03-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-smoke.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-smoke.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -204,7 +204,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-04-A01", "CASE-04-A02", "CASE-04-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-repair-loop.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-repair-loop.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -226,8 +226,8 @@
         {"id": "CASE-05-STEP-03", "action": "Inject markup and provider-secret fixtures and manually alter rendered HTML.", "expected": "Content is escaped and redacted, shared components remain consistent, and JSON gate truth is unchanged.", "assertion_ids": ["CASE-05-A03"]}
       ],
       "assertions": [
-        {"id": "CASE-05-A01", "statement": "All three report pages expose the required lifecycle, case, result, evidence, repair, and release facts from one model.", "expected": true, "oracle": {"type": "playwright_assertion", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "screenshot", "trace"]},
-        {"id": "CASE-05-A02", "statement": "Desktop, mobile, keyboard, and print review preserve readable verdict and evidence information without overlap.", "expected": true, "oracle": {"type": "playwright_assertion", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "screenshot", "trace"]},
+        {"id": "CASE-05-A01", "statement": "All three report pages expose the required lifecycle, case, result, evidence, repair, and release facts from one model.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "screenshot"]},
+        {"id": "CASE-05-A02", "statement": "Desktop, mobile, keyboard, and print review preserve readable verdict and evidence information without overlap.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "screenshot"]},
         {"id": "CASE-05-A03", "statement": "Rendering escapes hostile content, redacts secrets, reuses shared components, and never becomes gate authority.", "expected": true, "oracle": {"type": "structured_comparison", "human_signoff_allowed": false}, "evidence_kinds": ["assertion_result", "command_output", "structured_comparison"]}
       ],
       "domains": {
@@ -238,8 +238,8 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-05-A01", "CASE-05-A02", "CASE-05-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-report-browser.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
-      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "screenshot", "structured_comparison", "trace"], "required_kinds": ["assertion_result", "screenshot", "trace"], "retain_on_failure": true, "content_addressed": true},
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-report-browser.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_REPORT_ARTIFACT_ROOT", "SPECNAV_REPORT_ARTIFACT_RUN_ID", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
+      "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "screenshot", "structured_comparison"], "required_kinds": ["assertion_result", "command_output", "screenshot"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
     },
@@ -272,7 +272,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-06-A01", "CASE-06-A02", "CASE-06-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-migration.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 300000, "entrypoint": "bash", "args": ["tests/run-verification-v2-migration.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -306,7 +306,7 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-07-A01", "CASE-07-A02", "CASE-07-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-cross-host.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-cross-host.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
@@ -340,13 +340,13 @@
         "e2e": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"},
         "sensory": {"mode": "required", "assertion_ids": ["CASE-08-A01", "CASE-08-A02", "CASE-08-A03"], "runner": "command"}
       },
-      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-release.sh"], "cwd": ".", "env_keys": [], "requires_midscene": false},
+      "runner": {"kind": "command", "timeout_ms": 900000, "entrypoint": "bash", "args": ["tests/run-verification-v2-release.sh"], "cwd": ".", "env_keys": ["PATH", "SPECNAV_VERIFICATION_ASSERTION_IDS", "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"], "requires_midscene": false},
       "evidence_policy": {"allowed_kinds": ["assertion_result", "command_output", "log", "structured_comparison"], "required_kinds": ["assertion_result", "command_output"], "retain_on_failure": true, "content_addressed": true},
       "status": "ready",
       "created_at": "2026-08-02T21:00:00Z"
     }
   ],
-  "createdAt": "2026-08-02T21:00:00Z",
+  "createdAt": "2026-08-02T21:45:00Z",
   "createdBy": {
     "id": "specnav-planner",
     "kind": "service",

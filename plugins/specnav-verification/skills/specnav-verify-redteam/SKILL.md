@@ -36,4 +36,7 @@ Probe security, robustness, and abuse cases missed by normal tests.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Confirm every red-team assertion is approved and retains failed as well as
+  passing evidence.
+- Run the V2 adapter `validate` action. V1 `verify-domains.js` output cannot
+  satisfy the Verification 2.0 gate.

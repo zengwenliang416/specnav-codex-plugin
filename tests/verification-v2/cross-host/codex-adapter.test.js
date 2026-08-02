@@ -59,9 +59,11 @@ test('Codex describes the full Verification 2.0 contract from one Kernel', () =>
     overview: 'verify/reports/overview.html',
     case_catalog: 'verify/reports/test-case-catalog.html',
     case_results: 'verify/reports/test-case-results.html',
-    aggregate_json: 'verify/aggregate-report.json',
-    aggregate_html: 'verify/aggregate-report.html',
-    stakeholder_html: 'verify-report.html'
+    report_model: 'verify/v2/report-model.json',
+    report_render_manifest: 'verify/v2/report-render-manifest.json',
+    legacy_aggregate_json: 'verify/aggregate-report.json',
+    legacy_aggregate_html: 'verify/aggregate-report.html',
+    legacy_stakeholder_html: 'verify-report.html'
   });
   assert.deepEqual(
     description.skills.map((entry) => entry.id),

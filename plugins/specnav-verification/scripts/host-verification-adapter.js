@@ -17,8 +17,13 @@ const APPROVAL_BLOCKERS = new Map([
 ]);
 const SUPPORTED_ACTIONS = new Set([
   'validate',
+  'execute',
+  'finalize',
   'aggregate',
   'report',
+  'legacy-validate',
+  'legacy-aggregate',
+  'legacy-report',
   'runtime-status',
   'runtime-setup',
   'runtime-repair',
@@ -47,15 +52,22 @@ const REPORT_PATHS = Object.freeze({
   overview: 'verify/reports/overview.html',
   case_catalog: 'verify/reports/test-case-catalog.html',
   case_results: 'verify/reports/test-case-results.html',
-  aggregate_json: 'verify/aggregate-report.json',
-  aggregate_html: 'verify/aggregate-report.html',
-  stakeholder_html: 'verify-report.html'
+  report_model: 'verify/v2/report-model.json',
+  report_render_manifest: 'verify/v2/report-render-manifest.json',
+  legacy_aggregate_json: 'verify/aggregate-report.json',
+  legacy_aggregate_html: 'verify/aggregate-report.html',
+  legacy_stakeholder_html: 'verify-report.html'
 });
 
 const ACTIONS = Object.freeze([
   ['validate', false],
+  ['execute', false],
+  ['finalize', false],
   ['aggregate', false],
   ['report', false],
+  ['legacy-validate', false],
+  ['legacy-aggregate', false],
+  ['legacy-report', false],
   ['runtime-status', false],
   ['runtime-setup', true],
   ['runtime-repair', true],
@@ -379,14 +391,73 @@ function commandFor(pluginRoot, request) {
   const scripts = path.join(pluginRoot, 'scripts');
   const options = request.options || {};
   if (request.action === 'validate') {
-    return [path.join(scripts, 'verify-domains.js'), 'validate', '--json'];
+    return [
+      path.join(scripts, 'verification-v2-run.js'),
+      'preflight',
+      '--project',
+      request.project_root,
+      ...optionArgs(options, [
+        ['change', '--change'],
+        ['reviewer_id', '--reviewer-id'],
+        ['case_snapshot', '--snapshot'],
+        ['case_approval', '--approval'],
+        ['requirements_source', '--requirements'],
+        ['acceptance_source', '--acceptance'],
+        ['runtime_status', '--runtime-status']
+      ]),
+      '--json'
+    ];
+  }
+  if (request.action === 'execute' || request.action === 'finalize') {
+    return [
+      path.join(scripts, 'verification-v2-run.js'),
+      request.action === 'execute' ? 'run' : 'finalize',
+      '--project',
+      request.project_root,
+      ...optionArgs(options, [
+        ['change', '--change'],
+        ['reviewer_id', '--reviewer-id'],
+        ['case', '--case'],
+        ['attempt_kind', '--attempt-kind'],
+        ['parent_attempt', '--parent-attempt'],
+        ['failure_id', '--failure-id'],
+        ['case_snapshot', '--snapshot'],
+        ['case_approval', '--approval'],
+        ['requirements_source', '--requirements'],
+        ['acceptance_source', '--acceptance'],
+        ['runtime_status', '--runtime-status'],
+        ['scenario_registry', '--scenario-registry']
+      ]),
+      '--json'
+    ];
   }
   if (request.action === 'aggregate' || request.action === 'report') {
     return [
+      path.join(scripts, 'verification-v2-run.js'),
+      'finalize',
+      '--project',
+      request.project_root,
+      ...optionArgs(options, [
+        ['change', '--change'],
+        ['reviewer_id', '--reviewer-id'],
+        ['case_snapshot', '--snapshot'],
+        ['case_approval', '--approval'],
+        ['requirements_source', '--requirements'],
+        ['acceptance_source', '--acceptance'],
+        ['runtime_status', '--runtime-status']
+      ]),
+      '--json'
+    ];
+  }
+  if (request.action.startsWith('legacy-')) {
+    const legacyAction = request.action === 'legacy-validate'
+      ? 'validate'
+      : 'aggregate';
+    return [
       path.join(scripts, 'verify-domains.js'),
-      'aggregate',
+      legacyAction,
       '--json',
-      ...(request.action === 'report' || options.render === true
+      ...(request.action === 'legacy-report' || options.render === true
         ? ['--render']
         : [])
     ];
@@ -537,6 +608,10 @@ function parseCli(args) {
     files: argValue(args, '--files'),
     repaired: argValue(args, '--repaired'),
     reviewer_id: argValue(args, '--reviewer-id'),
+    case: argValue(args, '--case'),
+    attempt_kind: argValue(args, '--attempt-kind'),
+    parent_attempt: argValue(args, '--parent-attempt'),
+    failure_id: argValue(args, '--failure-id'),
     case_snapshot: argValue(args, '--case-snapshot'),
     case_approval: argValue(args, '--case-approval'),
     requirements_source: argValue(args, '--requirements-source'),
@@ -545,6 +620,8 @@ function parseCli(args) {
     policy: argValue(args, '--policy'),
     traceability: argValue(args, '--traceability'),
     codegraph_impact: argValue(args, '--codegraph-impact'),
+    runtime_status: argValue(args, '--runtime-status'),
+    scenario_registry: argValue(args, '--scenario-registry'),
     render: args.includes('--render'),
     requires_midscene: args.includes('--requires-midscene'),
     json: args.includes('--json')
@@ -583,6 +660,7 @@ function runHostCli(options = {}) {
 module.exports = {
   REPORT_PATHS,
   SCHEMA,
+  commandFor,
   createVerificationHostAdapter,
   createProcessExecutor,
   parseCli,

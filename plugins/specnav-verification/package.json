@@ -3,6 +3,9 @@
   "version": "2.0.0-alpha.1",
   "description": "Host-neutral contracts and runtime boundary for SpecNav Verification 2.0.",
   "main": "./kernel/index.js",
+  "bin": {
+    "specnav-verification-execute": "./scripts/verification-v2-run.js"
+  },
   "exports": {
     ".": "./kernel/index.js",
     "./schemas/*": "./schemas/*",
@@ -11,7 +14,8 @@
   "files": [
     "assets/",
     "kernel/",
-    "schemas/"
+    "schemas/",
+    "scripts/verification-v2-run.js"
   ],
   "engines": {
     "node": ">=20"

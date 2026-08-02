@@ -63,7 +63,8 @@ test('matched English and Chinese guides cover every user-visible contract', () 
     'overview.html',
     'test-case-catalog.html',
     'test-case-results.html',
-    'aggregate-report.json',
+    'report-model.json',
+    'report-render-manifest.json',
     'fallback_used: false'
   ];
   requireTokens(english, sharedFacts, 'English guide');
@@ -112,3 +113,19 @@ test('documentation preserves runtime, report, and no-fallback authority', () =>
   }
 });
 
+test('rerun skill uses only Verification 2.0 artifact paths', () => {
+  const skill = read(
+    'plugins/specnav-verification/skills/specnav-verify-rerun/SKILL.md'
+  );
+  requireTokens(skill, [
+    'verify/v2/case-snapshot.json',
+    'verify/v2/case-approval.json',
+    'verify/v2/requirements-source.json',
+    'verify/v2/acceptance-source.json',
+    'verify/v2/freshness.json'
+  ], 'specnav-verify-rerun');
+  assert.doesNotMatch(
+    skill,
+    /verify\/(?:case-snapshot|case-approval|current-requirements|current-acceptance|case-freshness)\.json/
+  );
+});

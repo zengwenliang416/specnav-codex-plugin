@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT/tests/verification-v2/command-result-protocol.sh"
+trap 'status=$?; specnav_verification_emit_assertions "$status"; exit "$status"' EXIT
 cd "$ROOT"
 
 ARTIFACT_ROOT="${SPECNAV_REPORT_ARTIFACT_ROOT:-$ROOT/openspec/changes/verification-2-0/development/evidence/026-report-artifacts}"

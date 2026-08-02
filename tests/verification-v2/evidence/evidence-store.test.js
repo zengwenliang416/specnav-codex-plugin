@@ -491,8 +491,8 @@ test('an existing content-addressed object with different bytes blocks append', 
 
 test('content object publication failure returns an exact blocker without throwing', () => {
   const { storeRoot, store } = makeStore();
-  const originalLinkSync = fs.linkSync;
-  fs.linkSync = () => {
+  const originalCopyFileSync = fs.copyFileSync;
+  fs.copyFileSync = () => {
     const error = new Error('publish denied');
     error.code = 'EPERM';
     throw error;
@@ -513,7 +513,7 @@ test('content object publication failure returns an exact blocker without throwi
     assert.match(result.blockers[0].detail, /EPERM: publish denied/);
     assert.equal(fs.existsSync(path.join(storeRoot, 'raw.jsonl')), false);
   } finally {
-    fs.linkSync = originalLinkSync;
+    fs.copyFileSync = originalCopyFileSync;
   }
 });
 

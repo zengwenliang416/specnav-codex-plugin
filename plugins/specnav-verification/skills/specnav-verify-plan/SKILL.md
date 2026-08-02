@@ -51,7 +51,10 @@ Create shared verification plan and evidence contracts.
 13. Write verification plan, evidence index, traceability matrix, blocker classification, root-cause checks, behavior evals, and receipt shell.
 15. Require all six domains for every change: facticity, static, unit, redteam, e2e, and sensory. Verification 2.0 has no light, compact, or simplified lane.
 15. Every file in `plan.changed_files` must appear in `traceability-matrix.json`; do not mark verification green from stale reports that are not tied to the diff.
-16. After all required domain reports exist, run aggregate and make sure HTML review reports are written.
+16. After every approved case has terminal six-domain readings, run the V2
+    `finalize` action. It derives freshness, integrity, aggregate, release and
+    archive decisions, the report model, render manifest, and all three HTML
+    pages from persisted facts.
 
 ## Required Outputs
 
@@ -59,7 +62,10 @@ Create shared verification plan and evidence contracts.
 - `verify/user-test-cases.md`, `user-test-cases.json`, `user-test-case-signoff.json`, and `domain-case-matrix.json`.
 - `verify/runtime-evidence.json` with runtime, browser, and any required database evidence for standard/full lanes.
 - `codegraph/claims-map.json` and `codegraph/evidence-query-plan.json` with verification traceability claims.
-- `verify/aggregate-report.json` (machine contract); md/html stakeholder renders come from `aggregate --render` or the specnav-html-report skill on demand.
+- `verify/v2/gate-input.json`, `release-gate.json`, `archive-gate.json`,
+  `report-model.json`, and `report-render-manifest.json`.
+- `verify/reports/overview.html`, `test-case-catalog.html`, and
+  `test-case-results.html` as stakeholder projections.
 - Shared shells: `assets/plan.md`, `assets/plan.json`, `assets/user-test-cases.md`, `assets/user-test-cases.json`, `assets/user-test-case-signoff.json`, `assets/domain-case-matrix.json`, `assets/runtime-evidence.json`, `assets/evidence-index.jsonl`, `assets/traceability-matrix.json`, `assets/blocker-classification.jsonl`, `assets/root-cause-checks.jsonl`, `assets/receipt.md`, `assets/receipt.json`, `assets/behavior-evals/scenarios.json`, `assets/behavior-evals/report.md`, `assets/behavior-evals/report.json`, and `assets/behavior-evals/transcripts/verify-runs-six-domains.md`.
 
 ## Stop Conditions
@@ -73,4 +79,6 @@ Create shared verification plan and evidence contracts.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" validate --project "$PWD" --change "<change-id>" --reviewer-id "<authenticated-human-id>" --json`.
+- `verify-domains.js` is only the explicit `legacy-validate` path for V1
+  migration diagnostics; it is not a Verification 2.0 gate.

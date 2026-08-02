@@ -38,4 +38,7 @@ Run static and structural verification declared by the plan.
 
 ## Validation
 
-- Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/verify-domains.js" validate --json` after writing the domain report.
+- Confirm every required static command is represented by approved assertions
+  and explicit command-result evidence.
+- Run the V2 adapter `validate` action. V1 `verify-domains.js` output cannot
+  satisfy the Verification 2.0 gate.

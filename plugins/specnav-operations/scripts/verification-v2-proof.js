@@ -476,11 +476,49 @@ function validateReportModel(
   );
   if (!model || !releaseGate) return model;
   const readingIds = input.aggregation_request.readings.map((entry) => entry.id);
+  const semantic = {
+    change_id: model.change_id,
+    verdict: model.verdict,
+    sources: model.sources,
+    summary: model.summary,
+    catalog: model.catalog,
+    results: model.results,
+    blockers: model.blockers,
+    warnings: model.warnings
+  };
+  if (model.id !== `report-model-${sha256(canonicalJson(semantic))}`) {
+    blockers.push(blocker(
+      'verification-release:report-identity-invalid',
+      artifact
+    ));
+  }
   if (model.change_id !== input.change_id || model.verdict !== 'green') {
     blockers.push(blocker('verification-release:report-not-green', artifact));
   }
   if (model.sources.gate_decision_id !== releaseGate.id) {
     blockers.push(blocker('verification-release:report-gate-mismatch', artifact));
+  }
+  try {
+    const aggregate = kernel.createSixDomainAggregator({
+      schemaRegistry
+    }).aggregate(input.aggregation_request);
+    if (
+      !aggregate.ok
+      || !aggregate.id
+      || model.sources.aggregate_id !== aggregate.id
+    ) {
+      blockers.push(blocker(
+        'verification-release:report-aggregate-mismatch',
+        artifact,
+        aggregate.blockers
+      ));
+    }
+  } catch (error) {
+    blockers.push(blocker(
+      'verification-release:report-aggregate-mismatch',
+      artifact,
+      error instanceof Error ? error.message : String(error)
+    ));
   }
   if (!sameIds(model.sources.reading_ids, readingIds)) {
     blockers.push(blocker('verification-release:report-readings-mismatch', artifact));
@@ -572,7 +610,27 @@ function validateEvidenceIndex(
   return index;
 }
 
-function validateReports(changeDir, blockers) {
+function validateReports(changeDir, manifest, model, blockers) {
+  const manifestArtifact = 'verify/v2/report-render-manifest.json';
+  const entries = Array.isArray(manifest?.reports) ? manifest.reports : [];
+  const names = entries.map((entry) => entry?.name);
+  const exactSet = entries.length === REQUIRED_REPORTS.length
+    && new Set(names).size === REQUIRED_REPORTS.length
+    && REQUIRED_REPORTS.every((name) => names.includes(name));
+  if (
+    !manifest
+    || manifest.schema !== 'specnav.verification.report-render-manifest.v1'
+    || manifest.change_id !== model?.change_id
+    || manifest.report_model_id !== model?.id
+    || !isConcreteString(manifest.generated_at)
+    || Number.isNaN(Date.parse(manifest.generated_at))
+    || !exactSet
+  ) {
+    blockers.push(blocker(
+      'verification-release:report-render-manifest-invalid',
+      manifestArtifact
+    ));
+  }
   const reports = [];
   for (const name of REQUIRED_REPORTS) {
     const relative = `verify/reports/${name}`;
@@ -591,12 +649,25 @@ function validateReports(changeDir, blockers) {
       blockers.push(blocker(`verification-release:report-empty:${name}`, relative));
       continue;
     }
-    reports.push({
+    const actual = {
       name,
       path: relative,
       sha256: sha256(bytes),
       size: bytes.length
-    });
+    };
+    const recorded = entries.find((entry) => entry?.name === name);
+    if (
+      !recorded
+      || recorded.path !== actual.path
+      || recorded.sha256 !== actual.sha256
+      || recorded.size !== actual.size
+    ) {
+      blockers.push(blocker(
+        `verification-release:report-render-mismatch:${name}`,
+        relative
+      ));
+    }
+    reports.push(actual);
   }
   return reports;
 }
@@ -931,6 +1002,12 @@ function createReleaseProofValidator(options = {}) {
       'verify/v2/report-model.json',
       blockers
     );
+    const reportManifestRead = readJson(
+      changeDir,
+      'verify/v2/report-render-manifest.json',
+      'verify/v2/report-render-manifest.json',
+      blockers
+    );
     const migrationRead = readJson(
       changeDir,
       'verify/v2/migration-status.json',
@@ -1036,7 +1113,12 @@ function createReleaseProofValidator(options = {}) {
         blockers
       );
     }
-    const reports = validateReports(changeDir, blockers);
+    const reports = validateReports(
+      changeDir,
+      reportManifestRead.value,
+      model,
+      blockers
+    );
     const finalBlockers = stableBlockers(blockers);
     const generatedAt = clock();
     const sources = {
@@ -1046,6 +1128,9 @@ function createReleaseProofValidator(options = {}) {
       release_gate: releaseRead.bytes ? sha256(releaseRead.bytes) : null,
       archive_gate: archiveRead.bytes ? sha256(archiveRead.bytes) : null,
       report_model: reportRead.bytes ? sha256(reportRead.bytes) : null,
+      report_render_manifest: reportManifestRead.bytes
+        ? sha256(reportManifestRead.bytes)
+        : null,
       evidence_raw: evidenceRaw ? sha256(evidenceRaw) : null,
       evidence_index: evidenceIndexRead.bytes
         ? sha256(evidenceIndexRead.bytes)

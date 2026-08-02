@@ -22,7 +22,15 @@ const receipt = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 if (receipt.status !== 'installed') throw new Error('receipt-status');
 if (receipt.fallback_used !== false) throw new Error('receipt-fallback');
 if (receipt.packages.length !== 5) throw new Error('receipt-packages');
-if (receipt.browsers.length !== 2) throw new Error('receipt-browsers');
+if (receipt.browsers.length !== 3) throw new Error('receipt-browsers');
+const browserNames = receipt.browsers.map((entry) => entry.name).sort();
+if (JSON.stringify(browserNames) !== JSON.stringify([
+  'chromium',
+  'chromium-headless-shell',
+  'ffmpeg'
+])) {
+  throw new Error('receipt-browser-set');
+}
 if (receipt.project_manifests.some((entry) => !entry.unchanged)) {
   throw new Error('receipt-project-manifest');
 }
