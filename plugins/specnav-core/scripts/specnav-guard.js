@@ -445,6 +445,13 @@ function main() {
     lib.event(root, 'hook.deny', { reason: 'dangerous-command', command: normalized.command.slice(0, 200) });
     deny('dangerous-command', 'dangerous shell command requires explicit manual review. Fix: run it manually outside the agent, or create a dangerous-command override with a reason.');
   }
+  // A project may explicitly opt out of SpecNav while still using an
+  // `openspec/` directory for its own artifact contracts. Keep destructive
+  // command protection above, but do not apply lifecycle or active-change
+  // gates to that project.
+  if (lib.isSpecNavDisabled(root)) {
+    allow(root, 'project-disabled');
+  }
   if (lib.isSpecNavProject(root) && isBashTool(normalized.tool) && isLegacyOpenSpecWorkflowCommand(normalized.command)) {
     softDeny(root, 'legacy-openspec-workflow-command', 'native OpenSpec workflow entrypoints are disabled inside SpecNav projects. Fix: use SpecNav requirements/prototype/development/verification/operations commands instead.');
   }

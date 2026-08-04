@@ -764,7 +764,25 @@ function specnavMarkerFile(root) {
   return path.join(root, '.specnav.json');
 }
 
+function readSpecNavConfig(root) {
+  const file = specnavMarkerFile(root);
+  if (!fs.existsSync(file)) {
+    return { present: false, enabled: null, config: null };
+  }
+  const config = readJson(file, null);
+  return {
+    present: true,
+    enabled: config && typeof config === 'object' && config.enabled === false ? false : true,
+    config
+  };
+}
+
+function isSpecNavDisabled(root) {
+  return readSpecNavConfig(root).enabled === false;
+}
+
 function isSpecNavProject(root) {
+  if (isSpecNavDisabled(root)) return false;
   return fs.existsSync(specnavMarkerFile(root)) || fs.existsSync(openspecDir(root));
 }
 
@@ -855,6 +873,7 @@ module.exports = {
   parseScope,
   normalizeExternalRepos,
   projectRoot,
+  readSpecNavConfig,
   readFileScope,
   readJson,
   readLane,
@@ -864,6 +883,7 @@ module.exports = {
   runCommand,
   sessionLockFile,
   shellQuote,
+  isSpecNavDisabled,
   writeChangeRegistry,
   writeJson
 };

@@ -220,6 +220,9 @@ The hook behavior is strict:
 
 - If `openspec/` is missing, only bootstrap, status, doctor, and read-only
   discovery are legal.
+- A project-root `.specnav.json` with `"enabled": false` is an explicit opt-out.
+  In that mode SpecNav hooks stay inert and do not require an active change;
+  project-owned artifact workflows may still use `openspec/runtime/`.
 - If foundation specs are missing, requirements questioning is blocked until
   the user creates the required specs.
 - If scope lock is missing, implementation writes are blocked.

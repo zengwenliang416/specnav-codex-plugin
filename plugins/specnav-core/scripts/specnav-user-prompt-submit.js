@@ -19,6 +19,10 @@ function main() {
   const payload = JSON.parse(fs.readFileSync(0, 'utf8') || '{}');
   const root = lib.projectRoot(['node', 'specnav-user-prompt-submit', payload.cwd || process.cwd()]);
 
+  if (lib.isSpecNavDisabled(root)) {
+    return;
+  }
+
   if (!fs.existsSync(lib.openspecDir(root))) {
     output([
       '<specnav-state>',

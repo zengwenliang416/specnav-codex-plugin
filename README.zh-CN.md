@@ -137,6 +137,20 @@ codex plugin add specnav-codegraph@specnav-marketplace
 
 SpecNav 要在目标项目里运行，不是在这个插件仓库里继续操作。
 
+如果项目使用 `openspec/` 保存自己的产物合同，但不参加 SpecNav 软件变更生命周期，
+可以显式停用：
+
+```json
+{
+  "schema_version": 1,
+  "enabled": false,
+  "disabled_reason": "project-owned automation contracts"
+}
+```
+
+设置后，该项目的 SpecNav hooks 保持静默，不再要求 active change；项目自身的自动化
+流程和 `openspec/runtime/` 合同仍可正常使用。危险 shell 命令仍由通用安全守卫检查。
+
 ```text
 1. $specnav-doctor
    检查七个插件、hooks、skills、OpenSpec CLI 和 installed cache 是否可见。

@@ -34,16 +34,70 @@ function defaultMarketplaceRoot() {
   return path.resolve(__dirname, '../../..');
 }
 
+function buildDisabledAffordances(root, suiteStatus) {
+  const actions = Object.entries(ACTION_PLUGINS).map(([id, requiredPlugins]) => ({
+    id,
+    state: id === 'status' ? 'ready' : 'blocked',
+    reversible: !['release', 'archive'].includes(id),
+    required_plugins: requiredPlugins,
+    blocked_by: id === 'status' ? [] : ['project-disabled']
+  }));
+  const hasOpenSpec = fs.existsSync(lib.openspecDir(root));
+  return {
+    schema_version: 1,
+    generated_at: new Date().toISOString(),
+    project_root: root,
+    required_plugins: REQUIRED_PLUGINS,
+    plugin_suite: {
+      ok: suiteStatus.ok,
+      marketplace_root: suiteStatus.marketplace_root,
+      blockers: suiteStatus.blockers || []
+    },
+    state_source: 'project-disabled',
+    blockers: [],
+    change_resolution: {
+      source: 'project-disabled',
+      candidates: [],
+      blockers: []
+    },
+    change_registry: lib.buildChangeRegistry(root),
+    legacy_openspec_entrypoints: [],
+    openspec_status: {
+      ok: false,
+      error: 'project-disabled'
+    },
+    active_change: null,
+    risk_tier: 'disabled',
+    risk_source: 'project-config',
+    verify_status: 'not_run',
+    verify_report_stale: false,
+    artifacts: {
+      openspec: hasOpenSpec,
+      proposal: false,
+      design: false,
+      scope: false,
+      tasks: false,
+      specs: false,
+      signoff: false,
+      operations_readiness: false
+    },
+    actions
+  };
+}
+
 function buildAffordances(root, options = {}) {
   const open = lib.openspecDir(root);
+  const suiteStatus = options.suiteStatus || suite.listPlugins({
+    marketplaceRoot: options.marketplaceRoot || process.env.SPECNAV_MARKETPLACE_ROOT || defaultMarketplaceRoot()
+  });
+  if (lib.isSpecNavDisabled(root)) {
+    return buildDisabledAffordances(root, suiteStatus);
+  }
   const changeState = lib.activeChangeState(root);
   const change = changeState.change;
   const dir = lib.changeDir(root, change);
   const legacyEntrypoints = lib.detectLegacyOpenSpecEntrypoints(root);
   const legacyBlocker = legacyEntrypoints.length ? 'legacy-openspec-workflow' : null;
-  const suiteStatus = options.suiteStatus || suite.listPlugins({
-    marketplaceRoot: options.marketplaceRoot || process.env.SPECNAV_MARKETPLACE_ROOT || defaultMarketplaceRoot()
-  });
   const okPlugins = new Set((suiteStatus.plugins || []).filter((plugin) => plugin.ok).map((plugin) => plugin.name));
   const hasOpenSpec = fs.existsSync(open);
   const openspecStatus = hasOpenSpec && change ? lib.openspecStatus(root, change) : { ok: false, error: 'openspec-missing-or-no-change' };

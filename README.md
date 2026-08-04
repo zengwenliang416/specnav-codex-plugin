@@ -142,6 +142,21 @@ codex plugin add specnav-codegraph@specnav-marketplace
 
 Run SpecNav in the target project, not inside this plugin repository.
 
+Projects that use `openspec/` for their own artifact contracts but do not want
+the SpecNav software-change lifecycle can opt out explicitly:
+
+```json
+{
+  "schema_version": 1,
+  "enabled": false,
+  "disabled_reason": "project-owned automation contracts"
+}
+```
+
+With this marker, the SpecNav hooks remain inert for that project. Destructive
+shell commands are still subject to the general safety guard, while the
+project's own automation and `openspec/runtime/` contracts remain available.
+
 ```text
 1. $specnav-doctor
    Check installed plugins, hooks, skills, OpenSpec CLI, and cache visibility.

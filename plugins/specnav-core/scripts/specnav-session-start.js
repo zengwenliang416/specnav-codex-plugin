@@ -16,6 +16,9 @@ function output(additionalContext) {
 
 function main() {
   const root = lib.projectRoot();
+  if (lib.isSpecNavDisabled(root)) {
+    return;
+  }
   if (!fs.existsSync(lib.openspecDir(root))) {
     if (lib.isSpecNavProject(root)) {
       output([

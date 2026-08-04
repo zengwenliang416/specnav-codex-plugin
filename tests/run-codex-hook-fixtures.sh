@@ -64,6 +64,29 @@ run_case bash-openspec-propose "$PROJECT" 0 "SpecNav gate warning"
 run_case bash-openspec-propose "$PROJECT" 2 "" 1
 run_case bash-openspec-propose "$NO_STATE" 0
 
+# An explicit project opt-out must take precedence over the presence of
+# openspec/. Content automation uses openspec/runtime contracts but is not a
+# SpecNav-managed software change.
+DISABLED_PROJECT="$TMP_DIR/disabled-project"
+cp -R "$PROJECT" "$DISABLED_PROJECT"
+cat >"$DISABLED_PROJECT/.specnav.json" <<'JSON'
+{
+  "schema_version": 1,
+  "enabled": false,
+  "disabled_reason": "project-owned automation contracts do not use SpecNav lifecycle gates"
+}
+JSON
+run_case bash-openspec-propose "$DISABLED_PROJECT" 0
+run_case write-allowed "$DISABLED_PROJECT" 0
+DISABLED_STATE="$TMP_DIR/disabled-state.json"
+PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/workflow-state.js" --json >"$DISABLED_STATE"
+jq -e '.ok == true and .status == "disabled" and .active_change == null and (.blockers | length == 0)' "$DISABLED_STATE" >/dev/null
+DISABLED_AFFORDANCES="$TMP_DIR/disabled-affordances.json"
+PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/affordances.js" --json >"$DISABLED_AFFORDANCES"
+jq -e '.state_source == "project-disabled" and (.blockers | length == 0) and (.actions[] | select(.id == "status" and .state == "ready"))' "$DISABLED_AFFORDANCES" >/dev/null
+[[ -z "$(PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/specnav-session-start.js")" ]]
+[[ -z "$(printf '%s' "{\"cwd\":\"$DISABLED_PROJECT\"}" | node "$CORE/scripts/specnav-user-prompt-submit.js")" ]]
+
 LEGACY_OPENSPEC_PROJECT="$TMP_DIR/legacy-openspec-project"
 cp -R "$PROJECT" "$LEGACY_OPENSPEC_PROJECT"
 mkdir -p "$LEGACY_OPENSPEC_PROJECT/.claude/skills/openspec-propose" "$LEGACY_OPENSPEC_PROJECT/.claude/commands/opsx"

@@ -27,16 +27,18 @@ function workflowState(root = lib.projectRoot(), options = {}) {
   const marketplaceRoot = options.marketplaceRoot || process.env.SPECNAV_MARKETPLACE_ROOT || defaultMarketplaceRoot();
   const pluginSuite = suite.listPlugins({ marketplaceRoot });
   const table = affordances.buildAffordances(root, { suiteStatus: pluginSuite });
-  const blockers = [];
-  if (!pluginSuite.ok) blockers.push(...pluginSuite.blockers);
-  if (!fs.existsSync(lib.openspecDir(root))) blockers.push('missing-openspec');
-  if (Array.isArray(table.blockers)) blockers.push(...table.blockers);
+  const disabled = table.state_source === 'project-disabled';
+  const blockers = disabled ? [] : [
+    ...(!pluginSuite.ok ? pluginSuite.blockers : []),
+    ...(!fs.existsSync(lib.openspecDir(root)) ? ['missing-openspec'] : []),
+    ...(Array.isArray(table.blockers) ? table.blockers : [])
+  ];
 
   return {
     schema_version: 1,
     generated_at: new Date().toISOString(),
-    ok: blockers.length === 0,
-    status: blockers.length === 0 ? 'ready' : 'blocked',
+    ok: disabled || blockers.length === 0,
+    status: disabled ? 'disabled' : (blockers.length === 0 ? 'ready' : 'blocked'),
     project_root: root,
     active_change: table.active_change,
     marketplace_root: pluginSuite.marketplace_root || marketplaceRoot,
@@ -87,6 +89,7 @@ function ensureRuntimeGitignore(specnavDir) {
 }
 
 function writeRuntimeArtifacts(root, result = workflowState(root)) {
+  if (lib.isSpecNavDisabled(root)) return result;
   lib.ensureSpecNavMarker(root);
   const specnavDir = lib.specnavDir(root);
   lib.ensureDir(specnavDir);
