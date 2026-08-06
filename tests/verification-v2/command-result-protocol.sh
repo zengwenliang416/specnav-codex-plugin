@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
+if [[ -n "${SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE:-}" ]] \
+  && [[ -z "${SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID:-}" ]]; then
+  export SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID="$$"
+fi
+
 specnav_verification_emit_assertions() {
   local status="${1:-1}"
   if [[ -z "${SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE:-}" ]]; then
+    return 0
+  fi
+  if [[ "${SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID:-}" != "$$" ]]; then
     return 0
   fi
   if [[ -z "${SPECNAV_VERIFICATION_ASSERTION_IDS:-}" ]]; then

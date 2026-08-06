@@ -629,9 +629,131 @@ function stableSecrets(snapshot) {
   return [...values];
 }
 
+function executionArtifactList(result) {
+  const runId = result?.run?.id;
+  const attemptId = result?.attempt?.id;
+  if (!runId || !attemptId) return [];
+  const base = `verify/runs/${runId}`;
+  const attemptBase = `${base}/attempts/${attemptId}`;
+  return [
+    { name: 'run', path: `${base}/run.json`, ok: true },
+    { name: 'run-integrity', path: `${base}/integrity.json`, ok: true },
+    { name: 'attempt', path: `${attemptBase}/attempt.json`, ok: true },
+    { name: 'attempt-integrity', path: `${attemptBase}/integrity.json`, ok: true },
+    { name: 'execution', path: `${attemptBase}/execution.json`, ok: true },
+    {
+      name: 'assertion-results',
+      path: `${attemptBase}/assertion-results.jsonl`,
+      ok: true
+    }
+  ];
+}
+
+function summarizeCaseExecution(result = {}) {
+  const blockers = Array.isArray(result.blockers)
+    ? structuredClone(result.blockers)
+    : [];
+  const runId = result?.run?.id || null;
+  const attemptId = result?.attempt?.id || null;
+  return {
+    ok: result.ok === true,
+    status: typeof result.status === 'string' ? result.status : 'blocked',
+    case_id: result?.attempt?.case_id
+      || (Array.isArray(result?.run?.case_ids) ? result.run.case_ids[0] : null),
+    run_id: runId,
+    attempt_id: attemptId,
+    evidence_count: Array.isArray(result.evidence) ? result.evidence.length : 0,
+    reading_count: Array.isArray(result.readings) ? result.readings.length : 0,
+    failure_id: result?.failure_packet?.id || null,
+    repair_handoff: result?.repair_handoff
+      ? structuredClone(result.repair_handoff)
+      : null,
+    blockers,
+    artifacts: executionArtifactList(result),
+    fallback_used: false
+  };
+}
+
+function finalizedArtifactList(result) {
+  const artifacts = [
+    { name: 'runs', path: 'verify/v2/runs.json', ok: true },
+    { name: 'attempts', path: 'verify/v2/attempts.json', ok: true },
+    { name: 'readings', path: 'verify/v2/readings.json', ok: true },
+    { name: 'executions', path: 'verify/v2/executions.json', ok: true },
+    { name: 'failures', path: 'verify/v2/failures.json', ok: true }
+  ];
+  if (result.release_gate) {
+    artifacts.push({
+      name: 'release-gate',
+      path: 'verify/v2/release-gate.json',
+      ok: true
+    });
+  }
+  if (result.archive_gate) {
+    artifacts.push({
+      name: 'archive-gate',
+      path: 'verify/v2/archive-gate.json',
+      ok: true
+    });
+  }
+  if (result.report_model) {
+    artifacts.push({
+      name: 'report-model',
+      path: 'verify/v2/report-model.json',
+      ok: true
+    });
+  }
+  if (result.report_manifest) {
+    artifacts.push({
+      name: 'report-render-manifest',
+      path: 'verify/v2/report-render-manifest.json',
+      ok: true
+    });
+    for (const report of result.report_manifest.reports || []) {
+      if (report && typeof report.path === 'string') {
+        artifacts.push({
+          name: report.name || path.basename(report.path),
+          path: report.path,
+          ok: true
+        });
+      }
+    }
+  }
+  return artifacts;
+}
+
+function summarizeCliResult(result) {
+  if (!result || typeof result !== 'object' || Array.isArray(result)) {
+    return result;
+  }
+  if (result.run && result.attempt && !Array.isArray(result.cases)) {
+    return summarizeCaseExecution(result);
+  }
+  if (!Array.isArray(result.cases)) return result;
+  const cases = result.cases.map(summarizeCaseExecution);
+  const artifacts = [
+    ...cases.flatMap((entry) => entry.artifacts),
+    ...finalizedArtifactList(result)
+  ];
+  return {
+    ok: result.ok === true,
+    status: typeof result.status === 'string' ? result.status : 'blocked',
+    aggregate_status: result?.aggregate?.status || null,
+    release_gate_id: result?.release_gate?.id || null,
+    archive_gate_id: result?.archive_gate?.id || null,
+    report_model_id: result?.report_model?.id || null,
+    cases,
+    blockers: Array.isArray(result.blockers)
+      ? structuredClone(result.blockers)
+      : [],
+    artifacts,
+    fallback_used: false
+  };
+}
+
 async function main() {
   const result = await run();
-  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify(summarizeCliResult(result), null, 2)}\n`);
   process.exit(result.ok ? 0 : 2);
 }
 
@@ -653,5 +775,7 @@ module.exports = {
   loadScenarioRegistry,
   pathsFor,
   run,
-  stableSecrets
+  stableSecrets,
+  summarizeCaseExecution,
+  summarizeCliResult
 };

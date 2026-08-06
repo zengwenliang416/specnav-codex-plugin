@@ -1,0 +1,172 @@
+status=passed
+exit_status=0
+--- stdout ---
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 4624.187542
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 2 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 1041.082583
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 3 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 808.976292
+  type: 'test'
+  ...
+# Subtest: verification run schema requires immutable repair lineage fields
+ok 4 - verification run schema requires immutable repair lineage fields
+  ---
+  duration_ms: 727.568958
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 5 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 907.623166
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 6 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 861.011875
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 7 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 698.026458
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 8 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 6.352041
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 9 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 395.433875
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 10 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.576959
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 11 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 45.889459
+  type: 'test'
+  ...
+# Subtest: preserves first failure repair retest and regression as immutable history
+ok 12 - preserves first failure repair retest and regression as immutable history
+  ---
+  duration_ms: 4565.090667
+  type: 'test'
+  ...
+# Subtest: labels an unchanged-fingerprint retry pass as flaky
+ok 13 - labels an unchanged-fingerprint retry pass as flaky
+  ---
+  duration_ms: 1.687584
+  type: 'test'
+  ...
+# Subtest: selects initial and latest attempts deterministically from shuffled same-second history
+ok 14 - selects initial and latest attempts deterministically from shuffled same-second history
+  ---
+  duration_ms: 2.735708
+  type: 'test'
+  ...
+# Subtest: allows parallel regression branches with the same sequence and chooses each case deterministically
+ok 15 - allows parallel regression branches with the same sequence and chooses each case deterministically
+  ---
+  duration_ms: 7.410375
+  type: 'test'
+  ...
+# Subtest: rejects retry when any immutable retry fingerprint changes
+ok 16 - rejects retry when any immutable retry fingerprint changes
+  ---
+  duration_ms: 2.950584
+  type: 'test'
+  ...
+# Subtest: product and test defects cannot use retry to bypass reviewed repair
+ok 17 - product and test defects cannot use retry to bypass reviewed repair
+  ---
+  duration_ms: 2.099
+  type: 'test'
+  ...
+# Subtest: completed repair proposes retest and passed retest requires exact regression scope
+ok 18 - completed repair proposes retest and passed retest requires exact regression scope
+  ---
+  duration_ms: 2.840458
+  type: 'test'
+  ...
+# Subtest: failed blocked stale or tampered required regression proposes reopen
+ok 19 - failed blocked stale or tampered required regression proposes reopen
+  ---
+  duration_ms: 13.115959
+  type: 'test'
+  ...
+# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases
+ok 20 - closure fails closed when rerun plan omits repaired impacted or baseline cases
+  ---
+  duration_ms: 14.579583
+  type: 'test'
+  ...
+# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance
+ok 21 - routes only a trusted classifier no-progress signal to Core break-loop governance
+  ---
+  duration_ms: 1.506208
+  type: 'test'
+  ...
+# Subtest: rejects caller-authored lifecycle fields fallback and manual green
+ok 22 - rejects caller-authored lifecycle fields fallback and manual green
+  ---
+  duration_ms: 3.037625
+  type: 'test'
+  ...
+# Subtest: rejects duplicate overwritten out-of-order and cross-failure history
+ok 23 - rejects duplicate overwritten out-of-order and cross-failure history
+  ---
+  duration_ms: 5.488958
+  type: 'test'
+  ...
+# Subtest: rejects forged repair rerun and attempt-fact envelopes
+ok 24 - rejects forged repair rerun and attempt-fact envelopes
+  ---
+  duration_ms: 10.041167
+  type: 'test'
+  ...
+# Subtest: rejects foreign run or change attempts and unplanned regression cases
+ok 25 - rejects foreign run or change attempts and unplanned regression cases
+  ---
+  duration_ms: 2.9085
+  type: 'test'
+  ...
+# Subtest: requires the exact Task 022 repaired impacted and baseline case set
+ok 26 - requires the exact Task 022 repaired impacted and baseline case set
+  ---
+  duration_ms: 3.897333
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9886.16325
+verification v2 repair loop ok
+
+--- stderr ---

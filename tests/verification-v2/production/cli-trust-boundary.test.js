@@ -10,7 +10,8 @@ const test = require('node:test');
 const {
   assertSelectedChange,
   loadScenarioRegistry,
-  pathsFor
+  pathsFor,
+  summarizeCliResult
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-run');
 
 function git(root, args) {
@@ -125,4 +126,56 @@ test('approved scenario registry restores pure scenario functions', async () => 
     scenario.project,
     { viewport: { width: 1280, height: 720 } }
   );
+});
+
+test('production CLI summarizes persisted execution data without embedding logs', () => {
+  const result = summarizeCliResult({
+    ok: false,
+    status: 'blocked',
+    cases: [{
+      ok: false,
+      status: 'failed',
+      run: {
+        id: 'run-1',
+        case_ids: ['CASE-01']
+      },
+      attempt: {
+        id: 'attempt-1',
+        case_id: 'CASE-01'
+      },
+      execution: {
+        logs: {
+          stdout: 'x'.repeat(20 * 1024 * 1024),
+          stderr: ''
+        }
+      },
+      evidence: [{ id: 'evidence-1' }],
+      readings: [{ id: 'reading-1' }],
+      failure_packet: { id: 'failure-1' },
+      blockers: [{
+        id: 'verification-execution:command-exit-nonzero',
+        artifact: 'command',
+        detail: '1'
+      }],
+      fallback_used: false
+    }],
+    blockers: [{
+      id: 'verification-execution:command-exit-nonzero',
+      artifact: 'command',
+      detail: '1'
+    }],
+    fallback_used: false
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.fallback_used, false);
+  assert.equal(result.cases[0].case_id, 'CASE-01');
+  assert.equal(result.cases[0].evidence_count, 1);
+  assert.equal(result.cases[0].reading_count, 1);
+  assert.equal(result.cases[0].failure_id, 'failure-1');
+  assert.equal(JSON.stringify(result).includes('"logs"'), false);
+  assert.ok(JSON.stringify(result).length < 16 * 1024);
+  assert.ok(result.artifacts.some((entry) => (
+    entry.path === 'verify/runs/run-1/attempts/attempt-1/execution.json'
+  )));
 });

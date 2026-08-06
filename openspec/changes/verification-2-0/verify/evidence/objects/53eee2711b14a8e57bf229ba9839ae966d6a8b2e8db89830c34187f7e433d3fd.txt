@@ -1,0 +1,70 @@
+status=passed
+exit_status=0
+--- stdout ---
+TAP version 13
+# Subtest: Codex describes the full Verification 2.0 contract from one Kernel
+ok 1 - Codex describes the full Verification 2.0 contract from one Kernel
+  ---
+  duration_ms: 1.835125
+  type: 'test'
+  ...
+# Subtest: Codex invokes the shared command surface and preserves blockers
+ok 2 - Codex invokes the shared command surface and preserves blockers
+  ---
+  duration_ms: 0.576125
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks simplified, fallback, and manual-green requests
+ok 3 - Codex adapter blocks simplified, fallback, and manual-green requests
+  ---
+  duration_ms: 0.150458
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for runtime mutation
+ok 4 - Codex adapter requires explicit approval for runtime mutation
+  ---
+  duration_ms: 0.116375
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for migration writes
+ok 5 - Codex adapter requires explicit approval for migration writes
+  ---
+  duration_ms: 0.147792
+  type: 'test'
+  ...
+# Subtest: Codex adapter exposes and blocks downstream fallback signals
+ok 6 - Codex adapter exposes and blocks downstream fallback signals
+  ---
+  duration_ms: 0.100666
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks a source that does not attest no fallback
+ok 7 - Codex adapter blocks a source that does not attest no fallback
+  ---
+  duration_ms: 0.164583
+  type: 'test'
+  ...
+# Subtest: Codex adapter fails closed for unsupported actions and invalid results
+ok 8 - Codex adapter fails closed for unsupported actions and invalid results
+  ---
+  duration_ms: 0.143708
+  type: 'test'
+  ...
+# Subtest: Codex source contains invocation only, not verdict implementation
+ok 9 - Codex source contains invocation only, not verdict implementation
+  ---
+  duration_ms: 0.443584
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 229.97325
+verification v2 codex adapter ok
+
+--- stderr ---

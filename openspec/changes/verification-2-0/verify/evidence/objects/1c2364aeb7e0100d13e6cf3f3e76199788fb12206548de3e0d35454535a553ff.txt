@@ -1,0 +1,184 @@
+status=passed
+exit_status=0
+--- stdout ---
+TAP version 13
+# Subtest: complete Kernel-derived release and archive proof passes and writes digests
+ok 1 - complete Kernel-derived release and archive proof passes and writes digests
+  ---
+  duration_ms: 6779.322459
+  type: 'test'
+  ...
+# Subtest: missing or non-human case approval blocks release
+ok 2 - missing or non-human case approval blocks release
+  ---
+  duration_ms: 1677.142708
+  type: 'test'
+  ...
+# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority
+ok 3 - reviewer source hashes and approval time are revalidated by the Kernel authority
+  ---
+  duration_ms: 4290.07775
+  type: 'test'
+  ...
+# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate
+ok 4 - partial-domain and light-mode input cannot reuse a persisted green gate
+  ---
+  duration_ms: 894.52875
+  type: 'test'
+  ...
+# Subtest: full lane uses the same complete six-domain release and archive proof
+ok 5 - full lane uses the same complete six-domain release and archive proof
+  ---
+  duration_ms: 1014.443208
+  type: 'test'
+  ...
+# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates
+ok 6 - standard-lane missing-domain input cannot use self-consistent forged pass gates
+  ---
+  duration_ms: 1025.435458
+  type: 'test'
+  ...
+# Subtest: stale evidence and open failures block both persisted pass decisions
+ok 7 - stale evidence and open failures block both persisted pass decisions
+  ---
+  duration_ms: 966.037458
+  type: 'test'
+  ...
+# Subtest: all three HTML projections are required but never used as verdict authority
+ok 8 - all three HTML projections are required but never used as verdict authority
+  ---
+  duration_ms: 1010.931583
+  type: 'test'
+  ...
+# Subtest: report render manifest is required and must bind the current report model
+ok 9 - report render manifest is required and must bind the current report model
+  ---
+  duration_ms: 2023.088208
+  type: 'test'
+  ...
+# Subtest: missing evidence index cannot reuse green gates and reports
+ok 10 - missing evidence index cannot reuse green gates and reports
+  ---
+  duration_ms: 1391.642708
+  type: 'test'
+  ...
+# Subtest: required migration needs one successful schema-valid apply receipt
+ok 11 - required migration needs one successful schema-valid apply receipt
+  ---
+  duration_ms: 1358.454375
+  type: 'test'
+  ...
+# Subtest: required migration accepts one successful schema-valid apply receipt
+ok 12 - required migration accepts one successful schema-valid apply receipt
+  ---
+  duration_ms: 1379.035709
+  type: 'test'
+  ...
+# Subtest: tampered clean-install receipt and a missing host fail closed
+ok 13 - tampered clean-install receipt and a missing host fail closed
+  ---
+  duration_ms: 1751.7275
+  type: 'test'
+  ...
+# Subtest: placeholder clean-install claims fail closed
+ok 14 - placeholder clean-install claims fail closed
+  ---
+  duration_ms: 1819.006834
+  type: 'test'
+  ...
+# Subtest: cross-host compatibility blockers stop release and archive
+ok 15 - cross-host compatibility blockers stop release and archive
+  ---
+  duration_ms: 1390.71075
+  type: 'test'
+  ...
+# Subtest: persisted green host claims cannot bypass a red live host authority
+ok 16 - persisted green host claims cannot bypass a red live host authority
+  ---
+  duration_ms: 1405.794167
+  type: 'test'
+  ...
+# Subtest: persisted green compatibility cannot bypass real live host wrapper drift
+ok 17 - persisted green compatibility cannot bypass real live host wrapper drift
+  ---
+  duration_ms: 4207.251375
+  type: 'test'
+  ...
+# Subtest: report model must bind to the release gate, readings, evidence index, and versions
+ok 18 - report model must bind to the release gate, readings, evidence index, and versions
+  ---
+  duration_ms: 1210.052417
+  type: 'test'
+  ...
+# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity
+ok 19 - persisted gate edits cannot bypass Kernel-owned gate identity
+  ---
+  duration_ms: 1427.036625
+  type: 'test'
+  ...
+# Subtest: explicit change ids cannot escape or bypass the active change registry
+ok 20 - explicit change ids cannot escape or bypass the active change registry
+  ---
+  duration_ms: 7.941583
+  type: 'test'
+  ...
+# Subtest: a symlinked change directory is rejected before any proof is written
+ok 21 - a symlinked change directory is rejected before any proof is written
+  ---
+  duration_ms: 6.158542
+  type: 'test'
+  ...
+# Subtest: duplicate host identities cannot satisfy the clean-install contract
+ok 22 - duplicate host identities cannot satisfy the clean-install contract
+  ---
+  duration_ms: 980.874125
+  type: 'test'
+  ...
+# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts
+ok 23 - duplicate compatibility hosts cannot masquerade as all three hosts
+  ---
+  duration_ms: 1072.524958
+  type: 'test'
+  ...
+# Subtest: host receipts and compatibility cannot be replayed across gate inputs
+ok 24 - host receipts and compatibility cannot be replayed across gate inputs
+  ---
+  duration_ms: 1021.280458
+  type: 'test'
+  ...
+# Subtest: a symlinked operations directory cannot receive a blocked proof write
+ok 25 - a symlinked operations directory cannot receive a blocked proof write
+  ---
+  duration_ms: 699.561084
+  type: 'test'
+  ...
+# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes
+ok 26 - descriptor-relative read rejects an ancestor swap without reading external bytes
+  ---
+  duration_ms: 80.464875
+  type: 'test'
+  ...
+# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup
+ok 27 - descriptor-relative tree copy rejects a source swap and deletes the partial backup
+  ---
+  duration_ms: 62.132875
+  type: 'test'
+  ...
+# Subtest: archive lock acquisition has one atomic winner and owner-bound release
+ok 28 - archive lock acquisition has one atomic winner and owner-bound release
+  ---
+  duration_ms: 167.447958
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40944.237916
+verification v2 release and archive proof ok
+
+--- stderr ---
