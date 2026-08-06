@@ -46,6 +46,17 @@ test('packaged host provenance resolves without the source repository', (t) => {
   const claude = provenance.createHostSyncPlan('claude-code');
   const codefree = provenance.createHostSyncPlan('codefree-o');
 
+  for (const entry of claude.transformedFiles) {
+    assert.equal(
+      entry.source_sha256,
+      sha256(fs.readFileSync(path.resolve(
+        __dirname,
+        '../../../plugins/specnav-verification',
+        entry.source
+      ))),
+      entry.source
+    );
+  }
   assert.equal(
     claude.hostFiles.some((entry) => (
       entry.target === 'scripts/claude-verification-adapter.js'

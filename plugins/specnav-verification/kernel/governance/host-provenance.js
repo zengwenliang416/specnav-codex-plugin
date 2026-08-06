@@ -33,6 +33,10 @@ function readHostProvenance(relative) {
   return fs.readFileSync(path.join(HOST_PROVENANCE_ROOT, relative));
 }
 
+function readSourceSkill(relative) {
+  return readHostProvenance(path.posix.join('source-skills', relative));
+}
+
 function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
 }
@@ -285,10 +289,7 @@ function exactTreeDigest(files) {
 function createHostSyncPlan(host) {
   const files = canonicalFiles();
   const transformedFiles = files.transformed.map((relative) => {
-    const source = fs.readFileSync(
-      path.join(LOCAL_PLUGIN_ROOT, relative),
-      'utf8'
-    );
+    const source = readSourceSkill(relative).toString('utf8');
     const content = Buffer.from(transformSkill(source, host));
     return Object.freeze({
       source: relative,
