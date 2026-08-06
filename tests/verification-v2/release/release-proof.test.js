@@ -13,6 +13,9 @@ const {
   createSixDomainAggregator
 } = require('../../../plugins/specnav-verification/kernel');
 const {
+  createTrustedFactAuthority
+} = require('../../../plugins/specnav-verification/kernel/repair');
+const {
   createCasePlanner,
   createCaseSnapshotWriter
 } = require('../../../plugins/specnav-verification/kernel/cases');
@@ -29,6 +32,10 @@ const {
   createReleaseProofValidator
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-proof');
 const {
+  writeArchiveGate
+} = require('../../../plugins/specnav-operations/scripts/operations-gate');
+const safeFs = require('../../../plugins/specnav-operations/scripts/safe-filesystem');
+const {
   createHostAuthorityFixture
 } = require('../cross-host/host-authority-test-helpers');
 
@@ -36,6 +43,7 @@ const CHANGE = 'release-proof-change';
 const CASE_ID = 'case-release-proof';
 const HOSTS = ['claude-code', 'codex', 'codefree-o'];
 const RUNTIME_VERSION = loadRuntimeLock().runtime_version;
+const TRUST_KEY = Buffer.alloc(32, 17);
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -60,6 +68,9 @@ function reidentifyGate(gate) {
     decision: gate.decision,
     source_case_ids: [...new Set(gate.source_case_ids)].sort(),
     source_reading_ids: [...new Set(gate.source_reading_ids)].sort(),
+    failure_state_status: gate.failure_state_status,
+    failure_state_digest: gate.failure_state_digest,
+    authority_chain_digest: gate.authority_chain_digest,
     evidence_index_version: gate.evidence_index_version,
     runtime_version: gate.runtime_version,
     kernel_version: gate.kernel_version,
@@ -207,7 +218,7 @@ function evidence(source) {
     test_sha: source.test_sha,
     environment_hash: '4'.repeat(64),
     runtime_version: RUNTIME_VERSION,
-    kernel_version: '2.0.0-alpha.1',
+    kernel_version: '2.0.0-alpha.2',
     redaction: {
       status: 'not_required',
       redacted_fields: []
@@ -218,7 +229,10 @@ function evidence(source) {
 
 function aggregationRequest() {
   const readings = SIX_DOMAINS.map(reading);
-  const evidenceEntries = readings.map(evidence);
+  const evidenceEntries = readings.map(evidence).sort((left, right) => (
+    left.captured_at.localeCompare(right.captured_at)
+    || left.id.localeCompare(right.id)
+  ));
   return {
     change_id: CHANGE,
     case_ids: [CASE_ID],
@@ -243,7 +257,9 @@ function aggregationRequest() {
           store_record_match: true,
           binding_match: true,
           path_safe: true
-        }))
+        })).sort((left, right) => (
+          left.evidence_id.localeCompare(right.evidence_id)
+        ))
       },
       blockers: []
     },
@@ -255,16 +271,30 @@ function aggregationRequest() {
 }
 
 function gateInput() {
+  const failureState = {
+    ok: true,
+    states: [],
+    effective_failures: [],
+    open_failure_ids: [],
+    blockers: []
+  };
   return {
     schema: 'specnav.verification.release-gate-input.v1',
     change_id: CHANGE,
-    lane: 'standard',
+    lane: 'full',
     case_snapshot_id: 'snapshot-release',
     case_snapshot_hash: 'a'.repeat(64),
     case_approval_id: 'approval-release',
     case_approval_reviewer_id: 'reviewer-release',
     aggregation_request: aggregationRequest(),
     open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: sha256(canonicalJson(failureState)),
+    authority_chain_digest: sha256(canonicalJson({
+      transition_proposals: null,
+      transition_receipts: null,
+      attempt_facts: null
+    })),
     freshness: {
       status: 'fresh',
       checked_at: '2026-08-02T00:00:03Z',
@@ -273,7 +303,7 @@ function gateInput() {
     integrity_status: 'intact',
     evidence_index_version: 7,
     runtime_version: RUNTIME_VERSION,
-    kernel_version: '2.0.0-alpha.1',
+    kernel_version: '2.0.0-alpha.2',
     policy_version: 'verification-v2.0'
   };
 }
@@ -290,6 +320,9 @@ function createGate(schemaRegistry, input, stage) {
     stage,
     aggregation_request: input.aggregation_request,
     open_failure_ids: input.open_failure_ids,
+    failure_state_status: input.failure_state_status,
+    failure_state_digest: input.failure_state_digest,
+    authority_chain_digest: input.authority_chain_digest,
     freshness: input.freshness,
     integrity_status: input.integrity_status,
     evidence_index_version: input.evidence_index_version,
@@ -314,6 +347,11 @@ function makeProject(options = {}) {
   fs.mkdirSync(opsDir, { recursive: true });
 
   const schemaRegistry = readySchemaRegistry();
+  const trustedFactAuthority = createTrustedFactAuthority({
+    schemaRegistry,
+    key: TRUST_KEY,
+    clock: () => '2026-08-02T00:00:03Z'
+  });
   const requirements = [{
     id: 'REQ-1',
     statement: 'The release proof uses current approved requirements.'
@@ -339,6 +377,110 @@ function makeProject(options = {}) {
   const input = gateInput();
   input.case_snapshot_id = snapshot.id;
   input.case_snapshot_hash = snapshot.snapshot_hash;
+  const run = {
+    schema: 'specnav.verification.run.v1',
+    id: 'run-release',
+    change_id: CHANGE,
+    case_snapshot_id: snapshot.id,
+    case_snapshot_hash: snapshot.snapshot_hash,
+    case_ids: [CASE_ID],
+    code_sha: '1'.repeat(40),
+    test_sha: '2'.repeat(40),
+    environment_hash: '4'.repeat(64),
+    runtime_version: input.runtime_version,
+    kernel_version: input.kernel_version,
+    status: 'passed',
+    created_at: '2026-08-02T00:00:01Z',
+    started_at: '2026-08-02T00:00:01Z',
+    completed_at: '2026-08-02T00:00:02Z',
+    kind: 'initial',
+    origin_run_id: null,
+    parent_run_id: null,
+    parent_attempt_id: null,
+    failure_id: null
+  };
+  const attempt = {
+    schema: 'specnav.verification.attempt.v1',
+    id: 'attempt-release',
+    run_id: run.id,
+    change_id: CHANGE,
+    case_id: CASE_ID,
+    case_snapshot_hash: snapshot.snapshot_hash,
+    kind: 'initial',
+    sequence: 1,
+    runner: 'command',
+    code_sha: run.code_sha,
+    test_sha: run.test_sha,
+    scenario_hash: '5'.repeat(64),
+    environment_hash: run.environment_hash,
+    browser_project: 'none',
+    test_data_snapshot: '6'.repeat(64),
+    runtime_version: run.runtime_version,
+    kernel_version: run.kernel_version,
+    status: 'passed',
+    started_at: run.started_at,
+    completed_at: run.completed_at,
+    exit_status: 0,
+    parent_attempt_id: null
+  };
+  const failureState = {
+    ok: true,
+    states: [],
+    effective_failures: [],
+    open_failure_ids: [],
+    blockers: []
+  };
+  const authorityHeads = {
+    transition_proposals: {
+      kind: 'transition_proposal',
+      path: 'v2/transition-proposals.jsonl',
+      sequence: 0,
+      latest_digest: null,
+      terminal_envelope_id: null
+    },
+    transition_receipts: {
+      kind: 'transition_application',
+      path: 'v2/transition-receipts.jsonl',
+      sequence: 0,
+      latest_digest: null,
+      terminal_envelope_id: null
+    },
+    attempt_facts: {
+      kind: 'attempt_fact',
+      path: 'v2/attempt-facts.jsonl',
+      sequence: 0,
+      latest_digest: null,
+      terminal_envelope_id: null
+    }
+  };
+  const authorityAnchor = trustedFactAuthority.sealChainAnchor({
+    change_id: CHANGE,
+    logs: authorityHeads,
+    anchored_at: input.freshness.checked_at
+  });
+  input.authority_chain_digest = sha256(canonicalJson({
+    anchor_id: authorityAnchor.id,
+    logs: authorityHeads
+  }));
+  const freshness = {
+    ok: true,
+    checked_at: input.freshness.checked_at,
+    summary: {
+      status: 'fresh',
+      total: 1,
+      fresh: 1,
+      stale: 0,
+      unknown: 0
+    },
+    cases: [{
+      case_id: CASE_ID,
+      attempt_id: attempt.id,
+      checked_at: input.freshness.checked_at,
+      status: 'fresh',
+      reasons: []
+    }],
+    blockers: []
+  };
   const releaseGate = createGate(schemaRegistry, input, 'release');
   const archiveGate = createGate(schemaRegistry, input, 'archive');
   const aggregate = createSixDomainAggregator({ schemaRegistry })
@@ -424,6 +566,41 @@ function makeProject(options = {}) {
     fallback_used: false
   };
   writeJson(path.join(verifyV2, 'runtime-status.json'), runtimeStatus);
+  writeJson(path.join(verifyV2, 'runs.json'), [run]);
+  writeJson(path.join(verifyV2, 'attempts.json'), [attempt]);
+  writeJson(
+    path.join(verifyV2, 'readings.json'),
+    input.aggregation_request.readings
+  );
+  writeJson(path.join(verifyV2, 'failures.json'), []);
+  writeJson(path.join(verifyV2, 'repair-links.json'), []);
+  writeJson(path.join(verifyV2, 'freshness.json'), freshness);
+  writeJson(
+    path.join(verifyV2, 'integrity.json'),
+    input.aggregation_request.integrity
+  );
+  writeJson(path.join(verifyV2, 'failure-state.json'), failureState);
+  writeJson(
+    path.join(verifyV2, 'authority-chain-anchor.json'),
+    authorityAnchor
+  );
+  for (const name of [
+    'transition-proposals.jsonl',
+    'transition-receipts.jsonl',
+    'attempt-facts.jsonl'
+  ]) {
+    fs.writeFileSync(path.join(verifyV2, name), '');
+  }
+  const runDir = path.join(changeDir, 'verify', 'runs', run.id);
+  writeJson(
+    path.join(runDir, 'attempts', attempt.id, 'integrity.json'),
+    input.aggregation_request.integrity
+  );
+  writeJson(
+    path.join(runDir, 'integrity.json'),
+    input.aggregation_request.integrity
+  );
+  fs.writeFileSync(path.join(runDir, 'failures.jsonl'), '');
   writeJson(path.join(verifyV2, 'gate-input.json'), input);
   writeJson(path.join(verifyV2, 'release-gate.json'), releaseGate);
   writeJson(path.join(verifyV2, 'archive-gate.json'), archiveGate);
@@ -564,10 +741,28 @@ function makeProject(options = {}) {
           runtime_version: RUNTIME_VERSION,
           runtime_root: schemaRegistry.runtime_root
         },
+        signingKey: TRUST_KEY,
         blockers: []
       };
     }
   };
+  const validatorOptions = {
+    schemaRegistry,
+    runtimeAuthority,
+    fingerprints: options.fingerprints || (() => ({
+      case_snapshot_hash: snapshot.snapshot_hash,
+      code_sha: run.code_sha,
+      test_sha: run.test_sha,
+      environment_hash: run.environment_hash,
+      runtime_version: run.runtime_version,
+      kernel_version: run.kernel_version
+    })),
+    hostCompatibilityAuthority,
+    clock: () => '2026-08-02T00:00:07Z'
+  };
+  if (options.useRuntimeTrustedAuthority !== true) {
+    validatorOptions.trustedFactAuthority = trustedFactAuthority;
+  }
   return {
     root,
     changeDir,
@@ -575,12 +770,7 @@ function makeProject(options = {}) {
     reportsDir,
     opsDir,
     schemaRegistry,
-    validator: createReleaseProofValidator({
-      schemaRegistry,
-      runtimeAuthority,
-      hostCompatibilityAuthority,
-      clock: () => '2026-08-02T00:00:07Z'
-    })
+    validator: createReleaseProofValidator(validatorOptions)
   };
 }
 
@@ -603,6 +793,20 @@ test('complete Kernel-derived release and archive proof passes and writes digest
   assert.equal(
     fs.existsSync(path.join(fixture.opsDir, 'verification-v2-proof.json')),
     true
+  );
+});
+
+test('managed runtime signing key supplies the trusted fact authority by default', () => {
+  const fixture = makeProject({ useRuntimeTrustedAuthority: true });
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(
+    blockers(result).has(
+      'verification-release:trusted-fact-authority-unavailable'
+    ),
+    false
   );
 });
 
@@ -785,6 +989,98 @@ test('missing evidence index cannot reuse green gates and reports', () => {
     ),
     true
   );
+});
+
+test('missing canonical execution artifacts cannot reuse green gates and reports', () => {
+  for (const artifact of ['runs.json', 'attempts.json', 'readings.json']) {
+    const fixture = makeProject();
+    fs.unlinkSync(path.join(fixture.verifyV2, artifact));
+
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    const ids = blockers(result);
+
+    assert.equal(result.ok, false, artifact);
+    assert.equal(
+      ids.has(`verification-release:artifact-missing:verify/v2/${artifact}`),
+      true,
+      artifact
+    );
+    assert.equal(
+      ids.has('verification-release:canonical-rebuild-blocked'),
+      true,
+      artifact
+    );
+  }
+});
+
+test('missing or tampered authority chain anchor blocks release proof', () => {
+  for (const mutation of ['missing', 'tampered']) {
+    const fixture = makeProject();
+    const anchorPath = path.join(
+      fixture.verifyV2,
+      'authority-chain-anchor.json'
+    );
+    if (mutation === 'missing') {
+      fs.unlinkSync(anchorPath);
+    } else {
+      const anchor = readJson(anchorPath);
+      anchor.logs.transition_receipts.sequence += 1;
+      writeJson(anchorPath, anchor);
+    }
+
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    const ids = blockers(result);
+
+    assert.equal(result.ok, false, mutation);
+    assert.equal(
+      mutation === 'missing'
+        ? ids.has(
+            'verification-release:artifact-missing:verify/v2/authority-chain-anchor.json'
+          )
+        : ids.has('verification-release:canonical-rebuild-blocked'),
+      true,
+      mutation
+    );
+    assert.equal(
+      ids.has('verification-release:canonical-authority-chain-anchor-mismatch'),
+      true,
+      mutation
+    );
+  }
+});
+
+test('current code, test, and environment fingerprint drift blocks release proof', () => {
+  for (const field of ['code_sha', 'test_sha', 'environment_hash']) {
+    const fixture = makeProject({
+      fingerprints(projectRoot, snapshot, runtimeStatus) {
+        return {
+          case_snapshot_hash: snapshot.snapshot_hash,
+          code_sha: field === 'code_sha' ? '9'.repeat(40) : '1'.repeat(40),
+          test_sha: field === 'test_sha' ? '9'.repeat(40) : '2'.repeat(40),
+          environment_hash: field === 'environment_hash'
+            ? '9'.repeat(64)
+            : '4'.repeat(64),
+          runtime_version: runtimeStatus.runtime_version,
+          kernel_version: '2.0.0-alpha.2'
+        };
+      }
+    });
+
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    const ids = blockers(result);
+
+    assert.equal(result.ok, false, field);
+    assert.equal(
+      ids.has('verification-release:canonical-rebuild-blocked'),
+      true,
+      field
+    );
+    assert.equal(
+      ids.has('verification-release:canonical-gate-input-mismatch'),
+      true,
+      field
+    );
+  }
 });
 
 test('required migration needs one successful schema-valid apply receipt', () => {
@@ -1137,5 +1433,115 @@ test('a symlinked operations directory cannot receive a blocked proof write', ()
   assert.equal(
     fs.existsSync(path.join(externalOps, 'verification-v2-proof.json')),
     false
+  );
+});
+
+test('writeArchiveGate does not persist a gate or log when validation fails', () => {
+  const fixture = makeProject();
+
+  const result = writeArchiveGate(fixture.root);
+
+  assert.equal(result.verdict, 'red');
+  assert.equal(
+    fs.existsSync(path.join(fixture.opsDir, 'archive-gate.json')),
+    false
+  );
+  assert.equal(
+    fs.existsSync(path.join(fixture.opsDir, 'archive-log.jsonl')),
+    false
+  );
+});
+
+test('writeArchiveGate does not follow symlinked operations or parent directories', () => {
+  for (const mode of ['operations', 'changes']) {
+    const fixture = makeProject();
+    const external = fs.mkdtempSync(
+      path.join(os.tmpdir(), `specnav-archive-${mode}-`)
+    );
+    let externalOps;
+    if (mode === 'operations') {
+      externalOps = path.join(external, 'operations');
+      fs.renameSync(fixture.opsDir, externalOps);
+      fs.symlinkSync(externalOps, fixture.opsDir, 'dir');
+    } else {
+      const changesRoot = path.join(fixture.root, 'openspec', 'changes');
+      const externalChanges = path.join(external, 'changes');
+      fs.renameSync(changesRoot, externalChanges);
+      fs.symlinkSync(externalChanges, changesRoot, 'dir');
+      externalOps = path.join(externalChanges, CHANGE, 'operations');
+    }
+
+    const result = writeArchiveGate(fixture.root);
+
+    assert.equal(result.verdict, 'red', mode);
+    assert.equal(
+      fs.existsSync(path.join(externalOps, 'archive-gate.json')),
+      false,
+      mode
+    );
+    assert.equal(
+      fs.existsSync(path.join(externalOps, 'archive-log.jsonl')),
+      false,
+      mode
+    );
+  }
+});
+
+test('safe archive JSONL append is atomic and rejects a symlink target', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-archive-safe-fs-'));
+  const operations = path.join(root, 'operations');
+  const log = path.join(operations, 'archive-log.jsonl');
+  fs.mkdirSync(operations, { recursive: true });
+
+  safeFs.appendJsonl(
+    root,
+    log,
+    { id: 'archive-1', verdict: 'green' },
+    'verification-operations:test-archive-log'
+  );
+  safeFs.appendJsonl(
+    root,
+    log,
+    { id: 'archive-2', verdict: 'red' },
+    'verification-operations:test-archive-log'
+  );
+  assert.equal(
+    fs.readFileSync(log, 'utf8'),
+    '{"id":"archive-1","verdict":"green"}\n'
+      + '{"id":"archive-2","verdict":"red"}\n'
+  );
+
+  const external = path.join(root, 'external-log.jsonl');
+  fs.writeFileSync(external, 'trusted\n');
+  const symlink = path.join(operations, 'symlink-log.jsonl');
+  fs.symlinkSync(external, symlink);
+
+  assert.throws(
+    () => safeFs.appendJsonl(
+      root,
+      symlink,
+      { id: 'forged' },
+      'verification-operations:test-archive-log'
+    ),
+    /verification-operations:test-archive-log:symlink/
+  );
+  assert.equal(fs.readFileSync(external, 'utf8'), 'trusted\n');
+
+  const externalGate = path.join(root, 'external-gate.json');
+  fs.writeFileSync(externalGate, '{"trusted":true}\n');
+  const gateSymlink = path.join(operations, 'symlink-gate.json');
+  fs.symlinkSync(externalGate, gateSymlink);
+  assert.throws(
+    () => safeFs.atomicWriteJson(
+      root,
+      gateSymlink,
+      { forged: true },
+      'verification-operations:test-archive-gate'
+    ),
+    /verification-operations:test-archive-gate:symlink/
+  );
+  assert.equal(
+    fs.readFileSync(externalGate, 'utf8'),
+    '{"trusted":true}\n'
   );
 });

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/root-cause-review.schema.json",
+  "title": "SpecNav Verification 2.0 Root Cause Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "root_failure_digest",
+    "change_id",
+    "run_id",
+    "case_id",
+    "attempt_id",
+    "classification",
+    "summary",
+    "root_cause",
+    "failed_assertion_ids",
+    "reviewer",
+    "decision",
+    "reviewed_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.root-cause-review.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "root_failure_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "attempt_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "classification": {
+      "enum": [
+        "product_defect",
+        "test_defect",
+        "environment_defect",
+        "flaky",
+        "expected_blocker",
+        "requirement_ambiguity"
+      ]
+    },
+    "summary": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "root_cause": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "failed_assertion_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "kind": {
+          "const": "human"
+        }
+      }
+    },
+    "decision": {
+      "const": "approved"
+    },
+    "reviewed_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}

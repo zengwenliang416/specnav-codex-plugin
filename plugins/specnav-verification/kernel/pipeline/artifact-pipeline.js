@@ -1,13 +1,14 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 
 const {
   canonicalJson,
   sha256
 } = require('../evidence/identity');
+const {
+  createAuthorityLog
+} = require('../repair/authority-log');
 
 const REPORT_FILES = Object.freeze([
   'overview.html',
@@ -19,9 +20,98 @@ function blocker(id, artifact, detail = null) {
   return { id, artifact, detail };
 }
 
-function readJson(file, fallback = null) {
-  if (!fs.existsSync(file)) return fallback;
-  return JSON.parse(fs.readFileSync(file, 'utf8'));
+function readJson(store, relative, fallback, blockers) {
+  const bytes = store.readBytes(relative);
+  if (!bytes.ok) {
+    blockers.push(...bytes.blockers);
+    return structuredClone(fallback);
+  }
+  if (bytes.missing) return structuredClone(fallback);
+  try {
+    return JSON.parse(bytes.bytes.toString('utf8'));
+  } catch (error) {
+    blockers.push(blocker(
+      'verification-production:json-invalid',
+      relative,
+      error instanceof Error ? error.message : String(error)
+    ));
+    return structuredClone(fallback);
+  }
+}
+
+function readJsonl(store, relative, blockers) {
+  const result = store.readJsonl(relative);
+  if (!result.ok) {
+    blockers.push(...result.blockers);
+    return [];
+  }
+  return result.value;
+}
+
+function readOptionalJson(store, relative, blockers) {
+  const result = store.readBytes(relative);
+  if (!result.ok) {
+    blockers.push(...result.blockers);
+    return { exists: false, value: null };
+  }
+  if (result.missing) return { exists: false, value: null };
+  try {
+    return {
+      exists: true,
+      value: JSON.parse(result.bytes.toString('utf8'))
+    };
+  } catch (error) {
+    blockers.push(blocker(
+      'verification-production:json-invalid',
+      relative,
+      error instanceof Error ? error.message : String(error)
+    ));
+    return { exists: true, value: null };
+  }
+}
+
+function rawFailureInventory(store, runs, blockers) {
+  const inventoryBlockers = [];
+  const inventory = store.listDirectory('runs');
+  if (!inventory.ok) {
+    inventoryBlockers.push(...inventory.blockers);
+    blockers.push(...inventoryBlockers);
+    return { values: [], blockers: inventoryBlockers };
+  }
+  const indexedRunIds = new Set(runs.map((run) => run?.id).filter(Boolean));
+  const directoryRunIds = new Set();
+  for (const entry of inventory.entries) {
+    if (entry.type !== 'directory') {
+      inventoryBlockers.push(blocker(
+        'verification-production:run-inventory-invalid',
+        `runs/${entry.name}`,
+        entry.type
+      ));
+      continue;
+    }
+    directoryRunIds.add(entry.name);
+    if (!indexedRunIds.has(entry.name)) {
+      inventoryBlockers.push(blocker(
+        'verification-production:run-unindexed',
+        `runs/${entry.name}`
+      ));
+    }
+  }
+  for (const runId of indexedRunIds) {
+    if (!directoryRunIds.has(runId)) {
+      inventoryBlockers.push(blocker(
+        'verification-production:run-directory-missing',
+        `runs/${runId}`
+      ));
+    }
+  }
+  const values = [...directoryRunIds].sort().flatMap((runId) => readJsonl(
+    store,
+    `runs/${runId}/failures.jsonl`,
+    inventoryBlockers
+  ));
+  blockers.push(...inventoryBlockers);
+  return { values, blockers: inventoryBlockers };
 }
 
 function stableIds(values) {
@@ -51,7 +141,7 @@ function currentReadings(snapshot, attempts, readings) {
   return readings.filter((entry) => latestAttemptIds.has(entry.attempt_id));
 }
 
-function mergeIntegrity(verificationRoot, runs, attempts) {
+function mergeIntegrity(store, runs, attempts) {
   const facts = [];
   const blockers = [];
   for (const run of runs) {
@@ -65,15 +155,14 @@ function mergeIntegrity(verificationRoot, runs, attempts) {
     }
     const attemptValues = [];
     for (const attempt of runAttempts) {
-      const file = path.join(
-        verificationRoot,
+      const file = [
         'runs',
         run.id,
         'attempts',
         attempt.id,
         'integrity.json'
-      );
-      const value = readJson(file);
+      ].join('/');
+      const value = readJson(store, file, null, blockers);
       if (!value) {
         blockers.push(blocker(
           'verification-production:attempt-integrity-missing',
@@ -85,13 +174,12 @@ function mergeIntegrity(verificationRoot, runs, attempts) {
       facts.push(...(value.facts?.evidence || []));
       blockers.push(...(value.blockers || []));
     }
-    const runFile = path.join(
-      verificationRoot,
+    const runFile = [
       'runs',
       run.id,
       'integrity.json'
-    );
-    const runValue = readJson(runFile);
+    ].join('/');
+    const runValue = readJson(store, runFile, null, blockers);
     if (!runValue) {
       blockers.push(blocker(
         'verification-production:integrity-missing',
@@ -153,7 +241,13 @@ function mergeIntegrity(verificationRoot, runs, attempts) {
   };
 }
 
-function freshnessProjection(snapshot, runs, attempts, checkedAt) {
+function freshnessProjection(
+  snapshot,
+  runs,
+  attempts,
+  currentFingerprints,
+  checkedAt
+) {
   const cases = snapshot.cases.map((testCase) => {
     const candidates = attempts.filter((entry) => entry.case_id === testCase.id)
       .sort(compareAttempts);
@@ -173,13 +267,21 @@ function freshnessProjection(snapshot, runs, attempts, checkedAt) {
         'kernel_version'
       ]) {
         if (attempt[field] !== run[field]) reasons.push(`${field}:mismatch`);
+        if (run[field] !== currentFingerprints[field]) {
+          reasons.push(`${field}:current-mismatch`);
+        }
       }
     }
+    const missing = reasons.includes('execution:missing');
     return {
       case_id: testCase.id,
       attempt_id: attempt?.id || 'attempt-missing',
       checked_at: checkedAt,
-      status: reasons.length === 0 ? 'fresh' : 'unknown',
+      status: reasons.length === 0
+        ? 'fresh'
+        : missing
+          ? 'unknown'
+          : 'stale',
       reasons
     };
   });
@@ -228,6 +330,8 @@ function createVerificationArtifactPipeline(options = {}) {
     verificationRoot,
     snapshot,
     approval,
+    currentFingerprints,
+    trustedFactAuthority,
     clock = () => new Date().toISOString(),
     secrets = [],
     policyVersion = 'verification-v2.0'
@@ -239,6 +343,10 @@ function createVerificationArtifactPipeline(options = {}) {
     || typeof verificationRoot !== 'string'
     || !snapshot
     || !approval
+    || !currentFingerprints
+    || typeof currentFingerprints !== 'object'
+    || !trustedFactAuthority
+    || typeof trustedFactAuthority.verify !== 'function'
     || typeof clock !== 'function'
   ) {
     throw new Error('verification-production:artifact-config-invalid');
@@ -248,27 +356,96 @@ function createVerificationArtifactPipeline(options = {}) {
     root: verificationRoot
   });
 
-  function build() {
+  function build(buildOptions = {}) {
+    const persist = buildOptions.persist !== false;
     const blockers = [];
-    const runs = readJson(path.join(verificationRoot, 'v2', 'runs.json'), []);
+    const runs = readJson(store, 'v2/runs.json', [], blockers);
     const attempts = readJson(
-      path.join(verificationRoot, 'v2', 'attempts.json'),
-      []
+      store,
+      'v2/attempts.json',
+      [],
+      blockers
     );
     const readings = readJson(
-      path.join(verificationRoot, 'v2', 'readings.json'),
-      []
+      store,
+      'v2/readings.json',
+      [],
+      blockers
     );
     const failures = readJson(
-      path.join(verificationRoot, 'v2', 'failures.json'),
-      []
+      store,
+      'v2/failures.json',
+      [],
+      blockers
     );
     const repairLinks = readJson(
-      path.join(verificationRoot, 'v2', 'repair-links.json'),
-      []
+      store,
+      'v2/repair-links.json',
+      [],
+      blockers
     );
+    const authorityLog = createAuthorityLog({
+      store,
+      authority: trustedFactAuthority
+    });
+    const proposalLog = authorityLog.validate(
+      'v2/transition-proposals.jsonl',
+      'transition_proposal'
+    );
+    const receiptLog = authorityLog.validate(
+      'v2/transition-receipts.jsonl',
+      'transition_application'
+    );
+    const attemptFactLog = authorityLog.validate(
+      'v2/attempt-facts.jsonl',
+      'attempt_fact'
+    );
+    blockers.push(
+      ...(proposalLog.blockers || []),
+      ...(receiptLog.blockers || []),
+      ...(attemptFactLog.blockers || [])
+    );
+    const authorityLogs = {
+      transition_proposals: proposalLog,
+      transition_receipts: receiptLog,
+      attempt_facts: attemptFactLog
+    };
+    const existingAnchor = readOptionalJson(
+      store,
+      'v2/authority-chain-anchor.json',
+      blockers
+    );
+    const priorGateInput = readOptionalJson(
+      store,
+      'v2/gate-input.json',
+      blockers
+    );
+    if (existingAnchor.exists) {
+      const anchorValidation = authorityLog.validateAnchor(
+        existingAnchor.value,
+        snapshot.change_id,
+        authorityLogs
+      );
+      blockers.push(...anchorValidation.blockers);
+    } else if (priorGateInput.exists || buildOptions.persist === false) {
+      blockers.push(blocker(
+        'verification-authority-log:anchor-missing',
+        'v2/authority-chain-anchor.json'
+      ));
+    }
+    const classificationEnvelopes = failures.map((failure) => readJson(
+      store,
+      `repairs/${failure.id}/classification-envelope.json`,
+      null,
+      blockers
+    )).filter(Boolean);
+    const rawFailureState = rawFailureInventory(store, runs, blockers);
+    const rawFailures = rawFailureState.values;
     const evidenceIndex = readJson(
-      path.join(verificationRoot, 'evidence', 'index.json')
+      store,
+      'evidence/index.json',
+      null,
+      blockers
     );
     if (!evidenceIndex) {
       return {
@@ -281,9 +458,15 @@ function createVerificationArtifactPipeline(options = {}) {
         fallback_used: false
       };
     }
-    const integrity = mergeIntegrity(verificationRoot, runs, attempts);
+    const integrity = mergeIntegrity(store, runs, attempts);
     blockers.push(...integrity.blockers);
-    const freshness = freshnessProjection(snapshot, runs, attempts, clock());
+    const freshness = freshnessProjection(
+      snapshot,
+      runs,
+      attempts,
+      currentFingerprints,
+      clock()
+    );
     blockers.push(...freshness.blockers);
     const aggregationReadings = currentReadings(snapshot, attempts, readings);
     const aggregationRequest = {
@@ -314,9 +497,59 @@ function createVerificationArtifactPipeline(options = {}) {
         fallback_used: false
       };
     }
-    const openFailureIds = failures.filter((entry) => (
-      !['closed', 'resolved'].includes(entry.status)
-    )).map((entry) => entry.id);
+    const failureState = kernel.createFailureStateReducer({
+      schemaRegistry,
+      trustVerifier: trustedFactAuthority
+    }).reduce({
+      expected_change_id: snapshot.change_id,
+      failures,
+      raw_failures: rawFailures,
+      runs,
+      classification_envelopes: classificationEnvelopes,
+      transition_proposal_envelopes: proposalLog.value || [],
+      transition_receipt_envelopes: receiptLog.value || []
+    });
+    blockers.push(...failureState.blockers);
+    const openFailureIds = failureState.open_failure_ids;
+    const failureStateStatus = failureState.ok
+      && rawFailureState.blockers.length === 0
+      && proposalLog.ok
+      && receiptLog.ok
+      && attemptFactLog.ok
+      ? 'valid'
+      : 'invalid';
+    const failureStateDigest = sha256(canonicalJson(failureState));
+    const authorityHeads = {
+      transition_proposals: authorityLog.logHead(
+        'v2/transition-proposals.jsonl',
+        'transition_proposal',
+        proposalLog
+      ),
+      transition_receipts: authorityLog.logHead(
+        'v2/transition-receipts.jsonl',
+        'transition_application',
+        receiptLog
+      ),
+      attempt_facts: authorityLog.logHead(
+        'v2/attempt-facts.jsonl',
+        'attempt_fact',
+        attemptFactLog
+      )
+    };
+    const existingAnchorMatches = existingAnchor.value
+      && trustedFactAuthority.verifyChainAnchor(existingAnchor.value).ok
+      && canonicalJson(existingAnchor.value.logs)
+        === canonicalJson(authorityHeads);
+    const authorityAnchor = existingAnchorMatches
+      ? existingAnchor.value
+      : trustedFactAuthority.sealChainAnchor({
+          change_id: snapshot.change_id,
+          logs: authorityHeads
+        });
+    const authorityChainDigest = sha256(canonicalJson({
+      anchor_id: authorityAnchor.id,
+      logs: authorityHeads
+    }));
     const gateInput = {
       schema: 'specnav.verification.release-gate-input.v1',
       change_id: snapshot.change_id,
@@ -327,6 +560,9 @@ function createVerificationArtifactPipeline(options = {}) {
       case_approval_reviewer_id: approval.reviewer.id,
       aggregation_request: aggregationRequest,
       open_failure_ids: openFailureIds,
+      failure_state_status: failureStateStatus,
+      failure_state_digest: failureStateDigest,
+      authority_chain_digest: authorityChainDigest,
       freshness: gateFreshness(freshness),
       integrity_status: integrity.facts.summary.integrity,
       evidence_index_version: evidenceIndex.index_version,
@@ -344,6 +580,9 @@ function createVerificationArtifactPipeline(options = {}) {
       stage: 'release',
       aggregation_request: aggregationRequest,
       open_failure_ids: openFailureIds,
+      failure_state_status: failureStateStatus,
+      failure_state_digest: failureStateDigest,
+      authority_chain_digest: authorityChainDigest,
       freshness: gateInput.freshness,
       integrity_status: gateInput.integrity_status,
       evidence_index_version: evidenceIndex.index_version,
@@ -356,6 +595,9 @@ function createVerificationArtifactPipeline(options = {}) {
       stage: 'archive',
       aggregation_request: aggregationRequest,
       open_failure_ids: openFailureIds,
+      failure_state_status: failureStateStatus,
+      failure_state_digest: failureStateDigest,
+      authority_chain_digest: authorityChainDigest,
       freshness: gateInput.freshness,
       integrity_status: gateInput.integrity_status,
       evidence_index_version: evidenceIndex.index_version,
@@ -364,14 +606,25 @@ function createVerificationArtifactPipeline(options = {}) {
       policy_version: policyVersion
     });
     blockers.push(...releaseResult.blockers, ...archiveResult.blockers);
-    const rawFile = path.join(verificationRoot, 'evidence', 'raw.jsonl');
-    const rawBytes = fs.readFileSync(rawFile);
+    const rawRead = store.readBytes('evidence/raw.jsonl');
+    if (!rawRead.ok || rawRead.missing) {
+      blockers.push(...(rawRead.blockers || [blocker(
+        'verification-production:evidence-raw-missing',
+        'verify/evidence/raw.jsonl'
+      )]));
+    }
+    const rawBytes = rawRead.ok ? rawRead.bytes : Buffer.alloc(0);
     const factAuthority = kernel.createReportFactAuthority({
       verifyIntegrity: (payload) => (
         canonicalJson(payload.integrity) === canonicalJson(integrity)
       ),
       verifyFreshness: (payload) => (
         canonicalJson(payload.freshness) === canonicalJson(freshness)
+      ),
+      verifyGateFacts: (payload) => (
+        payload.failure_state_status === failureStateStatus
+        && payload.failure_state_digest === failureStateDigest
+        && payload.authority_chain_digest === authorityChainDigest
       )
     });
     const builder = kernel.createReportModelBuilder({
@@ -406,8 +659,11 @@ function createVerificationArtifactPipeline(options = {}) {
       policy_facts: aggregationRequest.policy_facts,
       aggregate,
       freshness,
-      failures,
+      failures: failureState.effective_failures,
       repair_links: repairLinks,
+      failure_state_status: failureStateStatus,
+      failure_state_digest: failureStateDigest,
+      authority_chain_digest: authorityChainDigest,
       gate_decision: releaseResult.gate
     });
     blockers.push(...report.blockers);
@@ -429,19 +685,26 @@ function createVerificationArtifactPipeline(options = {}) {
       kernel.createCaseResultsRenderer(rendererOptions).render(report.model)
     ];
     blockers.push(...rendered.flatMap((entry) => entry.blockers || []));
-    const writes = [
-      store.publishJson('v2/freshness.json', freshness),
-      store.publishJson('v2/integrity.json', integrity),
-      store.publishJson('v2/aggregate.json', aggregate),
-      store.publishJson('v2/gate-input.json', gateInput),
-      ...(releaseResult.gate
-        ? [store.publishJson('v2/release-gate.json', releaseResult.gate)]
-        : []),
-      ...(archiveResult.gate
-        ? [store.publishJson('v2/archive-gate.json', archiveResult.gate)]
-        : []),
-      store.publishJson('v2/report-model.json', report.model)
-    ];
+    const writes = persist
+      ? [
+          store.publishJson('v2/freshness.json', freshness),
+          store.publishJson('v2/integrity.json', integrity),
+          store.publishJson('v2/failure-state.json', failureState),
+          store.publishJson(
+            'v2/authority-chain-anchor.json',
+            authorityAnchor
+          ),
+          store.publishJson('v2/aggregate.json', aggregate),
+          store.publishJson('v2/gate-input.json', gateInput),
+          ...(releaseResult.gate
+            ? [store.publishJson('v2/release-gate.json', releaseResult.gate)]
+            : []),
+          ...(archiveResult.gate
+            ? [store.publishJson('v2/archive-gate.json', archiveResult.gate)]
+            : []),
+          store.publishJson('v2/report-model.json', report.model)
+        ]
+      : [];
     const reportManifest = {
       schema: 'specnav.verification.report-render-manifest.v1',
       change_id: snapshot.change_id,
@@ -452,7 +715,12 @@ function createVerificationArtifactPipeline(options = {}) {
     for (const entry of rendered) {
       if (!entry.ok) continue;
       const bytes = Buffer.from(entry.html);
-      writes.push(store.publishText(`reports/${entry.file_name}`, entry.html));
+      if (persist) {
+        writes.push(store.publishText(
+          `reports/${entry.file_name}`,
+          entry.html
+        ));
+      }
       reportManifest.reports.push({
         name: entry.file_name,
         path: `verify/reports/${entry.file_name}`,
@@ -460,12 +728,14 @@ function createVerificationArtifactPipeline(options = {}) {
         size: bytes.length
       });
     }
-    writes.push(store.publishJson('v2/report-render-manifest.json', {
-      ...reportManifest,
-      reports: reportManifest.reports.sort((left, right) => (
-        left.name.localeCompare(right.name)
-      ))
-    }));
+    if (persist) {
+      writes.push(store.publishJson('v2/report-render-manifest.json', {
+        ...reportManifest,
+        reports: reportManifest.reports.sort((left, right) => (
+          left.name.localeCompare(right.name)
+        ))
+      }));
+    }
     blockers.push(...writes.flatMap((entry) => (
       entry.ok ? [] : entry.blockers
     )));
@@ -484,6 +754,10 @@ function createVerificationArtifactPipeline(options = {}) {
         ? 'pass'
         : 'blocked',
       aggregate,
+      freshness,
+      integrity,
+      failure_state: failureState,
+      authority_chain_anchor: authorityAnchor,
       gate_input: gateInput,
       release_gate: releaseResult.gate,
       archive_gate: archiveResult.gate,

@@ -12,6 +12,7 @@ const PLUGIN = 'specnav-verification';
 const APPROVAL_BLOCKERS = new Map([
   ['runtime-setup', 'runtime-approval-required'],
   ['runtime-repair', 'runtime-approval-required'],
+  ['repair-transition-apply', 'transition-approval-required'],
   ['migrate-apply', 'mutation-approval-required'],
   ['migrate-rollback', 'mutation-approval-required']
 ]);
@@ -27,6 +28,13 @@ const SUPPORTED_ACTIONS = new Set([
   'runtime-status',
   'runtime-setup',
   'runtime-repair',
+  'repair-classify',
+  'repair-request',
+  'repair-complete',
+  'repair-rerun-plan',
+  'repair-evaluate',
+  'repair-transition-apply',
+  'repair-state',
   'rerun',
   'migrate-dry-run',
   'migrate-apply',
@@ -71,6 +79,13 @@ const ACTIONS = Object.freeze([
   ['runtime-status', false],
   ['runtime-setup', true],
   ['runtime-repair', true],
+  ['repair-classify', false],
+  ['repair-request', false],
+  ['repair-complete', false],
+  ['repair-rerun-plan', false],
+  ['repair-evaluate', false],
+  ['repair-transition-apply', true],
+  ['repair-state', false],
   ['rerun', false],
   ['migrate-dry-run', false],
   ['migrate-apply', true],
@@ -131,6 +146,9 @@ function nextSkills(ids) {
     skills.push('specnav-verify-plan');
   }
   if (ids.some((id) => id.includes('stale') || id.includes('rerun'))) {
+    skills.push('specnav-verify-rerun');
+  }
+  if (ids.some((id) => id.startsWith('verification-repair'))) {
     skills.push('specnav-verify-rerun');
   }
   const domainSkills = new Map([
@@ -500,6 +518,41 @@ function commandFor(pluginRoot, request) {
       '--json'
     ];
   }
+  if (request.action.startsWith('repair-')) {
+    const repairAction = {
+      'repair-classify': 'classify',
+      'repair-request': 'repair-request',
+      'repair-complete': 'repair-complete',
+      'repair-rerun-plan': 'rerun-plan',
+      'repair-evaluate': 'evaluate',
+      'repair-transition-apply': 'transition-apply',
+      'repair-state': 'state'
+    }[request.action];
+    return [
+      path.join(scripts, 'verification-v2-repair-loop.js'),
+      repairAction,
+      '--project',
+      request.project_root,
+      ...optionArgs(options, [
+        ['change', '--change'],
+        ['reviewer_id', '--reviewer-id'],
+        ['failure_id', '--failure-id'],
+        ['root_cause_check', '--root-cause-check'],
+        ['no_progress', '--no-progress'],
+        ['scope', '--scope'],
+        ['spec_review', '--spec-review'],
+        ['quality_review', '--quality-review'],
+        ['proposal_id', '--proposal-id'],
+        ['idempotency_key', '--idempotency-key'],
+        ['case_snapshot', '--snapshot'],
+        ['case_approval', '--approval'],
+        ['requirements_source', '--requirements'],
+        ['acceptance_source', '--acceptance'],
+        ['runtime_status', '--runtime-status']
+      ]),
+      '--json'
+    ];
+  }
   const migrationAction = {
     'migrate-dry-run': 'dry-run',
     'migrate-apply': 'apply',
@@ -612,6 +665,13 @@ function parseCli(args) {
     attempt_kind: argValue(args, '--attempt-kind'),
     parent_attempt: argValue(args, '--parent-attempt'),
     failure_id: argValue(args, '--failure-id'),
+    root_cause_check: argValue(args, '--root-cause-check'),
+    no_progress: argValue(args, '--no-progress'),
+    scope: argValue(args, '--scope'),
+    spec_review: argValue(args, '--spec-review'),
+    quality_review: argValue(args, '--quality-review'),
+    proposal_id: argValue(args, '--proposal-id'),
+    idempotency_key: argValue(args, '--idempotency-key'),
     case_snapshot: argValue(args, '--case-snapshot'),
     case_approval: argValue(args, '--case-approval'),
     requirements_source: argValue(args, '--requirements-source'),

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/authority-chain-anchor.schema.json",
+  "title": "SpecNav Verification 2.0 Authority Chain Anchor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "logs",
+    "anchored_at",
+    "signature_algorithm",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.authority-chain-anchor.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "logs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transition_proposals",
+        "transition_receipts",
+        "attempt_facts"
+      ],
+      "properties": {
+        "transition_proposals": {
+          "$ref": "#/$defs/logHead"
+        },
+        "transition_receipts": {
+          "$ref": "#/$defs/logHead"
+        },
+        "attempt_facts": {
+          "$ref": "#/$defs/logHead"
+        }
+      }
+    },
+    "anchored_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "signature_algorithm": {
+      "const": "hmac-sha256"
+    },
+    "signature": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "logHead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "path",
+        "sequence",
+        "latest_digest",
+        "terminal_envelope_id"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "transition_proposal",
+            "transition_application",
+            "attempt_fact"
+          ]
+        },
+        "path": {
+          "$ref": "common.schema.json#/$defs/nonEmptyString"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_digest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/sha256"
+            }
+          ]
+        },
+        "terminal_envelope_id": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/stableId"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

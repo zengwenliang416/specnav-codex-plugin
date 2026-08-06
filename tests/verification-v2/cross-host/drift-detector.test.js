@@ -142,7 +142,7 @@ test('kernel identity drift returns a stable release blocker', (t) => {
     metadataFile,
     fs.readFileSync(metadataFile, 'utf8')
       .replace(
-        "const version = '2.0.0-alpha.1';",
+        "const version = '2.0.0-alpha.2';",
         "const version = '2.0.0-alpha.0';"
       )
   );

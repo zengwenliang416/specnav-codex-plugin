@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_BASE="$(mktemp -d /tmp/specnav-verification-runtime-cli-XXXXXX)"
-VERSION="2.0.0-alpha.1"
+VERSION="2.0.0-alpha.2"
 
 cd "$ROOT"
 before="$(git status --short -- package.json package-lock.json npm-shrinkwrap.json pnpm-lock.yaml yarn.lock)"

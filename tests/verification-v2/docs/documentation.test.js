@@ -51,7 +51,7 @@ test('matched English and Chinese guides cover every user-visible contract', () 
   const english = read('docs/verification-2-0.md');
   const chinese = read('docs/verification-2-0.zh-CN.md');
   const sharedFacts = [
-    '2.0.0-alpha.1',
+    '2.0.0-alpha.2',
     'Playwright 1.62.1',
     'Midscene 1.10.8',
     'AJV 8.20.0',

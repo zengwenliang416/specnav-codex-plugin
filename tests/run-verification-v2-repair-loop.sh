@@ -7,6 +7,9 @@ trap 'status=$?; specnav_verification_emit_assertions "$status"; exit "$status"'
 cd "$ROOT"
 
 node --test \
+  tests/verification-v2/repair-loop/authority-transition.test.js \
+  tests/verification-v2/repair-loop/cli.test.js \
+  tests/verification-v2/repair-loop/failure-state-reducer.test.js \
   tests/verification-v2/repair-loop/state-machine.test.js \
   tests/verification-v2/contracts/schema-registry.test.js \
   tests/verification-v2/kernel/package-boundary.test.js

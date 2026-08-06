@@ -12,6 +12,9 @@
     "decision",
     "source_case_ids",
     "source_reading_ids",
+    "failure_state_status",
+    "failure_state_digest",
+    "authority_chain_digest",
     "evidence_index_version",
     "runtime_version",
     "kernel_version",
@@ -59,6 +62,18 @@
         "$ref": "common.schema.json#/$defs/stableId"
       },
       "uniqueItems": true
+    },
+    "failure_state_status": {
+      "enum": [
+        "valid",
+        "invalid"
+      ]
+    },
+    "failure_state_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "authority_chain_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
     },
     "evidence_index_version": {
       "type": "integer",

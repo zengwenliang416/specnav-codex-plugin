@@ -975,7 +975,16 @@ function createRepairLoopStateMachine(options = {}) {
     repairLink,
     scopeDigest
   }) {
-    const proposedAt = clock();
+    const proposedAt = [
+      packet.frozen_at,
+      packet.created_at,
+      repairLink?.requested_at,
+      repairLink?.completed_at,
+      ...attempts.flatMap((attempt) => [
+        attempt.started_at,
+        attempt.completed_at
+      ])
+    ].filter(validDate).sort().at(-1);
     if (!validDate(proposedAt)) return null;
     const fields = {
       schema: 'specnav.verification.transition-proposal.v1',
@@ -1148,7 +1157,11 @@ function createRepairLoopStateMachine(options = {}) {
           blockers: []
         });
       }
-      if (retests.length === 0) {
+      const repairCompletedAt = Date.parse(repairLink.completed_at);
+      const currentRetests = retests.filter((attempt) => (
+        Date.parse(attempt.started_at) >= repairCompletedAt
+      ));
+      if (currentRetests.length === 0) {
         return result({
           packet,
           status: 'retest_required',
@@ -1162,7 +1175,7 @@ function createRepairLoopStateMachine(options = {}) {
         });
       }
 
-      for (const retest of retests) {
+      for (const retest of currentRetests) {
         if (
           retest.case_id !== packet.case_id
           || !sameFingerprint(retest, repairLink.after_identity)
@@ -1180,7 +1193,7 @@ function createRepairLoopStateMachine(options = {}) {
           ], history);
         }
       }
-      const latestRetest = retests.at(-1);
+      const latestRetest = currentRetests.at(-1);
       const retestFact = factsByAttempt.get(latestRetest.id);
       if (
         retestFact.verdict !== 'pass'

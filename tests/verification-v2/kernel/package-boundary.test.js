@@ -15,7 +15,7 @@ test('kernel package exposes one versioned public entry and schema-only subpath'
   ));
 
   assert.equal(manifest.name, '@specnav/verification-kernel');
-  assert.equal(manifest.version, '2.0.0-alpha.1');
+  assert.equal(manifest.version, '2.0.0-alpha.2');
   assert.equal(manifest.main, './kernel/index.js');
   assert.deepEqual(manifest.exports, {
     '.': './kernel/index.js',
@@ -26,10 +26,13 @@ test('kernel package exposes one versioned public entry and schema-only subpath'
     'assets/',
     'kernel/',
     'schemas/',
-    'scripts/verification-v2-run.js'
+    'scripts/verification-v2-run.js',
+    'scripts/verification-v2-repair-loop.js',
+    'scripts/rerun-scope.js'
   ]);
   assert.deepEqual(manifest.bin, {
-    'specnav-verification-execute': './scripts/verification-v2-run.js'
+    'specnav-verification-execute': './scripts/verification-v2-run.js',
+    'specnav-verification-repair': './scripts/verification-v2-repair-loop.js'
   });
 });
 
@@ -37,7 +40,7 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   const kernel = require(PLUGIN_ROOT);
 
   assert.equal(kernel.metadata.name, '@specnav/verification-kernel');
-  assert.equal(kernel.metadata.version, '2.0.0-alpha.1');
+  assert.equal(kernel.metadata.version, '2.0.0-alpha.2');
   assert.equal(kernel.metadata.apiVersion, 'specnav.verification.kernel.v1');
   assert.match(kernel.metadata.contractDigest, /^[a-f0-9]{64}$/);
   assert.equal(Object.isFrozen(kernel.metadata), true);
@@ -58,8 +61,11 @@ test('public entry exposes immutable metadata and explicit service contracts', (
   assert.equal(typeof kernel.createCaseFreshnessEvaluator, 'function');
   assert.equal(typeof kernel.createCaseRerunPlanner, 'function');
   assert.equal(typeof kernel.createFailureClassifier, 'function');
+  assert.equal(typeof kernel.createFailureStateReducer, 'function');
   assert.equal(typeof kernel.createDevelopmentRepairBridge, 'function');
   assert.equal(typeof kernel.createRepairLoopStateMachine, 'function');
+  assert.equal(typeof kernel.createTransitionApplier, 'function');
+  assert.equal(kernel.createTrustedFactAuthority, undefined);
   assert.equal(typeof kernel.createReportModelBuilder, 'function');
   assert.equal(typeof kernel.createMidsceneAdapter, 'function');
   assert.equal(typeof kernel.createOracleRegistry, 'function');

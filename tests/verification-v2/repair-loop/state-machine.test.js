@@ -667,6 +667,40 @@ test('completed repair proposes retest and passed retest requires exact regressi
   );
 });
 
+test('retains pre-repair retest history but only evaluates retests started after the reviewed repair', () => {
+  const first = initialAttempt();
+  const earlyRetest = retestAttempt(first, {
+    id: 'attempt-retest-before-repair',
+    run_id: 'run-retest-before-repair',
+    code_sha: '2'.repeat(40),
+    started_at: '2026-08-01T07:10:00Z',
+    completed_at: '2026-08-01T07:10:01Z'
+  });
+  const repair = completedRepair(first, {
+    completed_at: '2026-08-01T07:20:00Z'
+  });
+  const result = factory().evaluate(request({
+    attempts: [first, earlyRetest],
+    runs: runHistory(
+      [first, earlyRetest],
+      classificationResult().packet
+    ),
+    attemptFacts: [attemptFact(first), attemptFact(earlyRetest)],
+    repairLink: repair
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'retest_required');
+  assert.equal(result.transition_proposal.action, 'request_retest');
+  assert.equal(
+    result.history.some((entry) => (
+      entry.attempt_id === earlyRetest.id
+      && entry.label === 'PASS AFTER FIX'
+    )),
+    true
+  );
+});
+
 test('failed blocked stale or tampered required regression proposes reopen', () => {
   for (const mutation of [
     { status: 'failed', exit_status: 1, verdict: 'fail' },

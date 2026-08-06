@@ -172,6 +172,36 @@ function packetWithIdentity(fields, identity = fields) {
   };
 }
 
+function validateSourceFailure(schemaRegistry, source, identity, readings, evidenceIds) {
+  if (source === undefined) return { source: null, blocker: null };
+  const value = schemaValue(schemaRegistry, 'failure-packet', source);
+  if (
+    !value
+    || value.classification !== null
+    || value.status !== 'open'
+    || value.next_action !== 'blocked_for_decision'
+    || value.owner !== 'verification'
+    || !sameIdentity(value, identity)
+    || !sameStringSet(
+      new Set(value.reading_ids),
+      new Set(readings.map((reading) => reading.id))
+    )
+    || !sameStringSet(
+      new Set(value.evidence_ids),
+      new Set(evidenceIds)
+    )
+  ) {
+    return {
+      source: null,
+      blocker: blocker(
+        'verification-failure:source-packet-invalid',
+        source?.id || 'source-failure-packet'
+      )
+    };
+  }
+  return { source: value, blocker: null };
+}
+
 function createFailureClassifier(options = {}) {
   const {
     schemaRegistry,
@@ -475,6 +505,16 @@ function createFailureClassifier(options = {}) {
       }
     }
 
+    const sourceState = validateSourceFailure(
+      schemaRegistry,
+      input.source_failure_packet,
+      identity,
+      validatedReadings,
+      evidenceIds
+    );
+    if (sourceState.blocker) return blocked([sourceState.blocker]);
+    const sourceFailure = sourceState.source;
+
     const frozenAt = clock();
     if (!validDate(frozenAt)) {
       return blocked([
@@ -511,8 +551,8 @@ function createFailureClassifier(options = {}) {
       root_cause: rootCauseCheck.root_cause,
       failed_assertion_ids: [...failedAssertionIds].sort(),
       owner: policy.owner,
-      created_at: frozenAt,
-      frozen_at: frozenAt
+      created_at: sourceFailure?.created_at || frozenAt,
+      frozen_at: sourceFailure?.frozen_at || frozenAt
     };
     const packetIdentity = {
       ...packetFields,
@@ -524,7 +564,12 @@ function createFailureClassifier(options = {}) {
         .sort((left, right) => left.id.localeCompare(right.id)),
       root_cause_check_digest: sha256(canonicalJson(rootCauseCheck))
     };
-    const packet = packetWithIdentity(packetFields, packetIdentity);
+    const packet = sourceFailure
+      ? {
+          ...packetFields,
+          id: sourceFailure.id
+        }
+      : packetWithIdentity(packetFields, packetIdentity);
     const validatedPacket = schemaValue(
       schemaRegistry,
       'failure-packet',

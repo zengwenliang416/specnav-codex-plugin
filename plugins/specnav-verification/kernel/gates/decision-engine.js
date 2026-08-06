@@ -42,6 +42,9 @@ function gateSemantic(gate) {
     decision: gate.decision,
     source_case_ids: stableIds(gate.source_case_ids || []),
     source_reading_ids: stableIds(gate.source_reading_ids || []),
+    failure_state_status: gate.failure_state_status,
+    failure_state_digest: gate.failure_state_digest,
+    authority_chain_digest: gate.authority_chain_digest,
     evidence_index_version: gate.evidence_index_version,
     runtime_version: gate.runtime_version,
     kernel_version: gate.kernel_version,
@@ -122,6 +125,9 @@ function createDecisionEngine(options = {}) {
       !isRecord(input)
       || !isRecord(input.aggregation_request)
       || !Array.isArray(input.open_failure_ids)
+      || !['valid', 'invalid'].includes(input.failure_state_status)
+      || !/^[a-f0-9]{64}$/.test(input.failure_state_digest || '')
+      || !/^[a-f0-9]{64}$/.test(input.authority_chain_digest || '')
       || !isRecord(input.freshness)
     ) {
       return invalidResult('request-shape-invalid');
@@ -175,6 +181,13 @@ function createDecisionEngine(options = {}) {
         failureId
       ));
     }
+    if (input.failure_state_status !== 'valid') {
+      blockers.push(blocker(
+        'verification-gate:failure-state-invalid',
+        input.failure_state_digest,
+        input.authority_chain_digest
+      ));
+    }
 
     const gateBlockers = stableBlockers(blockers);
     const semantic = gateSemantic({
@@ -183,6 +196,9 @@ function createDecisionEngine(options = {}) {
       decision: gateBlockers.length === 0 ? 'pass' : 'block',
       source_case_ids: aggregation.source_case_ids,
       source_reading_ids: aggregation.source_reading_ids,
+      failure_state_status: input.failure_state_status,
+      failure_state_digest: input.failure_state_digest,
+      authority_chain_digest: input.authority_chain_digest,
       evidence_index_version: input.evidence_index_version,
       runtime_version: input.runtime_version,
       kernel_version: input.kernel_version,

@@ -2,6 +2,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -20,8 +21,13 @@ const {
 const {
   runtimeBaseDefault
 } = require('../../../plugins/specnav-verification/kernel/runtime/installer');
+const {
+  createTrustedFactAuthority
+} = require('../../../plugins/specnav-verification/kernel/repair');
+const {
+  mergeIntegrityResults
+} = require('../../../plugins/specnav-verification/kernel/pipeline/production-runner');
 const { readySchemaRegistry } = require('../contracts/cross-reference/test-helpers');
-const { reportModel } = require('../reports/report-test-helpers');
 
 const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
 const HOST_REPOSITORIES = Object.freeze({
@@ -34,34 +40,81 @@ function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
-function canonicalValue(value) {
-  if (Array.isArray(value)) return value.map(canonicalValue);
-  if (value === null || typeof value !== 'object') return value;
-  return Object.fromEntries(
-    Object.keys(value).sort().map((key) => [key, canonicalValue(value[key])])
-  );
-}
-
-function reidentifyReportModel(model) {
-  const semantic = {
-    change_id: model.change_id,
-    verdict: model.verdict,
-    sources: model.sources,
-    summary: model.summary,
-    catalog: model.catalog,
-    results: model.results,
-    blockers: model.blockers,
-    warnings: model.warnings
-  };
-  return {
-    ...model,
-    id: `report-model-${sha256(JSON.stringify(canonicalValue(semantic)))}`
-  };
-}
-
 function writeJson(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function git(root, args) {
+  const result = spawnSync('git', args, {
+    cwd: root,
+    encoding: 'utf8',
+    maxBuffer: 32 * 1024 * 1024
+  });
+  if (result.status !== 0) {
+    throw new Error(
+      result.stderr.trim() || `git ${args.join(' ')} failed`
+    );
+  }
+  return result.stdout;
+}
+
+function ensureFixtureRepository(root) {
+  if (!fs.existsSync(path.join(root, '.git'))) {
+    const ignoreFile = path.join(root, '.gitignore');
+    const current = fs.existsSync(ignoreFile)
+      ? fs.readFileSync(ignoreFile, 'utf8')
+      : '';
+    const lines = current.split(/\r?\n/).filter(Boolean);
+    if (!lines.includes('/openspec/')) lines.push('/openspec/');
+    fs.writeFileSync(ignoreFile, `${lines.join('\n')}\n`);
+    git(root, ['init', '--quiet']);
+    git(root, ['config', 'user.name', 'SpecNav Fixture']);
+    git(root, ['config', 'user.email', 'specnav-fixture@example.invalid']);
+    git(root, ['add', '.gitignore']);
+    git(root, ['commit', '--quiet', '-m', 'test: initialize fixture repository']);
+  }
+  const status = git(root, [
+    'status',
+    '--porcelain=v1',
+    '--untracked-files=all'
+  ]);
+  if (status.trim() !== '') {
+    throw new Error(`verification-fixture:dirty-worktree:${status.trim()}`);
+  }
+}
+
+function currentFingerprints(root, snapshot, runtimeStatus, runtimeAuthority) {
+  const codeSha = git(root, ['rev-parse', 'HEAD']).trim();
+  const testInventory = git(root, [
+    'ls-tree',
+    '-r',
+    'HEAD',
+    '--',
+    'tests',
+    'plugins/specnav-verification'
+  ]);
+  return {
+    case_snapshot_hash: snapshot.snapshot_hash,
+    code_sha: codeSha,
+    test_sha: crypto.createHash('sha256')
+      .update(testInventory)
+      .update(snapshot.snapshot_hash)
+      .digest('hex'),
+    environment_hash: crypto.createHash('sha256')
+      .update(JSON.stringify({
+        platform: process.platform,
+        arch: process.arch,
+        node: process.version,
+        runtime_version: runtimeStatus.runtime_version,
+        runtime_root: runtimeStatus.runtime_root,
+        runtime_authority_hash: runtimeAuthority.digest,
+        kernel_version: kernel.metadata.version
+      }))
+      .digest('hex'),
+    runtime_version: runtimeStatus.runtime_version,
+    kernel_version: kernel.metadata.version
+  };
 }
 
 function testCase(change, caseId) {
@@ -120,7 +173,7 @@ function testCase(change, caseId) {
   };
 }
 
-function reading(change, caseId, domain) {
+function reading(change, caseId, domain, fingerprints) {
   return {
     schema: 'specnav.verification.reading.v1',
     id: `reading-${domain}`,
@@ -141,12 +194,12 @@ function reading(change, caseId, domain) {
     evidence_ids: [`evidence-${domain}`],
     verdict: 'pass',
     recorded_at: '2026-08-02T00:00:02Z',
-    code_sha: '1'.repeat(40),
-    test_sha: '2'.repeat(40)
+    code_sha: fingerprints.code_sha,
+    test_sha: fingerprints.test_sha
   };
 }
 
-function evidence(change, caseId, source, runtimeVersion) {
+function evidence(change, caseId, source, fingerprints) {
   return {
     schema: 'specnav.verification.evidence.v1',
     id: source.evidence_ids[0],
@@ -164,9 +217,9 @@ function evidence(change, caseId, source, runtimeVersion) {
     assertion_id: source.assertion_id,
     code_sha: source.code_sha,
     test_sha: source.test_sha,
-    environment_hash: '4'.repeat(64),
-    runtime_version: runtimeVersion,
-    kernel_version: kernel.metadata.version,
+    environment_hash: fingerprints.environment_hash,
+    runtime_version: fingerprints.runtime_version,
+    kernel_version: fingerprints.kernel_version,
     redaction: {
       status: 'not_required',
       redacted_fields: []
@@ -193,34 +246,10 @@ function loadHostCommits(lockFile) {
   return commits;
 }
 
-function createGate(schemaRegistry, input, stage) {
-  const aggregator = kernel.createSixDomainAggregator({ schemaRegistry });
-  const engine = kernel.createDecisionEngine({
-    schemaRegistry,
-    aggregator,
-    clock: () => '2026-08-02T00:00:04Z'
-  });
-  const result = engine.decide({
-    change_id: input.change_id,
-    stage,
-    aggregation_request: input.aggregation_request,
-    open_failure_ids: input.open_failure_ids,
-    freshness: input.freshness,
-    integrity_status: input.integrity_status,
-    evidence_index_version: input.evidence_index_version,
-    runtime_version: input.runtime_version,
-    kernel_version: input.kernel_version,
-    policy_version: input.policy_version
-  });
-  if (!result.ok) throw new Error(JSON.stringify(result.blockers));
-  return result.gate;
-}
-
 function populateProject(projectRoot, change, options = {}) {
   const root = path.resolve(projectRoot);
   const changeDir = path.join(root, 'openspec', 'changes', change);
   const verifyV2 = path.join(changeDir, 'verify', 'v2');
-  const reportsDir = path.join(changeDir, 'verify', 'reports');
   const opsDir = path.join(changeDir, 'operations');
   const caseId = `case-${change}`;
   const approvalId = `approval-${change}`;
@@ -274,6 +303,10 @@ function populateProject(projectRoot, change, options = {}) {
     currentAcceptance: plan.acceptance,
     expectedReviewerId: reviewerId
   });
+  if (!approvalState.ok) {
+    throw new Error(JSON.stringify(approvalState.blockers));
+  }
+  ensureFixtureRepository(root);
   const lock = loadRuntimeLock();
   const runtimeStatus = doctorRuntime({
     requestedVersion: lock.runtime_version,
@@ -296,78 +329,108 @@ function populateProject(projectRoot, change, options = {}) {
   if (!runtimeStatus.ok) {
     throw new Error(JSON.stringify(runtimeStatus.blockers));
   }
+  const runtimeResolution = kernel.createRuntimeAuthority().resolve(
+    runtimeStatus
+  );
+  if (!runtimeResolution.ok || !runtimeResolution.signingKey) {
+    throw new Error(JSON.stringify(runtimeResolution.blockers));
+  }
+  const fingerprints = currentFingerprints(
+    root,
+    snapshot,
+    runtimeResolution.runtimeStatus,
+    runtimeResolution.authority
+  );
+  const trustedFactAuthority = createTrustedFactAuthority({
+    schemaRegistry,
+    key: runtimeResolution.signingKey,
+    clock: () => '2026-08-02T00:00:03Z'
+  });
   const hostCommits = loadHostCommits(
     options.hostLockFile || process.env.SPECNAV_VERIFICATION_HOST_LOCK
   );
   const readings = kernel.SIX_DOMAINS.map((domain) => (
-    reading(change, caseId, domain)
+    reading(change, caseId, domain, fingerprints)
   ));
   const evidenceEntries = readings.map((entry) => (
-    evidence(change, caseId, entry, runtimeStatus.runtime_version)
+    evidence(change, caseId, entry, fingerprints)
+  )).sort((left, right) => (
+    left.captured_at.localeCompare(right.captured_at)
+      || left.id.localeCompare(right.id)
   ));
-  const input = {
-    schema: 'specnav.verification.release-gate-input.v1',
+  const run = {
+    schema: 'specnav.verification.run.v1',
+    id: 'run-release',
     change_id: change,
-    lane: 'standard',
     case_snapshot_id: snapshot.id,
     case_snapshot_hash: snapshot.snapshot_hash,
-    case_approval_id: approvalId,
-    case_approval_reviewer_id: reviewerId,
-    aggregation_request: {
-      change_id: change,
-      case_ids: [caseId],
-      readings,
-      evidence: evidenceEntries,
-      integrity: {
-        ok: true,
-        facts: {
-          summary: {
-            evidence_count: evidenceEntries.length,
-            integrity: 'intact',
-            freshness: 'fresh'
-          },
-          evidence: evidenceEntries.map((entry) => ({
-            evidence_id: entry.id,
-            integrity: 'intact',
-            freshness: 'fresh',
-            exists: true,
-            hash_match: true,
-            size_match: true,
-            producer_recognized: true,
-            store_record_match: true,
-            binding_match: true,
-            path_safe: true
-          }))
-        },
-        blockers: []
-      },
-      policy_facts: {
-        not_applicable_decisions: [],
-        terminal_states: []
-      }
-    },
-    open_failure_ids: [],
-    freshness: {
-      status: 'fresh',
-      checked_at: '2026-08-02T00:00:03Z',
-      reasons: []
-    },
-    integrity_status: 'intact',
-    evidence_index_version: evidenceEntries.length,
-    runtime_version: runtimeStatus.runtime_version,
-    kernel_version: kernel.metadata.version,
-    policy_version: 'verification-v2.0'
+    case_ids: [caseId],
+    ...fingerprints,
+    status: 'passed',
+    created_at: '2026-08-02T00:00:01Z',
+    started_at: '2026-08-02T00:00:01Z',
+    completed_at: '2026-08-02T00:00:02Z',
+    kind: 'initial',
+    origin_run_id: null,
+    parent_run_id: null,
+    parent_attempt_id: null,
+    failure_id: null
   };
-  const releaseGate = createGate(schemaRegistry, input, 'release');
-  const archiveGate = createGate(schemaRegistry, input, 'archive');
-  const aggregate = kernel.createSixDomainAggregator({ schemaRegistry })
-    .aggregate(input.aggregation_request);
+  const attempt = {
+    schema: 'specnav.verification.attempt.v1',
+    id: 'attempt-release',
+    run_id: run.id,
+    change_id: change,
+    case_id: caseId,
+    case_snapshot_hash: snapshot.snapshot_hash,
+    kind: 'initial',
+    sequence: 1,
+    runner: 'command',
+    code_sha: fingerprints.code_sha,
+    test_sha: fingerprints.test_sha,
+    scenario_hash: '5'.repeat(64),
+    environment_hash: fingerprints.environment_hash,
+    browser_project: 'none',
+    test_data_snapshot: '6'.repeat(64),
+    runtime_version: fingerprints.runtime_version,
+    kernel_version: fingerprints.kernel_version,
+    status: 'passed',
+    started_at: run.started_at,
+    completed_at: run.completed_at,
+    exit_status: 0,
+    parent_attempt_id: null
+  };
+  const evidenceFacts = evidenceEntries.map((entry) => ({
+    evidence_id: entry.id,
+    integrity: 'intact',
+    freshness: 'fresh',
+    exists: true,
+    hash_match: true,
+    size_match: true,
+    producer_recognized: true,
+    store_record_match: true,
+    binding_match: true,
+    path_safe: true
+  })).sort((left, right) => left.evidence_id.localeCompare(right.evidence_id));
+  const attemptIntegrity = {
+    ok: true,
+    facts: {
+      summary: {
+        evidence_count: evidenceFacts.length,
+        integrity: 'intact',
+        freshness: 'fresh'
+      },
+      evidence: evidenceFacts
+    },
+    blockers: []
+  };
+  const runIntegrity = mergeIntegrityResults([attemptIntegrity]);
   const rawBytes = Buffer.from(
     `${evidenceEntries.map((entry) => JSON.stringify(entry)).join('\n')}\n`
   );
   const evidenceIndex = {
     schema: 'specnav.verification.evidence-index.v1',
-    index_version: input.evidence_index_version,
+    index_version: evidenceEntries.length,
     change_id: change,
     generated_at: '2026-08-02T00:00:01Z',
     source_raw: 'raw.jsonl',
@@ -375,27 +438,6 @@ function populateProject(projectRoot, change, options = {}) {
     record_count: evidenceEntries.length,
     entries: evidenceEntries
   };
-  const model = reidentifyReportModel(reportModel('green', {
-    id: `report-model-${change}`,
-    change_id: change,
-    sources: {
-      case_snapshot_id: snapshot.id,
-      case_snapshot_hash: snapshot.snapshot_hash,
-      run_ids: ['run-release'],
-      attempt_ids: ['attempt-release'],
-      reading_ids: readings.map((entry) => entry.id),
-      evidence_ids: evidenceEntries.map((entry) => entry.id),
-      evidence_index_version: input.evidence_index_version,
-      evidence_index_digest: evidenceIndex.source_digest,
-      aggregate_id: aggregate.id,
-      gate_decision_id: releaseGate.id
-    },
-    summary: {
-      ...reportModel('green').summary,
-      runtime_version: input.runtime_version,
-      kernel_version: input.kernel_version
-    }
-  }));
 
   writeJson(path.join(verifyV2, 'runtime-status.json'), runtimeStatus);
   writeJson(
@@ -408,13 +450,48 @@ function populateProject(projectRoot, change, options = {}) {
   );
   writeJson(path.join(verifyV2, 'case-snapshot.json'), snapshot);
   writeJson(path.join(verifyV2, 'case-approval.json'), approval);
-  writeJson(path.join(verifyV2, 'gate-input.json'), input);
-  writeJson(path.join(verifyV2, 'release-gate.json'), releaseGate);
-  writeJson(path.join(verifyV2, 'archive-gate.json'), archiveGate);
-  writeJson(path.join(verifyV2, 'report-model.json'), model);
+  writeJson(path.join(verifyV2, 'runs.json'), [run]);
+  writeJson(path.join(verifyV2, 'attempts.json'), [attempt]);
+  writeJson(path.join(verifyV2, 'readings.json'), readings);
+  writeJson(path.join(verifyV2, 'failures.json'), []);
+  writeJson(path.join(verifyV2, 'repair-links.json'), []);
+  for (const name of [
+    'transition-proposals.jsonl',
+    'transition-receipts.jsonl',
+    'attempt-facts.jsonl'
+  ]) {
+    fs.mkdirSync(verifyV2, { recursive: true });
+    fs.writeFileSync(path.join(verifyV2, name), '');
+  }
+  const runDir = path.join(changeDir, 'verify', 'runs', run.id);
+  writeJson(
+    path.join(runDir, 'attempts', attempt.id, 'integrity.json'),
+    attemptIntegrity
+  );
+  writeJson(path.join(runDir, 'integrity.json'), runIntegrity);
+  fs.writeFileSync(path.join(runDir, 'failures.jsonl'), '');
   fs.mkdirSync(path.join(changeDir, 'verify', 'evidence'), { recursive: true });
   fs.writeFileSync(path.join(changeDir, 'verify', 'evidence', 'raw.jsonl'), rawBytes);
   writeJson(path.join(changeDir, 'verify', 'evidence', 'index.json'), evidenceIndex);
+  const canonical = kernel.createVerificationArtifactPipeline({
+    kernel,
+    schemaRegistry,
+    changeRoot: changeDir,
+    verificationRoot: path.join(changeDir, 'verify'),
+    snapshot,
+    approval,
+    currentFingerprints: fingerprints,
+    trustedFactAuthority,
+    clock: () => '2026-08-02T00:00:03Z',
+    secrets: [],
+    policyVersion: 'verification-v2.0'
+  }).build();
+  if (!canonical.ok) {
+    throw new Error(JSON.stringify(canonical.blockers));
+  }
+  const input = canonical.gate_input;
+  const releaseGate = canonical.release_gate;
+  const archiveGate = canonical.archive_gate;
   writeJson(path.join(verifyV2, 'migration-status.json'), {
     schema: 'specnav.verification.migration-status.v1',
     change_id: change,
@@ -423,29 +500,6 @@ function populateProject(projectRoot, change, options = {}) {
     source_inventory_digest: 'c'.repeat(64),
     scanned_at: '2026-08-02T00:00:00Z',
     fallback_used: false
-  });
-  const renderedReports = [];
-  for (const name of [
-    'overview.html',
-    'test-case-catalog.html',
-    'test-case-results.html'
-  ]) {
-    fs.mkdirSync(reportsDir, { recursive: true });
-    const bytes = Buffer.from(`<!doctype html><title>${name}</title>\n`);
-    fs.writeFileSync(path.join(reportsDir, name), bytes);
-    renderedReports.push({
-      name,
-      path: `verify/reports/${name}`,
-      sha256: sha256(bytes),
-      size: bytes.length
-    });
-  }
-  writeJson(path.join(verifyV2, 'report-render-manifest.json'), {
-    schema: 'specnav.verification.report-render-manifest.v1',
-    change_id: change,
-    report_model_id: model.id,
-    generated_at: '2026-08-02T00:00:05Z',
-    reports: renderedReports
   });
 
   const releaseBindings = {

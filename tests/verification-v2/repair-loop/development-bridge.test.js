@@ -11,6 +11,10 @@ const {
   fixtureGraph,
   readySchemaRegistry
 } = require('../contracts/cross-reference/test-helpers');
+const {
+  canonicalJson,
+  sha256
+} = require('../../../plugins/specnav-verification/kernel/evidence/identity');
 
 const FIXED_TIME = '2026-08-01T00:00:00.000Z';
 const STANDARD_PACKET_ARTIFACTS = Object.freeze([
@@ -159,7 +163,7 @@ function bridgeRequest(options = {}) {
     attempt,
     before_identity: beforeIdentity(attempt),
     scope_lock: scopeLock(),
-    verification_mode: 'standard',
+    verification_mode: 'full',
     fallback_used: false,
     manual_green: false,
     ...requestOverrides
@@ -187,6 +191,40 @@ function factory(options = {}) {
 
 function blockerIds(result) {
   return result.blockers.map((entry) => entry.id);
+}
+
+function repairReviews(link, afterIdentity, reviewerIds = [
+  'spec-reviewer',
+  'quality-reviewer'
+]) {
+  const common = {
+    schema: 'specnav.verification.repair-review.v1',
+    verdict: 'approved',
+    reviewer_kind: 'human',
+    reviewed_at: FIXED_TIME,
+    task_id: link.development_task_id,
+    failure_id: link.failure_id,
+    repair_link_id: link.id,
+    repair_link_digest: sha256(canonicalJson(link)),
+    scope_digest: link.scope_digest,
+    after_identity_digest: sha256(canonicalJson(afterIdentity))
+  };
+  return [
+    {
+      ...common,
+      id: 'repair-review-spec-approved',
+      kind: 'spec-review',
+      evidence_id: 'review-spec-approved',
+      reviewer_id: reviewerIds[0]
+    },
+    {
+      ...common,
+      id: 'repair-review-quality-approved',
+      kind: 'quality-review',
+      evidence_id: 'review-quality-approved',
+      reviewer_id: reviewerIds[1]
+    }
+  ];
 }
 
 test('routes eligible frozen product defects into a standard scoped Development repair packet', () => {
@@ -277,6 +315,61 @@ test('routes test defects as test_code and keeps task identity stable across clo
   assert.notEqual(first.repair_link.requested_at, second.repair_link.requested_at);
 });
 
+test('completes a requested repair only after independent approved reviews and the expected source change', () => {
+  const routed = factory().routeRepair(
+    bridgeRequest({ classification: 'test_defect' })
+  );
+  assert.equal(routed.ok, true, JSON.stringify(routed.blockers));
+  const after = {
+    ...routed.repair_link.before_identity,
+    test_sha: 'f'.repeat(64)
+  };
+  const result = factory().completeRepair({
+    repair_link: routed.repair_link,
+    after_identity: after,
+    reviews: repairReviews(routed.repair_link, after)
+  });
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'repair_completed');
+  assert.equal(result.repair_link.status, 'completed');
+  assert.deepEqual(result.repair_link.after_identity, after);
+  assert.deepEqual(result.repair_link.review_evidence_ids, [
+    'review-quality-approved',
+    'review-spec-approved'
+  ]);
+});
+
+test('repair completion rejects self-review and unchanged repaired source identity', () => {
+  const routed = factory().routeRepair(
+    bridgeRequest({ classification: 'test_defect' })
+  );
+  const unchanged = routed.repair_link.before_identity;
+  const reviews = repairReviews(
+    routed.repair_link,
+    unchanged,
+    ['same-reviewer', 'same-reviewer']
+  );
+  assert.deepEqual(
+    blockerIds(factory().completeRepair({
+      repair_link: routed.repair_link,
+      after_identity: unchanged,
+      reviews
+    })),
+    ['verification-repair-bridge:completion-review-invalid']
+  );
+
+  reviews[1].reviewer_id = 'quality-reviewer';
+  assert.deepEqual(
+    blockerIds(factory().completeRepair({
+      repair_link: routed.repair_link,
+      after_identity: unchanged,
+      reviews
+    })),
+    ['verification-repair-bridge:completion-no-source-change']
+  );
+});
+
 test('rejects open or non-development classifications instead of routing them', () => {
   const environment = factory().routeRepair(
     bridgeRequest({ classification: 'environment_defect' })
@@ -305,7 +398,7 @@ test('rejects open or non-development classifications instead of routing them', 
     attempt: fixtureGraph().attempts[0],
     before_identity: beforeIdentity(fixtureGraph().attempts[0]),
     scope_lock: scopeLock(),
-    verification_mode: 'standard',
+    verification_mode: 'full',
     fallback_used: false,
     manual_green: false
   });
@@ -316,10 +409,11 @@ test('rejects open or non-development classifications instead of routing them', 
   );
 });
 
-test('fails closed on fallback, light mode, manual green, and fingerprint drift', () => {
+test('fails closed on fallback, non-full mode, manual green, and fingerprint drift', () => {
   for (const [overrides, expected] of [
     [{ fallback_used: true }, 'verification-repair-bridge:fallback-forbidden'],
-    [{ verification_mode: 'light' }, 'verification-repair-bridge:light-mode-forbidden'],
+    [{ verification_mode: 'standard' }, 'verification-repair-bridge:full-mode-required'],
+    [{ verification_mode: 'light' }, 'verification-repair-bridge:full-mode-required'],
     [{ manual_green: true }, 'verification-repair-bridge:manual-green-forbidden'],
     [{
       before_identity: beforeIdentity(
@@ -337,12 +431,12 @@ test('fails closed on fallback, light mode, manual green, and fingerprint drift'
   }
 });
 
-test('requires a frozen packet, trusted attempt, exact evidence, and safe scope', () => {
-  const unfrozen = bridgeRequest();
-  unfrozen.failure_packet = clone(unfrozen.failure_packet);
-  assert.deepEqual(
-    blockerIds(factory().routeRepair(unfrozen)),
-    ['verification-repair-bridge:failure-packet-not-frozen']
+test('accepts a serialized packet and still requires a trusted attempt, exact evidence, and safe scope', () => {
+  const serialized = bridgeRequest();
+  serialized.failure_packet = clone(serialized.failure_packet);
+  assert.equal(
+    factory().routeRepair(serialized).ok,
+    true
   );
 
   const foreignAttempt = bridgeRequest();

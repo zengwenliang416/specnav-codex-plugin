@@ -59,6 +59,10 @@ const BREAK_LOOP_FIELDS = new Set([
   'break_loop_signal',
   'lifecycle_transition'
 ]);
+const COMPLETION_REVIEW_KINDS = Object.freeze([
+  'spec-review',
+  'quality-review'
+]);
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -98,14 +102,6 @@ function schemaValue(schemaRegistry, entityType, value) {
   } catch {
     return null;
   }
-}
-
-function isDeepFrozen(value, seen = new Set()) {
-  if (!value || typeof value !== 'object') return true;
-  if (seen.has(value)) return true;
-  if (!Object.isFrozen(value)) return false;
-  seen.add(value);
-  return Object.values(value).every((child) => isDeepFrozen(child, seen));
 }
 
 function sameIdentity(left, right) {
@@ -305,9 +301,9 @@ function createDevelopmentRepairBridge(options = {}) {
         'repair-request'
       ));
     }
-    if (request.verification_mode !== 'standard') {
+    if (request.verification_mode !== 'full') {
       return blocked(blocker(
-        'verification-repair-bridge:light-mode-forbidden',
+        'verification-repair-bridge:full-mode-required',
         'repair-request'
       ));
     }
@@ -329,13 +325,6 @@ function createDevelopmentRepairBridge(options = {}) {
         'repair-request'
       ));
     }
-    if (!isDeepFrozen(request.failure_packet)) {
-      return blocked(blocker(
-        'verification-repair-bridge:failure-packet-not-frozen',
-        request.failure_packet?.id || 'failure-packet'
-      ));
-    }
-
     let input;
     try {
       input = structuredClone(request);
@@ -470,7 +459,8 @@ function createDevelopmentRepairBridge(options = {}) {
       repair_kind: REPAIR_KIND[packet.classification],
       status: 'requested',
       requested_at: requestedAt,
-      before_identity: expectedFingerprint
+      before_identity: expectedFingerprint,
+      scope_digest: sha256(canonicalJson(scope))
     };
     const repairLinkIdentity = {
       schema: repairLinkFields.schema,
@@ -479,7 +469,8 @@ function createDevelopmentRepairBridge(options = {}) {
       development_task_id: repairLinkFields.development_task_id,
       repair_kind: repairLinkFields.repair_kind,
       status: repairLinkFields.status,
-      before_identity: repairLinkFields.before_identity
+      before_identity: repairLinkFields.before_identity,
+      scope_digest: repairLinkFields.scope_digest
     };
     const repairLink = schemaValue(schemaRegistry, 'repair-link', {
       ...repairLinkFields,
@@ -502,7 +493,123 @@ function createDevelopmentRepairBridge(options = {}) {
     });
   }
 
-  return Object.freeze({ routeRepair });
+  function completeRepair(request) {
+    const link = schemaValue(
+      schemaRegistry,
+      'repair-link',
+      request?.repair_link
+    );
+    if (
+      !link
+      || !['requested', 'in_progress', 'reviewed'].includes(link.status)
+      || !isRecord(request.after_identity)
+      || !Array.isArray(request.reviews)
+      || request.reviews.length !== COMPLETION_REVIEW_KINDS.length
+    ) {
+      return blocked(blocker(
+        'verification-repair-bridge:completion-request-invalid',
+        request?.repair_link?.id || 'repair-completion'
+      ));
+    }
+    const reviews = new Map();
+    for (const review of request.reviews) {
+      if (
+        !schemaValue(schemaRegistry, 'repair-review', review)
+        || !COMPLETION_REVIEW_KINDS.includes(review.kind)
+        || reviews.has(review.kind)
+        || review.task_id !== link.development_task_id
+        || review.failure_id !== link.failure_id
+        || review.repair_link_id !== link.id
+        || review.repair_link_digest !== sha256(canonicalJson(link))
+        || review.scope_digest !== link.scope_digest
+        || review.after_identity_digest
+          !== sha256(canonicalJson(request.after_identity))
+      ) {
+        return blocked(blocker(
+          'verification-repair-bridge:completion-review-invalid',
+          review?.evidence_id || 'repair-review'
+        ));
+      }
+      reviews.set(review.kind, review);
+    }
+    if (
+      COMPLETION_REVIEW_KINDS.some((kind) => !reviews.has(kind))
+      || new Set(
+        [...reviews.values()].map((review) => review.reviewer_id)
+      ).size !== COMPLETION_REVIEW_KINDS.length
+    ) {
+      return blocked(blocker(
+        'verification-repair-bridge:completion-review-invalid',
+        link.id
+      ));
+    }
+    const changedField = link.repair_kind === 'product_code'
+      ? 'code_sha'
+      : link.repair_kind === 'test_code'
+        ? 'test_sha'
+        : null;
+    if (!changedField) {
+      return blocked(blocker(
+        'verification-repair-bridge:completion-kind-invalid',
+        link.id
+      ));
+    }
+    for (const field of [
+      'case_snapshot_hash',
+      'environment_hash',
+      'runtime_version',
+      'kernel_version'
+    ]) {
+      if (request.after_identity[field] !== link.before_identity[field]) {
+        return blocked(blocker(
+          'verification-repair-bridge:completion-fingerprint-invalid',
+          link.id,
+          field
+        ));
+      }
+    }
+    if (
+      request.after_identity[changedField] === link.before_identity[changedField]
+    ) {
+      return blocked(blocker(
+        'verification-repair-bridge:completion-no-source-change',
+        link.id,
+        changedField
+      ));
+    }
+    const completedAt = clock();
+    if (!validDate(completedAt)) {
+      return blocked(blocker(
+        'verification-repair-bridge:clock-invalid',
+        'clock'
+      ));
+    }
+    const completed = schemaValue(schemaRegistry, 'repair-link', {
+      ...link,
+      status: 'completed',
+      completed_at: completedAt,
+      after_identity: request.after_identity,
+      review_evidence_ids: [...reviews.values()]
+        .map((review) => review.evidence_id)
+        .sort()
+    });
+    if (!completed) {
+      return blocked(blocker(
+        'verification-repair-bridge:repair-link-invalid',
+        link.id
+      ));
+    }
+    return deepFreeze({
+      ok: true,
+      status: 'repair_completed',
+      development_task: null,
+      repair_link: completed,
+      forwarded_signals: [],
+      blockers: []
+    });
+  }
+
+  return Object.freeze({ completeRepair, routeRepair });
 }
 
 module.exports = {

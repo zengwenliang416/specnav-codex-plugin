@@ -378,7 +378,10 @@ test('DecisionEngine emits a schema-valid stable gate bound to aggregate sources
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   };
   const before = structuredClone(request);
   const first = engine.decide(request);
@@ -427,7 +430,10 @@ test('DecisionEngine rejects a caller-authored aggregate instead of trusting it'
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   });
 
   assert.equal(result.ok, false);
@@ -458,12 +464,16 @@ test('DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   };
   const requests = [
     { ...base, freshness: { ...base.freshness, status: 'stale' } },
     { ...base, integrity_status: 'broken' },
     { ...base, open_failure_ids: ['failure-open'] },
+    { ...base, failure_state_status: 'invalid' },
     {
       ...base,
       aggregation_request: aggregateRequest({

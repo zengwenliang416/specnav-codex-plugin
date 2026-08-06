@@ -309,7 +309,7 @@ test('editing emitted HTML cannot change the DecisionEngine result', (t) => {
     },
     evidence_index_version: 1,
     runtime_version: '2.0.0',
-    kernel_version: '2.0.0-alpha.1',
+    kernel_version: '2.0.0-alpha.2',
     freshness: {
       status: 'fresh',
       checked_at: '2026-08-02T00:00:00Z',
@@ -317,7 +317,10 @@ test('editing emitted HTML cannot change the DecisionEngine result', (t) => {
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   };
   const requestPath = path.join(directory, 'gate-request.json');
   fs.writeFileSync(requestPath, JSON.stringify(request));

@@ -271,6 +271,50 @@ test('missing classification freezes a schema-valid open packet and blocks', () 
   );
 });
 
+test('classifies an existing open failure without changing its incident id or frozen timestamps', () => {
+  const missingClassification = trustedRootCauseCheck();
+  delete missingClassification.classification;
+  const source = createClassifier({
+    rootCauseChecks: [missingClassification]
+  }).classify(fixture());
+  assert.equal(source.ok, false);
+
+  const input = fixture({
+    source_failure_packet: source.packet
+  });
+  const classified = createClassifier({
+    rootCauseChecks: [trustedRootCauseCheck('test_defect')],
+    clock: () => '2026-08-01T01:00:00.000Z'
+  }).classify(input);
+
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  assert.equal(classified.packet.id, source.packet.id);
+  assert.equal(classified.packet.created_at, source.packet.created_at);
+  assert.equal(classified.packet.frozen_at, source.packet.frozen_at);
+  assert.equal(classified.packet.classification, 'test_defect');
+  assert.equal(classified.packet.status, 'repair_required');
+});
+
+test('rejects a source failure that is not the exact open incident being classified', () => {
+  const missingClassification = trustedRootCauseCheck();
+  delete missingClassification.classification;
+  const source = createClassifier({
+    rootCauseChecks: [missingClassification]
+  }).classify(fixture()).packet;
+  const rebound = {
+    ...source,
+    attempt_id: 'attempt-other'
+  };
+  const result = createClassifier().classify(fixture({
+    source_failure_packet: rebound
+  }));
+
+  assert.deepEqual(
+    result.blockers.map((entry) => entry.id),
+    ['verification-failure:source-packet-invalid']
+  );
+});
+
 test('blocks when trusted root-cause check is unavailable or untrusted', () => {
   const untrusted = trustedRootCauseCheck();
   untrusted.trusted = false;

@@ -37,7 +37,7 @@ flowchart LR
 
 | 组件 | 锁定版本 |
 | --- | --- |
-| Verification Runtime | `2.0.0-alpha.1` |
+| Verification Runtime | `2.0.0-alpha.2` |
 | Playwright | Playwright 1.62.1 |
 | Midscene | Midscene 1.10.8 |
 | AJV | AJV 8.20.0 |
@@ -50,7 +50,7 @@ flowchart LR
 
 ```bash
 node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" doctor \
-  --version "2.0.0-alpha.1" \
+  --version "2.0.0-alpha.2" \
   --project "$PWD" \
   --json
 ```
@@ -63,7 +63,7 @@ package、browser、permission、receipt、Kernel、lock 和脱敏 provider 的
 
 ```bash
 node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" install \
-  --version "2.0.0-alpha.1" \
+  --version "2.0.0-alpha.2" \
   --project "$PWD" \
   --json
 ```
@@ -76,7 +76,7 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" install \
 预期产物：
 
 ```text
-~/.specnav/runtime/verification/2.0.0-alpha.1/install-receipt.json
+~/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json
 package-lock.json
 browser INSTALLATION_COMPLETE markers
 安装失败时保留的 .failed-* attempt

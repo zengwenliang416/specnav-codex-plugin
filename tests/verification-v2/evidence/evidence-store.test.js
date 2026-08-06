@@ -102,8 +102,8 @@ function baseEvidence(overrides = {}) {
     code_sha: 'a'.repeat(40),
     test_sha: 'b'.repeat(40),
     environment_hash: 'c'.repeat(64),
-    runtime_version: '2.0.0-alpha.1',
-    kernel_version: '2.0.0-alpha.1',
+    runtime_version: '2.0.0-alpha.2',
+    kernel_version: '2.0.0-alpha.2',
     redaction: {
       status: 'not_required',
       redacted_fields: []

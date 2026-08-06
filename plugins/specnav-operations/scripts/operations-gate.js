@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const runtime = require('./plugin-runtime');
+const safeFs = require('./safe-filesystem');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
 const {
@@ -645,17 +646,66 @@ function writeArchiveGate(root = lib.projectRoot()) {
     operations_ready: validation.ok
   };
 
-  if (validation.operations_dir) {
-    lib.writeJson(path.join(validation.operations_dir, 'archive-gate.json'), report);
-    const entry = {
-      ts: report.generated_at,
-      type: 'archive-gate',
+  if (!validation.ok || !validation.operations_dir) {
+    return report;
+  }
+
+  const archiveGatePath = path.join(
+    validation.operations_dir,
+    'archive-gate.json'
+  );
+  const archiveLogPath = path.join(
+    validation.operations_dir,
+    'archive-log.jsonl'
+  );
+  const entry = {
+    ts: report.generated_at,
+    type: 'archive-gate',
+    active_change: report.active_change,
+    verdict,
+    blockers: report.blockers
+  };
+  try {
+    // Preflight both targets before either write so an unsafe operations tree
+    // cannot receive a partial gate/log update.
+    safeFs.readRegularFile(
+      projectRoot,
+      archiveGatePath,
+      'verification-operations:archive-gate-path',
+      true
+    );
+    safeFs.readRegularFile(
+      projectRoot,
+      archiveLogPath,
+      'verification-operations:archive-log-path',
+      true
+    );
+    safeFs.atomicWriteJson(
+      projectRoot,
+      archiveGatePath,
+      report,
+      'verification-operations:archive-gate-path'
+    );
+    safeFs.appendJsonl(
+      projectRoot,
+      archiveLogPath,
+      entry,
+      'verification-operations:archive-log-path'
+    );
+    lib.event(projectRoot, 'operations.archive-gate', {
       active_change: report.active_change,
-      verdict,
-      blockers: report.blockers
+      verdict
+    });
+  } catch (error) {
+    return {
+      ...report,
+      verdict: 'red',
+      blockers: unique([
+        ...report.blockers,
+        error instanceof Error ? error.message : String(error)
+      ]),
+      operations_ready: false
     };
-    fs.appendFileSync(path.join(validation.operations_dir, 'archive-log.jsonl'), `${JSON.stringify(entry)}\n`);
-    lib.event(projectRoot, 'operations.archive-gate', { active_change: report.active_change, verdict });
   }
 
   return report;

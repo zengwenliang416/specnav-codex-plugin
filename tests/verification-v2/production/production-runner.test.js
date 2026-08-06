@@ -46,6 +46,24 @@ const {
   ROOT,
   'plugins/specnav-verification/kernel/execution/playwright-scenario'
 ));
+const {
+  createTrustedFactAuthority
+} = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/repair/trusted-fact-authority'
+));
+const {
+  createAuthorityLog
+} = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/repair/authority-log'
+));
+const {
+  createTransitionApplier
+} = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/repair/transition-applier'
+));
 
 function clock() {
   let tick = 0;
@@ -192,6 +210,11 @@ function fixture(options = {}) {
     ROOT,
     'tests/verification-v2/contracts/fixtures/positive/runtime-status.json'
   ), 'utf8'));
+  const trustedFactAuthority = createTrustedFactAuthority({
+    schemaRegistry,
+    key: Buffer.alloc(32, 29),
+    clock: clock()
+  });
   return {
     projectRoot,
     changeRoot,
@@ -202,7 +225,8 @@ function fixture(options = {}) {
     snapshot,
     approval,
     runtimeStatus,
-    schemaRegistry
+    schemaRegistry,
+    trustedFactAuthority
   };
 }
 
@@ -226,6 +250,18 @@ function runner(source, overrides = {}) {
     secrets: [],
     ...overrides
   });
+}
+
+function currentFingerprints(source, overrides = {}) {
+  return {
+    case_snapshot_hash: source.snapshot.snapshot_hash,
+    code_sha: '1'.repeat(40),
+    test_sha: '2'.repeat(64),
+    environment_hash: '3'.repeat(64),
+    runtime_version: source.runtimeStatus.runtime_version,
+    kernel_version: kernel.metadata.version,
+    ...overrides
+  };
 }
 
 test('approval failure blocks before any run directory or process execution', async () => {
@@ -437,6 +473,8 @@ test('retry preserves immutable attempt integrity and finalizes the full evidenc
     verificationRoot: source.verificationRoot,
     snapshot: source.snapshot,
     approval: source.approval,
+    currentFingerprints: currentFingerprints(source),
+    trustedFactAuthority: source.trustedFactAuthority,
     clock: clock()
   }).build();
   assert.equal(finalized.ok, true, JSON.stringify(finalized.blockers));
@@ -525,6 +563,227 @@ test('retest and regression create new runs with immutable cross-run lineage', a
   assert.equal(regression.run.failure_id, first.failure_packet.id);
   assert.equal(regression.attempt.kind, 'regression');
   assert.equal(regression.attempt.sequence, retest.attempt.sequence + 1);
+
+  const failures = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failures.json'
+  ), 'utf8'));
+  assert.deepEqual(
+    failures.map((failure) => failure.id),
+    [first.failure_packet.id]
+  );
+  for (const followup of [retest, regression]) {
+    assert.equal(
+      fs.existsSync(path.join(
+        source.verificationRoot,
+        'runs',
+        followup.run.id,
+        'failures.jsonl'
+      )),
+      false
+    );
+  }
+});
+
+test('finalize derives release and archive gates from raw failures and signed closure logs', async () => {
+  const source = fixture({
+    runnerSource: [
+      "'use strict';",
+      "const fs = require('node:fs');",
+      'fs.writeFileSync(',
+      '  process.env.SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE,',
+      "  `${JSON.stringify({",
+      "    assertion_id: 'ASSERT-1',",
+      "    method: 'equal',",
+      '    expected: true,',
+      '    actual: false,',
+      "    status: 'failed'",
+      "  })}\\n`,",
+      "  { flag: 'wx' }",
+      ');',
+      'process.exit(1);',
+      ''
+    ].join('\n')
+  });
+  const initial = await runner(source).executeCase(source.testCase.id);
+  assert.equal(initial.status, 'failed');
+  assert.equal(initial.failure_packet?.status, 'open');
+
+  fs.writeFileSync(path.join(source.projectRoot, 'runner.js'), [
+    "'use strict';",
+    "const fs = require('node:fs');",
+    "const ids = process.env.SPECNAV_VERIFICATION_ASSERTION_IDS.split(',');",
+    'const rows = ids.map((assertionId) => JSON.stringify({',
+    '  assertion_id: assertionId,',
+    "  method: 'equal',",
+    '  expected: true,',
+    '  actual: true,',
+    "  status: 'passed'",
+    '}));',
+    'fs.writeFileSync(',
+    '  process.env.SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE,',
+    "  `${rows.join('\\n')}\\n`,",
+    "  { flag: 'wx' }",
+    ');',
+    ''
+  ].join('\n'));
+  const retest = await runner(source, {
+    codeSha: '4'.repeat(40)
+  }).executeCase(source.testCase.id, {
+    kind: 'retest',
+    parentAttemptId: initial.attempt.id,
+    failureId: initial.failure_packet.id
+  });
+  const regression = await runner(source, {
+    codeSha: '4'.repeat(40)
+  }).executeCase(source.testCase.id, {
+    kind: 'regression',
+    parentAttemptId: retest.attempt.id,
+    failureId: initial.failure_packet.id
+  });
+  assert.equal(retest.ok, true, JSON.stringify(retest.blockers));
+  assert.equal(regression.ok, true, JSON.stringify(regression.blockers));
+
+  const failure = initial.failure_packet;
+  const classified = source.schemaRegistry.assertValid('failure-packet', {
+    ...failure,
+    classification: 'test_defect',
+    status: 'repair_required',
+    next_action: 'repair_required',
+    owner: 'development'
+  });
+  const bindings = {
+    failure_id: failure.id,
+    change_id: failure.change_id,
+    run_id: failure.run_id,
+    case_id: failure.case_id
+  };
+  const classificationEnvelope = source.trustedFactAuthority.seal(
+    'classification_result',
+    {
+      ok: true,
+      status: 'classified',
+      packet: classified,
+      signals: [],
+      blockers: []
+    },
+    bindings
+  );
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: source.changeRoot,
+    root: source.verificationRoot
+  });
+  const classificationWrite = store.publishImmutableJson(
+    `repairs/${failure.id}/classification-envelope.json`,
+    classificationEnvelope
+  );
+  assert.equal(
+    classificationWrite.ok,
+    true,
+    JSON.stringify(classificationWrite.blockers)
+  );
+
+  const proposal = source.schemaRegistry.assertValid('transition-proposal', {
+    schema: 'specnav.verification.transition-proposal.v1',
+    id: 'transition-production-close',
+    failure_id: failure.id,
+    change_id: failure.change_id,
+    action: 'close_failure',
+    owner: 'core',
+    from_state: 'closure_ready',
+    target_state: 'closed',
+    case_ids: [failure.case_id],
+    attempt_ids: [retest.attempt.id, regression.attempt.id],
+    reason_ids: ['required-retest-and-regression-passed'],
+    proposed_at: '2026-08-02T20:10:00.000Z'
+  });
+  const authorityLog = createAuthorityLog({
+    store,
+    authority: source.trustedFactAuthority
+  });
+  const proposalLog = authorityLog.append(
+    'v2/transition-proposals.jsonl',
+    'transition_proposal',
+    proposal,
+    bindings
+  );
+  assert.equal(proposalLog.ok, true, JSON.stringify(proposalLog.blockers));
+  const applied = createTransitionApplier({
+    schemaRegistry: source.schemaRegistry,
+    trustVerifier: source.trustedFactAuthority,
+    clock: () => '2026-08-02T20:11:00.000Z'
+  }).apply({
+    root_failure: failure,
+    effective_failure: classified,
+    proposal_id: proposal.id,
+    idempotency_key: 'apply-production-close',
+    proposal_envelopes: proposalLog.values,
+    receipt_envelopes: []
+  });
+  assert.equal(applied.ok, true, JSON.stringify(applied.blockers));
+  const receiptLog = authorityLog.append(
+    'v2/transition-receipts.jsonl',
+    'transition_application',
+    applied.receipt,
+    bindings
+  );
+  assert.equal(receiptLog.ok, true, JSON.stringify(receiptLog.blockers));
+
+  const build = () => kernel.createVerificationArtifactPipeline({
+    kernel,
+    schemaRegistry: source.schemaRegistry,
+    changeRoot: source.changeRoot,
+    verificationRoot: source.verificationRoot,
+    snapshot: source.snapshot,
+    approval: source.approval,
+    currentFingerprints: currentFingerprints(source, {
+      code_sha: '4'.repeat(40)
+    }),
+    trustedFactAuthority: source.trustedFactAuthority,
+    clock: clock(),
+    secrets: []
+  }).build();
+  const finalized = build();
+  assert.equal(finalized.ok, true, JSON.stringify(finalized.blockers));
+  assert.equal(finalized.release_gate.decision, 'pass');
+  assert.equal(finalized.archive_gate.decision, 'pass');
+  assert.deepEqual(
+    JSON.parse(fs.readFileSync(path.join(
+      source.verificationRoot,
+      'v2',
+      'failure-state.json'
+    ), 'utf8')).open_failure_ids,
+    []
+  );
+  assert.deepEqual(
+    JSON.parse(fs.readFileSync(path.join(
+      source.verificationRoot,
+      'v2',
+      'failures.json'
+    ), 'utf8')),
+    [failure]
+  );
+
+  fs.writeFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'transition-receipts.jsonl'
+  ), '');
+  const withoutClosureReceipt = build();
+  assert.equal(withoutClosureReceipt.ok, false);
+  assert.equal(
+    withoutClosureReceipt.blockers.some((entry) => (
+      entry.id === 'verification-authority-log:anchor-regressed'
+    )),
+    true
+  );
+  assert.equal(withoutClosureReceipt.release_gate.decision, 'block');
+  assert.equal(withoutClosureReceipt.archive_gate.decision, 'block');
+  assert.deepEqual(
+    withoutClosureReceipt.gate_input.open_failure_ids,
+    [failure.id]
+  );
 });
 
 test('approved Playwright scenario uses the shared evidence and reading pipeline', async () => {
@@ -744,6 +1003,8 @@ test('artifact pipeline derives both gates, one report model and three HTML page
     verificationRoot: source.verificationRoot,
     snapshot: source.snapshot,
     approval: source.approval,
+    currentFingerprints: currentFingerprints(source),
+    trustedFactAuthority: source.trustedFactAuthority,
     clock: clock(),
     secrets: []
   });
@@ -808,6 +1069,14 @@ test('freshness selects the latest completed attempt when sequences match', () =
     snapshot,
     runs,
     attempts,
+    {
+      case_snapshot_hash: 'snapshot-hash',
+      code_sha: 'code-sha',
+      test_sha: 'test-sha',
+      environment_hash: 'environment-hash',
+      runtime_version: 'runtime-version',
+      kernel_version: 'kernel-version'
+    },
     '2026-08-06T00:04:00Z'
   );
 
@@ -837,6 +1106,65 @@ test('artifact store rejects traversal and symlinked parent paths', () => {
     'verification-persistence:path-unsafe'
   );
   assert.equal(fs.existsSync(path.join(outside, 'escaped.txt')), false);
+});
+
+test('artifact store rejects a symlinked change root before any write', (t) => {
+  const outside = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-symlink-change-outside-'
+  ));
+  const parent = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-symlink-change-parent-'
+  ));
+  t.after(() => {
+    fs.rmSync(parent, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  });
+  const changeRoot = path.join(parent, 'change');
+  fs.symlinkSync(outside, changeRoot);
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot,
+    root: path.join(changeRoot, 'verify')
+  });
+
+  const result = store.publishJson('escape.json', { forged: true });
+
+  assert.equal(result.ok, false);
+  assert.equal(fs.existsSync(path.join(outside, 'verify', 'escape.json')), false);
+});
+
+test('artifact store returns a blocker when its root is deleted or replaced', (t) => {
+  const source = fixture();
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: source.changeRoot,
+    root: source.verificationRoot
+  });
+  const outside = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-replaced-root-outside-'
+  ));
+  t.after(() => fs.rmSync(outside, { recursive: true, force: true }));
+
+  fs.rmSync(source.verificationRoot, { recursive: true, force: true });
+  const deleted = store.publishJson('v2/deleted-root.json', { ok: true });
+  assert.equal(deleted.ok, false);
+  assert.deepEqual(
+    deleted.blockers.map((entry) => entry.id),
+    ['verification-persistence:root-invalid']
+  );
+
+  fs.symlinkSync(outside, source.verificationRoot);
+  const replaced = store.publishJson('v2/replaced-root.json', { ok: true });
+  assert.equal(replaced.ok, false);
+  assert.deepEqual(
+    replaced.blockers.map((entry) => entry.id),
+    ['verification-persistence:root-invalid']
+  );
+  assert.equal(
+    fs.existsSync(path.join(outside, 'v2', 'replaced-root.json')),
+    false
+  );
 });
 
 test('artifact store refuses a symlinked append target', () => {

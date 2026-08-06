@@ -214,6 +214,15 @@ test('installer writes a complete side-by-side runtime and leaves the project un
   assert.equal(receipt.status, 'installed');
   assert.equal(receipt.runtime_version, lock.runtime_version);
   assert.equal(receipt.kernel.contract_digest, metadata.contractDigest);
+  assert.equal(receipt.authority.algorithm, 'hmac-sha256');
+  assert.equal(receipt.authority.relative_path, 'authority.key');
+  assert.equal(receipt.authority.key_bytes, lock.authority.key_bytes);
+  assert.match(receipt.authority.key_sha256, /^[a-f0-9]{64}$/);
+  assert.equal(receipt.authority.file_mode, '0600');
+  assert.equal(
+    fs.statSync(path.join(result.runtimeRoot, 'authority.key')).mode & 0o777,
+    0o600
+  );
   assert.equal(receipt.packages.length, Object.keys(lock.packages).length);
   assert.equal(receipt.browsers.length, 3);
   assert.ok(receipt.browsers.every((browser) => browser.integrity_verified === true));
@@ -302,7 +311,7 @@ test('installer refuses an occupied runtime root instead of overwriting it', asy
         extractions: []
       })
     }),
-    /verification-runtime:target-exists:2\.0\.0-alpha\.1/
+    /verification-runtime:target-exists:2\.0\.0-alpha\.2/
   );
 });
 

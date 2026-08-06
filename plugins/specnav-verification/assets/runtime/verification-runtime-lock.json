@@ -1,6 +1,6 @@
 {
   "schema": "specnav.verification.runtime-lock.v1",
-  "runtime_version": "2.0.0-alpha.1",
+  "runtime_version": "2.0.0-alpha.2",
   "generated_at": "2026-07-31T00:00:00.000Z",
   "package_manager": {
     "name": "npm",
@@ -8,14 +8,20 @@
   },
   "kernel": {
     "name": "@specnav/verification-kernel",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "api_version": "specnav.verification.kernel.v1",
-    "contract_version": 1,
-    "contract_digest": "50632dc17096636d4bb766d8ede40721d5d47d92f18241b33cf40f3702245979"
+    "contract_version": 2,
+    "contract_digest": "90407bc8ea9c949adf818fe0047eba9fbacff2e9739fd240d68b02be0729e476"
   },
   "node": {
     "minimum_major": 20,
     "maximum_major": 24
+  },
+  "authority": {
+    "algorithm": "hmac-sha256",
+    "relative_path": "authority.key",
+    "key_bytes": 32,
+    "file_mode": "0600"
   },
   "platforms": [
     "darwin-arm64"

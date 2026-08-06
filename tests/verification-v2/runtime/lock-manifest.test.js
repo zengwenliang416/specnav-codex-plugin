@@ -37,7 +37,7 @@ test('runtime lock pins every required package and browser artifact', () => {
   const lock = loadRuntimeLock();
 
   assert.equal(lock.schema, 'specnav.verification.runtime-lock.v1');
-  assert.equal(lock.runtime_version, '2.0.0-alpha.1');
+  assert.equal(lock.runtime_version, '2.0.0-alpha.2');
   assert.deepEqual(lock.kernel, {
     name: metadata.name,
     version: metadata.version,
@@ -79,10 +79,10 @@ test('runtime lock pins every required package and browser artifact', () => {
 });
 
 test('resolver accepts only the exact lock and compatible environment', () => {
-  const result = resolveRuntimeLock('2.0.0-alpha.1', compatibleEnvironment());
+  const result = resolveRuntimeLock('2.0.0-alpha.2', compatibleEnvironment());
 
   assert.equal(result.ok, true);
-  assert.equal(result.lock.runtime_version, '2.0.0-alpha.1');
+  assert.equal(result.lock.runtime_version, '2.0.0-alpha.2');
   assert.deepEqual(result.blockers, []);
 });
 
@@ -96,20 +96,20 @@ test('resolver rejects unknown runtime versions without fallback', () => {
 
 test('resolver returns exact compatibility blockers', () => {
   const oldNode = resolveRuntimeLock(
-    '2.0.0-alpha.1',
+    '2.0.0-alpha.2',
     compatibleEnvironment({ nodeVersion: 'v18.20.0' })
   );
   assert.deepEqual(oldNode.blockers, ['verification-runtime:unsupported-node:v18.20.0']);
 
   const badPlatform = resolveRuntimeLock(
-    '2.0.0-alpha.1',
+    '2.0.0-alpha.2',
     compatibleEnvironment({ platform: 'freebsd', arch: 'x64' })
   );
   assert.deepEqual(badPlatform.blockers, ['verification-runtime:unsupported-platform:freebsd-x64']);
 });
 
 test('resolver blocks missing or mismatched kernel identity without defaults', () => {
-  const missingKernel = resolveRuntimeLock('2.0.0-alpha.1', {
+  const missingKernel = resolveRuntimeLock('2.0.0-alpha.2', {
     nodeVersion: 'v22.19.0',
     platform: 'darwin',
     arch: 'arm64'
@@ -120,14 +120,14 @@ test('resolver blocks missing or mismatched kernel identity without defaults', (
 
   for (const [field, value, expectedBlocker] of [
     ['name', '@specnav/wrong-kernel', 'verification-runtime:kernel-name-mismatch:@specnav/wrong-kernel'],
-    ['version', '2.0.0-alpha.2', 'verification-runtime:kernel-version-mismatch:2.0.0-alpha.2'],
+    ['version', '2.0.0-alpha.1', 'verification-runtime:kernel-version-mismatch:2.0.0-alpha.1'],
     ['apiVersion', 'specnav.verification.kernel.v2', 'verification-runtime:kernel-api-version-mismatch:specnav.verification.kernel.v2'],
-    ['contractVersion', 2, 'verification-runtime:kernel-contract-version-mismatch:2'],
+    ['contractVersion', 1, 'verification-runtime:kernel-contract-version-mismatch:1'],
     ['contractDigest', '0'.repeat(64), `verification-runtime:kernel-contract-digest-mismatch:${'0'.repeat(64)}`]
   ]) {
     const environment = compatibleEnvironment();
     environment.kernel[field] = value;
-    const result = resolveRuntimeLock('2.0.0-alpha.1', environment);
+    const result = resolveRuntimeLock('2.0.0-alpha.2', environment);
     assert.deepEqual(result.blockers, [expectedBlocker]);
     assert.equal(result.lock, null);
   }

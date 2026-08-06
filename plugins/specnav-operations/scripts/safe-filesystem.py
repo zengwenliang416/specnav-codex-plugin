@@ -13,6 +13,7 @@ import time
 
 NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
 DIRECTORY = getattr(os, "O_DIRECTORY", 0)
+UNSET = object()
 
 
 class GuardError(Exception):
@@ -221,8 +222,17 @@ def read_existing(parent_fd, leaf, blocker):
         os.close(file_fd)
 
 
-def replace_bytes(parent_fd, leaf, data, blocker, exclusive=False):
+def replace_bytes(
+    parent_fd,
+    leaf,
+    data,
+    blocker,
+    exclusive=False,
+    expected=UNSET,
+):
     previous = read_existing(parent_fd, leaf, blocker)
+    if expected is not UNSET and previous != expected:
+        fail(blocker, "changed-during-write")
     if exclusive and previous is not None:
         fail(blocker, "exists")
     temporary = f".{leaf}.{os.getpid()}.{secrets.token_hex(6)}.tmp"
@@ -319,6 +329,45 @@ def atomic_write(request):
             data,
             blocker,
             exclusive=False,
+        )
+        try:
+            verify_root(request["root"], root_identity, blocker)
+        except Exception:
+            restore_bytes(parent_fd, leaf, previous, blocker)
+            raise
+        return {"written": True, "replaced": previous is not None}
+    finally:
+        if parent_fd is not None:
+            os.close(parent_fd)
+        os.close(root_fd)
+
+
+def append_jsonl(request):
+    blocker = request["blocker_id"]
+    root_fd, root_identity = open_root(request["root"], blocker)
+    parent_fd = None
+    previous = None
+    try:
+        maybe_pause()
+        parent_fd, leaf = open_parent(
+            root_fd,
+            request["relative"],
+            blocker,
+            create=True,
+        )
+        previous = read_existing(parent_fd, leaf, blocker)
+        if previous not in (None, b"") and not previous.endswith(b"\n"):
+            fail(blocker, "jsonl-unterminated")
+        data = base64.b64decode(request["data_base64"], validate=True)
+        if not data.endswith(b"\n"):
+            fail(blocker, "jsonl-record-invalid")
+        combined = (previous or b"") + data
+        replace_bytes(
+            parent_fd,
+            leaf,
+            combined,
+            blocker,
+            expected=previous,
         )
         try:
             verify_root(request["root"], root_identity, blocker)
@@ -709,6 +758,7 @@ def main():
     handlers = {
         "read_file": read_file,
         "atomic_write": atomic_write,
+        "append_jsonl": append_jsonl,
         "remove_file": remove_file,
         "create_lock": create_lock,
         "release_lock": release_lock,

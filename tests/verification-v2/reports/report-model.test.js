@@ -230,7 +230,10 @@ function stack(state = 'pass') {
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: state === 'fail' ? ['failure-minimal'] : []
+    open_failure_ids: state === 'fail' ? ['failure-minimal'] : [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   });
   const failures = state === 'fail'
     ? [{
@@ -254,6 +257,9 @@ function stack(state = 'pass') {
       freshness,
       failures,
       repair_links: [],
+      failure_state_status: 'valid',
+      failure_state_digest: 'a'.repeat(64),
+      authority_chain_digest: 'b'.repeat(64),
       gate_decision: gateResult.gate
     }
   };
@@ -321,7 +327,10 @@ function refreshRequest(schemaRegistry, request) {
     },
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   }).gate;
   return { schemaRegistry, request };
 }
@@ -363,7 +372,10 @@ function replaceGateFreshness(schemaRegistry, request, freshness) {
     freshness,
     integrity_status: 'intact',
     policy_version: 'verification-policy-v1',
-    open_failure_ids: []
+    open_failure_ids: [],
+    failure_state_status: 'valid',
+    failure_state_digest: 'a'.repeat(64),
+    authority_chain_digest: 'b'.repeat(64)
   }).gate;
 }
 
@@ -495,6 +507,14 @@ function builder(schemaRegistry, authoritativeRequest = {}) {
       verifyFreshness: (payload) => (
         canonicalJson(payload.freshness ?? null)
         === canonicalJson(authoritySnapshot.freshness ?? null)
+      ),
+      verifyGateFacts: (payload) => (
+        payload.failure_state_status
+          === authoritySnapshot.failure_state_status
+        && payload.failure_state_digest
+          === authoritySnapshot.failure_state_digest
+        && payload.authority_chain_digest
+          === authoritySnapshot.authority_chain_digest
       )
     }),
     gateContextAuthority: {
@@ -743,7 +763,8 @@ test('rejects missing and forged authority collaborators without fallback', () =
     }),
     factAuthority: kernel.createReportFactAuthority({
       verifyIntegrity: () => true,
-      verifyFreshness: () => true
+      verifyFreshness: () => true,
+      verifyGateFacts: () => true
     }),
     gateContextAuthority: {
       resolve: () => ({

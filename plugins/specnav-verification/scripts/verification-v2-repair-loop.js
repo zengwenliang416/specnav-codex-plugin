@@ -1,0 +1,1301 @@
+#!/usr/bin/env node
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const kernel = require('../kernel');
+const {
+  createAuthorityLog
+} = require('../kernel/repair/authority-log');
+const {
+  createTrustedFactAuthority
+} = require('../kernel/repair/trusted-fact-authority');
+const {
+  canonicalJson,
+  sha256
+} = require('../kernel/evidence/identity');
+const {
+  computeRerunScope
+} = require('./rerun-scope');
+const {
+  fingerprints,
+  loadContext
+} = require('./verification-v2-run');
+
+function argValue(args, name, fallback = null) {
+  const index = args.indexOf(name);
+  if (index < 0) return fallback;
+  const value = args[index + 1];
+  return value && !value.startsWith('--') ? value : fallback;
+}
+
+function blocker(id, artifact, detail = null) {
+  return { id, artifact, detail };
+}
+
+function blocked(id, artifact, detail = null, extra = {}) {
+  return {
+    ok: false,
+    status: 'blocked',
+    blockers: [blocker(id, artifact, detail)],
+    fallback_used: false,
+    ...extra
+  };
+}
+
+function resolveChangeFile(context, value, id) {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(id);
+  }
+  const requested = path.resolve(context.projectRoot, value);
+  const relative = path.relative(context.changeRoot, requested);
+  if (
+    relative.startsWith('..')
+    || path.isAbsolute(relative)
+    || relative.split(path.sep).includes('..')
+  ) {
+    throw new Error(`${id}:outside-change`);
+  }
+  return relative.split(path.sep).join('/');
+}
+
+function paths(context, failureId = null) {
+  const repairRoot = failureId
+    ? path.posix.join('repairs', failureId)
+    : null;
+  return {
+    repairRoot,
+    failures: 'v2/failures.json',
+    runs: 'v2/runs.json',
+    attempts: 'v2/attempts.json',
+    readings: 'v2/readings.json',
+    repairLinks: 'v2/repair-links.json',
+    transitionProposals: 'v2/transition-proposals.jsonl',
+    transitionReceipts: 'v2/transition-receipts.jsonl',
+    attemptFacts: 'v2/attempt-facts.jsonl',
+    failureState: 'v2/failure-state.json',
+    evidenceIndex: 'evidence/index.json'
+  };
+}
+
+function mergeById(values, additions) {
+  const byId = new Map(values.map((value) => [value.id, value]));
+  for (const value of additions) byId.set(value.id, value);
+  return [...byId.values()].sort((left, right) => (
+    left.id.localeCompare(right.id)
+  ));
+}
+
+function writeJson(store, relative, value) {
+  const result = store.publishJson(relative, value);
+  if (!result.ok) {
+    const error = new Error('verification-repair:persistence-failed');
+    error.blockers = result.blockers;
+    throw error;
+  }
+  return result;
+}
+
+function writeText(store, relative, value) {
+  const result = store.publishText(relative, value);
+  if (!result.ok) {
+    const error = new Error('verification-repair:persistence-failed');
+    error.blockers = result.blockers;
+    throw error;
+  }
+  return result;
+}
+
+function readRequiredJson(store, relative, id) {
+  const result = store.readJson(relative);
+  if (!result.ok) {
+    const error = new Error(id);
+    error.blockers = result.blockers.map((entry) => ({
+      ...entry,
+      id
+    }));
+    throw error;
+  }
+  return result.value;
+}
+
+function readOptionalJson(store, relative, fallback = null) {
+  const bytes = store.readBytes(relative);
+  if (!bytes.ok) {
+    const error = new Error('verification-repair:artifact-read-failed');
+    error.blockers = bytes.blockers;
+    throw error;
+  }
+  if (bytes.missing) return structuredClone(fallback);
+  try {
+    return JSON.parse(bytes.bytes.toString('utf8'));
+  } catch (error) {
+    const failure = new Error('verification-repair:artifact-json-invalid');
+    failure.blockers = [blocker(
+      'verification-repair:artifact-json-invalid',
+      relative,
+      error instanceof Error ? error.message : String(error)
+    )];
+    throw failure;
+  }
+}
+
+function readRequiredJsonl(store, relative, id) {
+  const result = store.readJsonl(relative);
+  if (!result.ok) {
+    const error = new Error(id);
+    error.blockers = result.blockers.map((entry) => ({
+      ...entry,
+      id
+    }));
+    throw error;
+  }
+  return result.value;
+}
+
+function persistTrustedEnvelope(
+  store,
+  relative,
+  envelope,
+  authority
+) {
+  const existing = readOptionalJson(store, relative);
+  if (existing) {
+    if (
+      !authority.verify(existing).ok
+      || existing.kind !== envelope.kind
+      || canonicalJson(existing.payload) !== canonicalJson(envelope.payload)
+      || canonicalJson(existing.bindings) !== canonicalJson(envelope.bindings)
+      || canonicalJson(existing.claims) !== canonicalJson(envelope.claims)
+      || existing.producer !== envelope.producer
+    ) {
+      throw new Error('verification-repair:trusted-envelope-conflict');
+    }
+    return { envelope: existing, persisted: false };
+  }
+  const result = store.publishImmutableJson(relative, envelope);
+  if (!result.ok) {
+    const error = new Error('verification-repair:persistence-failed');
+    error.blockers = result.blockers;
+    throw error;
+  }
+  return { envelope, persisted: true };
+}
+
+function rootFailure(context, failureId) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(failureId)) {
+    throw new Error('verification-repair:failure-id-invalid');
+  }
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: context.changeRoot,
+    root: context.verificationRoot
+  });
+  const files = paths(context, failureId);
+  const failures = readRequiredJson(
+    store,
+    files.failures,
+    'verification-repair:failures-read-failed'
+  );
+  const matches = failures.filter((failure) => failure.id === failureId);
+  if (matches.length !== 1) {
+    throw new Error(
+      matches.length === 0
+        ? 'verification-repair:failure-missing'
+        : 'verification-repair:failure-ambiguous'
+    );
+  }
+  const failure = matches[0];
+  const runs = readRequiredJson(
+    store,
+    files.runs,
+    'verification-repair:runs-read-failed'
+  );
+  const run = runs.find((entry) => entry.id === failure.run_id);
+  if (
+    !run
+    || failure.change_id !== context.changeId
+    || run.change_id !== context.changeId
+    || run.kind !== 'initial'
+    || run.failure_id !== null
+    || run.origin_run_id !== null
+    || run.parent_run_id !== null
+    || !run.case_ids.includes(failure.case_id)
+  ) {
+    throw new Error('verification-repair:not-root-failure');
+  }
+  const rawFailures = readRequiredJsonl(
+    store,
+    path.posix.join('runs', run.id, 'failures.jsonl'),
+    'verification-repair:raw-failures-read-failed'
+  );
+  const rawMatches = rawFailures.filter((entry) => entry.id === failure.id);
+  if (
+    rawMatches.length !== 1
+    || canonicalJson(rawMatches[0]) !== canonicalJson(failure)
+  ) {
+    throw new Error('verification-repair:root-projection-invalid');
+  }
+  return {
+    failure,
+    failures,
+    rawFailures: [...new Set(
+      failures.map((entry) => entry.run_id)
+    )].flatMap((runId) => readRequiredJsonl(
+      store,
+      path.posix.join('runs', runId, 'failures.jsonl'),
+      'verification-repair:raw-failures-read-failed'
+    )),
+    runs,
+    files,
+    store
+  };
+}
+
+function evidenceFor(context, store, ids) {
+  const index = readRequiredJson(
+    store,
+    paths(context).evidenceIndex,
+    'verification-repair:evidence-index-read-failed'
+  );
+  const byId = new Map((index.entries || []).map((entry) => [
+    entry.id,
+    entry
+  ]));
+  const values = ids.map((id) => byId.get(id)).filter(Boolean);
+  if (values.length !== ids.length) {
+    throw new Error('verification-repair:evidence-missing');
+  }
+  return values;
+}
+
+function initialAttempt(context, store, failure) {
+  const attempts = readRequiredJson(
+    store,
+    paths(context).attempts,
+    'verification-repair:attempts-read-failed'
+  );
+  const matches = attempts.filter((attempt) => (
+    attempt.id === failure.attempt_id
+  ));
+  if (matches.length !== 1) {
+    throw new Error('verification-repair:initial-attempt-missing');
+  }
+  return matches[0];
+}
+
+function attemptFingerprint(attempt) {
+  return {
+    case_snapshot_hash: attempt.case_snapshot_hash,
+    code_sha: attempt.code_sha,
+    test_sha: attempt.test_sha,
+    environment_hash: attempt.environment_hash,
+    runtime_version: attempt.runtime_version,
+    kernel_version: attempt.kernel_version
+  };
+}
+
+function integrityForAttempt(context, store, attempt) {
+  return readRequiredJson(store, path.posix.join(
+    'runs',
+    attempt.run_id,
+    'attempts',
+    attempt.id,
+    'integrity.json'
+  ), 'verification-repair:attempt-integrity-read-failed');
+}
+
+function classifierIntegrity(context, store, failure) {
+  const attempt = initialAttempt(context, store, failure);
+  const integrity = integrityForAttempt(context, store, attempt);
+  const required = new Set(failure.evidence_ids);
+  const facts = (integrity.facts?.evidence || []).filter((entry) => (
+    required.has(entry.evidence_id)
+  ));
+  return {
+    ok: integrity.ok === true && facts.length === required.size,
+    facts: {
+      summary: {
+        evidence_count: facts.length,
+        integrity: facts.every((entry) => entry.integrity === 'intact')
+          ? 'intact'
+          : 'broken',
+        freshness: facts.every((entry) => entry.freshness === 'fresh')
+          ? 'fresh'
+          : 'stale'
+      },
+      evidence: facts
+    },
+    blockers: facts.length === required.size
+      ? []
+      : [blocker(
+          'verification-repair:evidence-integrity-incomplete',
+          failure.id
+        )]
+  };
+}
+
+function trustAuthority(context, clock) {
+  return createTrustedFactAuthority({
+    schemaRegistry: context.schemaRegistry,
+    key: context.trustedFactKey,
+    clock
+  });
+}
+
+function bindings(failure, attemptId = null) {
+  return {
+    failure_id: failure.id,
+    change_id: failure.change_id,
+    run_id: failure.run_id,
+    case_id: failure.case_id,
+    ...(attemptId ? { attempt_id: attemptId } : {})
+  };
+}
+
+function relativeRepairPath(failureId, name) {
+  return path.posix.join('repairs', failureId, name);
+}
+
+function loadEnvelope(context, store, failureId, name) {
+  return readRequiredJson(
+    store,
+    path.posix.join(paths(context, failureId).repairRoot, name),
+    `verification-repair:${name}-read-failed`
+  );
+}
+
+function classificationEnvelope(context, store, failureId) {
+  return loadEnvelope(
+    context,
+    store,
+    failureId,
+    'classification-envelope.json'
+  );
+}
+
+function repairEnvelope(context, store, failureId) {
+  const completed = readOptionalJson(
+    store,
+    path.posix.join(
+      paths(context, failureId).repairRoot,
+      'repair-link-completed-envelope.json'
+    )
+  );
+  return completed || loadEnvelope(
+    context,
+    store,
+    failureId,
+    'repair-link-requested-envelope.json'
+  );
+}
+
+function rerunEnvelope(context, store, failureId) {
+  return loadEnvelope(
+    context,
+    store,
+    failureId,
+    'rerun-plan-envelope.json'
+  );
+}
+
+function historyFor(context, store, failure) {
+  const files = paths(context);
+  const runs = readRequiredJson(
+    store,
+    files.runs,
+    'verification-repair:runs-read-failed'
+  );
+  const selectedRuns = runs.filter((run) => (
+    run.id === failure.run_id || run.failure_id === failure.id
+  ));
+  const runIds = new Set(selectedRuns.map((run) => run.id));
+  const attempts = readRequiredJson(
+    store,
+    files.attempts,
+    'verification-repair:attempts-read-failed'
+  ).filter((attempt) => runIds.has(attempt.run_id));
+  return { runs: selectedRuns, attempts };
+}
+
+function attemptFact(context, store, attempt) {
+  const integrity = integrityForAttempt(context, store, attempt);
+  const facts = integrity.facts?.evidence || [];
+  return {
+    attempt_id: attempt.id,
+    case_id: attempt.case_id,
+    attempt_digest: sha256(canonicalJson(attempt)),
+    verdict: attempt.status === 'passed'
+      ? 'pass'
+      : attempt.status === 'blocked'
+        ? 'blocked'
+        : 'fail',
+    evidence_ids: [...new Set(
+      facts.map((entry) => entry.evidence_id)
+    )].sort(),
+    integrity: integrity.ok === true
+      && facts.every((entry) => entry.integrity === 'intact')
+      ? 'intact'
+      : 'invalid',
+    freshness: facts.length > 0
+      && facts.every((entry) => entry.freshness === 'fresh')
+      ? 'fresh'
+      : 'stale',
+    recorded_at: attempt.completed_at
+  };
+}
+
+function scopeProjection(plan) {
+  const sorted = (values) => [...new Set(values)].sort();
+  return {
+    required_cases: sorted(plan.required_cases),
+    baseline_cases: sorted(plan.baseline_cases),
+    repaired_cases: sorted(plan.repaired_cases),
+    impacted_cases: sorted(plan.impacted_cases),
+    cases_to_rerun: [...plan.cases_to_rerun]
+      .map((entry) => ({
+        case_id: entry.case_id,
+        reasons: sorted(entry.reasons)
+      }))
+      .sort((left, right) => left.case_id.localeCompare(right.case_id)),
+    reasons_by_case: Object.fromEntries(
+      Object.entries(plan.reasons_by_case)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([caseId, reasons]) => [caseId, sorted(reasons)])
+    )
+  };
+}
+
+function evaluateState(
+  context,
+  store,
+  failure,
+  authority,
+  authorityLog,
+  clock
+) {
+  const classification = classificationEnvelope(
+    context,
+    store,
+    failure.id
+  );
+  const requestedRepair = readOptionalJson(
+    store,
+    relativeRepairPath(
+      failure.id,
+      'repair-link-requested-envelope.json'
+    )
+  );
+  const completedRepair = readOptionalJson(
+    store,
+    relativeRepairPath(
+      failure.id,
+      'repair-link-completed-envelope.json'
+    )
+  );
+  const repair = completedRepair || requestedRepair || undefined;
+  const rerun = readOptionalJson(
+    store,
+    relativeRepairPath(failure.id, 'rerun-plan-envelope.json')
+  ) || undefined;
+  const history = historyFor(context, store, failure);
+  let factLog = authorityLog.validate(
+    paths(context).attemptFacts,
+    'attempt_fact'
+  );
+  if (!factLog.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: factLog.blockers
+    };
+  }
+  for (const attempt of history.attempts) {
+    const appended = authorityLog.append(
+      paths(context).attemptFacts,
+      'attempt_fact',
+      attemptFact(context, store, attempt),
+      {
+        ...bindings(failure, attempt.id),
+        run_id: attempt.run_id,
+        case_id: attempt.case_id
+      }
+    );
+    if (!appended.ok) {
+      return {
+        ok: false,
+        status: 'blocked',
+        transition_proposal: null,
+        blockers: appended.blockers
+      };
+    }
+    factLog = appended;
+  }
+  const attemptIds = new Set(history.attempts.map((attempt) => attempt.id));
+  const facts = factLog.values.filter((envelope) => (
+    envelope.bindings.failure_id === failure.id
+    && attemptIds.has(envelope.bindings.attempt_id)
+  ));
+  if (facts.length !== history.attempts.length) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: [blocker(
+        'verification-repair:attempt-fact-log-incomplete',
+        failure.id
+      )]
+    };
+  }
+  const rerunPlan = rerun?.payload || null;
+  const machine = kernel.createRepairLoopStateMachine({
+    schemaRegistry: context.schemaRegistry,
+    trustVerifier: authority,
+    rerunScopeAuthority: {
+      resolve(request) {
+        if (
+          !rerunPlan
+          || request.failure_id !== failure.id
+          || request.change_id !== failure.change_id
+          || request.run_id !== failure.run_id
+          || request.case_id !== failure.case_id
+        ) {
+          return { ok: false };
+        }
+        const scope = scopeProjection(rerunPlan);
+        return {
+          ok: true,
+          scope,
+          scope_digest: sha256(canonicalJson(scope))
+        };
+      }
+    },
+    clock
+  });
+  return machine.evaluate({
+    classification_result: classification,
+    runs: history.runs,
+    attempts: history.attempts,
+    attempt_facts: facts,
+    ...(repair ? { repair_link: repair } : {}),
+    ...(rerun ? { rerun_plan: rerun } : {})
+  });
+}
+
+function rootCauseReview(context, changeStore, value, failure) {
+  const relative = resolveChangeFile(
+    context,
+    value,
+    'verification-repair:root-cause-check-required'
+  );
+  const review = readRequiredJson(
+    changeStore,
+    relative,
+    'verification-repair:root-cause-check-read-failed'
+  );
+  const validated = context.schemaRegistry.validate(
+    'root-cause-review',
+    review
+  );
+  if (
+    !validated.ok
+    || review.failure_id !== failure.id
+    || review.root_failure_digest !== sha256(canonicalJson(failure))
+    || review.change_id !== failure.change_id
+    || review.run_id !== failure.run_id
+    || review.case_id !== failure.case_id
+    || review.attempt_id !== failure.attempt_id
+    || review.reviewer.id !== context.reviewerId
+    || Date.parse(review.reviewed_at) < Date.parse(failure.frozen_at)
+  ) {
+    throw new Error('verification-repair:root-cause-check-invalid');
+  }
+  return {
+    ...validated.value,
+    trusted: true
+  };
+}
+
+function reviewReceipt(
+  context,
+  changeStore,
+  value,
+  expectedKind,
+  link,
+  afterIdentity
+) {
+  const relative = resolveChangeFile(
+    context,
+    value,
+    `verification-repair:${expectedKind}-required`
+  );
+  const receipt = readRequiredJson(
+    changeStore,
+    relative,
+    `verification-repair:${expectedKind}-read-failed`
+  );
+  const validated = context.schemaRegistry.validate(
+    'repair-review',
+    receipt
+  );
+  if (
+    !validated.ok
+    || receipt.kind !== expectedKind
+    || receipt.task_id !== link.development_task_id
+    || receipt.failure_id !== link.failure_id
+    || receipt.repair_link_id !== link.id
+    || receipt.repair_link_digest !== sha256(canonicalJson(link))
+    || receipt.scope_digest !== link.scope_digest
+    || receipt.after_identity_digest
+      !== sha256(canonicalJson(afterIdentity))
+  ) {
+    throw new Error(`verification-repair:${expectedKind}-invalid`);
+  }
+  return validated.value;
+}
+
+function taskMarkdown(task) {
+  return {
+    'brief.md': [
+      `# Verification Repair: ${task.id}`,
+      '',
+      '## Goal',
+      '',
+      task.goal,
+      '',
+      '## Frozen Failure',
+      '',
+      `- Failure: \`${task.frozen_failure.failure_packet_id}\``,
+      `- Attempt: \`${task.frozen_failure.attempt_id}\``,
+      `- Classification: \`${task.classification}\``,
+      '',
+      '## Scope',
+      '',
+      ...task.scope.allowed_files.map((file) => `- \`${file}\``),
+      ''
+    ].join('\n'),
+    'report.md': [
+      `# Repair Report: ${task.id}`,
+      '',
+      '## Status',
+      '',
+      'IN PROGRESS',
+      '',
+      '## Frozen Evidence',
+      '',
+      ...task.frozen_failure.evidence_ids.map((id) => `- \`${id}\``),
+      ''
+    ].join('\n'),
+    'spec-review.md': '# Spec Review\n\n## Verdict\n\npending\n',
+    'quality-review.md': '# Quality Review\n\n## Verdict\n\npending\n'
+  };
+}
+
+async function run(args = process.argv.slice(2), dependencies = {}) {
+  const action = args.find((entry) => !entry.startsWith('--')) || 'state';
+  const allowed = [
+    'classify',
+    'repair-request',
+    'repair-complete',
+    'rerun-plan',
+    'evaluate',
+    'transition-apply',
+    'state'
+  ];
+  if (!allowed.includes(action)) {
+    return blocked(
+      `verification-repair:unsupported-action:${action}`,
+      action
+    );
+  }
+  const loaded = loadContext(args, dependencies);
+  if (!loaded.ok) return loaded;
+  const context = loaded.context;
+  const failureId = argValue(args, '--failure-id');
+  if (!failureId) {
+    return blocked('verification-repair:failure-required', '--failure-id');
+  }
+  const clock = dependencies.clock || (() => new Date().toISOString());
+  const authority = trustAuthority(context, clock);
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: context.changeRoot,
+    root: context.verificationRoot
+  });
+  const changeStore = kernel.createVerificationArtifactStore({
+    changeRoot: context.changeRoot,
+    root: context.changeRoot
+  });
+  const authorityLog = createAuthorityLog({ store, authority });
+  try {
+    const root = rootFailure(context, failureId);
+    const failure = root.failure;
+
+    if (action === 'classify') {
+      const check = rootCauseReview(
+        context,
+        changeStore,
+        argValue(args, '--root-cause-check'),
+        failure
+      );
+      const allReadings = readRequiredJson(
+        store,
+        root.files.readings,
+        'verification-repair:readings-read-failed'
+      );
+      const requiredReadingIds = new Set(failure.reading_ids);
+      const readings = allReadings.filter((reading) => (
+        requiredReadingIds.has(reading.id)
+      ));
+      const result = kernel.createFailureClassifier({
+        schemaRegistry: context.schemaRegistry,
+        rootCauseChecks: [check],
+        clock
+      }).classify({
+        source_failure_packet: failure,
+        readings,
+        evidence: evidenceFor(context, store, failure.evidence_ids),
+        integrity: classifierIntegrity(context, store, failure),
+        root_cause_check_id: check.id,
+        no_progress_count: Number(argValue(args, '--no-progress', '0'))
+      });
+      if (!result.ok) return { ...result, fallback_used: false };
+      const envelope = authority.seal(
+        'classification_result',
+        result,
+        bindings(failure)
+      );
+      const persisted = persistTrustedEnvelope(
+        store,
+        relativeRepairPath(failure.id, 'classification-envelope.json'),
+        envelope,
+        authority
+      );
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'classification-view.json'),
+        result.packet
+      );
+      return {
+        ok: true,
+        status: 'classified',
+        failure_id: failure.id,
+        classification: result.packet.classification,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.persisted,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    if (action === 'repair-request') {
+      const classifiedEnvelope = classificationEnvelope(
+        context,
+        store,
+        failure.id
+      );
+      if (!authority.verify(classifiedEnvelope).ok) {
+        return blocked(
+          'verification-repair:classification-envelope-invalid',
+          classifiedEnvelope.id
+        );
+      }
+      const existingLinkValue = readOptionalJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link.json')
+      );
+      if (existingLinkValue) {
+        const existingLink = context.schemaRegistry.validate(
+          'repair-link',
+          existingLinkValue
+        );
+        if (
+          !existingLink.ok
+          || existingLink.value.failure_id !== failure.id
+          || existingLink.value.change_id !== failure.change_id
+        ) {
+          return blocked(
+            'verification-repair:repair-link-invalid',
+            failure.id
+          );
+        }
+        const links = readOptionalJson(store, root.files.repairLinks, []);
+        writeJson(store, 'v2/repair-links.json', mergeById(
+          links,
+          [existingLink.value]
+        ));
+        return {
+          ok: true,
+          status: existingLink.value.status === 'completed'
+            ? 'repair_completed'
+            : 'repair_requested',
+          failure_id: failure.id,
+          development_task_id: existingLink.value.development_task_id,
+          repair_link_id: existingLink.value.id,
+          replayed: true,
+          blockers: [],
+          fallback_used: false
+        };
+      }
+      const scopeFile = resolveChangeFile(
+        context,
+        argValue(args, '--scope'),
+        'verification-repair:scope-required'
+      );
+      const attempt = initialAttempt(context, store, failure);
+      const result = kernel.createDevelopmentRepairBridge({
+        schemaRegistry: context.schemaRegistry,
+        clock
+      }).routeRepair({
+        failure_packet: classifiedEnvelope.payload.packet,
+        evidence: evidenceFor(context, store, failure.evidence_ids),
+        attempt,
+        before_identity: attemptFingerprint(attempt),
+        scope_lock: readRequiredJson(
+          changeStore,
+          scopeFile,
+          'verification-repair:scope-read-failed'
+        ),
+        verification_mode: 'full',
+        fallback_used: false,
+        manual_green: false
+      });
+      if (!result.ok) return { ...result, fallback_used: false };
+      const taskRoot = path.posix.join(
+        'development',
+        'tasks',
+        result.development_task.id
+      );
+      writeJson(
+        changeStore,
+        `${taskRoot}/context.json`,
+        result.development_task
+      );
+      for (const [name, content] of Object.entries(
+        taskMarkdown(result.development_task)
+      )) {
+        writeText(changeStore, `${taskRoot}/${name}`, content);
+      }
+      const requestedEnvelope = authority.seal(
+        'repair_link',
+        result.repair_link,
+        bindings(failure)
+      );
+      persistTrustedEnvelope(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-requested-envelope.json'
+        ),
+        requestedEnvelope,
+        authority
+      );
+      const links = readOptionalJson(store, root.files.repairLinks, []);
+      writeJson(store, 'v2/repair-links.json', mergeById(
+        links,
+        [result.repair_link]
+      ));
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-task.json'),
+        result.development_task
+      );
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link.json'),
+        result.repair_link
+      );
+      return {
+        ok: true,
+        status: 'repair_requested',
+        failure_id: failure.id,
+        development_task_id: result.development_task.id,
+        repair_link_id: result.repair_link.id,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    if (action === 'repair-complete') {
+      const completedEnvelope = readOptionalJson(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-completed-envelope.json'
+        )
+      );
+      if (completedEnvelope) {
+        if (
+          !authority.verify(completedEnvelope).ok
+          || completedEnvelope.kind !== 'repair_link'
+          || completedEnvelope.bindings.failure_id !== failure.id
+          || completedEnvelope.payload.failure_id !== failure.id
+          || completedEnvelope.payload.status !== 'completed'
+        ) {
+          return blocked(
+            'verification-repair:repair-link-envelope-invalid',
+            failure.id
+          );
+        }
+        const links = readOptionalJson(store, root.files.repairLinks, []);
+        writeJson(store, 'v2/repair-links.json', mergeById(
+          links,
+          [completedEnvelope.payload]
+        ));
+        return {
+          ok: true,
+          status: 'repair_completed',
+          failure_id: failure.id,
+          repair_link_id: completedEnvelope.payload.id,
+          after_identity: completedEnvelope.payload.after_identity,
+          envelope_id: completedEnvelope.id,
+          replayed: true,
+          blockers: [],
+          fallback_used: false
+        };
+      }
+      const currentLink = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link.json'
+      );
+      const current = (dependencies.fingerprints || fingerprints)(
+        context.projectRoot,
+        context.snapshotValue,
+        context.runtimeStatusValue,
+        context.runtimeAuthority
+      );
+      const before = currentLink.before_identity;
+      const after = {
+        case_snapshot_hash: context.snapshotValue.snapshot_hash,
+        code_sha: current.codeSha,
+        test_sha: current.testSha,
+        environment_hash: current.environmentHash,
+        runtime_version: context.runtimeStatusValue.runtime_version,
+        kernel_version: kernel.metadata.version
+      };
+      const reviews = [
+        reviewReceipt(
+          context,
+          changeStore,
+          argValue(args, '--spec-review'),
+          'spec-review',
+          currentLink,
+          after
+        ),
+        reviewReceipt(
+          context,
+          changeStore,
+          argValue(args, '--quality-review'),
+          'quality-review',
+          currentLink,
+          after
+        )
+      ];
+      const result = kernel.createDevelopmentRepairBridge({
+        schemaRegistry: context.schemaRegistry,
+        clock
+      }).completeRepair({
+        repair_link: currentLink,
+        after_identity: after,
+        reviews
+      });
+      if (!result.ok) return { ...result, fallback_used: false };
+      if (
+        result.repair_link.repair_kind === 'test_code'
+        && after.code_sha !== before.code_sha
+      ) {
+        return blocked(
+          'verification-repair:test-repair-code-sha-changed',
+          failure.id
+        );
+      }
+      if (
+        result.repair_link.repair_kind === 'product_code'
+        && after.test_sha !== before.test_sha
+      ) {
+        return blocked(
+          'verification-repair:product-repair-test-sha-changed',
+          failure.id
+        );
+      }
+      const envelope = authority.seal(
+        'repair_link',
+        result.repair_link,
+        bindings(failure)
+      );
+      const persisted = persistTrustedEnvelope(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-completed-envelope.json'
+        ),
+        envelope,
+        authority
+      );
+      const links = readOptionalJson(store, root.files.repairLinks, []);
+      writeJson(store, 'v2/repair-links.json', mergeById(
+        links,
+        [result.repair_link]
+      ));
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link.json'),
+        result.repair_link
+      );
+      return {
+        ok: true,
+        status: 'repair_completed',
+        failure_id: failure.id,
+        repair_link_id: result.repair_link.id,
+        after_identity: result.repair_link.after_identity,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.persisted,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    if (action === 'rerun-plan') {
+      const scope = computeRerunScope(context.projectRoot, {
+        change: context.changeId,
+        files: [],
+        repairedCaseIds: [failure.case_id],
+        expectedReviewerId: context.reviewerId,
+        schemaRegistry: context.schemaRegistry
+      });
+      if (!scope.ok) return { ...scope, fallback_used: false };
+      const envelope = authority.seal(
+        'rerun_plan',
+        scope,
+        bindings(failure)
+      );
+      const persisted = persistTrustedEnvelope(
+        store,
+        relativeRepairPath(failure.id, 'rerun-plan-envelope.json'),
+        envelope,
+        authority
+      );
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'rerun-plan.json'),
+        scope
+      );
+      return {
+        ok: true,
+        status: 'rerun_planned',
+        failure_id: failure.id,
+        required_cases: scope.required_cases,
+        scope_digest: sha256(canonicalJson(scopeProjection(scope))),
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.persisted,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    const state = evaluateState(
+      context,
+      store,
+      failure,
+      authority,
+      authorityLog,
+      clock
+    );
+    writeJson(
+      store,
+      relativeRepairPath(failure.id, 'repair-state.json'),
+      state
+    );
+    if (state.transition_proposal) {
+      const proposalLog = authorityLog.append(
+        root.files.transitionProposals,
+        'transition_proposal',
+        state.transition_proposal,
+        bindings(failure)
+      );
+      if (!proposalLog.ok) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: proposalLog.blockers,
+          fallback_used: false
+        };
+      }
+    }
+
+    if (action === 'transition-apply') {
+      const proposalId = argValue(args, '--proposal-id');
+      const idempotencyKey = argValue(args, '--idempotency-key');
+      if (!proposalId) {
+        return blocked(
+          'verification-repair:proposal-required',
+          '--proposal-id'
+        );
+      }
+      if (!idempotencyKey) {
+        return blocked(
+          'verification-repair:idempotency-key-required',
+          '--idempotency-key'
+        );
+      }
+      if (
+        !state.ok
+        || !state.transition_proposal
+        || !['close_failure', 'reopen_failure', 'route_break_loop'].includes(
+          state.transition_proposal.action
+        )
+      ) {
+        return blocked(
+          'verification-repair:transition-not-applicable',
+          failure.id,
+          state.status,
+          { state }
+        );
+      }
+      if (state.transition_proposal.id !== proposalId) {
+        return blocked(
+          'verification-repair:proposal-mismatch',
+          proposalId,
+          state.transition_proposal.id
+        );
+      }
+      const proposals = authorityLog.validate(
+        root.files.transitionProposals,
+        'transition_proposal'
+      );
+      const receipts = authorityLog.validate(
+        root.files.transitionReceipts,
+        'transition_application'
+      );
+      if (!proposals.ok || !receipts.ok) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: [
+            ...(proposals.blockers || []),
+            ...(receipts.blockers || [])
+          ],
+          fallback_used: false
+        };
+      }
+      const classification = classificationEnvelope(
+        context,
+        store,
+        failure.id
+      );
+      if (!authority.verify(classification).ok) {
+        return blocked(
+          'verification-repair:classification-envelope-invalid',
+          failure.id
+        );
+      }
+      const applied = kernel.createTransitionApplier({
+        schemaRegistry: context.schemaRegistry,
+        trustVerifier: authority,
+        clock
+      }).apply({
+        root_failure: failure,
+        effective_failure: classification.payload.packet,
+        proposal_id: proposalId,
+        idempotency_key: idempotencyKey,
+        proposal_envelopes: proposals.value,
+        receipt_envelopes: receipts.value
+      });
+      if (!applied.ok) return { ...applied, fallback_used: false };
+      let receiptLog = receipts.value;
+      if (applied.status !== 'already_applied') {
+        const appended = authorityLog.append(
+          root.files.transitionReceipts,
+          'transition_application',
+          applied.receipt,
+          bindings(failure)
+        );
+        if (!appended.ok) {
+          return {
+            ok: false,
+            status: 'blocked',
+            blockers: appended.blockers,
+            fallback_used: false
+          };
+        }
+        receiptLog = appended.values;
+      }
+      const failureState = kernel.createFailureStateReducer({
+        schemaRegistry: context.schemaRegistry,
+        trustVerifier: authority
+      }).reduce({
+        expected_change_id: context.changeId,
+        failures: root.failures,
+        raw_failures: root.rawFailures,
+        runs: root.runs,
+        classification_envelopes: [classification],
+        transition_proposal_envelopes: proposals.value,
+        transition_receipt_envelopes: receiptLog
+      });
+      if (!failureState.ok) {
+        return {
+          ...failureState,
+          status: 'blocked',
+          fallback_used: false
+        };
+      }
+      writeJson(store, 'v2/failure-state.json', failureState);
+      return {
+        ok: true,
+        status: 'transition_applied',
+        failure_id: failure.id,
+        action: applied.receipt.action,
+        receipt_id: applied.receipt.id,
+        replayed: applied.status === 'already_applied',
+        open_failure_ids: failureState.open_failure_ids,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    return {
+      ...state,
+      failure_id: failure.id,
+      fallback_used: false
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: Array.isArray(error.blockers)
+        ? error.blockers
+        : [blocker(
+            error instanceof Error ? error.message : String(error),
+            failureId
+          )],
+      fallback_used: false
+    };
+  }
+}
+
+async function main() {
+  const result = await run();
+  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  process.exit(result.ok ? 0 : 2);
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    process.stdout.write(`${JSON.stringify(blocked(
+      'verification-repair:unhandled',
+      'verification-v2-repair-loop',
+      error instanceof Error ? error.message : String(error)
+    ), null, 2)}\n`);
+    process.exit(2);
+  });
+}
+
+module.exports = {
+  attemptFact,
+  evaluateState,
+  run,
+  scopeProjection,
+  trustAuthority
+};

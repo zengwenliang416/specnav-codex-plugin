@@ -72,6 +72,21 @@ function atomicWriteJson(root, file, value, blockerId, exclusive = false) {
   );
 }
 
+function appendJsonl(root, file, value, blockerId) {
+  const line = JSON.stringify(value);
+  if (line === undefined) {
+    throw new TypeError('verification-operations:jsonl-record-invalid');
+  }
+  const relative = path.relative(root, file).split(path.sep).join('/');
+  return invoke({
+    action: 'append_jsonl',
+    root: path.resolve(root),
+    relative,
+    blocker_id: blockerId,
+    data_base64: Buffer.from(`${line}\n`).toString('base64')
+  });
+}
+
 function removeRegularFile(root, file, blockerId, optional = false) {
   const relative = path.relative(root, file).split(path.sep).join('/');
   return invoke({
@@ -136,6 +151,7 @@ function releaseLock(root, relative, token, blockerId) {
 module.exports = {
   atomicWriteFile,
   atomicWriteJson,
+  appendJsonl,
   copyTree,
   createLock,
   listDirectory,

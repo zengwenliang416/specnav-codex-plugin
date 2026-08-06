@@ -10,6 +10,9 @@ const { resolveRuntimeLock } = require('./lock-manifest');
 const {
   moduleTreeDigest
 } = require('./runtime-integrity');
+const {
+  writeAuthorityKey
+} = require('./authority-key');
 
 const PROJECT_MANIFESTS = Object.freeze([
   'package.json',
@@ -550,6 +553,11 @@ async function installRuntime(options) {
       adapters,
       emit
     );
+    const authority = writeAuthorityKey(
+      stagingRoot,
+      runtimeLock,
+      injectedAdapters.randomBytes || crypto.randomBytes
+    );
     fs.rmSync(path.join(stagingRoot, '.npm-cache'), { recursive: true, force: true });
 
     const projectManifests = compareProjectManifests(projectRoot, projectBefore);
@@ -573,6 +581,7 @@ async function installRuntime(options) {
       },
       package_lock_sha256: packageResult.packageLockSha256,
       module_tree_sha256: moduleTreeDigest(stagingRoot),
+      authority,
       packages: packageResult.packages,
       browsers,
       project_root: path.resolve(projectRoot),

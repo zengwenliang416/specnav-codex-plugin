@@ -87,6 +87,12 @@ test('Codex describes the full Verification 2.0 contract from one Kernel', () =>
       .approval_required,
     true
   );
+  assert.equal(
+    description.actions.find(
+      (entry) => entry.id === 'repair-transition-apply'
+    ).approval_required,
+    true
+  );
   assert.equal(Object.isFrozen(description), true);
 });
 
@@ -224,6 +230,38 @@ test('Codex adapter requires explicit approval for migration writes', () => {
     ]);
   }
   assert.equal(calls, 0);
+});
+
+test('Codex adapter requires explicit approval for Core repair transitions', () => {
+  let calls = 0;
+  const adapter = createCodexVerificationAdapter({
+    execute() {
+      calls += 1;
+      return {
+        exit_status: 0,
+        signal: null,
+        result: { ok: true, fallback_used: false }
+      };
+    }
+  });
+  const request = {
+    action: 'repair-transition-apply',
+    project_root: '/tmp/project',
+    failure_id: 'failure-open',
+    proposal_id: 'transition-close',
+    idempotency_key: 'apply-close-failure'
+  };
+
+  const blocked = adapter.invoke(request);
+  assert.equal(blocked.ok, false);
+  assert.deepEqual(blocked.blocker_ids, [
+    'codex-verification:transition-approval-required'
+  ]);
+  assert.equal(calls, 0);
+
+  const approved = adapter.invoke({ ...request, approved: true });
+  assert.equal(approved.ok, true);
+  assert.equal(calls, 1);
 });
 
 test('Codex adapter exposes and blocks downstream fallback signals', () => {

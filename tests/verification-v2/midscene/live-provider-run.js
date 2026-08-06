@@ -29,7 +29,7 @@ const {
   'plugins/specnav-verification/scripts/verification-runtime'
 ));
 
-const RUNTIME_VERSION = '2.0.0-alpha.1';
+const RUNTIME_VERSION = '2.0.0-alpha.2';
 
 function createFixtureServer() {
   const server = http.createServer((_request, response) => {

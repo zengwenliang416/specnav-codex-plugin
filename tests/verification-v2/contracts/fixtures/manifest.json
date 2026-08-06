@@ -41,12 +41,28 @@
       "file": "positive/repair-link.json"
     },
     {
+      "entity_type": "repair-review",
+      "file": "positive/repair-review.json"
+    },
+    {
+      "entity_type": "root-cause-review",
+      "file": "positive/root-cause-review.json"
+    },
+    {
+      "entity_type": "authority-chain-anchor",
+      "file": "positive/authority-chain-anchor.json"
+    },
+    {
       "entity_type": "trusted-fact-envelope",
       "file": "positive/trusted-fact-envelope.json"
     },
     {
       "entity_type": "transition-proposal",
       "file": "positive/transition-proposal.json"
+    },
+    {
+      "entity_type": "transition-application",
+      "file": "positive/transition-application.json"
     },
     {
       "entity_type": "runtime-status",
@@ -112,6 +128,21 @@
       "expected_field": "/schema"
     },
     {
+      "entity_type": "repair-review",
+      "file": "negative/repair-review-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "root-cause-review",
+      "file": "negative/root-cause-review-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "authority-chain-anchor",
+      "file": "negative/authority-chain-anchor-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
       "entity_type": "trusted-fact-envelope",
       "file": "negative/trusted-fact-envelope-missing-schema.json",
       "expected_field": "/schema"
@@ -119,6 +150,11 @@
     {
       "entity_type": "transition-proposal",
       "file": "negative/transition-proposal-missing-schema.json",
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "transition-application",
+      "file": "negative/transition-application-missing-schema.json",
       "expected_field": "/schema"
     },
     {
@@ -333,6 +369,9 @@
   "ac35_required_fields": [
     "source_case_ids",
     "source_reading_ids",
+    "failure_state_status",
+    "failure_state_digest",
+    "authority_chain_digest",
     "evidence_index_version",
     "runtime_version",
     "kernel_version",

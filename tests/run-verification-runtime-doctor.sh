@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="2.0.0-alpha.1"
+VERSION="2.0.0-alpha.2"
 RUNTIME_BASE="${SPECNAV_VERIFICATION_RUNTIME_BASE:-$HOME/.specnav/runtime/verification}"
 
 cd "$ROOT"

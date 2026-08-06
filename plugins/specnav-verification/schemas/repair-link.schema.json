@@ -13,7 +13,8 @@
     "repair_kind",
     "status",
     "requested_at",
-    "before_identity"
+    "before_identity",
+    "scope_digest"
   ],
   "properties": {
     "schema": {
@@ -63,6 +64,9 @@
     },
     "before_identity": {
       "$ref": "common.schema.json#/$defs/executionFingerprint"
+    },
+    "scope_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
     },
     "after_identity": {
       "anyOf": [

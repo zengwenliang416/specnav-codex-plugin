@@ -296,6 +296,9 @@ function gateSemantic(value) {
     decision: value.decision,
     source_case_ids: value.source_case_ids,
     source_reading_ids: value.source_reading_ids,
+    failure_state_status: value.failure_state_status,
+    failure_state_digest: value.failure_state_digest,
+    authority_chain_digest: value.authority_chain_digest,
     evidence_index_version: value.evidence_index_version,
     runtime_version: value.runtime_version,
     kernel_version: value.kernel_version,
@@ -320,6 +323,7 @@ function recomputeGate(options) {
     runs,
     changeId,
     gateContext,
+    gateFacts,
     blockers
   } = options;
   if (!candidate || !gateContext) return null;
@@ -338,6 +342,9 @@ function recomputeGate(options) {
       freshness,
       integrity_status: integrity,
       policy_version: gateContext.policy_version,
+      failure_state_status: gateFacts.failure_state_status,
+      failure_state_digest: gateFacts.failure_state_digest,
+      authority_chain_digest: gateFacts.authority_chain_digest,
       open_failure_ids: stableIds(failures.filter((entry) => (
         FAILURE_OPEN.has(entry.status)
       )).map((entry) => entry.id))
@@ -1357,6 +1364,26 @@ function createReportModelBuilder(options = {}) {
       artifact: changeId,
       blockers
     });
+    const gateFacts = {
+      failure_state_status: input.failure_state_status,
+      failure_state_digest: input.failure_state_digest,
+      authority_chain_digest: input.authority_chain_digest
+    };
+    verifyFactAuthority({
+      authority: factAuthority,
+      method: 'verifyGateFacts',
+      payload: {
+        change_id: changeId,
+        ...gateFacts
+      },
+      expected: {
+        change_id: changeId,
+        ...gateFacts
+      },
+      blockerId: 'verification-report:gate-facts-unverified',
+      artifact: changeId,
+      blockers
+    });
     verifyFactAuthority({
       authority: factAuthority,
       method: 'verifyFreshness',
@@ -1395,6 +1422,7 @@ function createReportModelBuilder(options = {}) {
           runs,
           changeId,
           gateContext,
+          gateFacts,
           blockers
         });
     blockers.push(...sourceBindings({

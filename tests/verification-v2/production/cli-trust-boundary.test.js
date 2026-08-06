@@ -11,8 +11,17 @@ const {
   assertSelectedChange,
   loadScenarioRegistry,
   pathsFor,
+  run,
   summarizeCliResult
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-run');
+const {
+  readySchemaRegistry
+} = require('../contracts/cross-reference/test-helpers');
+
+const FIXTURE_ROOT = path.resolve(
+  __dirname,
+  '../contracts/fixtures/positive'
+);
 
 function git(root, args) {
   const result = childProcess.spawnSync('git', args, {
@@ -28,6 +37,45 @@ function initializeRepository(root) {
   git(root, ['config', 'user.name', 'SpecNav Test']);
   git(root, ['add', '.']);
   git(root, ['commit', '-m', 'fixture']);
+}
+
+function writeJson(file, value) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function cliProjectFixture() {
+  const projectRoot = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-cli-finalize-'
+  ));
+  const changeId = 'change-v2';
+  const changeRoot = path.join(projectRoot, 'openspec', 'changes', changeId);
+  const v2Root = path.join(changeRoot, 'verify', 'v2');
+  fs.mkdirSync(path.join(projectRoot, 'openspec', '.specnav'), {
+    recursive: true
+  });
+  fs.writeFileSync(
+    path.join(projectRoot, 'openspec', '.specnav', 'active-change'),
+    `${changeId}\n`
+  );
+  for (const name of [
+    'case-snapshot.json',
+    'case-approval.json',
+    'runtime-status.json'
+  ]) {
+    fs.mkdirSync(v2Root, { recursive: true });
+    fs.copyFileSync(path.join(FIXTURE_ROOT, name), path.join(v2Root, name));
+  }
+  writeJson(path.join(v2Root, 'requirements-source.json'), [{
+    id: 'REQ-1',
+    statement: 'The contract is validated.'
+  }]);
+  writeJson(path.join(v2Root, 'acceptance-source.json'), [{
+    id: 'AC-13',
+    statement: 'The approved case remains verifiable.'
+  }]);
+  return { projectRoot, changeId };
 }
 
 test('change evidence overrides cannot escape the selected change root', () => {
@@ -220,4 +268,81 @@ test('production CLI summarizes standalone finalize output without embedding rep
   assert.ok(result.artifacts.some((entry) => (
     entry.path === 'verify/reports/overview.html'
   )));
+});
+
+test('full production run injects the live trusted authority into automatic finalize', async () => {
+  const source = cliProjectFixture();
+  const schemaRegistry = readySchemaRegistry();
+  let receivedAuthority = null;
+  const result = await run([
+    'run',
+    '--project',
+    source.projectRoot,
+    '--change',
+    source.changeId,
+    '--reviewer-id',
+    'reviewer-1'
+  ], {
+    createSchemaRegistry: () => schemaRegistry,
+    createCaseApprovalValidator: () => ({
+      evaluate: () => ({ ok: true, blockers: [] })
+    }),
+    fingerprints: () => ({
+      codeSha: '1'.repeat(40),
+      testSha: '2'.repeat(64),
+      environmentHash: '3'.repeat(64)
+    }),
+    runtimeAuthority: {
+      resolve(runtimeStatus) {
+        return {
+          ok: true,
+          runtimeRoot: runtimeStatus.runtime_root,
+          runtimeStatus,
+          authority: {
+            schema: 'specnav.verification.runtime-authority.v1',
+            digest: '4'.repeat(64)
+          },
+          signingKey: Buffer.alloc(32, 31),
+          blockers: []
+        };
+      }
+    },
+    createProductionVerificationRunner: () => ({
+      approvalState: { ok: true, blockers: [] },
+      async executeCase(caseId) {
+        return {
+          ok: true,
+          status: 'passed',
+          run: { id: 'run-cli', case_ids: [caseId] },
+          attempt: { id: 'attempt-cli', case_id: caseId },
+          evidence: [],
+          readings: [],
+          blockers: [],
+          fallback_used: false
+        };
+      }
+    }),
+    createVerificationArtifactPipeline(options) {
+      receivedAuthority = options.trustedFactAuthority;
+      return {
+        build() {
+          return {
+            ok: true,
+            status: 'pass',
+            aggregate: { status: 'pass' },
+            release_gate: { id: 'gate-release-cli' },
+            archive_gate: { id: 'gate-archive-cli' },
+            report_model: { id: 'report-cli' },
+            report_manifest: { reports: [] },
+            blockers: [],
+            fallback_used: false
+          };
+        }
+      };
+    }
+  });
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(typeof receivedAuthority?.seal, 'function');
+  assert.equal(typeof receivedAuthority?.verify, 'function');
 });

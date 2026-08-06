@@ -106,7 +106,7 @@ function reportModel(verdict = 'green', overrides = {}) {
       open_failure_ids: verdict === 'red' ? ['failure-001'] : [],
       open_repair_ids: [],
       runtime_version: verdict === 'blocked' ? null : '2.0.0',
-      kernel_version: '2.0.0-alpha.1'
+      kernel_version: '2.0.0-alpha.2'
     },
     catalog: [],
     results: [],

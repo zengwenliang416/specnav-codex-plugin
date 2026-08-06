@@ -13,6 +13,9 @@ const { runtimeBaseDefault } = require('./installer');
 const {
   moduleTreeDigest
 } = require('./runtime-integrity');
+const {
+  readAuthorityKey
+} = require('./authority-key');
 
 function canonicalize(value) {
   if (Array.isArray(value)) return value.map(canonicalize);
@@ -82,6 +85,7 @@ function createRuntimeAuthority(options = {}) {
     let receiptBytes;
     let packageLockBytes;
     let moduleDigest;
+    let signingKey;
     try {
       currentRoot = fs.realpathSync(path.join(runtimeBase, lock.runtime_version));
       if (
@@ -100,6 +104,11 @@ function createRuntimeAuthority(options = {}) {
         'package-lock.json'
       ));
       moduleDigest = moduleTreeDigest(currentRoot);
+      signingKey = readAuthorityKey(
+        currentRoot,
+        lock,
+        receipt.authority
+      ).key;
     } catch (error) {
       return {
         ok: false,
@@ -210,6 +219,7 @@ function createRuntimeAuthority(options = {}) {
             ...projection
           }
         : null,
+      signingKey: blockers.length === 0 ? signingKey : null,
       blockers
     };
   }

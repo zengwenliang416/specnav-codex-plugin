@@ -5,7 +5,7 @@
 `plugins/specnav-verification` is the canonical package root for the
 host-neutral Verification Kernel. Its public package name is
 `@specnav/verification-kernel`, and the first contract version is
-`2.0.0-alpha.1`.
+`2.0.0-alpha.2`.
 
 Host integrations consume the package through its root export:
 
@@ -34,7 +34,7 @@ Every host installation and generated gate artifact must record:
 
 ```json
 {
-  "kernel_version": "2.0.0-alpha.1",
+  "kernel_version": "2.0.0-alpha.2",
   "kernel_api_version": "specnav.verification.kernel.v1",
   "kernel_contract_digest": "<sha256>"
 }

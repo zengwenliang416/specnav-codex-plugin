@@ -19,25 +19,75 @@ case ids.
 
 1. Run the V2 adapter `validate` action against the exact approved snapshot.
    Freshness or open-failure blockers mean rerun planning is required.
-2. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
+2. For every new open failure, classify the immutable root packet from an
+   approved root-cause check:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-classify --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --root-cause-check "openspec/changes/<change-id>/verify/root-cause-check.json" \
+     --json
+   ```
+
+   Classification is immutable and replayable. A conflicting second
+   classification blocks instead of replacing the first one.
+3. For `product_defect` or `test_defect`, create the Development repair packet:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-request --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --scope "openspec/changes/<change-id>/scope.json" \
+     --json
+   ```
+
+   Replaying this command must not overwrite task reports or review files.
+4. After the scoped repair is committed and independent spec and quality
+   reviews are approved, complete the repair:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-complete --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --spec-review "openspec/changes/<change-id>/development/tasks/<task-id>/spec-review.json" \
+     --quality-review "openspec/changes/<change-id>/development/tasks/<task-id>/quality-review.json" \
+     --json
+   ```
+
+   A test repair may change only `test_sha`; a product repair may change only
+   `code_sha`. Any other fingerprint drift blocks.
+5. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
    `verify/v2/requirements-source.json`, `verify/v2/acceptance-source.json`,
    `verify/v2/freshness.json`, `verify/rerun-policy.json`, and
    `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
    valid `codegraph/impact-report.json`.
-3. Run `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json`.
+6. Persist the trusted repaired, impacted, and baseline scope:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-rerun-plan --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --json
+   ```
+
+   This uses the same authority as
+   `node "$SPECNAV_VERIFICATION_ROOT/scripts/rerun-scope.js" --json`.
    `required_cases` and `reasons_by_case` are authoritative. Never replace
    them with a manually chosen domain list.
    Pass `--reviewer-id <authenticated-human-id>` so the current approval is
    revalidated against the current snapshot and source hashes.
-4. If a product or test repair is being verified, pass every repaired case
-   explicitly with `--repaired <case-id,...>`.
-5. If the result is blocked, stop. Unknown references, missing freshness,
+7. If the result is blocked, stop. Unknown references, missing freshness,
    malformed CodeGraph evidence, and unmapped production changes may expand
    scope but may never silently shrink it.
-6. Task 020 executes the returned cases as retest or regression attempts.
+8. Task 020 executes the returned cases as retest or regression attempts.
    Preserve prior failed attempts and evidence; do not edit the stale marker
    by hand.
-7. Execute every returned case through the V2 `execute` action using the
+9. Execute every returned case through the V2 `execute` action using the
    required retry, retest, or regression identity. Never overwrite the first
    failed attempt.
    - Retry uses the original run and requires unchanged fingerprints:
@@ -64,7 +114,35 @@ case ids.
        --attempt-kind regression --parent-attempt "<retest-attempt-id>" \
        --failure-id "<failure-id>" --json
      ```
-8. Run the V2 `finalize` action only after every `required_cases` member has
+10. Evaluate the repair state after each retest or regression batch:
+
+    ```bash
+    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+      repair-evaluate --project "$PWD" --change "<change-id>" \
+      --reviewer-id "<authenticated-human-id>" \
+      --failure-id "<failure-id>" \
+      --json
+    ```
+
+    Continue only with the exact Core-owned transition proposal. Never set a
+    failure status by hand.
+11. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
+    explicit user approval:
+
+    ```bash
+    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+      repair-transition-apply --project "$PWD" --change "<change-id>" \
+      --reviewer-id "<authenticated-human-id>" \
+      --failure-id "<failure-id>" \
+      --proposal-id "<transition-proposal-id>" \
+      --idempotency-key "<stable-application-key>" \
+      --approved --json
+    ```
+
+    Transition proposals and applications are append-only JSONL facts.
+    Repeating the same idempotency key returns the original receipt; a
+    conflicting replay blocks.
+12. Run the V2 `finalize` action only after every `required_cases` member has
    fresh terminal evidence and all required six-domain readings.
 
 ## Required Outputs
@@ -73,6 +151,9 @@ case ids.
   `repaired_cases`, `stale_cases`, `reasons_by_case`, CodeGraph refs, and
   policy refs.
 - Fresh attempts and readings for every required case.
+- `verify/v2/transition-proposals.jsonl`,
+  `verify/v2/transition-receipts.jsonl`, and rebuildable
+  `verify/v2/failure-state.json`.
 - Refreshed aggregate, release/archive gates, report model, and render manifest
   derived from those case readings.
 

@@ -8,6 +8,9 @@ const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 
 const kernel = require('../kernel');
+const {
+  createTrustedFactAuthority
+} = require('../kernel/repair/trusted-fact-authority');
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -418,6 +421,7 @@ function loadContext(args, dependencies = {}) {
       throw error;
     }
     context.runtimeAuthority = runtimeResolution.authority;
+    context.trustedFactKey = runtimeResolution.signingKey;
     context.runtimeStatusValue = runtimeResolution.runtimeStatus;
     const createSchemaRegistry = dependencies.createSchemaRegistry
       || kernel.createSchemaRegistry;
@@ -452,10 +456,11 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
   const loaded = loadContext(args, dependencies);
   if (!loaded.ok) return loaded;
   const context = loaded.context;
-  const approvalValidator = require('../kernel/cases')
-    .createCaseApprovalValidator({
-      schemaRegistry: context.schemaRegistry
-    });
+  const createApprovalValidator = dependencies.createCaseApprovalValidator
+    || require('../kernel/cases').createCaseApprovalValidator;
+  const approvalValidator = createApprovalValidator({
+    schemaRegistry: context.schemaRegistry
+  });
   const approvalState = approvalValidator.evaluate({
     snapshot: context.snapshotValue,
     approval: context.approvalValue,
@@ -506,14 +511,30 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
   }
   const clock = dependencies.clock || (() => new Date().toISOString());
   const secrets = stableSecrets(context.snapshotValue);
+  const trustedFactAuthority = createTrustedFactAuthority({
+    schemaRegistry: context.schemaRegistry,
+    key: context.trustedFactKey,
+    clock
+  });
+  const createArtifactPipeline = dependencies.createVerificationArtifactPipeline
+    || kernel.createVerificationArtifactPipeline;
   if (action === 'finalize') {
-    return kernel.createVerificationArtifactPipeline({
+    return createArtifactPipeline({
       kernel,
       schemaRegistry: context.schemaRegistry,
       changeRoot: context.changeRoot,
       verificationRoot: context.verificationRoot,
       snapshot: context.snapshotValue,
       approval: context.approvalValue,
+      currentFingerprints: {
+        case_snapshot_hash: context.snapshotValue.snapshot_hash,
+        code_sha: current.codeSha,
+        test_sha: current.testSha,
+        environment_hash: current.environmentHash,
+        runtime_version: context.runtimeStatusValue.runtime_version,
+        kernel_version: kernel.metadata.version
+      },
+      trustedFactAuthority,
       clock,
       secrets
     }).build();
@@ -531,7 +552,9 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       '--scenario-registry'
     );
   }
-  const runner = kernel.createProductionVerificationRunner({
+  const createProductionRunner = dependencies.createProductionVerificationRunner
+    || kernel.createProductionVerificationRunner;
+  const runner = createProductionRunner({
     kernel,
     schemaRegistry: context.schemaRegistry,
     projectRoot: context.projectRoot,
@@ -595,13 +618,22 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       fallback_used: false
     };
   }
-  const finalized = kernel.createVerificationArtifactPipeline({
+  const finalized = createArtifactPipeline({
     kernel,
     schemaRegistry: context.schemaRegistry,
     changeRoot: context.changeRoot,
     verificationRoot: context.verificationRoot,
     snapshot: context.snapshotValue,
     approval: context.approvalValue,
+    currentFingerprints: {
+      case_snapshot_hash: context.snapshotValue.snapshot_hash,
+      code_sha: current.codeSha,
+      test_sha: current.testSha,
+      environment_hash: current.environmentHash,
+      runtime_version: context.runtimeStatusValue.runtime_version,
+      kernel_version: kernel.metadata.version
+    },
+    trustedFactAuthority,
     clock,
     secrets
   }).build();

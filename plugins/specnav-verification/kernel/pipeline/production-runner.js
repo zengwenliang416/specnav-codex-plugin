@@ -554,7 +554,8 @@ function executionHistory(verificationRoot) {
   const v2 = path.join(verificationRoot, 'v2');
   return {
     runs: currentProjection(path.join(v2, 'runs.json')),
-    attempts: currentProjection(path.join(v2, 'attempts.json'))
+    attempts: currentProjection(path.join(v2, 'attempts.json')),
+    failures: currentProjection(path.join(v2, 'failures.json'))
   };
 }
 
@@ -671,7 +672,49 @@ function makeFollowupRun(context, testCase, now, options, history) {
       )]
     };
   }
-  const originRunId = parentRun.origin_run_id || parentRun.id;
+  const failureMatches = history.failures.filter((entry) => (
+    entry.id === options.failureId
+  ));
+  const rootFailure = failureMatches.length === 1
+    ? failureMatches[0]
+    : null;
+  const rootRun = rootFailure
+    ? history.runs.find((entry) => entry.id === rootFailure.run_id)
+    : null;
+  const commonLineageValid = rootFailure
+    && rootFailure.change_id === context.snapshot.change_id
+    && rootFailure.status === 'open'
+    && rootRun
+    && rootRun.kind === 'initial'
+    && rootRun.change_id === context.snapshot.change_id
+    && rootRun.failure_id === null
+    && rootRun.origin_run_id === null
+    && rootRun.parent_run_id === null
+    && rootRun.case_ids.includes(rootFailure.case_id)
+    && parentRun.change_id === context.snapshot.change_id
+    && parentRun.case_ids.includes(parentAttempt.case_id);
+  const kindLineageValid = kind === 'retest'
+    ? commonLineageValid
+      && rootFailure.case_id === testCase.id
+      && parentAttempt.case_id === testCase.id
+      && parentRun.id === rootRun.id
+      && ['initial', 'retry'].includes(parentAttempt.kind)
+    : commonLineageValid
+      && parentRun.kind === 'retest'
+      && parentRun.failure_id === rootFailure.id
+      && parentRun.origin_run_id === rootRun.id
+      && parentAttempt.case_id === parentRun.case_ids[0];
+  if (!kindLineageValid) {
+    return {
+      ok: false,
+      blockers: [blocker(
+        'verification-production:followup-failure-lineage-invalid',
+        options.failureId,
+        kind
+      )]
+    };
+  }
+  const originRunId = rootRun.id;
   return {
     ok: true,
     identity: {
@@ -1356,16 +1399,21 @@ function createProductionVerificationRunner(options = {}) {
       runIntegrity
     );
     if (!runIntegrityWrite.ok) blockers.push(...runIntegrityWrite.blockers);
-    const failure = failureProjection({
-      kernel,
-      schemaRegistry,
-      testCase,
-      execution,
-      readings: readingResult.readings,
-      evidence: stored.evidence,
-      integrity: finalIntegrity,
-      clock
-    });
+    const failure = execution.attempt.kind === 'initial'
+      ? failureProjection({
+          kernel,
+          schemaRegistry,
+          testCase,
+          execution,
+          readings: readingResult.readings,
+          evidence: stored.evidence,
+          integrity: finalIntegrity,
+          clock
+        })
+      : {
+          packet: null,
+          blockers: []
+        };
     blockers.push(...failure.blockers);
     if (failure.packet) {
       const runFailureWrite = artifactStore.appendJsonl(

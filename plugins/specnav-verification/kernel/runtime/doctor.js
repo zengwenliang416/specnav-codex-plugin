@@ -18,6 +18,9 @@ const {
 const {
   moduleTreeDigest
 } = require('./runtime-integrity');
+const {
+  readAuthorityKey
+} = require('./authority-key');
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -180,6 +183,7 @@ function doctorRuntime(options = {}) {
     lock: { ok: false },
     runtime: { ok: false, root: null },
     receipt: { ok: false, path: null },
+    authority: { ok: false, path: null },
     permissions: [],
     packages: [],
     browsers: [],
@@ -335,6 +339,34 @@ function doctorRuntime(options = {}) {
         receiptFile
       ));
     }
+  }
+
+  try {
+    const authority = readAuthorityKey(
+      runtimeRoot,
+      runtimeLock,
+      receipt?.authority
+    );
+    checks.authority = {
+      ok: true,
+      path: path.join(runtimeRoot, authority.receipt.relative_path),
+      algorithm: authority.receipt.algorithm,
+      key_sha256: authority.receipt.key_sha256,
+      file_mode: authority.receipt.file_mode
+    };
+  } catch (error) {
+    checks.authority = {
+      ok: false,
+      path: path.join(
+        runtimeRoot,
+        runtimeLock.authority?.relative_path || 'authority.key'
+      )
+    };
+    addUnique(blockers, blocker(
+      'verification-runtime:authority-key-invalid',
+      checks.authority.path,
+      error instanceof Error ? error.message : String(error)
+    ));
   }
 
   const packageLockFile = path.join(runtimeRoot, 'package-lock.json');

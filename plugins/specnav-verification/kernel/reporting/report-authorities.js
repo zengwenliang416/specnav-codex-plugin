@@ -90,10 +90,15 @@ function isEvidenceIndexAuthority(value) {
 }
 
 function createReportFactAuthority(options = {}) {
-  const { verifyIntegrity, verifyFreshness } = options;
+  const {
+    verifyIntegrity,
+    verifyFreshness,
+    verifyGateFacts
+  } = options;
   if (
     typeof verifyIntegrity !== 'function'
     || typeof verifyFreshness !== 'function'
+    || typeof verifyGateFacts !== 'function'
   ) {
     throw new Error('verification-report:fact-authority-config-invalid');
   }
@@ -118,6 +123,16 @@ function createReportFactAuthority(options = {}) {
         attempt_ids: [...payload.attempt_ids].sort(),
         freshness_digest: digestValue(payload.freshness)
       });
+    },
+    verifyGateFacts(payload) {
+      const ok = verifyGateFacts(structuredClone(payload)) === true;
+      return Object.freeze({
+        ok,
+        change_id: payload.change_id,
+        failure_state_status: payload.failure_state_status,
+        failure_state_digest: payload.failure_state_digest,
+        authority_chain_digest: payload.authority_chain_digest
+      });
     }
   });
   FACT_AUTHORITIES.add(authority);
@@ -127,7 +142,8 @@ function createReportFactAuthority(options = {}) {
 function isReportFactAuthority(value) {
   return FACT_AUTHORITIES.has(value)
     && typeof value?.verifyIntegrity === 'function'
-    && typeof value?.verifyFreshness === 'function';
+    && typeof value?.verifyFreshness === 'function'
+    && typeof value?.verifyGateFacts === 'function';
 }
 
 module.exports = {

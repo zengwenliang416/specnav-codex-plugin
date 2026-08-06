@@ -38,6 +38,10 @@ const { moduleTreeDigest } = require(path.join(
   ROOT,
   'plugins/specnav-verification/kernel/runtime/runtime-integrity'
 ));
+const { writeAuthorityKey } = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/runtime/authority-key'
+));
 
 test('doctor probes FFmpeg with its supported version argument', () => {
   const calls = [];
@@ -140,6 +144,11 @@ function runtimeFixture(t) {
     });
   }
 
+  const authority = writeAuthorityKey(
+    runtimeRoot,
+    lock,
+    () => Buffer.alloc(lock.authority.key_bytes, 11)
+  );
   const receipt = {
     schema: 'specnav.verification.runtime-install-receipt.v1',
     status: 'installed',
@@ -155,6 +164,7 @@ function runtimeFixture(t) {
     },
     package_lock_sha256: sha256File(path.join(runtimeRoot, 'package-lock.json')),
     module_tree_sha256: moduleTreeDigest(runtimeRoot),
+    authority,
     packages: Object.entries(lock.packages).map(([name, spec]) => ({
       name,
       version: spec.version,
@@ -171,6 +181,7 @@ function runtimeFixture(t) {
     lock,
     runtimeBase,
     runtimeRoot,
+    authority,
     adapters: {
       accessPath() {
         return true;
@@ -218,6 +229,11 @@ test('doctor reports a complete ready runtime without exposing provider secrets'
   assert.equal(result.ok, true);
   assert.equal(result.readiness, 'ready');
   assert.deepEqual(result.blockers, []);
+  assert.equal(result.checks.authority.ok, true);
+  assert.equal(
+    result.checks.authority.key_sha256,
+    fixture.authority.key_sha256
+  );
   assert.equal(result.checks.packages.every((entry) => entry.loadable), true);
   assert.equal(result.checks.browsers.every((entry) => entry.probe_ok), true);
   assert.deepEqual(result.checks.provider, {
@@ -277,14 +293,14 @@ test('doctor returns an exact install action when the locked runtime is absent',
     providerEnvironment: {},
     runtimeBase: path.join(sandbox, 'verification'),
     lock,
-    installCommand: 'node verification-runtime.js install --version 2.0.0-alpha.1'
+    installCommand: 'node verification-runtime.js install --version 2.0.0-alpha.2'
   });
 
   assert.equal(result.ok, false);
   assert.deepEqual(blockerIds(result), ['verification-runtime:runtime-missing']);
   assert.deepEqual(result.actions, [{
     id: 'verification-runtime:install-required',
-    command: 'node verification-runtime.js install --version 2.0.0-alpha.1'
+    command: 'node verification-runtime.js install --version 2.0.0-alpha.2'
   }]);
   assert.equal(result.fallback_used, false);
 });
@@ -407,7 +423,7 @@ test('doctor returns the explicit runtime repair command for installed-runtime c
   const fixture = runtimeFixture(t);
   const receiptFile = path.join(fixture.runtimeRoot, 'install-receipt.json');
   fs.writeFileSync(receiptFile, '{ invalid json');
-  const repairCommand = 'node verification-runtime.js repair --version 2.0.0-alpha.1';
+  const repairCommand = 'node verification-runtime.js repair --version 2.0.0-alpha.2';
 
   const result = doctorRuntime({
     requestedVersion: fixture.lock.runtime_version,

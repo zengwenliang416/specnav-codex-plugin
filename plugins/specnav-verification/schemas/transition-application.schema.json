@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/transition-application.schema.json",
+  "title": "SpecNav Verification 2.0 Core Transition Application",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "idempotency_key",
+    "proposal_id",
+    "proposal_digest",
+    "root_failure_digest",
+    "failure_id",
+    "change_id",
+    "action",
+    "from_status",
+    "to_status",
+    "projection_digest",
+    "applied_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.transition-application.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "idempotency_key": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "proposal_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "proposal_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "root_failure_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "action": {
+      "enum": [
+        "close_failure",
+        "reopen_failure",
+        "route_break_loop"
+      ]
+    },
+    "from_status": {
+      "enum": [
+        "open",
+        "classified",
+        "repair_required",
+        "retry_allowed",
+        "blocked_for_decision",
+        "fixed",
+        "verified",
+        "closed",
+        "reopened",
+        "break_loop"
+      ]
+    },
+    "to_status": {
+      "enum": [
+        "closed",
+        "reopened",
+        "break_loop"
+      ]
+    },
+    "projection_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "applied_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "close_failure"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to_status": {
+            "const": "closed"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "reopen_failure"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to_status": {
+            "const": "reopened"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "route_break_loop"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to_status": {
+            "const": "break_loop"
+          }
+        }
+      }
+    }
+  ]
+}

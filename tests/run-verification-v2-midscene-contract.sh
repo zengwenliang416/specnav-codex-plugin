@@ -13,7 +13,7 @@ node --test \
 set +e
 doctor_output="$(
   node plugins/specnav-verification/scripts/verification-runtime.js doctor \
-    --version 2.0.0-alpha.1 \
+    --version 2.0.0-alpha.2 \
     --project "$ROOT" \
     --root "$HOME/.specnav/runtime/verification" \
     --requires-midscene \

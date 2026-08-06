@@ -29,7 +29,9 @@
         "classification_result",
         "repair_link",
         "attempt_fact",
-        "rerun_plan"
+        "rerun_plan",
+        "transition_proposal",
+        "transition_application"
       ]
     },
     "producer": {
@@ -68,6 +70,20 @@
         },
         "attempt_id": {
           "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "log_sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "previous_envelope_digest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "common.schema.json#/$defs/sha256"
+            }
+          ]
         }
       }
     },
