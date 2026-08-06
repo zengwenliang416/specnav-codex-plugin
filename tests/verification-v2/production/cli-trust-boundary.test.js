@@ -179,3 +179,45 @@ test('production CLI summarizes persisted execution data without embedding logs'
     entry.path === 'verify/runs/run-1/attempts/attempt-1/execution.json'
   )));
 });
+
+test('production CLI summarizes standalone finalize output without embedding reports', () => {
+  const result = summarizeCliResult({
+    ok: false,
+    status: 'blocked',
+    aggregate: {
+      status: 'pass',
+      domains: 'x'.repeat(20 * 1024 * 1024)
+    },
+    release_gate: { id: 'gate-release-1' },
+    archive_gate: { id: 'gate-archive-1' },
+    report_model: {
+      id: 'report-model-1',
+      results: 'x'.repeat(20 * 1024 * 1024)
+    },
+    report_manifest: {
+      reports: [{
+        name: 'overview.html',
+        path: 'verify/reports/overview.html'
+      }]
+    },
+    blockers: [{
+      id: 'verification-decision:open-failures',
+      artifact: 'failure-1',
+      detail: null
+    }],
+    fallback_used: false
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.aggregate_status, 'pass');
+  assert.equal(result.release_gate_id, 'gate-release-1');
+  assert.equal(result.archive_gate_id, 'gate-archive-1');
+  assert.equal(result.report_model_id, 'report-model-1');
+  assert.deepEqual(result.cases, []);
+  assert.equal(JSON.stringify(result).includes('"results"'), false);
+  assert.equal(JSON.stringify(result).includes('"domains"'), false);
+  assert.ok(JSON.stringify(result).length < 16 * 1024);
+  assert.ok(result.artifacts.some((entry) => (
+    entry.path === 'verify/reports/overview.html'
+  )));
+});

@@ -145,7 +145,7 @@ function renderOverviewBody(model, safe) {
             <div><dt>Open blockers</dt><dd>${model.blockers.length}</dd></div>
           </dl>
         </section>
-        ${emptyState}
+${emptyState}
 
         <section class="section lifecycle-section" data-report-section="lifecycle">
           <div class="section-heading">

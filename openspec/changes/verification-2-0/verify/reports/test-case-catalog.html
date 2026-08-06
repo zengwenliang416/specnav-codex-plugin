@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; connect-src 'none'; font-src 'none'; form-action 'none'; img-src 'none'; object-src 'none'; script-src 'sha256-pP2lkv1kk7eUyTCmpaLFnLwQrtQGdnBI73/ECqhmo/M='; style-src 'unsafe-inline'">
+  <title>SpecNav Verification 2.0 - Test case catalog</title>
+  <style data-specnav-report-styles>
+:root {
+  color-scheme: light;
+  --ink: #171717;
+  --muted: #625c55;
+  --surface: #fffdf8;
+  --surface-subtle: #f7f2e8;
+  --border: #d8d1c5;
+  --border-strong: #a69d90;
+  --green: #1b7550;
+  --red: #c2413b;
+  --amber: #86570f;
+  --blue: #2563eb;
+  --teal: #0f766e;
+  --gray: #625c55;
+  font-family: "Geist Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--surface-subtle);
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-subtle);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+}
+
+code {
+  font-family: "Geist Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  padding: 8px 12px;
+  background: var(--ink);
+  color: var(--surface);
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.report-shell {
+  width: min(100%, 1440px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  background: var(--surface);
+  border-inline: 1px solid var(--border);
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 82px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand small {
+  color: var(--muted);
+}
+
+.run-meta,
+.verdict-meta,
+.health-grid,
+.repair-grid,
+.source-list {
+  margin: 0;
+}
+
+.run-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.run-meta div {
+  display: grid;
+  gap: 2px;
+}
+
+.run-meta dt,
+.run-meta dd {
+  margin: 0;
+}
+
+.run-meta dt,
+.health-grid dt,
+.repair-grid dt,
+.source-list dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.report-navigation {
+  display: flex;
+  gap: 4px;
+  min-height: 48px;
+  align-items: end;
+  border-bottom: 1px solid var(--border);
+}
+
+.report-navigation a {
+  padding: 13px 14px 11px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.report-navigation a:hover,
+.report-navigation a:focus-visible {
+  color: var(--ink);
+}
+
+.report-navigation a[aria-current="page"] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.overview {
+  display: grid;
+  gap: 0;
+}
+
+.verdict-band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  padding: 38px 0 32px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.verdict-band h1 {
+  max-width: 900px;
+  margin: 4px 0 10px;
+  font-size: 2.25rem;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+.verdict-band p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.verdict-meta {
+  display: grid;
+  min-width: 180px;
+  align-content: center;
+  gap: 12px;
+}
+
+.verdict-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.verdict-meta dt,
+.verdict-meta dd {
+  margin: 0 0 6px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-bottom: 1px solid var(--border);
+}
+
+.metric {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 20px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.metric:first-child {
+  padding-left: 0;
+}
+
+.metric:last-child {
+  border-right: 0;
+}
+
+.metric span,
+.metric small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.metric strong {
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+
+.section {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section > p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.section-heading h2 {
+  margin: 2px 0 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.section h3 {
+  margin: 24px 0 8px;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-icon {
+  display: inline-grid;
+  width: 1em;
+  margin-right: 4px;
+  place-items: center;
+  font-weight: 800;
+}
+
+.status-green,
+.status-pass,
+.status-passed,
+.status-ready,
+.status-released,
+.status-terminal,
+.status-closed,
+.status-intact,
+.status-fresh {
+  color: var(--green);
+}
+
+.status-red,
+.status-fail,
+.status-failed,
+.status-broken,
+.status-open {
+  color: var(--red);
+}
+
+.status-blocked,
+.status-stale,
+.status-planned,
+.status-unknown,
+.status-not-started,
+.status-break-loop {
+  color: var(--amber);
+}
+
+.status-running,
+.status-repairing,
+.status-retesting,
+.status-regressing {
+  color: var(--blue);
+}
+
+.status-canceled,
+.status-not-applicable {
+  color: var(--gray);
+}
+
+.status-flaky,
+.status-pass-after-fix {
+  color: var(--teal);
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--surface-subtle);
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+tbody th {
+  width: 18%;
+}
+
+.blocker-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: blocker;
+}
+
+.blocker-list li {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.55fr) minmax(280px, 1fr) minmax(180px, 0.55fr);
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: blocker;
+}
+
+.blocker-list li::before {
+  content: counter(blocker, decimal-leading-zero);
+  color: var(--muted);
+  font-family: "Geist Mono", monospace;
+  font-size: 0.75rem;
+}
+
+.blocker-list span,
+.blocker-list small,
+.empty-message {
+  color: var(--muted);
+}
+
+.blocker-list .next-action {
+  grid-column: 2 / -1;
+  color: var(--ink);
+}
+
+.state-message {
+  display: grid;
+  gap: 4px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--amber);
+  background: var(--surface-subtle);
+}
+
+.state-message span {
+  color: var(--muted);
+}
+
+.count {
+  display: grid;
+  min-width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.health-grid,
+.repair-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--border);
+}
+
+.health-reasons {
+  margin: 12px 0 0;
+}
+
+.repair-references {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 0 0;
+}
+
+.repair-references > div {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.repair-references dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.repair-references dd {
+  margin: 0;
+}
+
+.repair-timeline {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 16px 0 0;
+  padding: 0;
+  border-block: 1px solid var(--border);
+  list-style: none;
+}
+
+.repair-timeline li {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-right: 1px solid var(--border);
+}
+
+.repair-timeline li:last-child {
+  border-right: 0;
+}
+
+.repair-timeline li > span:first-child {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.health-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.health-grid > div,
+.repair-grid > div {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-right: 1px solid var(--border);
+}
+
+.health-grid > div:last-child,
+.repair-grid > div:last-child {
+  border-right: 0;
+}
+
+.health-grid dd,
+.repair-grid dd,
+.source-list dd {
+  margin: 0;
+}
+
+.health-grid small {
+  color: var(--muted);
+}
+
+.source-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+}
+
+.source-list > div {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.projection-notice {
+  padding: 12px 0;
+}
+
+.report-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.page-heading,
+.case-contract > header,
+.case-result > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-heading h1,
+.case-contract h2,
+.case-result h2 {
+  margin: 2px 0 6px;
+  letter-spacing: 0;
+}
+
+.page-heading p,
+.case-contract p,
+.case-result p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.filter-bar {
+  display: flex;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-bar label {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.filter-bar input,
+.filter-bar select {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.case-contract,
+.case-result {
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-meta,
+.contract-columns,
+.result-summary,
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contract-meta {
+  margin: 16px 0;
+}
+
+.contract-meta > div,
+.result-summary {
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+
+.contract-meta dt,
+.evidence-item dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.contract-meta dd,
+.evidence-item dd {
+  margin: 4px 0 0;
+}
+
+.domain-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 20px;
+}
+
+.domain-label {
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.contract-list,
+.history-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contract-list li,
+.history-list li {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contract-list small,
+.history-list small {
+  color: var(--muted);
+}
+
+.case-index {
+  display: flex;
+  gap: 6px;
+  padding: 16px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.case-index a {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.case-result > section {
+  padding-top: 20px;
+}
+
+.result-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.evidence-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+
+.evidence-item header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evidence-item dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.evidence-item dl > div {
+  min-width: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .report-shell {
+    padding-inline: 16px;
+    border-inline: 0;
+  }
+
+  .report-header,
+  .verdict-band,
+  .page-heading,
+  .case-contract > header,
+  .case-result > header,
+  .report-footer {
+    align-items: start;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .run-meta {
+    justify-content: start;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metric {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metric:first-child {
+    padding-left: 16px;
+  }
+
+  .health-grid,
+  .repair-grid,
+  .source-list,
+  .contract-meta,
+  .contract-columns,
+  .evidence-grid,
+  .result-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .health-grid > div,
+  .repair-grid > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .blocker-list li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .blocker-list .next-action {
+    grid-column: 1;
+  }
+
+  .repair-timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .repair-timeline li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .contract-list li,
+  .history-list li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 560px) {
+  .report-navigation {
+    align-items: stretch;
+    overflow-x: auto;
+  }
+
+  .report-navigation a {
+    flex: 0 0 auto;
+  }
+
+  .run-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metric {
+    border-right: 0;
+  }
+
+  .source-list > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .verdict-band h1 {
+    font-size: 1.75rem;
+  }
+
+  .repair-references {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  :root,
+  body,
+  .report-shell {
+    background: #fff;
+  }
+
+  .report-shell {
+    width: 100%;
+    padding: 0;
+    border: 0;
+  }
+
+  .skip-link,
+  .report-navigation,
+  .filter-bar,
+  .case-index {
+    display: none;
+  }
+
+  .section,
+  .verdict-band,
+  table,
+  .blocker-list li {
+    break-inside: avoid;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#report-content">Skip to report content</a>
+  <div class="report-shell" data-report-model-id="report-model-f267cb1eb3869fd1961babb12e7c4ba5f94fe6b2f17b1940fc14fc78f8cd8cf3">
+    <header class="report-header">
+      <a class="brand" href="overview.html" aria-label="SpecNav verification overview">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><strong>SpecNav</strong><small>Verification 2.0</small></span>
+      </a>
+      <dl class="run-meta">
+        <div><dt>Change</dt><dd><code>verification-2-0</code></dd></div>
+        <div><dt>Runtime</dt><dd><code>2.0.0-alpha.1</code></dd></div>
+        <div><dt>Kernel</dt><dd><code>2.0.0-alpha.1</code></dd></div>
+      </dl>
+    </header>
+    <nav class="report-navigation" aria-label="Verification reports">
+      <a href="overview.html">Overview</a><a href="test-case-catalog.html" aria-current="page">Test case catalog</a><a href="test-case-results.html">Case results</a>
+    </nav>
+    <main id="report-content" tabindex="-1">
+<article class="case-page" data-report-page="catalog">
+    <section class="page-heading" data-report-section="case-contracts">
+      <div><p class="eyebrow">Approved contract</p><h1>Test case catalog</h1><p>8 approved behavior contract(s).</p></div>
+      <span class="status-badge status-blocked"><span class="status-icon" aria-hidden="true">!</span>BLOCKED</span>
+    </section>
+    <form class="filter-bar" data-report-component="case-filter" role="search">
+      <label>Search cases<input type="search" aria-label="Search cases"></label>
+      <label>Priority<select aria-label="Filter by priority"><option value="">All priorities</option><option>P0</option><option>P1</option><option>P2</option></select></label>
+    </form>
+    <section class="case-contracts"><article class="case-contract" data-case-row data-search="case-01 case planning and approval gate prove that the complete case contract is reviewable and no execution or simplified path can bypass exact-snapshot human approval." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · verification reviewer</p><h2><code>CASE-01</code> Case planning and approval gate</h2><p>Prove that the complete case contract is reviewable and no execution or simplified path can bypass exact-snapshot human approval.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-01-STEP-01</code><span>Generate and inspect the normalized case snapshot.</span><small>Expected: Cases, steps, assertions, six-domain mappings, runners, and evidence policies are visible and schema-valid.</small></li><li><code>CASE-01-STEP-02</code><span>Attempt execution without a matching human approval.</span><small>Expected: Execution is blocked with an approval blocker bound to the current snapshot.</small></li><li><code>CASE-01-STEP-03</code><span>Request light, compact, or simplified verification.</span><small>Expected: The request is rejected and the full six-domain V2 contract remains required.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-01-A01</code><span>The complete proposed case contract is inspectable before execution.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-01-A02</code><span>An absent, stale, service-authored, or hash-mismatched approval blocks execution.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-01-A03</code><span>No light, compact, partial-domain, or simplified verification path is accepted.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-02 managed runtime and runner-oracle boundaries prove locked runtime diagnosis, immutable attempt identity, registered runner boundaries, and deterministic final oracles without fallback." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · verification operator</p><h2><code>CASE-02</code> Managed runtime and runner-oracle boundaries</h2><p>Prove locked runtime diagnosis, immutable attempt identity, registered runner boundaries, and deterministic final oracles without fallback.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-02-STEP-01</code><span>Run runtime doctor and inspect installed package and browser identities.</span><small>Expected: Exact versions, browser readiness, provider status, permissions, and blockers are reported.</small></li><li><code>CASE-02-STEP-02</code><span>Execute command and Playwright adapter contract tests with immutable fingerprints.</span><small>Expected: Attempts bind all required identities and reject changed retry fingerprints.</small></li><li><code>CASE-02-STEP-03</code><span>Submit Midscene-only observations without a deterministic oracle.</span><small>Expected: The reading remains blocked and no alternative runtime or oracle is selected.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-02-A01</code><span>The managed runtime reports locked component and browser status with exact blockers and no fallback.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-02-A02</code><span>Run and retry identity is complete and mutation of any retry fingerprint is rejected.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-02-A03</code><span>Midscene evidence alone cannot produce PASS without a deterministic or explicitly permitted human oracle.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-03 evidence integrity, readings, six-domain aggregation, and freshness prove that complete content-addressed evidence produces validated readings and that all six domains, rerun scope, freshness, and gates are fact-derived." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · quality reviewer</p><h2><code>CASE-03</code> Evidence integrity, readings, six-domain aggregation, and freshness</h2><p>Prove that complete content-addressed evidence produces validated readings and that all six domains, rerun scope, freshness, and gates are fact-derived.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-03-STEP-01</code><span>Persist evidence and validate identity, path, hash, size, producer, and source bindings.</span><small>Expected: Valid evidence is accepted and tampered, missing, stale, empty, or forged evidence blocks readings.</small></li><li><code>CASE-03-STEP-02</code><span>Derive readings and aggregate all six domains from the validated evidence.</span><small>Expected: Every case has six terminal domain results and prose or manual green reports cannot override them.</small></li><li><code>CASE-03-STEP-03</code><span>Change source fingerprints and compute freshness and rerun scope.</span><small>Expected: Affected concrete case IDs and reasons are returned, and stale evidence blocks the gate.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-03-A01</code><span>Evidence is append-only, content-addressed, fully identity-bound, rebuildable, and fail-closed on integrity violations.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-03-A02</code><span>All six domain and release verdicts are derived from validated readings, including governed not_applicable decisions.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-03-A03</code><span>Freshness and rerun scope use immutable fingerprints and identify affected case IDs with reasons.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-04 failure, repair, retry, retest, regression, and break-loop prove that failures remain immutable while retry, repair, retest, regression, closure, reopen, and no-progress escalation follow distinct governed states." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · developer and verification operator</p><h2><code>CASE-04</code> Failure, repair, retry, retest, regression, and break-loop</h2><p>Prove that failures remain immutable while retry, repair, retest, regression, closure, reopen, and no-progress escalation follow distinct governed states.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-04-STEP-01</code><span>Classify the failure and route product or test repair through a standard development task.</span><small>Expected: The failure packet and source evidence remain immutable and the repair owner is explicit.</small></li><li><code>CASE-04-STEP-02</code><span>Exercise identical retry and changed-code retest paths.</span><small>Expected: Retry success is FLAKY, repaired success is PASS AFTER FIX, and prior failure evidence remains present.</small></li><li><code>CASE-04-STEP-03</code><span>Run regression scope and repeat a no-progress failure cycle.</span><small>Expected: Required regressions control closure and repeated no-progress routes to break-loop governance.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-04-A01</code><span>Failure classification creates an immutable packet and an ownership-correct development repair handoff.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-04-A02</code><span>Retry, retest, and regression preserve prior attempts and produce FLAKY or PASS AFTER FIX semantics correctly.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-04-A03</code><span>Regression failure reopens the loop and repeated no-progress requires a break-loop decision.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-05 three-page report center prove that overview, case catalog, and case results pages render one validated model across all states with responsive, accessible, print-safe, escaped evidence presentation." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · stakeholder reviewer</p><h2><code>CASE-05</code> Three-page report center</h2><p>Prove that overview, case catalog, and case results pages render one validated model across all states with responsive, accessible, print-safe, escaped evidence presentation.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output, screenshot</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-05-STEP-01</code><span>Render all three report pages from the validated report model.</span><small>Expected: Overview, approved case contract, complete attempt history, evidence, freshness, repair, and release state are visible.</small></li><li><code>CASE-05-STEP-02</code><span>Exercise desktop, mobile, keyboard, and print layouts in real browsers.</span><small>Expected: Navigation, verdicts, tables, links, and controls remain readable, operable, and non-overlapping.</small></li><li><code>CASE-05-STEP-03</code><span>Inject markup and provider-secret fixtures and manually alter rendered HTML.</span><small>Expected: Content is escaped and redacted, shared components remain consistent, and JSON gate truth is unchanged.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-05-A01</code><span>All three report pages expose the required lifecycle, case, result, evidence, repair, and release facts from one model.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-05-A02</code><span>Desktop, mobile, keyboard, and print review preserve readable verdict and evidence information without overlap.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-05-A03</code><span>Rendering escapes hostile content, redacts secrets, reuses shared components, and never becomes gate authority.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-06 v1-to-v2 migration prove that legacy artifacts migrate through explicit dry-run, backup, validation, receipt, rollback, and fail-closed missing-evidence semantics." data-priority="P1">
+    <header><div><p class="eyebrow">P1 · migration operator</p><h2><code>CASE-06</code> V1-to-V2 migration</h2><p>Prove that legacy artifacts migrate through explicit dry-run, backup, validation, receipt, rollback, and fail-closed missing-evidence semantics.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-06-STEP-01</code><span>Run migration dry-run and inspect the source inventory and proposed transformations.</span><small>Expected: The plan names backup references, validation actions, and rollback instructions before mutation.</small></li><li><code>CASE-06-STEP-02</code><span>Migrate fixtures and validate the migration receipt.</span><small>Expected: Valid source facts are preserved and receipt hashes bind inputs, outputs, validation, and rollback.</small></li><li><code>CASE-06-STEP-03</code><span>Migrate a V1 green artifact with missing evidence.</span><small>Expected: The V2 reading is blocked and never inferred as PASS.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-06-A01</code><span>Migration exposes dry-run inventory, backups, validation, and rollback before mutation.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-06-A02</code><span>Migration writes a hash-bound receipt and preserves valid source and failed evidence.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-06-A03</code><span>Missing V1 evidence becomes a blocked V2 reading and never a PASS.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-07 shared kernel and three-host integration prove one host-neutral kernel owns verdict semantics while thin codex, claude code, and codefree-o adapters remain synchronized and drift-detectable." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · plugin maintainer</p><h2><code>CASE-07</code> Shared Kernel and three-host integration</h2><p>Prove one host-neutral kernel owns verdict semantics while thin Codex, Claude Code, and CodeFree-O adapters remain synchronized and drift-detectable.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-07-STEP-01</code><span>Run the shared fixture corpus through all three host adapters.</span><small>Expected: Normalized artifacts, blocker IDs, verdicts, runtime behavior, and discovery contracts match.</small></li><li><code>CASE-07-STEP-02</code><span>Inspect host adapter architecture and public service boundaries.</span><small>Expected: Verdict logic stays in the kernel and runners, evidence, failures, and rendering use explicit adapters or services.</small></li><li><code>CASE-07-STEP-03</code><span>Mutate a disposable host lock or generated contract fixture.</span><small>Expected: Cross-host drift detection blocks compatibility and names the mismatched identity.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-07-A01</code><span>Codex, Claude Code, and CodeFree-O produce the same kernel contract results.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-07-A02</code><span>Host adapters remain thin and explicit service boundaries own execution and presentation concerns.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-07-A03</code><span>Kernel, schema, blocker, fixture, wrapper, or generated artifact drift is detected before release.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article><article class="case-contract" data-case-row data-search="case-08 release and archive gate prove that release and transactional archive recompute complete verification 2.0 truth and fail closed on any missing, stale, tampered, open, incompatible, or simplified input." data-priority="P0">
+    <header><div><p class="eyebrow">P0 · release owner</p><h2><code>CASE-08</code> Release and archive gate</h2><p>Prove that release and transactional archive recompute complete Verification 2.0 truth and fail closed on any missing, stale, tampered, open, incompatible, or simplified input.</p></div><span class="status-badge status-ready"><span class="status-icon" aria-hidden="true">✓</span>READY</span></header>
+    <dl class="contract-meta">
+      <div><dt>Runner</dt><dd><code>command</code></dd></div>
+      <div><dt>Required evidence</dt><dd><code>assertion_result, command_output</code></dd></div>
+    </dl>
+    <div class="domain-labels"><span class="domain-label" data-domain="facticity">Facticity: required</span><span class="domain-label" data-domain="static">Static: required</span><span class="domain-label" data-domain="unit">Unit: required</span><span class="domain-label" data-domain="redteam">Red team: required</span><span class="domain-label" data-domain="e2e">E2E: required</span><span class="domain-label" data-domain="sensory">Sensory: required</span></div>
+    <div class="contract-columns">
+      <section><h3>Steps</h3><ol class="contract-list"><li><code>CASE-08-STEP-01</code><span>Build release and archive gate inputs from the current snapshot, readings, evidence index, runtime, kernel, reports, migration, and host receipts.</span><small>Expected: Gate identities bind all source facts and produce a deterministic decision.</small></li><li><code>CASE-08-STEP-02</code><span>Remove or tamper with each required input in disposable fixtures.</span><small>Expected: Release and archive block with exact source blockers and cannot trust edited HTML or copied green summaries.</small></li><li><code>CASE-08-STEP-03</code><span>Run transactional archive success and rollback fixtures.</span><small>Expected: Archive occurs only after green proof, preserves failed evidence, and rolls back safely on filesystem or compatibility failure.</small></li></ol></section>
+      <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-08-A01</code><span>Release and archive decisions bind approved cases, six-domain readings, evidence index, freshness, runtime, kernel, reports, migration, and all hosts.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-08-A02</code><span>Any unapproved, incomplete, stale, tampered, open, missing, incompatible, or simplified input blocks release and archive.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-08-A03</code><span>Archive is transactional, preserves source and failed evidence, and rolls back safely on failure.</span><small>Oracle: structured_comparison</small></li></ol></section>
+    </div>
+  </article></section>
+    <section class="section" data-report-section="blockers"><h2>Report blockers</h2><p class="empty-message">No active blockers are recorded in the validated report model.</p></section>
+  </article>
+    </main>
+    <footer class="report-footer">
+      <span>Generated <time datetime="2026-08-06T07:29:16.279Z">2026-08-06T07:29:16.279Z</time> from validated Verification 2.0 artifacts.</span>
+      <strong>HTML is a projection, not the gate source of truth.</strong>
+    </footer>
+  </div>
+<script data-specnav-report-script="catalog-filter">
+  (() => {
+    const root = document.querySelector('[data-report-component="case-filter"]');
+    if (!root) return;
+    const search = root.querySelector('input[type="search"]');
+    const priority = root.querySelector('select');
+    const rows = [...document.querySelectorAll('[data-case-row]')];
+    const apply = () => {
+      const query = search.value.trim().toLowerCase();
+      const selected = priority.value;
+      for (const row of rows) {
+        row.hidden = !(
+          (!query || row.dataset.search.includes(query))
+          && (!selected || row.dataset.priority === selected)
+        );
+      }
+    };
+    root.addEventListener('input', apply);
+    root.addEventListener('change', apply);
+    root.addEventListener('submit', (event) => event.preventDefault());
+  })();
+  </script>
+</body>
+</html>

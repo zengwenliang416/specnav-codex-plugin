@@ -729,8 +729,15 @@ function summarizeCliResult(result) {
   if (result.run && result.attempt && !Array.isArray(result.cases)) {
     return summarizeCaseExecution(result);
   }
-  if (!Array.isArray(result.cases)) return result;
-  const cases = result.cases.map(summarizeCaseExecution);
+  const finalized = result.aggregate
+    || result.release_gate
+    || result.archive_gate
+    || result.report_model
+    || result.report_manifest;
+  if (!Array.isArray(result.cases) && !finalized) return result;
+  const cases = Array.isArray(result.cases)
+    ? result.cases.map(summarizeCaseExecution)
+    : [];
   const artifacts = [
     ...cases.flatMap((entry) => entry.artifacts),
     ...finalizedArtifactList(result)

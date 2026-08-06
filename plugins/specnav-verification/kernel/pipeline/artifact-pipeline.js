@@ -156,8 +156,8 @@ function mergeIntegrity(verificationRoot, runs, attempts) {
 function freshnessProjection(snapshot, runs, attempts, checkedAt) {
   const cases = snapshot.cases.map((testCase) => {
     const candidates = attempts.filter((entry) => entry.case_id === testCase.id)
-      .sort((left, right) => right.sequence - left.sequence);
-    const attempt = candidates[0] || null;
+      .sort(compareAttempts);
+    const attempt = candidates.at(-1) || null;
     const run = attempt
       ? runs.find((entry) => entry.id === attempt.run_id)
       : null;

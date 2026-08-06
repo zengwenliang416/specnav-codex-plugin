@@ -29,6 +29,12 @@ const {
   'plugins/specnav-verification/kernel/pipeline/production-runner'
 ));
 const {
+  freshnessProjection
+} = require(path.join(
+  ROOT,
+  'plugins/specnav-verification/kernel/pipeline/artifact-pipeline'
+));
+const {
   serializeMidscenePrompt
 } = require(path.join(
   ROOT,
@@ -756,6 +762,57 @@ test('artifact pipeline derives both gates, one report model and three HTML page
     );
   }
   assert.equal(result.report_manifest.reports.length, 3);
+});
+
+test('freshness selects the latest completed attempt when sequences match', () => {
+  const snapshot = {
+    change_id: 'change-production',
+    cases: [{ id: 'CASE-01' }]
+  };
+  const attempts = [{
+    id: 'attempt-failed',
+    run_id: 'run-failed',
+    case_id: 'CASE-01',
+    sequence: 2,
+    started_at: '2026-08-06T00:00:00Z',
+    completed_at: '2026-08-06T00:01:00Z'
+  }, {
+    id: 'attempt-passed',
+    run_id: 'run-passed',
+    case_id: 'CASE-01',
+    sequence: 2,
+    started_at: '2026-08-06T00:02:00Z',
+    completed_at: '2026-08-06T00:03:00Z'
+  }];
+  const runs = attempts.map((attempt) => ({
+    id: attempt.run_id,
+    case_snapshot_hash: 'snapshot-hash',
+    code_sha: 'code-sha',
+    test_sha: 'test-sha',
+    environment_hash: 'environment-hash',
+    runtime_version: 'runtime-version',
+    kernel_version: 'kernel-version'
+  }));
+  for (const attempt of attempts) {
+    Object.assign(attempt, {
+      case_snapshot_hash: 'snapshot-hash',
+      code_sha: 'code-sha',
+      test_sha: 'test-sha',
+      environment_hash: 'environment-hash',
+      runtime_version: 'runtime-version',
+      kernel_version: 'kernel-version'
+    });
+  }
+
+  const result = freshnessProjection(
+    snapshot,
+    runs,
+    attempts,
+    '2026-08-06T00:04:00Z'
+  );
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.cases[0].attempt_id, 'attempt-passed');
 });
 
 test('artifact store rejects traversal and symlinked parent paths', () => {
