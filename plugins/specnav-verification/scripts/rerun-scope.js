@@ -163,7 +163,7 @@ function computeRerunScope(projectRoot, options = {}) {
     changeDir,
     options,
     'caseSnapshotPath',
-    'verify/case-snapshot.json'
+    'verify/v2/case-snapshot.json'
   );
   if (!caseArtifact.exists) {
     return missingArtifact(change, 'case-snapshot.json');
@@ -176,7 +176,7 @@ function computeRerunScope(projectRoot, options = {}) {
     changeDir,
     options,
     'freshnessPath',
-    'verify/case-freshness.json'
+    'verify/v2/freshness.json'
   );
   if (!freshnessArtifact.exists) {
     return missingArtifact(change, 'case-freshness.json');
@@ -192,7 +192,7 @@ function computeRerunScope(projectRoot, options = {}) {
     changeDir,
     options,
     'caseApprovalPath',
-    'verify/case-approval.json'
+    'verify/v2/case-approval.json'
   );
   if (!approvalArtifact.exists) {
     return missingArtifact(change, 'case-approval.json');
@@ -205,7 +205,7 @@ function computeRerunScope(projectRoot, options = {}) {
     changeDir,
     options,
     'requirementsSourcePath',
-    'verify/current-requirements.json'
+    'verify/v2/requirements-source.json'
   );
   if (!requirementsArtifact.exists) {
     return missingArtifact(change, 'current-requirements.json');
@@ -218,7 +218,7 @@ function computeRerunScope(projectRoot, options = {}) {
     changeDir,
     options,
     'acceptanceSourcePath',
-    'verify/current-acceptance.json'
+    'verify/v2/acceptance-source.json'
   );
   if (!acceptanceArtifact.exists) {
     return missingArtifact(change, 'current-acceptance.json');

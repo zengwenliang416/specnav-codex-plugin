@@ -26,6 +26,7 @@ function writeJson(file, value) {
 const project = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-rerun-'));
 const change = 'rerun-change';
 const verifyDir = path.join(project, 'openspec/changes', change, 'verify');
+const verifyV2Dir = path.join(verifyDir, 'v2');
 const codegraphDir = path.join(
   project,
   'openspec/changes',
@@ -89,8 +90,8 @@ assert.equal(
   JSON.stringify(snapshotResult.blockers)
 );
 const snapshot = snapshotResult.snapshot;
-writeJson(path.join(verifyDir, 'case-snapshot.json'), snapshot);
-writeJson(path.join(verifyDir, 'case-approval.json'), {
+writeJson(path.join(verifyV2Dir, 'case-snapshot.json'), snapshot);
+writeJson(path.join(verifyV2Dir, 'case-approval.json'), {
   schema: 'specnav.verification.case-approval.v1',
   id: 'approval-cli',
   change_id: change,
@@ -101,14 +102,14 @@ writeJson(path.join(verifyDir, 'case-approval.json'), {
   decided_at: '2026-07-31T21:31:00Z'
 });
 writeJson(
-  path.join(verifyDir, 'current-requirements.json'),
+  path.join(verifyV2Dir, 'requirements-source.json'),
   currentRequirements
 );
 writeJson(
-  path.join(verifyDir, 'current-acceptance.json'),
+  path.join(verifyV2Dir, 'acceptance-source.json'),
   currentAcceptance
 );
-writeJson(path.join(verifyDir, 'case-freshness.json'), {
+writeJson(path.join(verifyV2Dir, 'freshness.json'), {
   cases: [
     { case_id: 'case-api', status: 'fresh', reasons: [] },
     { case_id: 'case-baseline', status: 'fresh', reasons: [] }

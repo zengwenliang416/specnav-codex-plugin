@@ -1,0 +1,18 @@
+{
+  "schema": "specnav.verification.rerun-policy.v1",
+  "change_id": "verification-2-0",
+  "mandatory_baseline_case_ids": [
+    "CASE-01",
+    "CASE-02",
+    "CASE-03",
+    "CASE-04",
+    "CASE-05",
+    "CASE-06",
+    "CASE-07",
+    "CASE-08"
+  ],
+  "policy_refs": [
+    "verify/rerun-policy.json#mandatory_baseline_case_ids"
+  ],
+  "reason": "Verification 2.0 changes shared execution, evidence, reporting, release, and cross-host governance, so every approved case remains a mandatory regression baseline."
+}
