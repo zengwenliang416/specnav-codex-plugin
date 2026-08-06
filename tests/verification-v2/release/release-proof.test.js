@@ -526,6 +526,12 @@ function makeProject(options = {}) {
     },
     summary: {
       ...reportModel('green').summary,
+      repair_loop: {
+        status: 'not_started',
+        failure_ids: [],
+        repair_ids: [],
+        history_event_count: 0
+      },
       runtime_version: input.runtime_version,
       kernel_version: input.kernel_version
     }
@@ -780,6 +786,11 @@ function blockers(result) {
 
 test('complete Kernel-derived release and archive proof passes and writes digests', () => {
   const fixture = makeProject();
+  assert.equal(
+    readJson(path.join(fixture.verifyV2, 'report-model.json'))
+      .summary.repair_loop.status,
+    'not_started'
+  );
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, true, JSON.stringify(result.blockers));
   assert.equal(result.proof.release_gate.decision, 'pass');
@@ -792,6 +803,30 @@ test('complete Kernel-derived release and archive proof passes and writes digest
   assert.equal(result.proof.fallback_used, false);
   assert.equal(
     fs.existsSync(path.join(fixture.opsDir, 'verification-v2-proof.json')),
+    true
+  );
+});
+
+test('no-failure release proof rejects a forged closed repair state', () => {
+  const fixture = makeProject();
+  const modelPath = path.join(fixture.verifyV2, 'report-model.json');
+  const manifestPath = path.join(
+    fixture.verifyV2,
+    'report-render-manifest.json'
+  );
+  const model = readJson(modelPath);
+  model.summary.repair_loop.status = 'closed';
+  const identified = reidentifyReportModel(model);
+  writeJson(modelPath, identified);
+  const manifest = readJson(manifestPath);
+  manifest.report_model_id = identified.id;
+  writeJson(manifestPath, manifest);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:report-state-not-closed'),
     true
   );
 });

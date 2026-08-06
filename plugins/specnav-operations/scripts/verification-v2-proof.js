@@ -697,12 +697,29 @@ function validateReportModel(
       artifact
     ));
   }
+  const repairLoop = model.summary.repair_loop;
+  const noOpenRepairState = (
+    model.summary.open_failure_ids.length === 0
+    && model.summary.open_repair_ids.length === 0
+  );
+  const hasRepairHistory = (
+    model.summary.totals.failures > 0
+    || model.summary.totals.repairs > 0
+    || repairLoop.failure_ids.length > 0
+    || repairLoop.repair_ids.length > 0
+  );
+  const repairStateValid = hasRepairHistory
+    ? repairLoop.status === 'closed' && noOpenRepairState
+    : (
+      repairLoop.status === 'not_started'
+      && repairLoop.failure_ids.length === 0
+      && repairLoop.repair_ids.length === 0
+      && noOpenRepairState
+    );
   if (
     model.summary.integrity !== 'intact'
     || model.summary.freshness?.status !== 'fresh'
-    || model.summary.repair_loop?.status !== 'closed'
-    || model.summary.open_failure_ids.length > 0
-    || model.summary.open_repair_ids.length > 0
+    || !repairStateValid
   ) {
     blockers.push(blocker('verification-release:report-state-not-closed', artifact));
   }
