@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-OPS="$ROOT/plugins/specnav-operations"
+OPS="${SPECNAV_OPERATIONS_ROOT:-$ROOT/plugins/specnav-operations}"
 TMP_DIR="$(mktemp -d)"
 if [[ "${SPECNAV_KEEP_TMP:-0}" == "1" ]]; then
   printf 'SpecNav archive fixture temp: %s\n' "$TMP_DIR" >&2
@@ -220,8 +220,10 @@ JSON
 
 test -f "$OPS/scripts/archive-change.js"
 jq -e '.contracts.archive_action == "scripts/archive-change.js"' "$OPS/specnav-stage.json" >/dev/null
-grep -Fq 'archive-change.js' "$OPS/skills/specnav-ops-readiness/SKILL.md"
-grep -Fq 'Do not manually move' "$OPS/skills/specnav-ops-readiness/SKILL.md"
+if [[ -z "${SPECNAV_OPERATIONS_ROOT:-}" ]]; then
+  grep -Fq 'archive-change.js' "$OPS/skills/specnav-ops-readiness/SKILL.md"
+  grep -Fq 'Do not manually move' "$OPS/skills/specnav-ops-readiness/SKILL.md"
+fi
 
 FAKE_OPENSPEC="$TMP_DIR/openspec"
 PROJECT="$TMP_DIR/project"

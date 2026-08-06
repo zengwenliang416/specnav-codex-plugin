@@ -5,7 +5,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const LOCAL_PLUGIN_ROOT = path.resolve(__dirname, '../..');
-const LOCAL_REPOSITORY_ROOT = path.resolve(LOCAL_PLUGIN_ROOT, '../..');
+const HOST_PROVENANCE_ROOT = path.join(
+  LOCAL_PLUGIN_ROOT,
+  'assets/host-provenance'
+);
 const SHARED_SCRIPTS = Object.freeze([
   'anchor-scan.js',
   'evidence-runner.js',
@@ -26,8 +29,8 @@ function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
-function read(relative) {
-  return fs.readFileSync(path.join(LOCAL_REPOSITORY_ROOT, relative));
+function readHostProvenance(relative) {
+  return fs.readFileSync(path.join(HOST_PROVENANCE_ROOT, relative));
 }
 
 function jsonBytes(value) {
@@ -175,8 +178,8 @@ function claudePluginManifest() {
 }
 
 function claudeCommandFiles() {
-  const command = read(
-    'integrations/claude-code/templates/specnav-verification.md'
+  const command = readHostProvenance(
+    'claude-code/specnav-verification.md'
   ).toString('utf8');
   return [
     {
@@ -200,8 +203,8 @@ function trustedHostFiles(host) {
       ...claudeCommandFiles(),
       {
         target: 'scripts/claude-verification-adapter.js',
-        content: read(
-          'integrations/claude-code/claude-verification-adapter.js'
+        content: readHostProvenance(
+          'claude-code/claude-verification-adapter.js'
         )
       },
       {
@@ -217,8 +220,8 @@ function trustedHostFiles(host) {
     files = [
       {
         target: 'scripts/codefree-o-verification-adapter.js',
-        content: read(
-          'integrations/codefree-o/codefree-o-verification-adapter.js'
+        content: readHostProvenance(
+          'codefree-o/codefree-o-verification-adapter.js'
         )
       },
       {
@@ -328,6 +331,7 @@ function resolveHostSyncPlan(host, manifest = null) {
 }
 
 module.exports = {
+  HOST_PROVENANCE_ROOT,
   HOST_RUNTIME_FILES,
   LOCAL_PLUGIN_ROOT,
   SHARED_SCRIPTS,

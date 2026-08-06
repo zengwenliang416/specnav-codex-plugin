@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -25,6 +26,39 @@ function assertGreen(result) {
   ]);
   assert.match(result.summary.digest, /^[a-f0-9]{64}$/);
 }
+
+test('packaged host provenance resolves without the source repository', (t) => {
+  const isolatedRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-host-provenance-')
+  );
+  t.after(() => fs.rmSync(isolatedRoot, { recursive: true, force: true }));
+  const pluginRoot = path.join(isolatedRoot, 'specnav-verification');
+  fs.cpSync(
+    path.resolve(__dirname, '../../../plugins/specnav-verification'),
+    pluginRoot,
+    { recursive: true }
+  );
+  const provenance = require(path.join(
+    pluginRoot,
+    'kernel/governance/host-provenance.js'
+  ));
+
+  const claude = provenance.createHostSyncPlan('claude-code');
+  const codefree = provenance.createHostSyncPlan('codefree-o');
+
+  assert.equal(
+    claude.hostFiles.some((entry) => (
+      entry.target === 'scripts/claude-verification-adapter.js'
+    )),
+    true
+  );
+  assert.equal(
+    codefree.hostFiles.some((entry) => (
+      entry.target === 'scripts/codefree-o-verification-adapter.js'
+    )),
+    true
+  );
+});
 
 test('host authority validates clean repositories and fails closed on Git state', (t) => {
   const fixture = createHostAuthorityFixture(t);

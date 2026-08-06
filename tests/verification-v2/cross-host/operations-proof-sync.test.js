@@ -10,6 +10,14 @@ const test = require('node:test');
 
 const ROOT = path.resolve(__dirname, '../../..');
 const SOURCE_ROOT = path.join(ROOT, 'plugins/specnav-operations');
+const CLAUDE_ROOT = path.resolve(
+  process.env.SPECNAV_CLAUDE_ROOT
+    || path.join(ROOT, '../specnav-claude-plugin')
+);
+const CODEFREE_ROOT = path.resolve(
+  process.env.SPECNAV_CODEFREE_O_ROOT
+    || path.join(ROOT, '../specnav-codefree-o-plugin')
+);
 const {
   MANIFEST,
   PROOF_FILES,
@@ -38,6 +46,23 @@ function sha256(file) {
     .createHash('sha256')
     .update(fs.readFileSync(file))
     .digest('hex');
+}
+
+function sha256Bytes(value) {
+  return crypto.createHash('sha256').update(value).digest('hex');
+}
+
+function gitBytes(root, args) {
+  const result = spawnSync('git', args, {
+    cwd: root,
+    maxBuffer: 32 * 1024 * 1024
+  });
+  assert.equal(
+    result.status,
+    0,
+    String(result.stderr || '')
+  );
+  return result.stdout;
 }
 
 function targetFixture(t, host) {
@@ -138,3 +163,74 @@ for (const host of ['claude-code', 'codefree-o']) {
     assert.equal(fs.readFileSync(target, 'utf8'), 'local owned edit\n');
   });
 }
+
+test('real downstream Operations proof bytes match one committed source', () => {
+  const hosts = {
+    'claude-code': {
+      root: CLAUDE_ROOT,
+      operationsRoot: path.join(
+        CLAUDE_ROOT,
+        'plugins/specnav-operations'
+      )
+    },
+    'codefree-o': {
+      root: CODEFREE_ROOT,
+      operationsRoot: path.join(
+        CODEFREE_ROOT,
+        'modules/specnav-operations'
+      )
+    }
+  };
+  const manifests = Object.fromEntries(
+    Object.entries(hosts).map(([host, descriptor]) => {
+      const manifest = JSON.parse(fs.readFileSync(
+        path.join(descriptor.operationsRoot, MANIFEST),
+        'utf8'
+      ));
+      assert.equal(
+        manifest.schema,
+        'specnav.operations.verification-proof-sync.v1'
+      );
+      assert.equal(manifest.generated, true);
+      assert.equal(manifest.host, host);
+      assert.equal(manifest.source_repository, 'specnav-codex-plugin');
+      assert.equal(manifest.source_dirty, false);
+      assert.match(manifest.source_commit, /^[a-f0-9]{40}$/);
+      assert.deepEqual(
+        manifest.files.map((entry) => entry.path).sort(),
+        [...PROOF_FILES].sort()
+      );
+      return [host, manifest];
+    })
+  );
+  const sourceCommits = new Set(
+    Object.values(manifests).map((manifest) => manifest.source_commit)
+  );
+  assert.equal(sourceCommits.size, 1);
+  const [sourceCommit] = sourceCommits;
+  gitBytes(ROOT, ['cat-file', '-e', `${sourceCommit}^{commit}`]);
+
+  for (const relative of PROOF_FILES) {
+    const committed = gitBytes(ROOT, [
+      'show',
+      `${sourceCommit}:plugins/specnav-operations/${relative}`
+    ]);
+    const expectedDigest = sha256Bytes(committed);
+    assert.equal(
+      sha256(path.join(SOURCE_ROOT, relative)),
+      expectedDigest,
+      `source worktree drift: ${relative}`
+    );
+    for (const [host, descriptor] of Object.entries(hosts)) {
+      const entry = manifests[host].files.find((candidate) => (
+        candidate.path === relative
+      ));
+      assert.equal(entry.sha256, expectedDigest, `${host}: ${relative}`);
+      assert.equal(
+        sha256(path.join(descriptor.operationsRoot, relative)),
+        expectedDigest,
+        `${host} worktree drift: ${relative}`
+      );
+    }
+  }
+});

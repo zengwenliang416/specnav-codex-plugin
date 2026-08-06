@@ -13,4 +13,6 @@ node --test \
   tests/verification-v2/cross-host/codex-adapter.test.js \
   tests/verification-v2/cross-host/claude-adapter.test.js \
   tests/verification-v2/cross-host/codefree-o-adapter.test.js \
-  tests/verification-v2/cross-host/drift-detector.test.js
+  tests/verification-v2/cross-host/drift-detector.test.js \
+  tests/verification-v2/cross-host/host-authority.integration.test.js \
+  tests/verification-v2/cross-host/operations-proof-sync.test.js
