@@ -219,9 +219,16 @@ function validateTargetRepository(targetRepository) {
   };
 }
 
-function assertCleanTarget(targetRepository) {
-  if (gitOutput(targetRepository, ['status', '--porcelain']) !== '') {
-    throw new Error('claude-verification-sync:target-worktree-dirty');
+function assertOwnedPathClean(targetRepository) {
+  if (
+    gitOutput(targetRepository, [
+      'status',
+      '--porcelain',
+      '--',
+      'plugins/specnav-verification'
+    ]) !== ''
+  ) {
+    throw new Error('claude-verification-sync:owned-path-dirty');
   }
 }
 
@@ -377,7 +384,7 @@ function commitStagedPlugin(targetPlugin, stagingPlugin) {
 
 function synchronize(targetRepository, options = {}) {
   const target = validateTargetRepository(targetRepository);
-  assertCleanTarget(target.root);
+  assertOwnedPathClean(target.root);
   const stagingRoot = fs.mkdtempSync(
     path.join(target.pluginsRoot, '.specnav-verification-sync-')
   );
@@ -416,12 +423,14 @@ function main() {
     );
   }
   validateTargetRepository(targetRepository);
-  assertCleanTarget(targetRepository);
+  assertOwnedPathClean(targetRepository);
   if (!apply) {
     process.stdout.write(`${JSON.stringify({
       ok: true,
       status: 'dry-run',
       target_repository: targetRepository,
+      owned_path: 'plugins/specnav-verification',
+      unrelated_dirty_paths_preserved: true,
       apply_command: (
         `node ${JSON.stringify(__filename)} --target `
         + `${JSON.stringify(targetRepository)} --apply`
@@ -438,6 +447,7 @@ function main() {
     kernel: manifest.kernel,
     exact_file_count: manifest.files.length,
     transformed_file_count: manifest.transformed_files.length,
+    unrelated_dirty_paths_preserved: true,
     fallback_used: false
   }, null, 2)}\n`);
 }
@@ -446,7 +456,7 @@ if (require.main === module) main();
 
 module.exports = {
   SHARED_SCRIPTS,
-  assertCleanTarget,
+  assertOwnedPathClean,
   buildStagedPlugin,
   commitStagedPlugin,
   rejectSymlinks,

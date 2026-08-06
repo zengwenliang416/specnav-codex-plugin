@@ -370,7 +370,25 @@ test('Claude synchronizer rejects the wrong repository before writes', (t) => {
   assert.equal(fs.existsSync(path.join(root, 'plugins')), false);
 });
 
-test('Claude synchronizer refuses dirty targets and dirty overrides', (t) => {
+test('Claude synchronization preserves unrelated dirty files', (t) => {
+  const root = createClaudeTarget(t);
+  const readme = path.join(root, 'README.md');
+  fs.writeFileSync(readme, 'local README edit\n');
+
+  const manifest = synchronize(root);
+
+  assert.equal(fs.readFileSync(readme, 'utf8'), 'local README edit\n');
+  assert.equal(manifest.host, 'claude-code');
+  assert.match(
+    spawnSync('git', ['status', '--porcelain', '--', 'README.md'], {
+      cwd: root,
+      encoding: 'utf8'
+    }).stdout,
+    /README\.md/
+  );
+});
+
+test('Claude synchronizer refuses owned-path conflicts and dirty overrides', (t) => {
   const root = createClaudeTarget(t);
   const marker = path.join(
     root,
@@ -380,7 +398,7 @@ test('Claude synchronizer refuses dirty targets and dirty overrides', (t) => {
 
   assert.throws(
     () => synchronize(root),
-    /target-worktree-dirty/
+    /owned-path-dirty/
   );
   const override = spawnSync(process.execPath, [
     SYNC_SCRIPT,
