@@ -260,5 +260,43 @@
     ],
     "blockers": [],
     "recorded_at": "2026-08-06T06:44:11.065Z"
+  },
+  {
+    "id": "execution-attempt-20260806071222-86600c326217668e",
+    "run_id": "run-20260806071222-86600c326217668e",
+    "attempt_id": "attempt-20260806071222-86600c326217668e",
+    "case_id": "CASE-03",
+    "status": "failed",
+    "assertions": [
+      {
+        "id": "CASE-03-A01",
+        "method": "equal",
+        "expected": true,
+        "actual": false,
+        "status": "failed"
+      },
+      {
+        "id": "CASE-03-A02",
+        "method": "equal",
+        "expected": true,
+        "actual": false,
+        "status": "failed"
+      },
+      {
+        "id": "CASE-03-A03",
+        "method": "equal",
+        "expected": true,
+        "actual": false,
+        "status": "failed"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "verification-execution:command-exit-nonzero",
+        "artifact": "command",
+        "detail": "1"
+      }
+    ],
+    "recorded_at": "2026-08-06T07:13:21.198Z"
   }
 ]
