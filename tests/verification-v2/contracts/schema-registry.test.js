@@ -126,6 +126,27 @@ test('registry compiles and validates every Verification Contract V2 entity', ()
   }
 });
 
+test('runtime status schema accepts the exact current managed doctor output', () => {
+  const runtimeStatus = readyRuntime();
+  const registry = createSchemaRegistry({
+    runtimeStatus,
+    runtimeRoot: runtimeStatus.runtime_root,
+    schemaRoot: SCHEMA_ROOT
+  });
+  const result = registry.validate('runtime-status', runtimeStatus, {
+    artifactPath: 'memory://runtime-status/current-doctor'
+  });
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.value.checks.authority.ok, true);
+  assert.equal(result.value.checks.receipt.module_tree_integrity_ok, true);
+  assert.equal(
+    result.value.checks.browsers.every(
+      (entry) => entry.executable_integrity_ok === true
+    ),
+    true
+  );
+});
+
 test('negative fixture corpus returns exact artifact and field blockers', () => {
   const runtimeStatus = readyRuntime();
   const registry = createSchemaRegistry({

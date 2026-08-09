@@ -114,6 +114,38 @@
                 "string",
                 "null"
               ]
+            },
+            "module_tree_integrity_ok": {
+              "type": "boolean"
+            }
+          }
+        },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ok",
+            "path"
+          ],
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "path": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "algorithm": {
+              "type": "string"
+            },
+            "key_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "file_mode": {
+              "type": "string"
             }
           }
         },
@@ -216,6 +248,9 @@
               "executable_exists": {
                 "type": "boolean"
               },
+              "executable_integrity_ok": {
+                "type": "boolean"
+              },
               "executable_allowed": {
                 "type": "boolean"
               },
@@ -260,6 +295,13 @@
             },
             "base_url_present": {
               "type": "boolean"
+            },
+            "configuration_fingerprint": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
             },
             "secret_values_exposed": {
               "const": false

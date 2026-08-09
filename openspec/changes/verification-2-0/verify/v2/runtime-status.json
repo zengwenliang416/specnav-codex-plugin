@@ -2,22 +2,30 @@
   "schema": "specnav.verification.runtime-status.v1",
   "ok": true,
   "readiness": "ready",
-  "runtime_version": "2.0.0-alpha.1",
-  "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1",
+  "runtime_version": "2.0.0-alpha.2",
+  "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
   "requires_midscene": false,
   "checks": {
     "lock": {
       "ok": true,
       "schema": "specnav.verification.runtime-lock.v1",
-      "runtime_version": "2.0.0-alpha.1"
+      "runtime_version": "2.0.0-alpha.2"
     },
     "runtime": {
       "ok": true,
-      "root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1"
+      "root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2"
     },
     "receipt": {
       "ok": true,
-      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1/install-receipt.json"
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json",
+      "module_tree_integrity_ok": true
+    },
+    "authority": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/authority.key",
+      "algorithm": "hmac-sha256",
+      "key_sha256": "70702d78dd9c7be59b9ec85690e3805696ad1f2e557401243f224dcd8e278010",
+      "file_mode": "0600"
     },
     "permissions": [
       {
@@ -27,7 +35,7 @@
       },
       {
         "kind": "runtime-root",
-        "file": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.1",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
         "ok": true
       }
     ],
@@ -79,6 +87,7 @@
         "revision": "1234",
         "marker_exists": true,
         "executable_exists": true,
+        "executable_integrity_ok": true,
         "executable_allowed": true,
         "probe_ok": true,
         "probe_exit_status": 0
@@ -88,6 +97,7 @@
         "revision": "1234",
         "marker_exists": true,
         "executable_exists": true,
+        "executable_integrity_ok": true,
         "executable_allowed": true,
         "probe_ok": true,
         "probe_exit_status": 0
@@ -97,6 +107,7 @@
         "revision": "1011",
         "marker_exists": true,
         "executable_exists": true,
+        "executable_integrity_ok": true,
         "executable_allowed": true,
         "probe_ok": true,
         "probe_exit_status": 0

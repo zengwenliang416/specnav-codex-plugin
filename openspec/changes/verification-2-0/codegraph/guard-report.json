@@ -1,15 +1,15 @@
 {
   "schema": "specnav.codegraph.guard_report.v1",
-  "generated_at": "2026-08-06T06:35:54.239Z",
+  "generated_at": "2026-08-09T02:43:42.937Z",
   "active_change": "verification-2-0",
-  "stage": "verification",
+  "stage": "development",
   "ok": true,
   "status": {
     "policy": {
       "enabled": true,
       "profile": "bootstrap",
       "mode": "observe",
-      "stage": "verification",
+      "stage": "development",
       "required_for_stage": false,
       "disabled_reason": null
     },
@@ -49,7 +49,7 @@
   },
   "decision": {
     "schema": "specnav.codegraph.decision.v1",
-    "stage": "verification",
+    "stage": "development",
     "profile": "bootstrap",
     "effective_mode": "observe",
     "required_for_stage": false,
@@ -59,11 +59,11 @@
     "warnings": [
       "codegraph:not-indexed"
     ],
-    "explanation": "CodeGraph policy has advisory warnings for verification."
+    "explanation": "CodeGraph policy has advisory warnings for development."
   },
   "evidence_index": {
     "schema": "specnav.codegraph.evidence_index.v1",
-    "generated_at": "2026-08-06T06:35:54.218Z",
+    "generated_at": "2026-08-09T02:43:42.933Z",
     "active_change": "verification-2-0",
     "source_raw": "openspec/changes/verification-2-0/codegraph/evidence.jsonl",
     "by_claim": {},
@@ -74,7 +74,7 @@
   },
   "claims_report": {
     "schema": "specnav.codegraph.claims_report.v1",
-    "generated_at": "2026-08-06T06:35:54.239Z",
+    "generated_at": "2026-08-09T02:43:42.937Z",
     "active_change": "verification-2-0",
     "claims_file": "openspec/changes/verification-2-0/codegraph/claims-map.json",
     "evidence_index": "openspec/changes/verification-2-0/codegraph/evidence-index.json",
