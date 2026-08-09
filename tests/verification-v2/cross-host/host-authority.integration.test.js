@@ -46,6 +46,13 @@ test('packaged host provenance resolves without the source repository', (t) => {
   const claude = provenance.createHostSyncPlan('claude-code');
   const codefree = provenance.createHostSyncPlan('codefree-o');
 
+  for (const plan of [claude, codefree]) {
+    assert.equal(
+      plan.exactFiles.includes('scripts/verification-v2-repair-loop.js'),
+      true,
+      `${plan.host} must package the Repair Loop executable`
+    );
+  }
   for (const entry of claude.transformedFiles) {
     assert.equal(
       entry.source_sha256,

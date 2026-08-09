@@ -17,6 +17,7 @@ const SHARED_SCRIPTS = Object.freeze([
   'scenario-registry-loader.js',
   'verification-migrate.js',
   'verification-runtime.js',
+  'verification-v2-repair-loop.js',
   'verification-v2-run.js',
   'verify-domains.js'
 ]);
