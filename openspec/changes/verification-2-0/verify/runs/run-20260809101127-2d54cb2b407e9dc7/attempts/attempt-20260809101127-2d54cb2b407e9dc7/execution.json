@@ -1,0 +1,456 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260809101127-2d54cb2b407e9dc7",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-05"
+    ],
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-09T10:11:27.893Z",
+    "started_at": "2026-08-09T10:11:27.933Z",
+    "completed_at": "2026-08-09T10:12:06.230Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260806063934-95df9951fe619e21",
+    "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+    "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+    "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-05",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-09T10:11:27.933Z",
+    "completed_at": "2026-08-09T10:12:06.230Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101127-2d54cb2b407e9dc7",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-05"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-09T10:11:27.893Z",
+      "started_at": "2026-08-09T10:11:27.933Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101127-2d54cb2b407e9dc7",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-05"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-09T10:11:27.893Z",
+      "started_at": "2026-08-09T10:11:27.933Z",
+      "completed_at": "2026-08-09T10:12:06.230Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+      "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-09T10:11:27.933Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+      "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:11:27.933Z",
+      "completed_at": "2026-08-09T10:12:06.230Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+      "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:11:27.933Z",
+      "completed_at": "2026-08-09T10:12:06.230Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: all report pages are responsive, keyboard operable, semantic, and printable\nok 1 - all report pages are responsive, keyboard operable, semantic, and printable\n  ---\n  duration_ms: 14553.490167\n  type: 'test'\n  ...\n# Subtest: Chromium blocks an injected script while the approved catalog script still runs\nok 2 - Chromium blocks an injected script while the approved catalog script still runs\n  ---\n  duration_ms: 8254.227041\n  type: 'test'\n  ...\n# {\"artifact_directory\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7\",\"manifest\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7/manifest.json\",\"manifest_sha256\":\"fadadce642d972dda12287b0f2b16cc55d43d7a0bcac4a023e719bbe18696680\",\"artifact_count\":12}\n# Subtest: real paginated PDFs preserve exact green and blocked report facts\nok 3 - real paginated PDFs preserve exact green and blocked report facts\n  ---\n  duration_ms: 14789.731458\n  type: 'test'\n  ...\n# Subtest: real Chromium renders and filters catalog and immutable results\nok 4 - real Chromium renders and filters catalog and immutable results\n  ---\n  duration_ms: 36801.634541\n  type: 'test'\n  ...\n# Subtest: real Chromium preserves mobile, keyboard, and print report facts\nok 5 - real Chromium preserves mobile, keyboard, and print report facts\n  ---\n  duration_ms: 37373.284417\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 37905.312\nverification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7\nverification v2 report browser and print ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-09T10:11:27.935Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101127-2d54cb2b407e9dc7",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-05"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-09T10:11:27.893Z",
+        "started_at": "2026-08-09T10:11:27.933Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-09T10:11:27.935Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+        "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-05",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-09T10:11:27.933Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-09T10:11:27.954Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-report-browser.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_REPORT_ARTIFACT_ROOT",
+          "SPECNAV_REPORT_ARTIFACT_RUN_ID",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:28.261Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:50.214Z",
+      "chunk": "# Subtest: all report pages are responsive, keyboard operable, semantic, and printable\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:50.235Z",
+      "chunk": "ok 1 - all report pages are responsive, keyboard operable, semantic, and printable\n  ---\n  duration_ms: 14553.490167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:54.583Z",
+      "chunk": "# Subtest: Chromium blocks an injected script while the approved catalog script still runs\nok 2 - Chromium blocks an injected script while the approved catalog script still runs\n  ---\n  duration_ms: 8254.227041\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.058Z",
+      "chunk": "# {\"artifact_directory\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7\",\"manifest\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7/manifest.json\",\"manifest_sha256\":\"fadadce642d972dda12287b0f2b16cc55d43d7a0bcac4a023e719bbe18696680\",\"artifact_count\":12}\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.058Z",
+      "chunk": "# Subtest: real paginated PDFs preserve exact green and blocked report facts\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.059Z",
+      "chunk": "ok 3 - real paginated PDFs preserve exact green and blocked report facts\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.059Z",
+      "chunk": "  ---\n  duration_ms: 14789.731458\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "# Subtest: real Chromium renders and filters catalog and immutable results\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "ok 4 - real Chromium renders and filters catalog and immutable results\n  ---\n  duration_ms: 36801.634541\n  type: 'test'\n  ...\n# Subtest: real Chromium preserves mobile, keyboard, and print report facts\nok 5 - real Chromium preserves mobile, keyboard, and print report facts\n  ---\n  duration_ms: 37373.284417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "1..5\n# tests 5\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "# suites 0\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "# pass 5\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.124Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.125Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.125Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.125Z",
+      "chunk": "# duration_ms 37905.312\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:12:06.150Z",
+      "chunk": "verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809101127-2d54cb2b407e9dc7/attempts/attempt-20260809101127-2d54cb2b407e9dc7/runner-artifacts/attempt-20260809101127-2d54cb2b407e9dc7\nverification v2 report browser and print ok\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.terminal",
+      "at": "2026-08-09T10:12:06.230Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 24,
+      "type": "attempt.terminal",
+      "at": "2026-08-09T10:12:06.231Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101127-2d54cb2b407e9dc7",
+        "run_id": "run-20260809101127-2d54cb2b407e9dc7",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-05",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-09T10:11:27.933Z",
+        "completed_at": "2026-08-09T10:12:06.230Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 25,
+      "type": "run.terminal",
+      "at": "2026-08-09T10:12:06.231Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101127-2d54cb2b407e9dc7",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-05"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-09T10:11:27.893Z",
+        "started_at": "2026-08-09T10:11:27.933Z",
+        "completed_at": "2026-08-09T10:12:06.230Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
