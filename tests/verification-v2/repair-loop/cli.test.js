@@ -301,6 +301,35 @@ function baseArgs(source, action) {
   ];
 }
 
+function rerunScope(source, reasons = ['repaired-case']) {
+  return {
+    ok: true,
+    full_rerun: false,
+    required_cases: [source.failure.case_id],
+    baseline_cases: [],
+    repaired_cases: [source.failure.case_id],
+    impacted_cases: [],
+    stale_cases: [source.failure.case_id],
+    cases_to_rerun: [{
+      case_id: source.failure.case_id,
+      reasons
+    }],
+    reasons_by_case: {
+      [source.failure.case_id]: reasons
+    },
+    changed_files: [],
+    unmapped_changes: [],
+    domains_to_rerun: ['unit'],
+    codegraph_refs: [],
+    policy_refs: [],
+    warnings: [],
+    blockers: [],
+    change: source.changeId,
+    invalidated_entries: [],
+    blocker_ids: []
+  };
+}
+
 test('repair CLI replays classification and repair request without overwriting task review files', async () => {
   const source = projectFixture();
   const deps = dependencies();
@@ -808,12 +837,97 @@ test('repair CLI preserves invalid lineage and creates an approved recovery fact
   assert.deepEqual(fs.readFileSync(completedFile), completedBytes);
   assert.equal(fs.existsSync(path.join(
     repairRoot,
-    'repair-lineage-recovery-envelope.json'
+    'repair-lineage-recoveries.jsonl'
   )), true);
+  const recoveryHistory = fs.readFileSync(path.join(
+    repairRoot,
+    'repair-lineage-recoveries.jsonl'
+  ), 'utf8').trim().split(/\r?\n/).map((line) => JSON.parse(line));
+  assert.equal(recoveryHistory.length, 1);
+  assert.equal(recoveryHistory[0].kind, 'repair_recovery');
   assert.equal(fs.existsSync(path.join(
     repairRoot,
     'repair-link-recovered.json'
   )), true);
+});
+
+test('rerun planning migrates the legacy envelope and appends refreshed authority', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  const bindings = {
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    run_id: source.failure.run_id,
+    case_id: source.failure.case_id
+  };
+  const repairRoot = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id
+  );
+  const legacyFile = path.join(repairRoot, 'rerun-plan-envelope.json');
+  const legacy = authority.seal(
+    'rerun_plan',
+    rerunScope(source, ['legacy-reason']),
+    bindings
+  );
+  writeJson(legacyFile, legacy);
+  const legacyBytes = fs.readFileSync(legacyFile);
+  const current = rerunScope(source, ['current-reason', 'repaired-case']);
+  const planned = await run(
+    baseArgs(source, 'rerun-plan'),
+    {
+      ...deps,
+      computeRerunScope() {
+        return current;
+      }
+    }
+  );
+  assert.equal(planned.ok, true, JSON.stringify(planned.blockers));
+  assert.equal(planned.replayed, false);
+  assert.deepEqual(fs.readFileSync(legacyFile), legacyBytes);
+
+  const historyFile = path.join(repairRoot, 'rerun-plans.jsonl');
+  const history = fs.readFileSync(historyFile, 'utf8')
+    .trim()
+    .split(/\r?\n/)
+    .map((line) => JSON.parse(line));
+  assert.equal(history.length, 2);
+  assert.deepEqual(history.map((entry) => entry.payload), [
+    legacy.payload,
+    current
+  ]);
+  assert.equal(history[0].bindings.log_sequence, 1);
+  assert.equal(history[1].bindings.log_sequence, 2);
+  assert.equal(
+    history[1].bindings.previous_envelope_digest,
+    sha256(canonicalJson(history[0]))
+  );
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(
+    repairRoot,
+    'rerun-plan.json'
+  ), 'utf8')), current);
+
+  const replayed = await run(
+    baseArgs(source, 'rerun-plan'),
+    {
+      ...deps,
+      computeRerunScope() {
+        return current;
+      }
+    }
+  );
+  assert.equal(replayed.ok, true, JSON.stringify(replayed.blockers));
+  assert.equal(replayed.replayed, true);
+  assert.equal(
+    fs.readFileSync(historyFile, 'utf8').trim().split(/\r?\n/).length,
+    2
+  );
 });
 
 test('repair request replay rejects a link that replaced failure identity', async () => {
@@ -998,6 +1112,18 @@ test('repair completion fingerprints allow only the named review receipts', () =
   );
   assert.match(accepted.testSha, /^[a-f0-9]{64}$/);
   assert.match(accepted.environmentHash, /^[a-f0-9]{64}$/);
+
+  git(root, ['add', specReview, qualityReview]);
+  git(root, ['commit', '-m', 'record review receipts']);
+  fs.writeFileSync(path.join(root, specReview), '{"approved":true}\n');
+  const updated = repairCompletionFingerprints(
+    root,
+    { snapshot_hash: 'a'.repeat(64) },
+    { runtime_version: '2.0.0-alpha.2', runtime_root: '/runtime' },
+    { digest: 'b'.repeat(64) },
+    [specReview, qualityReview]
+  );
+  assert.match(updated.codeSha, /^[a-f0-9]{40}$/);
 
   fs.writeFileSync(path.join(root, 'tests', 'repair.test.js'), 'dirty\n');
   assert.throws(

@@ -68,6 +68,12 @@ function paths(context, failureId = null) {
     : null;
   return {
     repairRoot,
+    repairRecoveries: repairRoot
+      ? path.posix.join(repairRoot, 'repair-lineage-recoveries.jsonl')
+      : null,
+    rerunPlans: repairRoot
+      ? path.posix.join(repairRoot, 'rerun-plans.jsonl')
+      : null,
     failures: 'v2/failures.json',
     runs: 'v2/runs.json',
     attempts: 'v2/attempts.json',
@@ -168,7 +174,6 @@ function repairCompletionFingerprints(
     '--untracked-files=all'
   ]);
   const dirty = status
-    .trim()
     .split(/\r?\n/)
     .filter(Boolean)
     .map((line) => line.slice(3));
@@ -407,6 +412,70 @@ function persistTrustedEnvelope(
     throw error;
   }
   return { envelope, persisted: true };
+}
+
+function appendTrustedEnvelopeHistory({
+  authorityLog,
+  authority,
+  relative,
+  kind,
+  payload,
+  expectedBindings,
+  legacyEnvelope = null
+}) {
+  let history = authorityLog.validate(relative, kind);
+  if (!history.ok) {
+    const error = new Error(
+      'verification-repair:trusted-history-invalid'
+    );
+    error.blockers = history.blockers;
+    throw error;
+  }
+  if (history.value.length === 0 && legacyEnvelope) {
+    const verification = authority.verify(legacyEnvelope);
+    const legacyBindings = legacyEnvelope.bindings || {};
+    if (
+      !verification.ok
+      || legacyEnvelope.kind !== kind
+      || Object.entries(expectedBindings).some(([field, value]) => (
+        legacyBindings[field] !== value
+      ))
+      || Object.hasOwn(legacyBindings, 'log_sequence')
+      || Object.hasOwn(legacyBindings, 'previous_envelope_digest')
+    ) {
+      throw new Error(
+        'verification-repair:legacy-trusted-envelope-invalid'
+      );
+    }
+    const migrated = authorityLog.append(
+      relative,
+      kind,
+      legacyEnvelope.payload,
+      expectedBindings
+    );
+    if (!migrated.ok) {
+      const error = new Error(
+        'verification-repair:trusted-history-migration-failed'
+      );
+      error.blockers = migrated.blockers;
+      throw error;
+    }
+    history = migrated;
+  }
+  const appended = authorityLog.append(
+    relative,
+    kind,
+    payload,
+    expectedBindings
+  );
+  if (!appended.ok) {
+    const error = new Error(
+      'verification-repair:trusted-history-append-failed'
+    );
+    error.blockers = appended.blockers;
+    throw error;
+  }
+  return appended;
 }
 
 function rootFailure(context, failureId) {
@@ -723,15 +792,6 @@ function repairEnvelope(context, store, failureId) {
   );
 }
 
-function rerunEnvelope(context, store, failureId) {
-  return loadEnvelope(
-    context,
-    store,
-    failureId,
-    'rerun-plan-envelope.json'
-  );
-}
-
 function historyFor(context, store, failure) {
   const files = paths(context);
   const runs = readRequiredJson(
@@ -826,20 +886,35 @@ function evaluateState(
       'repair-link-completed-envelope.json'
     )
   );
-  const repairRecovery = readOptionalJson(
-    store,
-    relativeRepairPath(
-      failure.id,
-      'repair-lineage-recovery-envelope.json'
-    )
-  ) || undefined;
+  const recoveryHistory = authorityLog.validate(
+    paths(context, failure.id).repairRecoveries,
+    'repair_recovery'
+  );
+  if (!recoveryHistory.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: recoveryHistory.blockers
+    };
+  }
+  const repairRecovery = recoveryHistory.value.at(-1) || undefined;
   const repair = repairRecovery
     ? undefined
     : completedRepair || requestedRepair || undefined;
-  const rerun = readOptionalJson(
-    store,
-    relativeRepairPath(failure.id, 'rerun-plan-envelope.json')
-  ) || undefined;
+  const rerunHistory = authorityLog.validate(
+    paths(context, failure.id).rerunPlans,
+    'rerun_plan'
+  );
+  if (!rerunHistory.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: rerunHistory.blockers
+    };
+  }
+  const rerun = rerunHistory.value.at(-1) || undefined;
   const history = historyFor(context, store, failure);
   let factLog = authorityLog.validate(
     paths(context).attemptFacts,
@@ -1961,15 +2036,21 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         recovery.value,
         bindings(failure)
       );
-      const persisted = persistTrustedEnvelope(
-        store,
-        relativeRepairPath(
-          failure.id,
-          'repair-lineage-recovery-envelope.json'
-        ),
-        envelope,
-        authority
-      );
+      const persisted = appendTrustedEnvelopeHistory({
+        authorityLog,
+        authority,
+        relative: paths(context, failure.id).repairRecoveries,
+        kind: 'repair_recovery',
+        payload: recovery.value,
+        expectedBindings: bindings(failure),
+        legacyEnvelope: readOptionalJson(
+          store,
+          relativeRepairPath(
+            failure.id,
+            'repair-lineage-recovery-envelope.json'
+          )
+        )
+      });
       writeJson(
         store,
         relativeRepairPath(
@@ -1991,14 +2072,16 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         after_identity: afterIdentity,
         verified_changes: diffValidation.changes,
         envelope_id: persisted.envelope.id,
-        replayed: !persisted.persisted,
+        replayed: !persisted.appended,
         blockers: [],
         fallback_used: false
       };
     }
 
     if (action === 'rerun-plan') {
-      const scope = computeRerunScope(context.projectRoot, {
+      const scope = (
+        dependencies.computeRerunScope || computeRerunScope
+      )(context.projectRoot, {
         change: context.changeId,
         files: [],
         repairedCaseIds: [failure.case_id],
@@ -2006,17 +2089,18 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         schemaRegistry: context.schemaRegistry
       });
       if (!scope.ok) return { ...scope, fallback_used: false };
-      const envelope = authority.seal(
-        'rerun_plan',
-        scope,
-        bindings(failure)
-      );
-      const persisted = persistTrustedEnvelope(
-        store,
-        relativeRepairPath(failure.id, 'rerun-plan-envelope.json'),
-        envelope,
-        authority
-      );
+      const persisted = appendTrustedEnvelopeHistory({
+        authorityLog,
+        authority,
+        relative: paths(context, failure.id).rerunPlans,
+        kind: 'rerun_plan',
+        payload: scope,
+        expectedBindings: bindings(failure),
+        legacyEnvelope: readOptionalJson(
+          store,
+          relativeRepairPath(failure.id, 'rerun-plan-envelope.json')
+        )
+      });
       writeJson(
         store,
         relativeRepairPath(failure.id, 'rerun-plan.json'),
@@ -2029,7 +2113,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         required_cases: scope.required_cases,
         scope_digest: sha256(canonicalJson(scopeProjection(scope))),
         envelope_id: persisted.envelope.id,
-        replayed: !persisted.persisted,
+        replayed: !persisted.appended,
         blockers: [],
         fallback_used: false
       };
