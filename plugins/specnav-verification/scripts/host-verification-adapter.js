@@ -676,6 +676,7 @@ function parseCli(args) {
     root_cause_check: argValue(args, '--root-cause-check'),
     no_progress: argValue(args, '--no-progress'),
     scope: argValue(args, '--scope'),
+    recovery_review: argValue(args, '--recovery-review'),
     spec_review: argValue(args, '--spec-review'),
     quality_review: argValue(args, '--quality-review'),
     proposal_id: argValue(args, '--proposal-id'),

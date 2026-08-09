@@ -5,7 +5,8 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
-  commandFor
+  commandFor,
+  parseCli
 } = require('../../../plugins/specnav-verification/scripts/host-verification-adapter');
 
 const ROOT = path.resolve(__dirname, '../../..');
@@ -104,6 +105,39 @@ test('repair actions route to the dedicated append-only repair-loop CLI', () => 
     'verification-v2-repair-loop.js'
   );
   assert.equal(started[1], 'repair-start');
+
+  const parsedRecovery = parseCli([
+    'repair-recover',
+    '--project',
+    PROJECT,
+    '--change',
+    'change-v2',
+    '--reviewer-id',
+    'reviewer-1',
+    '--failure-id',
+    'failure-open',
+    '--recovery-review',
+    'openspec/changes/change-v2/recovery-review.json',
+    '--spec-review',
+    'openspec/changes/change-v2/spec-review.json',
+    '--quality-review',
+    'openspec/changes/change-v2/quality-review.json',
+    '--approved'
+  ]);
+  assert.equal(parsedRecovery.approved, true);
+  const recovered = command(
+    parsedRecovery.action,
+    parsedRecovery
+  );
+  for (const [flag, value] of [
+    ['--recovery-review', 'openspec/changes/change-v2/recovery-review.json'],
+    ['--spec-review', 'openspec/changes/change-v2/spec-review.json'],
+    ['--quality-review', 'openspec/changes/change-v2/quality-review.json']
+  ]) {
+    const index = recovered.indexOf(flag);
+    assert.notEqual(index, -1, flag);
+    assert.equal(recovered[index + 1], value, flag);
+  }
 
   const applied = command('repair-transition-apply', {
     change: 'change-v2',
