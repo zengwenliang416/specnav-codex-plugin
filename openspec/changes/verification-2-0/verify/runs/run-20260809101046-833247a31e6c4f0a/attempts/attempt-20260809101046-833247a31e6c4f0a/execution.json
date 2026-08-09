@@ -1,0 +1,568 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260809101046-833247a31e6c4f0a",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-04"
+    ],
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-09T10:10:46.972Z",
+    "started_at": "2026-08-09T10:10:47.013Z",
+    "completed_at": "2026-08-09T10:11:22.594Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260806063934-95df9951fe619e21",
+    "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+    "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260809101046-833247a31e6c4f0a",
+    "run_id": "run-20260809101046-833247a31e6c4f0a",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-04",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-09T10:10:47.013Z",
+    "completed_at": "2026-08-09T10:11:22.594Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101046-833247a31e6c4f0a",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-04"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-09T10:10:46.972Z",
+      "started_at": "2026-08-09T10:10:47.013Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101046-833247a31e6c4f0a",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-04"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-09T10:10:46.972Z",
+      "started_at": "2026-08-09T10:10:47.013Z",
+      "completed_at": "2026-08-09T10:11:22.594Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101046-833247a31e6c4f0a",
+      "run_id": "run-20260809101046-833247a31e6c4f0a",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-04",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-09T10:10:47.013Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101046-833247a31e6c4f0a",
+      "run_id": "run-20260809101046-833247a31e6c4f0a",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-04",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:10:47.013Z",
+      "completed_at": "2026-08-09T10:11:22.594Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101046-833247a31e6c4f0a",
+      "run_id": "run-20260809101046-833247a31e6c4f0a",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-04",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:10:47.013Z",
+      "completed_at": "2026-08-09T10:11:22.594Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: registry compiles and validates every Verification Contract V2 entity\nok 1 - registry compiles and validates every Verification Contract V2 entity\n  ---\n  duration_ms: 12089.423125\n  type: 'test'\n  ...\n# Subtest: runtime status schema accepts the exact current managed doctor output\nok 2 - runtime status schema accepts the exact current managed doctor output\n  ---\n  duration_ms: 3570.193291\n  type: 'test'\n  ...\n# Subtest: negative fixture corpus returns exact artifact and field blockers\nok 3 - negative fixture corpus returns exact artifact and field blockers\n  ---\n  duration_ms: 4852.677792\n  type: 'test'\n  ...\n# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields\nok 4 - evidence and gate schemas directly enforce AC-31 and AC-35 fields\n  ---\n  duration_ms: 6908.145125\n  type: 'test'\n  ...\n# Subtest: verification run schema requires immutable repair lineage fields\nok 5 - verification run schema requires immutable repair lineage fields\n  ---\n  duration_ms: 4225.325166\n  type: 'test'\n  ...\n# Subtest: failure packet schema supports only the constrained unclassified open state\nok 6 - failure packet schema supports only the constrained unclassified open state\n  ---\n  duration_ms: 978.510709\n  type: 'test'\n  ...\n# Subtest: registry requires doctor-approved managed AJV and never mutates input\nok 7 - registry requires doctor-approved managed AJV and never mutates input\n  ---\n  duration_ms: 1310.51425\n  type: 'test'\n  ...\n# Subtest: shape-valid unresolved references remain Task 004 responsibility\nok 8 - shape-valid unresolved references remain Task 004 responsibility\n  ---\n  duration_ms: 1220.71725\n  type: 'test'\n  ...\n# Subtest: kernel package exposes one versioned public entry and schema-only subpath\nok 9 - kernel package exposes one versioned public entry and schema-only subpath\n  ---\n  duration_ms: 0.991583\n  type: 'test'\n  ...\n# Subtest: public entry exposes immutable metadata and explicit service contracts\nok 10 - public entry exposes immutable metadata and explicit service contracts\n  ---\n  duration_ms: 54.333\n  type: 'test'\n  ...\n# Subtest: service creation requires every adapter and never falls back\nok 11 - service creation requires every adapter and never falls back\n  ---\n  duration_ms: 0.317542\n  type: 'test'\n  ...\n# Subtest: kernel source contains no host runtime dependency\nok 12 - kernel source contains no host runtime dependency\n  ---\n  duration_ms: 80.759292\n  type: 'test'\n  ...\n# Subtest: trusted fact authority seals and verifies exact Kernel-owned payload bytes\nok 13 - trusted fact authority seals and verifies exact Kernel-owned payload bytes\n  ---\n  duration_ms: 12046.021542\n  type: 'test'\n  ...\n# Subtest: transition applier accepts only a signed proposal-log fact\nok 14 - transition applier accepts only a signed proposal-log fact\n  ---\n  duration_ms: 7.488792\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed replay whose action and target do not match the authorized proposal\nok 15 - transition applier rejects a signed replay whose action and target do not match the authorized proposal\n  ---\n  duration_ms: 1.027875\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed historical receipt bound to a foreign proposal\nok 16 - transition applier rejects a signed historical receipt bound to a foreign proposal\n  ---\n  duration_ms: 4.53525\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed receipt that breaks the from_status chain\nok 17 - transition applier rejects a signed receipt that breaks the from_status chain\n  ---\n  duration_ms: 1.120666\n  type: 'test'\n  ...\n# Subtest: failure state reducer keeps roots immutable and supersedes valid follow-up failures\nok 18 - failure state reducer keeps roots immutable and supersedes valid follow-up failures\n  ---\n  duration_ms: 4.553708\n  type: 'test'\n  ...\n# Subtest: repair CLI replays classification and repair request without overwriting task review files\nok 19 - repair CLI replays classification and repair request without overwriting task review files\n  ---\n  duration_ms: 12084.849125\n  type: 'test'\n  ...\n# Subtest: repair CLI appends one deterministic proposal across repeated state evaluation\nok 20 - repair CLI appends one deterministic proposal across repeated state evaluation\n  ---\n  duration_ms: 75.7895\n  type: 'test'\n  ...\n# Subtest: repair CLI starts from a clean baseline and completes only after scoped changes\nok 21 - repair CLI starts from a clean baseline and completes only after scoped changes\n  ---\n  duration_ms: 148.964708\n  type: 'test'\n  ...\n# Subtest: repair CLI blocks start when the original failure fingerprint drifted\nok 22 - repair CLI blocks start when the original failure fingerprint drifted\n  ---\n  duration_ms: 116.285084\n  type: 'test'\n  ...\n# Subtest: repair CLI blocks replayed repair envelopes with replaced lineage\nok 23 - repair CLI blocks replayed repair envelopes with replaced lineage\n  ---\n  duration_ms: 110.615625\n  type: 'test'\n  ...\n# Subtest: repair CLI preserves invalid lineage and creates an approved recovery fact\nok 24 - repair CLI preserves invalid lineage and creates an approved recovery fact\n  ---\n  duration_ms: 137.288416\n  type: 'test'\n  ...\n# Subtest: rerun planning migrates the legacy envelope and appends refreshed authority\nok 25 - rerun planning migrates the legacy envelope and appends refreshed authority\n  ---\n  duration_ms: 43.032209\n  type: 'test'\n  ...\n# Subtest: repair request replay rejects a link that replaced failure identity\nok 26 - repair request replay rejects a link that replaced failure identity\n  ---\n  duration_ms: 113.269958\n  type: 'test'\n  ...\n# Subtest: repair diff accepts lifecycle artifacts but rejects scope escape\nok 27 - repair diff accepts lifecycle artifacts but rejects scope escape\n  ---\n  duration_ms: 535.52375\n  type: 'test'\n  ...\n# Subtest: repair completion fingerprints allow only the named review receipts\nok 28 - repair completion fingerprints allow only the named review receipts\n  ---\n  duration_ms: 600.660834\n  type: 'test'\n  ...\n# Subtest: missing classification is an explicit blocker and remains open\nok 29 - missing classification is an explicit blocker and remains open\n  ---\n  duration_ms: 12004.061625\n  type: 'test'\n  ...\n# Subtest: valid follow-up runs are checked even when they produce no failure packet\nok 30 - valid follow-up runs are checked even when they produce no failure packet\n  ---\n  duration_ms: 3.602125\n  type: 'test'\n  ...\n# Subtest: foreign failure and broken parent lineage block follow-up runs\nok 31 - foreign failure and broken parent lineage block follow-up runs\n  ---\n  duration_ms: 1.610834\n  type: 'test'\n  ...\n# Subtest: raw failures from another change cannot enter the reducer\nok 32 - raw failures from another change cannot enter the reducer\n  ---\n  duration_ms: 1.143917\n  type: 'test'\n  ...\n# Subtest: preserves first failure repair retest and regression as immutable history\nok 33 - preserves first failure repair retest and regression as immutable history\n  ---\n  duration_ms: 12038.386792\n  type: 'test'\n  ...\n# Subtest: accepts explicit audited recovery for invalid repair lineage\nok 34 - accepts explicit audited recovery for invalid repair lineage\n  ---\n  duration_ms: 4.515708\n  type: 'test'\n  ...\n# Subtest: blocks recovery when protected identity drift was not exactly approved\nok 35 - blocks recovery when protected identity drift was not exactly approved\n  ---\n  duration_ms: 1.301167\n  type: 'test'\n  ...\n# Subtest: labels an unchanged-fingerprint retry pass as flaky\nok 36 - labels an unchanged-fingerprint retry pass as flaky\n  ---\n  duration_ms: 3.391917\n  type: 'test'\n  ...\n# Subtest: selects initial and latest attempts deterministically from shuffled same-second history\nok 37 - selects initial and latest attempts deterministically from shuffled same-second history\n  ---\n  duration_ms: 3.099125\n  type: 'test'\n  ...\n# Subtest: allows parallel regression branches with the same sequence and chooses each case deterministically\nok 38 - allows parallel regression branches with the same sequence and chooses each case deterministically\n  ---\n  duration_ms: 2.212833\n  type: 'test'\n  ...\n# Subtest: rejects retry when any immutable retry fingerprint changes\nok 39 - rejects retry when any immutable retry fingerprint changes\n  ---\n  duration_ms: 0.935541\n  type: 'test'\n  ...\n# Subtest: product and test defects cannot use retry to bypass reviewed repair\nok 40 - product and test defects cannot use retry to bypass reviewed repair\n  ---\n  duration_ms: 0.601375\n  type: 'test'\n  ...\n# Subtest: completed repair proposes retest and passed retest requires exact regression scope\nok 41 - completed repair proposes retest and passed retest requires exact regression scope\n  ---\n  duration_ms: 2.218917\n  type: 'test'\n  ...\n# Subtest: retains pre-repair retest history but only evaluates retests started after the reviewed repair\nok 42 - retains pre-repair retest history but only evaluates retests started after the reviewed repair\n  ---\n  duration_ms: 2.694917\n  type: 'test'\n  ...\n# Subtest: failed blocked stale or tampered required regression proposes reopen\nok 43 - failed blocked stale or tampered required regression proposes reopen\n  ---\n  duration_ms: 5.011417\n  type: 'test'\n  ...\n# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases\nok 44 - closure fails closed when rerun plan omits repaired impacted or baseline cases\n  ---\n  duration_ms: 3.253667\n  type: 'test'\n  ...\n# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance\nok 45 - routes only a trusted classifier no-progress signal to Core break-loop governance\n  ---\n  duration_ms: 0.847667\n  type: 'test'\n  ...\n# Subtest: rejects caller-authored lifecycle fields fallback and manual green\nok 46 - rejects caller-authored lifecycle fields fallback and manual green\n  ---\n  duration_ms: 3.344167\n  type: 'test'\n  ...\n# Subtest: rejects duplicate overwritten out-of-order and cross-failure history\nok 47 - rejects duplicate overwritten out-of-order and cross-failure history\n  ---\n  duration_ms: 2.436125\n  type: 'test'\n  ...\n# Subtest: rejects forged repair rerun and attempt-fact envelopes\nok 48 - rejects forged repair rerun and attempt-fact envelopes\n  ---\n  duration_ms: 2.619375\n  type: 'test'\n  ...\n# Subtest: rejects foreign run or change attempts and unplanned regression cases\nok 49 - rejects foreign run or change attempts and unplanned regression cases\n  ---\n  duration_ms: 3.995375\n  type: 'test'\n  ...\n# Subtest: requires the exact Task 022 repaired impacted and baseline case set\nok 50 - requires the exact Task 022 repaired impacted and baseline case set\n  ---\n  duration_ms: 2.162333\n  type: 'test'\n  ...\n1..50\n# tests 50\n# suites 0\n# pass 50\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 35372.108875\nverification v2 repair loop ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-09T10:10:47.015Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101046-833247a31e6c4f0a",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-04"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-09T10:10:46.972Z",
+        "started_at": "2026-08-09T10:10:47.013Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-09T10:10:47.015Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101046-833247a31e6c4f0a",
+        "run_id": "run-20260809101046-833247a31e6c4f0a",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-04",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-09T10:10:47.013Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-09T10:10:47.025Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-repair-loop.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 300000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:10:47.152Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.447Z",
+      "chunk": "# Subtest: registry compiles and validates every Verification Contract V2 entity\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.455Z",
+      "chunk": "ok 1 - registry compiles and validates every Verification Contract V2 entity\n  ---\n  duration_ms: 12089.423125\n  type: 'test'\n  ...\n# Subtest: runtime status schema accepts the exact current managed doctor output\nok 2 - runtime status schema accepts the exact current managed doctor output\n  ---\n  duration_ms: 3570.193291\n  type: 'test'\n  ...\n# Subtest: negative fixture corpus returns exact artifact and field blockers\nok 3 - negative fixture corpus returns exact artifact and field blockers\n  ---\n  duration_ms: 4852.677792\n  type: 'test'\n  ...\n# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields\nok 4 - evidence and gate schemas directly enforce AC-31 and AC-35 fields\n  ---\n  duration_ms: 6908.145125\n  type: 'test'\n  ...\n# Subtest: verification run schema requires immutable repair lineage fields\nok 5 - verification run schema requires immutable repair lineage fields\n  ---\n  duration_ms: 4225.325166\n  type: 'test'\n  ...\n# Subtest: failure packet schema supports only the constrained unclassified open state\nok 6 - failure packet schema supports only the constrained unclassified open state\n  ---\n  duration_ms: 978.510709\n  type: 'test'\n  ...\n# Subtest: registry requires doctor-approved managed AJV and never mutates input\nok 7 - registry requires doctor-approved managed AJV and never mutates input\n  ---\n  duration_ms: 1310.51425\n  type: 'test'\n  ...\n# Subtest: shape-valid unresolved references remain Task 004 responsibility\nok 8 - shape-valid unresolved references remain Task 004 responsibility\n  ---\n  duration_ms: 1220.71725\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.484Z",
+      "chunk": "# Subtest: kernel package exposes one versioned public entry and schema-only subpath\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "ok 9 - kernel package exposes one versioned public entry and schema-only subpath\n  ---\n  duration_ms: 0.991583\n  type: 'test'\n  ...\n# Subtest: public entry exposes immutable metadata and explicit service contracts\nok 10 - public entry exposes immutable metadata and explicit service contracts\n  ---\n  duration_ms: 54.333\n  type: 'test'\n  ...\n# Subtest: service creation requires every adapter and never falls back\nok 11 - service creation requires every adapter and never falls back\n  ---\n  duration_ms: 0.317542\n  type: 'test'\n  ...\n# Subtest: kernel source contains no host runtime dependency\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "ok 12 - kernel source contains no host runtime dependency\n  ---\n  duration_ms: 80.759292\n  type: 'test'\n  ...\n# Subtest: trusted fact authority seals and verifies exact Kernel-owned payload bytes\nok 13 - trusted fact authority seals and verifies exact Kernel-owned payload bytes\n  ---\n  duration_ms: 12046.021542\n  type: 'test'\n  ...\n# Subtest: transition applier accepts only a signed proposal-log fact\nok 14 - transition applier accepts only a signed proposal-log fact\n  ---\n  duration_ms: 7.488792\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed replay whose action and target do not match the authorized proposal\nok 15 - transition applier rejects a signed replay whose action and target do not match the authorized proposal\n  ---\n  duration_ms: 1.027875\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed historical receipt bound to a foreign proposal\nok 16 - transition applier rejects a signed historical receipt bound to a foreign proposal\n  ---\n  duration_ms: 4.53525\n  type: 'test'\n  ...\n# Subtest: transition applier rejects a signed receipt that breaks the from_status chain\nok 17 - transition applier rejects a signed receipt that breaks the from_status chain\n  ---\n  duration_ms: 1.120666\n  type: 'test'\n  ...\n# Subtest: failure state reducer keeps roots immutable and supersedes valid follow-up failures\nok 18 - failure state reducer keeps roots immutable and supersedes valid follow-up failures\n  ---\n  duration_ms: 4.553708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "# Subtest: repair CLI replays classification and repair request without overwriting task review files\nok 19 - repair CLI replays classification and repair request without overwriting task review files\n  ---\n  duration_ms: 12084.849125\n  type: 'test'\n  ...\n# Subtest: repair CLI appends one deterministic proposal across repeated state evaluation\nok 20 - repair CLI appends one deterministic proposal across repeated state evaluation\n  ---\n  duration_ms: 75.7895\n  type: 'test'\n  ...\n# Subtest: repair CLI starts from a clean baseline and completes only after scoped changes\nok 21 - repair CLI starts from a clean baseline and completes only after scoped changes\n  ---\n  duration_ms: 148.964708\n  type: 'test'\n  ...\n# Subtest: repair CLI blocks start when the original failure fingerprint drifted\nok 22 - repair CLI blocks start when the original failure fingerprint drifted\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "  ---\n  duration_ms: 116.285084\n  type: 'test'\n  ...\n# Subtest: repair CLI blocks replayed repair envelopes with replaced lineage\nok 23 - repair CLI blocks replayed repair envelopes with replaced lineage\n  ---\n  duration_ms: 110.615625\n  type: 'test'\n  ...\n# Subtest: repair CLI preserves invalid lineage and creates an approved recovery fact\nok 24 - repair CLI preserves invalid lineage and creates an approved recovery fact\n  ---\n  duration_ms: 137.288416\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "# Subtest: rerun planning migrates the legacy envelope and appends refreshed authority\nok 25 - rerun planning migrates the legacy envelope and appends refreshed authority\n  ---\n  duration_ms: 43.032209\n  type: 'test'\n  ...\n# Subtest: repair request replay rejects a link that replaced failure identity\nok 26 - repair request replay rejects a link that replaced failure identity\n  ---\n  duration_ms: 113.269958\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "# Subtest: repair diff accepts lifecycle artifacts but rejects scope escape\nok 27 - repair diff accepts lifecycle artifacts but rejects scope escape\n  ---\n  duration_ms: 535.52375\n  type: 'test'\n  ...\n# Subtest: repair completion fingerprints allow only the named review receipts\nok 28 - repair completion fingerprints allow only the named review receipts\n  ---\n  duration_ms: 600.660834\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "# Subtest: missing classification is an explicit blocker and remains open\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.485Z",
+      "chunk": "ok 29 - missing classification is an explicit blocker and remains open\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.486Z",
+      "chunk": "  ---\n  duration_ms: 12004.061625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.486Z",
+      "chunk": "# Subtest: valid follow-up runs are checked even when they produce no failure packet\nok 30 - valid follow-up runs are checked even when they produce no failure packet\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.487Z",
+      "chunk": "  ---\n  duration_ms: 3.602125\n  type: 'test'\n  ...\n# Subtest: foreign failure and broken parent lineage block follow-up runs\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.488Z",
+      "chunk": "ok 31 - foreign failure and broken parent lineage block follow-up runs\n  ---\n  duration_ms: 1.610834\n  type: 'test'\n  ...\n# Subtest: raw failures from another change cannot enter the reducer\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.488Z",
+      "chunk": "ok 32 - raw failures from another change cannot enter the reducer\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.489Z",
+      "chunk": "  ---\n  duration_ms: 1.143917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.489Z",
+      "chunk": "# Subtest: preserves first failure repair retest and regression as immutable history\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.491Z",
+      "chunk": "ok 33 - preserves first failure repair retest and regression as immutable history\n  ---\n  duration_ms: 12038.386792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.492Z",
+      "chunk": "# Subtest: accepts explicit audited recovery for invalid repair lineage\nok 34 - accepts explicit audited recovery for invalid repair lineage\n  ---\n  duration_ms: 4.515708\n  type: 'test'\n  ...\n# Subtest: blocks recovery when protected identity drift was not exactly approved\nok 35 - blocks recovery when protected identity drift was not exactly approved\n  ---\n  duration_ms: 1.301167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.492Z",
+      "chunk": "# Subtest: labels an unchanged-fingerprint retry pass as flaky\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.492Z",
+      "chunk": "ok 36 - labels an unchanged-fingerprint retry pass as flaky\n  ---\n  duration_ms: 3.391917\n  type: 'test'\n  ...\n# Subtest: selects initial and latest attempts deterministically from shuffled same-second history\nok 37 - selects initial and latest attempts deterministically from shuffled same-second history\n  ---\n  duration_ms: 3.099125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 27,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.492Z",
+      "chunk": "# Subtest: allows parallel regression branches with the same sequence and chooses each case deterministically\n"
+    },
+    {
+      "sequence": 28,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.492Z",
+      "chunk": "ok 38 - allows parallel regression branches with the same sequence and chooses each case deterministically\n  ---\n  duration_ms: 2.212833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 29,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "# Subtest: rejects retry when any immutable retry fingerprint changes\nok 39 - rejects retry when any immutable retry fingerprint changes\n  ---\n  duration_ms: 0.935541\n  type: 'test'\n  ...\n# Subtest: product and test defects cannot use retry to bypass reviewed repair\nok 40 - product and test defects cannot use retry to bypass reviewed repair\n  ---\n  duration_ms: 0.601375\n  type: 'test'\n  ...\n# Subtest: completed repair proposes retest and passed retest requires exact regression scope\nok 41 - completed repair proposes retest and passed retest requires exact regression scope\n  ---\n  duration_ms: 2.218917\n  type: 'test'\n  ...\n# Subtest: retains pre-repair retest history but only evaluates retests started after the reviewed repair\nok 42 - retains pre-repair retest history but only evaluates retests started after the reviewed repair\n  ---\n  duration_ms: 2.694917\n  type: 'test'\n  ...\n# Subtest: failed blocked stale or tampered required regression proposes reopen\nok 43 - failed blocked stale or tampered required regression proposes reopen\n  ---\n  duration_ms: 5.011417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 30,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases\nok 44 - closure fails closed when rerun plan omits repaired impacted or baseline cases\n  ---\n  duration_ms: 3.253667\n  type: 'test'\n  ...\n# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance\nok 45 - routes only a trusted classifier no-progress signal to Core break-loop governance\n  ---\n  duration_ms: 0.847667\n  type: 'test'\n  ...\n# Subtest: rejects caller-authored lifecycle fields fallback and manual green\n"
+    },
+    {
+      "sequence": 31,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "ok 46 - rejects caller-authored lifecycle fields fallback and manual green\n  ---\n  duration_ms: 3.344167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 32,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "# Subtest: rejects duplicate overwritten out-of-order and cross-failure history\n"
+    },
+    {
+      "sequence": 33,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "ok 47 - rejects duplicate overwritten out-of-order and cross-failure history\n"
+    },
+    {
+      "sequence": 34,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "  ---\n  duration_ms: 2.436125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 35,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.493Z",
+      "chunk": "# Subtest: rejects forged repair rerun and attempt-fact envelopes\n"
+    },
+    {
+      "sequence": 36,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.494Z",
+      "chunk": "ok 48 - rejects forged repair rerun and attempt-fact envelopes\n  ---\n  duration_ms: 2.619375\n  type: 'test'\n  ...\n# Subtest: rejects foreign run or change attempts and unplanned regression cases\nok 49 - rejects foreign run or change attempts and unplanned regression cases\n  ---\n  duration_ms: 3.995375\n  type: 'test'\n  ...\n# Subtest: requires the exact Task 022 repaired impacted and baseline case set\nok 50 - requires the exact Task 022 repaired impacted and baseline case set\n  ---\n  duration_ms: 2.162333\n  type: 'test'\n  ...\n1..50\n# tests 50\n"
+    },
+    {
+      "sequence": 37,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.494Z",
+      "chunk": "# suites 0\n# pass 50\n"
+    },
+    {
+      "sequence": 38,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.494Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 39,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.494Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 40,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.494Z",
+      "chunk": "# skipped 0\n# todo 0\n# duration_ms 35372.108875\n"
+    },
+    {
+      "sequence": 41,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:11:22.508Z",
+      "chunk": "verification v2 repair loop ok\n"
+    },
+    {
+      "sequence": 42,
+      "type": "command.terminal",
+      "at": "2026-08-09T10:11:22.593Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 43,
+      "type": "attempt.terminal",
+      "at": "2026-08-09T10:11:22.594Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101046-833247a31e6c4f0a",
+        "run_id": "run-20260809101046-833247a31e6c4f0a",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-04",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "d2484bce8e1a855857d73923375f45df30d95914d641d0810fd36cc1e5c04509",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "1b291bd2ba16062a4a35d9d3cdf625c4cfd63c56534591ab6a2f1eeda5aec74a",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-09T10:10:47.013Z",
+        "completed_at": "2026-08-09T10:11:22.594Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 44,
+      "type": "run.terminal",
+      "at": "2026-08-09T10:11:22.594Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101046-833247a31e6c4f0a",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-04"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-09T10:10:46.972Z",
+        "started_at": "2026-08-09T10:10:47.013Z",
+        "completed_at": "2026-08-09T10:11:22.594Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
