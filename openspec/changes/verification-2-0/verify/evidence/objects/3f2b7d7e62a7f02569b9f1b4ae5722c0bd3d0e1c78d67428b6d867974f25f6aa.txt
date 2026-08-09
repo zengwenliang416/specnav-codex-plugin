@@ -1,0 +1,533 @@
+status=failed
+exit_status=1
+--- stdout ---
+codex marketplace fixtures ok
+codex plugin fixtures ok
+codex skill fixtures ok
+codex hook fixtures ok
+codex development fixtures ok
+plugin suite resolver fixtures ok
+
+--- stderr ---
+expected operations-gate status 0, got 2
+{
+  "ok": false,
+  "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project",
+  "active_change": "add-dashboard",
+  "change_resolution": {
+    "source": "active-change-file",
+    "candidates": [
+      "add-dashboard"
+    ],
+    "blockers": []
+  },
+  "change_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project/openspec/changes/add-dashboard",
+  "operations_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project/openspec/changes/add-dashboard/operations",
+  "release_target": "local-only",
+  "risk_tier": "standard",
+  "lane": "standard",
+  "blockers": [
+    "verification-drift:manifest-exact-file-provenance-mismatch:claude-code",
+    "verification-drift:manifest-transformed-file-provenance-mismatch:claude-code",
+    "verification-drift:manifest-exact-file-provenance-mismatch:codefree-o",
+    "verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o",
+    "verification-release:cross-host-compatibility-blocked",
+    "readiness-before-verification-green"
+  ],
+  "warnings": [
+    "codegraph:not-indexed"
+  ],
+  "codegraph": {
+    "ok": true,
+    "status": {
+      "schema": "specnav.codegraph.status.v1",
+      "ok": true,
+      "generated_at": "2026-08-09T07:01:17.694Z",
+      "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project",
+      "active_change": "add-dashboard",
+      "policy": {
+        "enabled": true,
+        "profile": "bootstrap",
+        "mode": "observe",
+        "stage": "operations",
+        "required_for_stage": false,
+        "disabled_reason": null
+      },
+      "execution_surface": "cli",
+      "decision": {
+        "stage": "operations",
+        "result": "warn",
+        "reason": "CodeGraph policy has advisory warnings for operations."
+      },
+      "cli": {
+        "available": true,
+        "version": "1.3.1",
+        "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+        "unsupported": false,
+        "error": null
+      },
+      "mcp": {
+        "configured": true,
+        "visible_in_current_session": false,
+        "restart_required": true,
+        "config_files": [
+          "/Users/wenliang_zeng/.claude.json",
+          "/Users/wenliang_zeng/.codex/config.toml"
+        ]
+      },
+      "index": {
+        "initialized": false,
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project",
+        "indexPath": null,
+        "lastIndexed": null,
+        "fileCount": 0,
+        "nodeCount": 0,
+        "edgeCount": 0,
+        "pendingChanges": {
+          "added": 0,
+          "modified": 0,
+          "removed": 0
+        },
+        "reindexRecommended": false,
+        "worktreeMismatch": null
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "raw_codegraph_status": {
+        "initialized": false,
+        "version": "1.3.1",
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project",
+        "indexPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project/.codegraph",
+        "lastIndexed": null
+      }
+    },
+    "evidence_index": {
+      "schema": "specnav.codegraph.evidence_index.v1",
+      "generated_at": "2026-08-09T07:01:17.694Z",
+      "active_change": "add-dashboard",
+      "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+      "by_claim": {},
+      "by_stage": {},
+      "blockers": [],
+      "raw_exists": false,
+      "record_count": 0
+    },
+    "claims_report": {
+      "schema": "specnav.codegraph.claims_report.v1",
+      "generated_at": "2026-08-09T07:01:17.695Z",
+      "active_change": "add-dashboard",
+      "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+      "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+      "claims_count": 0,
+      "verified_claims": [],
+      "unverified_claims": [],
+      "blockers": [],
+      "warnings": []
+    },
+    "drift": {
+      "schema": "specnav.codegraph.drift.v1",
+      "active_change": "add-dashboard",
+      "drift": [],
+      "blockers": []
+    },
+    "decision": {
+      "schema": "specnav.codegraph.decision.v1",
+      "stage": "operations",
+      "profile": "bootstrap",
+      "effective_mode": "observe",
+      "required_for_stage": false,
+      "execution_surface": "cli",
+      "result": "warn",
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "explanation": "CodeGraph policy has advisory warnings for operations."
+    },
+    "guard_report": {
+      "schema": "specnav.codegraph.guard_report.v1",
+      "generated_at": "2026-08-09T07:01:17.695Z",
+      "active_change": "add-dashboard",
+      "stage": "operations",
+      "ok": true,
+      "status": {
+        "policy": {
+          "enabled": true,
+          "profile": "bootstrap",
+          "mode": "observe",
+          "stage": "operations",
+          "required_for_stage": false,
+          "disabled_reason": null
+        },
+        "execution_surface": "cli",
+        "cli": {
+          "available": true,
+          "version": "1.3.1",
+          "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+          "unsupported": false,
+          "error": null
+        },
+        "mcp": {
+          "configured": true,
+          "visible_in_current_session": false,
+          "restart_required": true,
+          "config_files": [
+            "/Users/wenliang_zeng/.claude.json",
+            "/Users/wenliang_zeng/.codex/config.toml"
+          ]
+        },
+        "index": {
+          "initialized": false,
+          "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.jl6uD5Iizw/project",
+          "indexPath": null,
+          "lastIndexed": null,
+          "fileCount": 0,
+          "nodeCount": 0,
+          "edgeCount": 0,
+          "pendingChanges": {
+            "added": 0,
+            "modified": 0,
+            "removed": 0
+          },
+          "reindexRecommended": false,
+          "worktreeMismatch": null
+        }
+      },
+      "decision": {
+        "schema": "specnav.codegraph.decision.v1",
+        "stage": "operations",
+        "profile": "bootstrap",
+        "effective_mode": "observe",
+        "required_for_stage": false,
+        "execution_surface": "cli",
+        "result": "warn",
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ],
+        "explanation": "CodeGraph policy has advisory warnings for operations."
+      },
+      "evidence_index": {
+        "schema": "specnav.codegraph.evidence_index.v1",
+        "generated_at": "2026-08-09T07:01:17.694Z",
+        "active_change": "add-dashboard",
+        "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+        "by_claim": {},
+        "by_stage": {},
+        "blockers": [],
+        "raw_exists": false,
+        "record_count": 0
+      },
+      "claims_report": {
+        "schema": "specnav.codegraph.claims_report.v1",
+        "generated_at": "2026-08-09T07:01:17.695Z",
+        "active_change": "add-dashboard",
+        "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+        "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+        "claims_count": 0,
+        "verified_claims": [],
+        "unverified_claims": [],
+        "blockers": [],
+        "warnings": []
+      },
+      "drift": {
+        "schema": "specnav.codegraph.drift.v1",
+        "active_change": "add-dashboard",
+        "drift": [],
+        "blockers": []
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ]
+    },
+    "artifacts": {
+      "status": "openspec/changes/add-dashboard/codegraph/status.json",
+      "decision": "openspec/changes/add-dashboard/codegraph/decision.json",
+      "guard_report": "openspec/changes/add-dashboard/codegraph/guard-report.json",
+      "evidence_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+      "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+      "claims_map": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+      "claims_report": "openspec/changes/add-dashboard/codegraph/claims-report.json",
+      "drift_report": "openspec/changes/add-dashboard/codegraph/drift-report.json",
+      "impact_report": "openspec/changes/add-dashboard/codegraph/impact-report.json"
+    },
+    "blockers": [],
+    "warnings": [
+      "codegraph:not-indexed"
+    ]
+  },
+  "verification_v2_proof": {
+    "schema": "specnav.operations.verification-v2-proof.v1",
+    "id": "verification-release-proof-dede82d247112e1d05d254602f95cae9805f846077bb5d0bb72b326c024e27e3",
+    "generated_at": "2026-08-09T07:01:17.201Z",
+    "change_id": "add-dashboard",
+    "ok": false,
+    "sources": {
+      "gate_input": "76f6cc2b11f8801c64e51defd8425f889defde8f3c74d72de237bf9b1ac79956",
+      "runtime_status": "5787862126d3bba8b2f6308bfb85565167852af6fa13571d32abd91b60c49156",
+      "runtime_authority": "74872be82b0000031d2ede8cd9781fbb811d0d1fcd99fca2187bd46cba33382a",
+      "case_snapshot": "c1fbc42f6ba8114e44cce110f1bfd48bee12fd563dcfb984a11dc349c38b6803",
+      "case_approval": "aafeb5c9d0888632a9e018ae135274a1579561aa24610186c0fe0881997cd35c",
+      "requirements_source": "fc6305c123efddda2eb3b5cc5f75b1f84dac56a82b74edba79ce07af94f8d54f",
+      "acceptance_source": "54d2ad334857ac89776191590aca5c06a01c1e21730c73f0fa410f40cddef496",
+      "release_gate": "b0a588023f643589ab4f5fe2f79dc57e073b9395f96b39639df86422f382b01b",
+      "archive_gate": "58671dfcdb503958bfe7f9451daf307526e6e41de3c40e772b6509bc98fefdbf",
+      "report_model": "d6306ef5cfeb1da4da246a2fef7cb816cdaa55946674f6bd9ce6be6b873e1d3f",
+      "report_render_manifest": "286b16b257e3269cb1fa18a3f17591d6568c3b21bc5f16620a8c4f9899b733f5",
+      "evidence_raw": "55bcab2c08c87282d957ef3af45818d18e14a1a49a2b538b07c742fb576aca82",
+      "evidence_index": "3d91f91273bbce64e3cdf08c2146d37e57b52b1cffafa26fc8e1b829709e2031",
+      "migration_status": "ef99b86fe3918710bc6c814fbd9bc5b10a130a6d6b6d4d949f65e47f12269fa2",
+      "host_installations": "832c7cd96d6330a3f2117bbc9bdb83a8743882847ada9bfe538a3c6665f4b29c",
+      "cross_host_compatibility": "70b64f7a94e8e599d231bd032f25b7e90fb98d82b9e76bbde664389d5925acff"
+    },
+    "case_snapshot_id": "snapshot-2ef37ed338302d45a399028b",
+    "case_approval_id": "approval-add-dashboard",
+    "case_approval_reviewer_id": "reviewer-release",
+    "runtime_authority": {
+      "schema": "specnav.verification.runtime-authority.v1",
+      "digest": "74872be82b0000031d2ede8cd9781fbb811d0d1fcd99fca2187bd46cba33382a",
+      "runtime_version": "2.0.0-alpha.2",
+      "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
+      "requires_midscene": false,
+      "runtime_lock_sha256": "a2e15237919eaef244adf4bfc7a7b4464e8ecb7545decc8fa3e09b26443cb306",
+      "install_receipt_sha256": "a9378a683ed15b147e888930b8c8c095df6d3e245ab547738324667796681361",
+      "package_lock_sha256": "04a7d8771aa8e6b3328c4ac7fe3db973a5eb9c2c8c9ead36378bb03eebae8d4e",
+      "module_tree_sha256": "10f229f4647bd3458cd0cd1c3473ddae2c088d5bb30d00f4457243db1c3e5db5",
+      "browser_executables": [
+        {
+          "name": "chromium",
+          "executable": "browsers/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+          "sha256": "a596b1cfc6353e987fcec8d71a23a28cd6a9e7a6b4e20b908e4c4fcffe51158e"
+        },
+        {
+          "name": "chromium-headless-shell",
+          "executable": "browsers/chromium_headless_shell-1234/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+          "sha256": "7687bff7cb2db075f250e6d5848bbc8838cac3802ac3952a899c574f8eccab45"
+        },
+        {
+          "name": "ffmpeg",
+          "executable": "browsers/ffmpeg-1011/ffmpeg-mac",
+          "sha256": "662398c99429f5493ff0ff40cdcd97ea25132addcbdedafd0741389964147825"
+        }
+      ],
+      "kernel_contract_digest": "90407bc8ea9c949adf818fe0047eba9fbacff2e9739fd240d68b02be0729e476"
+    },
+    "host_authority": {
+      "lock_sha256": "2567d69c54139800e157ef8bd61d7bb73b51e270e506845800392cf9809472d2",
+      "commits": {
+        "codex": "84a780d64d7465b9a1f8f1d010647580b2762929",
+        "claude-code": "c9ecfa5c7e4efbf6a47f6bd5e8af01a27aa88268",
+        "codefree-o": "c8e0c56f446b678550152726c9c67bf896d4dab9"
+      },
+      "heads": {
+        "codex": "84a780d64d7465b9a1f8f1d010647580b2762929",
+        "claude-code": "c9ecfa5c7e4efbf6a47f6bd5e8af01a27aa88268",
+        "codefree-o": "c8e0c56f446b678550152726c9c67bf896d4dab9"
+      },
+      "snapshots": {
+        "codex": "31f564cf4ef17481c283957c2435b5e5c778c78459935867d08223b1d9c90b32",
+        "claude-code": "a979fedea39a45e020d77a87c22c43852c776cc4ca1ed2af6b77ad75a1eab833",
+        "codefree-o": "d506a402ffd2a59a29424bcf22461be6172d7414224fb9a495b86a1b8c843c37"
+      },
+      "comparison": "362e288defe85c4bb5f447f0e8fdc070c852cd029ac5a1642d5d8770d6b5e005",
+      "digest": "ac26d2ef4371506aca3ac830f531adbdce36259cbd9d239bc06af10bdfbef0ab"
+    },
+    "release_gate": {
+      "id": "gate-b8ea3172417491b37520c92e987c06d2327cc6ad986a434e617b32bc29cee7bc",
+      "decision": "pass",
+      "source_case_ids": [
+        "case-add-dashboard"
+      ],
+      "source_reading_ids": [
+        "reading-e2e",
+        "reading-facticity",
+        "reading-redteam",
+        "reading-sensory",
+        "reading-static",
+        "reading-unit"
+      ],
+      "failure_state_status": "valid",
+      "failure_state_digest": "0f52ed0f216edd13f140d50f095fa0ff74777b492c9fc298a116d04813dd311e",
+      "authority_chain_digest": "a5f3b11d122265e913e49b6d767426e57acc4d638c17b97c2e4b40fb9aeb4cdf",
+      "evidence_index_version": 6,
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "freshness": {
+        "status": "fresh",
+        "checked_at": "2026-08-02T00:00:03Z",
+        "reasons": []
+      },
+      "integrity_status": "intact"
+    },
+    "archive_gate": {
+      "id": "gate-dafe4b6b6277726cd2bfc7af8de400eceacaf6ba60fe50651541cb1840b7d6a4",
+      "decision": "pass"
+    },
+    "report_model_id": "report-model-a35442497f2011e60b4049caeb58d52c65def19b2e488d780fc0ba2fddb80ffa",
+    "evidence_index": {
+      "version": 6,
+      "source_digest": "55bcab2c08c87282d957ef3af45818d18e14a1a49a2b538b07c742fb576aca82",
+      "record_count": 6
+    },
+    "reports": [
+      {
+        "name": "overview.html",
+        "path": "verify/reports/overview.html",
+        "sha256": "4e0d651c6cecb60656930f8b1ec5143e3d79f83ea67abb6e179bf80c80619903",
+        "size": 25742
+      },
+      {
+        "name": "test-case-catalog.html",
+        "path": "verify/reports/test-case-catalog.html",
+        "sha256": "05944eecf30f8f3c8a22b8b38df2a0d7667ce5c47c96f1e2f6375ec0e30ad9eb",
+        "size": 20273
+      },
+      {
+        "name": "test-case-results.html",
+        "path": "verify/reports/test-case-results.html",
+        "sha256": "84e508fa8da2f98dbb4fefef5aa132d9bb455c599cdaa1acd5f913adaa253555",
+        "size": 25933
+      }
+    ],
+    "migration": {
+      "required": false,
+      "receipt": null
+    },
+    "hosts": [
+      {
+        "host": "claude-code",
+        "commit": "c9ecfa5c7e4efbf6a47f6bd5e8af01a27aa88268",
+        "receipt_path": "operations/install-receipts/claude-code.json",
+        "receipt_sha256": "383f5215fdfdd24546283395821aa0c6285382c7611c90e4678c878b7e1f7f4e"
+      },
+      {
+        "host": "codefree-o",
+        "commit": "c8e0c56f446b678550152726c9c67bf896d4dab9",
+        "receipt_path": "operations/install-receipts/codefree-o.json",
+        "receipt_sha256": "2556f0b3447bfec1167c9d86ff7910b62ca0e5387f995bf4d0cd519ae240e7cf"
+      },
+      {
+        "host": "codex",
+        "commit": "84a780d64d7465b9a1f8f1d010647580b2762929",
+        "receipt_path": "operations/install-receipts/codex.json",
+        "receipt_sha256": "44d776bc6db6ce992153c63c344d85cebfe1a7bd6ef7d3995e6a76a5a99eeab9"
+      }
+    ],
+    "compatibility": {
+      "ok": true,
+      "kernel_version": "2.0.0-alpha.2",
+      "hosts": [
+        {
+          "host": "claude-code",
+          "commit": "c9ecfa5c7e4efbf6a47f6bd5e8af01a27aa88268"
+        },
+        {
+          "host": "codex",
+          "commit": "84a780d64d7465b9a1f8f1d010647580b2762929"
+        },
+        {
+          "host": "codefree-o",
+          "commit": "c8e0c56f446b678550152726c9c67bf896d4dab9"
+        }
+      ],
+      "sha256": "6b007b3bc90f39f8b09053bf95c0b0bf560f892383898cfeb456d55ca5172bb5"
+    },
+    "blockers": [
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-transformed-file-provenance-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      },
+      {
+        "id": "verification-release:cross-host-compatibility-blocked",
+        "artifact": "operations/cross-host-compatibility.json",
+        "detail": []
+      }
+    ],
+    "fallback_used": false
+  },
+  "artifacts": [
+    {
+      "name": "operations/verification-v2-proof.json",
+      "path": "openspec/changes/add-dashboard/operations/verification-v2-proof.json",
+      "ok": false,
+      "blockers": [
+        "verification-drift:manifest-exact-file-provenance-mismatch:claude-code",
+        "verification-drift:manifest-transformed-file-provenance-mismatch:claude-code",
+        "verification-drift:manifest-exact-file-provenance-mismatch:codefree-o",
+        "verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o",
+        "verification-release:cross-host-compatibility-blocked"
+      ],
+      "proof_id": "verification-release-proof-dede82d247112e1d05d254602f95cae9805f846077bb5d0bb72b326c024e27e3",
+      "release_gate_id": "gate-b8ea3172417491b37520c92e987c06d2327cc6ad986a434e617b32bc29cee7bc",
+      "archive_gate_id": "gate-dafe4b6b6277726cd2bfc7af8de400eceacaf6ba60fe50651541cb1840b7d6a4"
+    },
+    {
+      "name": "tasks.md",
+      "path": "openspec/changes/add-dashboard/tasks.md",
+      "ok": true,
+      "blockers": [],
+      "bullet_count": 1,
+      "checkbox_count": 1,
+      "completed_count": 1,
+      "incomplete_count": 0
+    },
+    {
+      "name": "readiness.md",
+      "path": "openspec/changes/add-dashboard/operations/readiness.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "readiness.json",
+      "path": "openspec/changes/add-dashboard/operations/readiness.json",
+      "ok": false,
+      "blockers": [
+        "readiness-before-verification-green"
+      ],
+      "release_target": "local-only"
+    },
+    {
+      "name": "release-plan.md",
+      "path": "openspec/changes/add-dashboard/operations/release-plan.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "release-checklist.json",
+      "path": "openspec/changes/add-dashboard/operations/release-checklist.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "branch-finish.md",
+      "path": "openspec/changes/add-dashboard/operations/branch-finish.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "update-spec.json",
+      "path": "openspec/changes/add-dashboard/operations/update-spec.json",
+      "ok": true,
+      "blockers": []
+    }
+  ]
+}
