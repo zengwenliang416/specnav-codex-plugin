@@ -1,5 +1,9 @@
-[
-  {
+{
+  "schema": "specnav.verification.trusted-fact-envelope.v1",
+  "id": "trusted-fact-5a7751daafe7a8dd3c98cd42554960e96f3caf33985f21e0618e774bb2472176",
+  "kind": "repair_link",
+  "producer": "specnav-development-repair-bridge",
+  "payload": {
     "schema": "specnav.verification.repair-link.v1",
     "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
     "change_id": "verification-2-0",
@@ -30,5 +34,20 @@
       "case-03-quality-review-evidence",
       "case-03-spec-review-evidence"
     ]
-  }
-]
+  },
+  "payload_digest": "46470745742dc5af850a42d1a60f44b20432742ef30b3bca4c6d7406e2d2c5a2",
+  "issued_at": "2026-08-09T06:47:21.675Z",
+  "bindings": {
+    "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260806063934-95df9951fe619e21",
+    "case_id": "CASE-03"
+  },
+  "claims": [
+    "repair-review:spec-approved",
+    "repair-review:quality-approved",
+    "repair-evidence:verified"
+  ],
+  "signature_algorithm": "hmac-sha256",
+  "signature": "a3524025bec8d9bae6d807e55f637fad2fab89cee4bf792e5b297de0218dd313"
+}

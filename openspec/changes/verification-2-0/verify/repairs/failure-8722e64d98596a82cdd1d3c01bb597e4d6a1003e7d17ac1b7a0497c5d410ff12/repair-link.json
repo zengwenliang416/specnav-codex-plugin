@@ -4,7 +4,7 @@
   "change_id": "verification-2-0",
   "development_task_id": "900-verification-repair-2119e2b03a127fe1",
   "repair_kind": "test_code",
-  "status": "in_progress",
+  "status": "completed",
   "requested_at": "2026-08-09T05:53:48.799Z",
   "before_identity": {
     "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
@@ -15,5 +15,18 @@
     "kernel_version": "2.0.0-alpha.2"
   },
   "scope_digest": "9708a4f1c41fe11cce2166a42da7a7624d8c649417d50796a75ee62e1f788ffd",
-  "id": "repair-9b57e83fd69222e42be653ab1556914749bbab94eab309b6a14c5c8f36f26df7"
+  "id": "repair-9b57e83fd69222e42be653ab1556914749bbab94eab309b6a14c5c8f36f26df7",
+  "completed_at": "2026-08-09T06:47:21.673Z",
+  "after_identity": {
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "code_sha": "3016019bebbdf85a6d88cf86f992cb22abcbe455",
+    "test_sha": "2536b595b2f11cdf2b0667feb6fd3ab72acab2e54be22c445036e6d089f67bc7",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2"
+  },
+  "review_evidence_ids": [
+    "case-03-quality-review-evidence",
+    "case-03-spec-review-evidence"
+  ]
 }
