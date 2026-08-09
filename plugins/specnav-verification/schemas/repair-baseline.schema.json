@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/repair-baseline.schema.json",
+  "title": "SpecNav Verification 2.0 Repair Baseline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "change_id",
+    "repair_link_id",
+    "repair_link_digest",
+    "before_identity",
+    "git_revision",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.repair-baseline.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "repair_link_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "repair_link_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "before_identity": {
+      "$ref": "common.schema.json#/$defs/executionFingerprint"
+    },
+    "git_revision": {
+      "$ref": "common.schema.json#/$defs/sourceSha"
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}

@@ -59,6 +59,8 @@ case ids.
    `repair-start` is replay-safe, requires a clean Git worktree, and permits
    the repair only when the current code, test, runtime, environment, case,
    and Kernel fingerprints still exactly match the original failed attempt.
+   It also records a signed `repair-baseline` that binds the immutable
+   execution identity to the exact Git revision used for later scope review.
    It never replaces the requested link's `before_identity`. If any field
    drifted, preserve the historical incident and run current verification to
    create a new failure before requesting another repair.
@@ -80,12 +82,34 @@ case ids.
    Denied files, deletes, renames, empty diffs, runtime drift, environment
    drift, case-contract drift, or unreviewed changes block. Test repairs must
    change `test_sha`; product repairs must change `code_sha`.
-6. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
+6. If historical started or completed repair envelopes exist but fail the
+   immutable requested-lineage check, do not delete, rename, overwrite, or
+   rebaseline them. Diagnose the exact drift, prepare a
+   `repair-lineage-recovery-review` containing every invalid envelope digest,
+   the reviewed Git revision range, the exact protected identity drift, and
+   the expected current identity digest, then obtain explicit human approval.
+   Apply the approved recovery through:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-recover --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --recovery-review "openspec/changes/<change-id>/verify/repairs/<failure-id>/repair-lineage-recovery-review.json" \
+     --spec-review "openspec/changes/<change-id>/development/tasks/<task-id>/spec-review.json" \
+     --quality-review "openspec/changes/<change-id>/development/tasks/<task-id>/quality-review.json" \
+     --approved --json
+   ```
+
+   Recovery is a new signed authority fact, not a fallback. It preserves the
+   invalid history and blocks unless the human decision, envelope digests,
+   source diff, reviews, current identity, and approved drift all match.
+7. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
    `verify/v2/requirements-source.json`, `verify/v2/acceptance-source.json`,
    `verify/v2/freshness.json`, `verify/rerun-policy.json`, and
    `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
    valid `codegraph/impact-report.json`.
-7. Persist the trusted repaired, impacted, and baseline scope:
+8. Persist the trusted repaired, impacted, and baseline scope:
 
    ```bash
    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -101,13 +125,13 @@ case ids.
    them with a manually chosen domain list.
    Pass `--reviewer-id <authenticated-human-id>` so the current approval is
    revalidated against the current snapshot and source hashes.
-8. If the result is blocked, stop. Unknown references, missing freshness,
+9. If the result is blocked, stop. Unknown references, missing freshness,
    malformed CodeGraph evidence, and unmapped production changes may expand
    scope but may never silently shrink it.
-9. Task 020 executes the returned cases as retest or regression attempts.
+10. Task 020 executes the returned cases as retest or regression attempts.
    Preserve prior failed attempts and evidence; do not edit the stale marker
    by hand.
-10. Execute every returned case through the V2 `execute` action using the
+11. Execute every returned case through the V2 `execute` action using the
    required retry, retest, or regression identity. Never overwrite the first
    failed attempt.
    - Retry uses the original run and requires unchanged fingerprints:
@@ -134,7 +158,7 @@ case ids.
        --attempt-kind regression --parent-attempt "<retest-attempt-id>" \
        --failure-id "<failure-id>" --json
      ```
-11. Evaluate the repair state after each retest or regression batch:
+12. Evaluate the repair state after each retest or regression batch:
 
     ```bash
     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -146,7 +170,7 @@ case ids.
 
     Continue only with the exact Core-owned transition proposal. Never set a
     failure status by hand.
-12. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
+13. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
     explicit user approval:
 
     ```bash
@@ -162,7 +186,7 @@ case ids.
     Transition proposals and applications are append-only JSONL facts.
     Repeating the same idempotency key returns the original receipt; a
     conflicting replay blocks.
-13. Run the V2 `finalize` action only after every `required_cases` member has
+14. Run the V2 `finalize` action only after every `required_cases` member has
    fresh terminal evidence and all required six-domain readings.
 
 ## Required Outputs

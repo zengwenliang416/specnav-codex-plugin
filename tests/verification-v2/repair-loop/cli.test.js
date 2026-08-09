@@ -220,6 +220,9 @@ function dependencies() {
     schemaRegistry,
     clock: () => FIXED_TIME,
     createSchemaRegistry: () => schemaRegistry,
+    gitRevision() {
+      return 'a'.repeat(40);
+    },
     runtimeAuthority: {
       resolve(runtimeStatus) {
         return {
@@ -627,6 +630,190 @@ test('repair CLI blocks replayed repair envelopes with replaced lineage', async 
     replayedCompletion.blockers[0].detail,
     'before_identity'
   );
+});
+
+test('repair CLI preserves invalid lineage and creates an approved recovery fact', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run([
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ], deps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+
+  const repairRoot = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id
+  );
+  const requestedFile = path.join(
+    repairRoot,
+    'repair-link-requested-envelope.json'
+  );
+  const requestedEnvelope = JSON.parse(fs.readFileSync(
+    requestedFile,
+    'utf8'
+  ));
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  const envelopeBindings = {
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    run_id: source.failure.run_id,
+    case_id: source.failure.case_id
+  };
+  const replacedIdentity = {
+    ...requestedEnvelope.payload.before_identity,
+    code_sha: 'f'.repeat(40)
+  };
+  const startedEnvelope = authority.seal('repair_link', {
+    ...requestedEnvelope.payload,
+    status: 'in_progress',
+    before_identity: replacedIdentity
+  }, envelopeBindings);
+  const historicalAfter = {
+    ...replacedIdentity,
+    test_sha: 'e'.repeat(64)
+  };
+  const completedEnvelope = authority.seal('repair_link', {
+    ...startedEnvelope.payload,
+    status: 'completed',
+    completed_at: FIXED_TIME,
+    after_identity: historicalAfter,
+    review_evidence_ids: [
+      'quality-review-evidence-cli',
+      'spec-review-evidence-cli'
+    ]
+  }, envelopeBindings);
+  const startedFile = path.join(
+    repairRoot,
+    'repair-link-started-envelope.json'
+  );
+  const completedFile = path.join(
+    repairRoot,
+    'repair-link-completed-envelope.json'
+  );
+  writeJson(startedFile, startedEnvelope);
+  writeJson(completedFile, completedEnvelope);
+  const startedBytes = fs.readFileSync(startedFile);
+  const completedBytes = fs.readFileSync(completedFile);
+
+  const currentIdentity = {
+    ...requestedEnvelope.payload.before_identity,
+    code_sha: 'c'.repeat(40),
+    test_sha: 'd'.repeat(64),
+    environment_hash: 'b'.repeat(64)
+  };
+  const specReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link: startedEnvelope.payload,
+    afterIdentity: historicalAfter,
+    kind: 'spec-review',
+    reviewerId: 'spec-reviewer'
+  });
+  const qualityReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link: startedEnvelope.payload,
+    afterIdentity: historicalAfter,
+    kind: 'quality-review',
+    reviewerId: 'quality-reviewer'
+  });
+  const recoveryReview = path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'repair-lineage-recovery-review.json'
+  );
+  writeJson(recoveryReview, {
+    schema: 'specnav.verification.repair-lineage-recovery-review.v1',
+    id: 'repair-lineage-recovery-review-cli',
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The started and completed envelopes replaced before_identity.',
+    requested_envelope_digest: sha256(canonicalJson(requestedEnvelope)),
+    invalid_envelopes: [
+      {
+        artifact: 'repair-link-completed-envelope.json',
+        envelope_digest: sha256(canonicalJson(completedEnvelope)),
+        drift_fields: ['before_identity']
+      },
+      {
+        artifact: 'repair-link-started-envelope.json',
+        envelope_digest: sha256(canonicalJson(startedEnvelope)),
+        drift_fields: ['before_identity']
+      }
+    ],
+    repair_revision_range: {
+      before_revision: '1'.repeat(40),
+      after_revision: '2'.repeat(40)
+    },
+    allowed_identity_drift: ['environment_hash'],
+    expected_current_identity_digest: sha256(canonicalJson(currentIdentity))
+  });
+  const recovered = await run([
+    ...baseArgs(source, 'repair-recover'),
+    '--recovery-review',
+    path.relative(source.projectRoot, recoveryReview),
+    '--spec-review',
+    path.relative(source.projectRoot, specReview),
+    '--quality-review',
+    path.relative(source.projectRoot, qualityReview)
+  ], {
+    ...deps,
+    fingerprints() {
+      return {
+        codeSha: currentIdentity.code_sha,
+        testSha: currentIdentity.test_sha,
+        environmentHash: currentIdentity.environment_hash
+      };
+    },
+    validateRepairDiff() {
+      return {
+        ok: true,
+        status: 'scope_verified',
+        changes: [{
+          status: 'M',
+          file: 'tests/specnav/repair.test.js'
+        }],
+        blockers: [],
+        fallback_used: false
+      };
+    }
+  });
+
+  assert.equal(recovered.ok, true, JSON.stringify(recovered.blockers));
+  assert.equal(recovered.status, 'repair_recovered');
+  assert.equal(recovered.fallback_used, false);
+  assert.deepEqual(fs.readFileSync(startedFile), startedBytes);
+  assert.deepEqual(fs.readFileSync(completedFile), completedBytes);
+  assert.equal(fs.existsSync(path.join(
+    repairRoot,
+    'repair-lineage-recovery-envelope.json'
+  )), true);
+  assert.equal(fs.existsSync(path.join(
+    repairRoot,
+    'repair-link-recovered.json'
+  )), true);
 });
 
 test('repair request replay rejects a link that replaced failure identity', async () => {

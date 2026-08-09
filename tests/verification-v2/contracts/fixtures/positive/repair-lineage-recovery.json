@@ -1,0 +1,72 @@
+{
+  "schema": "specnav.verification.repair-lineage-recovery.v1",
+  "id": "repair-lineage-recovery-minimal",
+  "failure_id": "failure-minimal",
+  "change_id": "change-v2",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "reviewer-1",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-01T07:19:00Z",
+  "reason": "The original repair envelopes replaced the frozen identity.",
+  "requested_envelope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "invalid_envelopes": [
+    {
+      "artifact": "repair-link-started-envelope.json",
+      "envelope_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "drift_fields": [
+        "before_identity"
+      ]
+    }
+  ],
+  "repair_revision_range": {
+    "before_revision": "1111111111111111111111111111111111111111",
+    "after_revision": "2222222222222222222222222222222222222222"
+  },
+  "allowed_identity_drift": [
+    "environment_hash",
+    "kernel_version",
+    "runtime_version"
+  ],
+  "expected_current_identity_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "recovered_repair_link": {
+    "schema": "specnav.verification.repair-link.v1",
+    "id": "repair-recovered-minimal",
+    "failure_id": "failure-minimal",
+    "change_id": "change-v2",
+    "development_task_id": "task-repair-1",
+    "repair_kind": "test_code",
+    "status": "completed",
+    "requested_at": "2026-07-31T00:00:03Z",
+    "completed_at": "2026-08-01T07:20:00Z",
+    "before_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "1111111111111111111111111111111111111111",
+      "test_sha": "2222222222222222222222222222222222222222",
+      "environment_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "runtime_version": "1.0.0",
+      "kernel_version": "2.0.0"
+    },
+    "scope_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "after_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "3333333333333333333333333333333333333333",
+      "test_sha": "4444444444444444444444444444444444444444",
+      "environment_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2"
+    },
+    "review_evidence_ids": [
+      "quality-review-evidence",
+      "spec-review-evidence"
+    ]
+  },
+  "verified_changes": [
+    {
+      "status": "M",
+      "file": "tests/specnav/repair.test.js"
+    }
+  ]
+}

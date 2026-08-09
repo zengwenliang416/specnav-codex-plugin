@@ -1,0 +1,34 @@
+{
+  "schema": "specnav.verification.repair-lineage-recovery-review.v1",
+  "id": "repair-recovery-review-minimal",
+  "failure_id": "failure-minimal",
+  "change_id": "change-v2",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "reviewer-1",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-01T07:19:00Z",
+  "reason": "The original repair envelopes replaced the frozen identity.",
+  "requested_envelope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "invalid_envelopes": [
+    {
+      "artifact": "repair-link-started-envelope.json",
+      "envelope_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "drift_fields": [
+        "before_identity"
+      ]
+    }
+  ],
+  "repair_revision_range": {
+    "before_revision": "1111111111111111111111111111111111111111",
+    "after_revision": "2222222222222222222222222222222222222222"
+  },
+  "allowed_identity_drift": [
+    "environment_hash",
+    "kernel_version",
+    "runtime_version"
+  ],
+  "expected_current_identity_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

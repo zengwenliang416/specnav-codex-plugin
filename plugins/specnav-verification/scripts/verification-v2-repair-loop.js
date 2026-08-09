@@ -219,7 +219,8 @@ function repairCompletionFingerprints(
   return {
     codeSha: kernel.codeInventorySha(repositoryInventory),
     testSha,
-    environmentHash
+    environmentHash,
+    gitRevision: head
   };
 }
 
@@ -229,7 +230,9 @@ function validateRepairDiff({
   failureId,
   task,
   beforeIdentity,
-  afterIdentity
+  afterIdentity,
+  beforeRevision = beforeIdentity?.code_sha,
+  afterRevision = afterIdentity?.code_sha
 }) {
   if (
     !task
@@ -238,8 +241,8 @@ function validateRepairDiff({
     || !Array.isArray(task.scope.allowed_files)
     || !Array.isArray(task.scope.denied_files)
     || !task.scope.allowed_operations
-    || !/^[a-f0-9]{40}$/.test(beforeIdentity?.code_sha || '')
-    || !/^[a-f0-9]{40}$/.test(afterIdentity?.code_sha || '')
+    || !/^[a-f0-9]{40}$/.test(beforeRevision || '')
+    || !/^[a-f0-9]{40}$/.test(afterRevision || '')
   ) {
     return blocked(
       'verification-repair:scope-diff-input-invalid',
@@ -250,8 +253,8 @@ function validateRepairDiff({
   try {
     changes = gitDiff(
       projectRoot,
-      beforeIdentity.code_sha,
-      afterIdentity.code_sha
+      beforeRevision,
+      afterRevision
     );
   } catch (error) {
     return blocked(
@@ -549,10 +552,60 @@ function currentFingerprint(context, value) {
   };
 }
 
+function currentGitRevision(projectRoot) {
+  const revision = gitOutput(projectRoot, ['rev-parse', 'HEAD']).trim();
+  if (!/^[a-f0-9]{40}$/.test(revision)) {
+    throw new Error('verification-repair:git-revision-invalid');
+  }
+  return revision;
+}
+
 function fingerprintDrift(expected, actual) {
   return FINGERPRINT_FIELDS.filter((field) => (
     expected?.[field] !== actual?.[field]
   ));
+}
+
+function envelopeDigest(envelope) {
+  return sha256(canonicalJson(envelope));
+}
+
+function repairBaseline(
+  context,
+  authority,
+  failure,
+  link,
+  gitRevision,
+  clock
+) {
+  const payload = {
+    schema: 'specnav.verification.repair-baseline.v1',
+    id: `repair-baseline-${sha256(canonicalJson({
+      failure_id: link.failure_id,
+      repair_link_id: link.id,
+      before_identity: link.before_identity,
+      git_revision: gitRevision
+    }))}`,
+    failure_id: link.failure_id,
+    change_id: link.change_id,
+    repair_link_id: link.id,
+    repair_link_digest: sha256(canonicalJson(link)),
+    before_identity: link.before_identity,
+    git_revision: gitRevision,
+    recorded_at: clock()
+  };
+  const validated = context.schemaRegistry.validate(
+    'repair-baseline',
+    payload
+  );
+  if (!validated.ok) {
+    throw new Error('verification-repair:repair-baseline-invalid');
+  }
+  return authority.seal(
+    'repair_baseline',
+    validated.value,
+    bindings(failure)
+  );
 }
 
 function repairLineageDrift(requested, candidate) {
@@ -773,7 +826,16 @@ function evaluateState(
       'repair-link-completed-envelope.json'
     )
   );
-  const repair = completedRepair || requestedRepair || undefined;
+  const repairRecovery = readOptionalJson(
+    store,
+    relativeRepairPath(
+      failure.id,
+      'repair-lineage-recovery-envelope.json'
+    )
+  ) || undefined;
+  const repair = repairRecovery
+    ? undefined
+    : completedRepair || requestedRepair || undefined;
   const rerun = readOptionalJson(
     store,
     relativeRepairPath(failure.id, 'rerun-plan-envelope.json')
@@ -859,6 +921,7 @@ function evaluateState(
     attempts: history.attempts,
     attempt_facts: facts,
     ...(repair ? { repair_link: repair } : {}),
+    ...(repairRecovery ? { repair_recovery: repairRecovery } : {}),
     ...(rerun ? { rerun_plan: rerun } : {})
   });
 }
@@ -979,6 +1042,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     'repair-request',
     'repair-start',
     'repair-complete',
+    'repair-recover',
     'rerun-plan',
     'evaluate',
     'transition-apply',
@@ -1245,6 +1309,13 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         )
       );
       if (existing) {
+        const baselineEnvelope = readOptionalJson(
+          store,
+          relativeRepairPath(
+            failure.id,
+            'repair-baseline-envelope.json'
+          )
+        );
         if (
           !authority.verify(existing).ok
           || existing.kind !== 'repair_link'
@@ -1265,6 +1336,24 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
             ).join(',')
           );
         }
+        if (
+          !baselineEnvelope
+          || !authority.verify(baselineEnvelope).ok
+          || baselineEnvelope.kind !== 'repair_baseline'
+          || baselineEnvelope.payload.failure_id !== failure.id
+          || baselineEnvelope.payload.repair_link_id !== existing.payload.id
+          || baselineEnvelope.payload.repair_link_digest
+            !== sha256(canonicalJson(existing.payload))
+          || fingerprintDrift(
+            existing.payload.before_identity,
+            baselineEnvelope.payload.before_identity
+          ).length > 0
+        ) {
+          return blocked(
+            'verification-repair:repair-baseline-record-invalid',
+            failure.id
+          );
+        }
         writeJson(
           store,
           relativeRepairPath(failure.id, 'repair-link.json'),
@@ -1276,6 +1365,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           failure_id: failure.id,
           repair_link_id: existing.payload.id,
           baseline_identity: existing.payload.before_identity,
+          baseline_revision: baselineEnvelope.payload.git_revision,
           envelope_id: existing.id,
           replayed: true,
           blockers: [],
@@ -1325,6 +1415,26 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         envelope,
         authority
       );
+      const gitRevision = (
+        dependencies.gitRevision || currentGitRevision
+      )(context.projectRoot);
+      const baselineEnvelope = repairBaseline(
+        context,
+        authority,
+        failure,
+        baseline.value,
+        gitRevision,
+        clock
+      );
+      persistTrustedEnvelope(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-baseline-envelope.json'
+        ),
+        baselineEnvelope,
+        authority
+      );
       const links = readOptionalJson(store, root.files.repairLinks, []);
       writeJson(store, root.files.repairLinks, mergeById(
         links,
@@ -1341,6 +1451,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         failure_id: failure.id,
         repair_link_id: baseline.value.id,
         baseline_identity: baseline.value.before_identity,
+        baseline_revision: gitRevision,
         envelope_id: persisted.envelope.id,
         replayed: !persisted.persisted,
         blockers: [],
@@ -1444,6 +1555,31 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           ).join(',')
         );
       }
+      const baselineEnvelope = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-baseline-envelope.json'
+      );
+      if (
+        !authority.verify(baselineEnvelope).ok
+        || baselineEnvelope.kind !== 'repair_baseline'
+        || baselineEnvelope.bindings.failure_id !== failure.id
+        || baselineEnvelope.payload.failure_id !== failure.id
+        || baselineEnvelope.payload.repair_link_id
+          !== startedEnvelope.payload.id
+        || baselineEnvelope.payload.repair_link_digest
+          !== sha256(canonicalJson(startedEnvelope.payload))
+        || fingerprintDrift(
+          startedEnvelope.payload.before_identity,
+          baselineEnvelope.payload.before_identity
+        ).length > 0
+      ) {
+        return blocked(
+          'verification-repair:repair-baseline-record-invalid',
+          failure.id
+        );
+      }
       const currentLink = startedEnvelope.payload;
       const specReviewArg = argValue(args, '--spec-review');
       const qualityReviewArg = argValue(args, '--quality-review');
@@ -1484,6 +1620,9 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         runtime_version: context.runtimeStatusValue.runtime_version,
         kernel_version: kernel.metadata.version
       };
+      const afterRevision = current.gitRevision || (
+        dependencies.gitRevision || currentGitRevision
+      )(context.projectRoot);
       const task = readRequiredJson(
         changeStore,
         path.posix.join(
@@ -1512,7 +1651,9 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         failureId: failure.id,
         task,
         beforeIdentity: currentLink.before_identity,
-        afterIdentity: after
+        afterIdentity: after,
+        beforeRevision: baselineEnvelope.payload.git_revision,
+        afterRevision
       });
       if (!diffValidation.ok) return diffValidation;
       const reviews = [
@@ -1572,6 +1713,282 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         failure_id: failure.id,
         repair_link_id: result.repair_link.id,
         after_identity: result.repair_link.after_identity,
+        verified_changes: diffValidation.changes,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.persisted,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
+    if (action === 'repair-recover') {
+      const reviewFile = resolveChangeFile(
+        context,
+        argValue(args, '--recovery-review'),
+        'verification-repair:recovery-review-required'
+      );
+      const review = readRequiredJson(
+        changeStore,
+        reviewFile,
+        'verification-repair:recovery-review-read-failed'
+      );
+      const validatedReview = context.schemaRegistry.validate(
+        'repair-lineage-recovery-review',
+        review
+      );
+      if (
+        !validatedReview.ok
+        || review.failure_id !== failure.id
+        || review.change_id !== failure.change_id
+        || review.classification
+          !== classificationEnvelope(context, store, failure.id)
+            .payload.packet.classification
+        || review.reviewer.id !== context.reviewerId
+        || review.reviewer.kind !== 'human'
+        || review.decision !== 'approved'
+      ) {
+        return blocked(
+          'verification-repair:recovery-review-invalid',
+          reviewFile
+        );
+      }
+      const requestedEnvelope = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-requested-envelope.json'
+      );
+      if (
+        !authority.verify(requestedEnvelope).ok
+        || requestedEnvelope.kind !== 'repair_link'
+        || requestedEnvelope.payload.status !== 'requested'
+        || requestedEnvelope.payload.failure_id !== failure.id
+        || fingerprintDrift(
+          attemptFingerprint(initialAttempt(context, store, failure)),
+          requestedEnvelope.payload.before_identity
+        ).length > 0
+        || review.requested_envelope_digest
+          !== envelopeDigest(requestedEnvelope)
+      ) {
+        return blocked(
+          'verification-repair:recovery-requested-envelope-invalid',
+          failure.id
+        );
+      }
+      const invalidNames = [
+        'repair-link-started-envelope.json',
+        'repair-link-completed-envelope.json'
+      ];
+      const actualInvalid = [];
+      for (const name of invalidNames) {
+        const envelope = loadEnvelope(
+          context,
+          store,
+          failure.id,
+          name
+        );
+        const drift = repairLineageDrift(
+          requestedEnvelope.payload,
+          envelope.payload
+        );
+        if (
+          !authority.verify(envelope).ok
+          || envelope.kind !== 'repair_link'
+          || drift.length === 0
+        ) {
+          return blocked(
+            'verification-repair:recovery-invalid-lineage-not-proven',
+            name
+          );
+        }
+        actualInvalid.push({
+          artifact: name,
+          envelope_digest: envelopeDigest(envelope),
+          drift_fields: [...drift].sort()
+        });
+      }
+      const expectedInvalid = [...review.invalid_envelopes]
+        .map((entry) => ({
+          ...entry,
+          drift_fields: [...entry.drift_fields].sort()
+        }))
+        .sort((left, right) => left.artifact.localeCompare(right.artifact));
+      actualInvalid.sort((left, right) => (
+        left.artifact.localeCompare(right.artifact)
+      ));
+      if (canonicalJson(actualInvalid) !== canonicalJson(expectedInvalid)) {
+        return blocked(
+          'verification-repair:recovery-invalid-lineage-mismatch',
+          failure.id
+        );
+      }
+      const current = (dependencies.fingerprints || fingerprints)(
+        context.projectRoot,
+        context.snapshotValue,
+        context.runtimeStatusValue,
+        context.runtimeAuthority
+      );
+      const afterIdentity = currentFingerprint(context, current);
+      if (
+        review.expected_current_identity_digest
+          !== sha256(canonicalJson(afterIdentity))
+      ) {
+        return blocked(
+          'verification-repair:recovery-current-identity-mismatch',
+          failure.id
+        );
+      }
+      const protectedDrift = [
+        'case_snapshot_hash',
+        'environment_hash',
+        'runtime_version',
+        'kernel_version'
+      ].filter((field) => (
+        requestedEnvelope.payload.before_identity[field]
+          !== afterIdentity[field]
+      )).sort();
+      if (
+        canonicalJson(protectedDrift)
+          !== canonicalJson([...review.allowed_identity_drift].sort())
+      ) {
+        return blocked(
+          'verification-repair:recovery-drift-approval-mismatch',
+          failure.id,
+          protectedDrift.join(',')
+        );
+      }
+      const task = readRequiredJson(
+        changeStore,
+        path.posix.join(
+          'development',
+          'tasks',
+          requestedEnvelope.payload.development_task_id,
+          'context.json'
+        ),
+        'verification-repair:repair-task-read-failed'
+      );
+      const diffValidation = (
+        dependencies.validateRepairDiff || validateRepairDiff
+      )({
+        projectRoot: context.projectRoot,
+        changeId: context.changeId,
+        failureId: failure.id,
+        task,
+        beforeIdentity: requestedEnvelope.payload.before_identity,
+        afterIdentity,
+        beforeRevision: review.repair_revision_range.before_revision,
+        afterRevision: review.repair_revision_range.after_revision
+      });
+      if (!diffValidation.ok) return diffValidation;
+      const startedEnvelope = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-started-envelope.json'
+      );
+      const historicalAfter = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-completed-envelope.json'
+      ).payload.after_identity;
+      const historicalReviews = [
+        reviewReceipt(
+          context,
+          changeStore,
+          argValue(args, '--spec-review'),
+          'spec-review',
+          startedEnvelope.payload,
+          historicalAfter
+        ),
+        reviewReceipt(
+          context,
+          changeStore,
+          argValue(args, '--quality-review'),
+          'quality-review',
+          startedEnvelope.payload,
+          historicalAfter
+        )
+      ];
+      const completedAt = clock();
+      const recoveredLinkCandidate = {
+        ...requestedEnvelope.payload,
+        id: `repair-recovered-${sha256(canonicalJson({
+          failure_id: failure.id,
+          review_id: review.id,
+          after_identity: afterIdentity
+        }))}`,
+        status: 'completed',
+        completed_at: completedAt,
+        before_identity: requestedEnvelope.payload.before_identity,
+        after_identity: afterIdentity,
+        review_evidence_ids: historicalReviews
+          .map((entry) => entry.evidence_id)
+          .sort()
+      };
+      const recoveredLink = context.schemaRegistry.validate(
+        'repair-link',
+        recoveredLinkCandidate
+      );
+      if (!recoveredLink.ok) {
+        return blocked(
+          'verification-repair:recovered-link-invalid',
+          failure.id
+        );
+      }
+      const recoveryCandidate = {
+        ...validatedReview.value,
+        schema: 'specnav.verification.repair-lineage-recovery.v1',
+        id: `repair-lineage-recovery-${sha256(canonicalJson({
+          review_id: review.id,
+          recovered_link_id: recoveredLink.value.id
+        }))}`,
+        recovered_repair_link: recoveredLink.value,
+        verified_changes: diffValidation.changes
+      };
+      const recovery = context.schemaRegistry.validate(
+        'repair-lineage-recovery',
+        recoveryCandidate
+      );
+      if (!recovery.ok) {
+        return blocked(
+          'verification-repair:recovery-contract-invalid',
+          failure.id
+        );
+      }
+      const envelope = authority.seal(
+        'repair_recovery',
+        recovery.value,
+        bindings(failure)
+      );
+      const persisted = persistTrustedEnvelope(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-lineage-recovery-envelope.json'
+        ),
+        envelope,
+        authority
+      );
+      writeJson(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-recovered.json'
+        ),
+        recoveredLink.value
+      );
+      const links = readOptionalJson(store, root.files.repairLinks, []);
+      writeJson(store, root.files.repairLinks, mergeById(
+        links,
+        [recoveredLink.value]
+      ));
+      return {
+        ok: true,
+        status: 'repair_recovered',
+        failure_id: failure.id,
+        repair_link_id: recoveredLink.value.id,
+        after_identity: afterIdentity,
         verified_changes: diffValidation.changes,
         envelope_id: persisted.envelope.id,
         replayed: !persisted.persisted,

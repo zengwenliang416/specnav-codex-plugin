@@ -30,6 +30,7 @@ const TRUST_SECRET = Buffer.from(
 const PRODUCERS = Object.freeze({
   classification_result: 'specnav-failure-classifier',
   repair_link: 'specnav-development-repair-bridge',
+  repair_recovery: 'specnav-repair-lineage-recovery',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner'
 });
@@ -39,6 +40,11 @@ const CLAIMS = Object.freeze({
     'repair-review:spec-approved',
     'repair-review:quality-approved',
     'repair-evidence:verified'
+  ],
+  repair_recovery: [
+    'repair-recovery:human-approved',
+    'repair-recovery:invalid-lineage-preserved',
+    'repair-recovery:scope-verified'
   ],
   attempt_fact: [
     'attempt-binding:verified',
@@ -189,6 +195,58 @@ function completedRepair(baseAttempt = initialAttempt(), overrides = {}) {
       code_sha: '3'.repeat(40)
     }),
     review_evidence_ids: ['repair-spec-review', 'repair-quality-review'],
+    ...overrides
+  };
+}
+
+function repairRecovery(baseAttempt = initialAttempt(), overrides = {}) {
+  const link = completedRepair(baseAttempt, {
+    id: 'repair-recovered-minimal',
+    repair_kind: 'test_code',
+    after_identity: fingerprint(baseAttempt, {
+      code_sha: '3'.repeat(40),
+      test_sha: '4'.repeat(64),
+      environment_hash: '5'.repeat(64),
+      runtime_version: '2.0.0-alpha.2',
+      kernel_version: '2.0.0-alpha.2'
+    })
+  });
+  return {
+    schema: 'specnav.verification.repair-lineage-recovery.v1',
+    id: 'repair-lineage-recovery-minimal',
+    failure_id: 'failure-minimal',
+    change_id: 'change-v2',
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: '2026-08-01T07:19:00Z',
+    reason: 'The original repair envelopes replaced the frozen identity.',
+    requested_envelope_digest: '6'.repeat(64),
+    invalid_envelopes: [{
+      artifact: 'repair-link-started-envelope.json',
+      envelope_digest: '7'.repeat(64),
+      drift_fields: ['before_identity']
+    }],
+    repair_revision_range: {
+      before_revision: '8'.repeat(40),
+      after_revision: '9'.repeat(40)
+    },
+    allowed_identity_drift: [
+      'environment_hash',
+      'kernel_version',
+      'runtime_version'
+    ],
+    expected_current_identity_digest: sha256(canonicalJson(
+      link.after_identity
+    )),
+    recovered_repair_link: link,
+    verified_changes: [{
+      status: 'M',
+      file: 'tests/specnav/repair.test.js'
+    }],
     ...overrides
   };
 }
@@ -401,6 +459,16 @@ function request(options = {}) {
             baseBindings
           )
         }),
+    ...(options.repairRecovery === undefined
+      && options.repairRecoveryEnvelope === undefined
+      ? {}
+      : {
+          repair_recovery: options.repairRecoveryEnvelope || seal(
+            'repair_recovery',
+            options.repairRecovery,
+            baseBindings
+          )
+        }),
     ...(options.rerunPlan === undefined && options.rerunEnvelope === undefined
       ? {}
       : {
@@ -479,6 +547,44 @@ test('preserves first failure repair retest and regression as immutable history'
   assert.equal(Object.isFrozen(result), true);
   assert.equal(Object.isFrozen(result.history), true);
   assert.equal(Object.isFrozen(result.transition_proposal), true);
+});
+
+test('accepts explicit audited recovery for invalid repair lineage', () => {
+  const first = initialAttempt();
+  const classification = classificationResult({
+    classification: 'test_defect'
+  });
+  const recovery = repairRecovery(first);
+  const result = factory().evaluate(request({
+    firstAttempt: first,
+    classificationResult: classification,
+    repairRecovery: recovery
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'retest_required');
+  assert.equal(result.transition_proposal.action, 'request_retest');
+  assert.equal(result.history.at(-1).repair_link_id, 'repair-recovered-minimal');
+});
+
+test('blocks recovery when protected identity drift was not exactly approved', () => {
+  const first = initialAttempt();
+  const classification = classificationResult({
+    classification: 'test_defect'
+  });
+  const recovery = repairRecovery(first, {
+    allowed_identity_drift: ['runtime_version']
+  });
+  const result = factory().evaluate(request({
+    firstAttempt: first,
+    classificationResult: classification,
+    repairRecovery: recovery
+  }));
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(blockerIds(result), [
+    'verification-repair-loop:repair-recovery-drift-invalid'
+  ]);
 });
 
 test('labels an unchanged-fingerprint retry pass as flaky', () => {

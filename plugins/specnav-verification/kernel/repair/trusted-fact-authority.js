@@ -11,6 +11,8 @@ const {
 const PRODUCERS = Object.freeze({
   classification_result: 'specnav-failure-classifier',
   repair_link: 'specnav-development-repair-bridge',
+  repair_baseline: 'specnav-repair-baseline-recorder',
+  repair_recovery: 'specnav-repair-lineage-recovery',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner',
   transition_proposal: 'specnav-repair-state-machine',
@@ -25,6 +27,15 @@ const CLAIMS = Object.freeze({
     'repair-review:spec-approved',
     'repair-review:quality-approved',
     'repair-evidence:verified'
+  ]),
+  repair_baseline: Object.freeze([
+    'repair-baseline:identity-bound',
+    'repair-baseline:git-revision-bound'
+  ]),
+  repair_recovery: Object.freeze([
+    'repair-recovery:human-approved',
+    'repair-recovery:invalid-lineage-preserved',
+    'repair-recovery:scope-verified'
   ]),
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
@@ -119,6 +130,17 @@ function payloadValid(schemaRegistry, kind, payload, bindings) {
   if (kind === 'repair_link') {
     const link = schemaRegistry.validate('repair-link', payload);
     return link.ok && sameBindings(link.value, bindings);
+  }
+  if (kind === 'repair_baseline') {
+    const baseline = schemaRegistry.validate('repair-baseline', payload);
+    return baseline.ok && sameBindings(baseline.value, bindings);
+  }
+  if (kind === 'repair_recovery') {
+    const recovery = schemaRegistry.validate(
+      'repair-lineage-recovery',
+      payload
+    );
+    return recovery.ok && sameBindings(recovery.value, bindings);
   }
   if (kind === 'attempt_fact') {
     return typeof payload.attempt_id === 'string'

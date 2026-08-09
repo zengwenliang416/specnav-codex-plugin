@@ -236,16 +236,23 @@ signed `in_progress` repair link only when the current code, tests,
 environment, runtime, Kernel, and case snapshot still exactly match the
 original failed attempt. The requested link's `before_identity` is immutable;
 `repair-start` never replaces it with a newer baseline. Any drift blocks with
-`verification-repair:repair-baseline-drift`. A historical failure whose
-identity already drifted must be preserved as an incident, then the current
-version must be verified to create a new current failure.
+`verification-repair:repair-baseline-drift`. The command also records a signed
+repair baseline that binds this execution identity to a real Git revision.
 
-`repair-complete` compares the original failed commit with the reviewed
-commit, ignores only the repair task's own lifecycle artifacts, and rejects
+`repair-complete` compares the signed baseline Git revision with the reviewed
+Git revision, ignores only the repair task's own lifecycle artifacts, and rejects
 every changed file outside the approved scope lock. Replayed started or
 completed envelopes must retain the requested link's immutable lineage.
 Runtime, environment, Kernel, and case-snapshot fingerprints must remain
 unchanged across the repair window.
+
+If historical repair envelopes already contain replaced lineage, they remain
+immutable incident evidence. An explicit human-approved
+`repair-lineage-recovery-review` may authorize a new signed recovery fact only
+after the runtime verifies every invalid envelope digest, the reviewed Git
+revision range, both repair reviews, the exact protected identity drift, and
+the current execution identity. Recovery never edits the invalid artifacts
+and is not a fallback.
 
 Retry stays inside the original run. Retest and regression always create new
 runs whose `origin_run_id`, `parent_run_id`, `parent_attempt_id`, and

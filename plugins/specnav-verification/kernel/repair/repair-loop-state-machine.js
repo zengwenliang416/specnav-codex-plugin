@@ -15,6 +15,7 @@ const REQUEST_FIELDS = Object.freeze([
   'attempts',
   'attempt_facts',
   'repair_link',
+  'repair_recovery',
   'rerun_plan'
 ]);
 const CLASSIFICATION_RESULT_FIELDS = Object.freeze([
@@ -37,6 +38,7 @@ const FACT_FIELDS = Object.freeze([
 const TRUSTED_PRODUCERS = Object.freeze({
   classification_result: 'specnav-failure-classifier',
   repair_link: 'specnav-development-repair-bridge',
+  repair_recovery: 'specnav-repair-lineage-recovery',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner'
 });
@@ -48,6 +50,11 @@ const REQUIRED_CLAIMS = Object.freeze({
     'repair-review:spec-approved',
     'repair-review:quality-approved',
     'repair-evidence:verified'
+  ]),
+  repair_recovery: Object.freeze([
+    'repair-recovery:human-approved',
+    'repair-recovery:invalid-lineage-preserved',
+    'repair-recovery:scope-verified'
   ]),
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
@@ -763,6 +770,96 @@ function validateRepairLink(
   return { link };
 }
 
+function validateRepairRecovery(
+  schemaRegistry,
+  trustVerifier,
+  packet,
+  firstAttempt,
+  rawEnvelope
+) {
+  const trusted = verifyEnvelope(
+    schemaRegistry,
+    trustVerifier,
+    'repair_recovery',
+    rawEnvelope,
+    {
+      failure_id: packet.id,
+      change_id: packet.change_id,
+      run_id: packet.run_id,
+      case_id: packet.case_id
+    }
+  );
+  if (trusted.blocker) return trusted;
+  const recovery = schemaValue(
+    schemaRegistry,
+    'repair-lineage-recovery',
+    trusted.payload
+  );
+  const link = recovery?.recovered_repair_link;
+  const expectedKind = packet.classification === 'product_defect'
+    ? 'product_code'
+    : 'test_code';
+  if (
+    !recovery
+    || recovery.failure_id !== packet.id
+    || recovery.change_id !== packet.change_id
+    || recovery.classification !== packet.classification
+    || recovery.decision !== 'approved'
+    || recovery.reviewer?.kind !== 'human'
+    || !validDate(recovery.reviewed_at)
+    || !link
+    || link.failure_id !== packet.id
+    || link.change_id !== packet.change_id
+    || link.repair_kind !== expectedKind
+    || link.status !== 'completed'
+    || !sameFingerprint(firstAttempt, link.before_identity)
+    || !link.after_identity
+    || !validDate(link.completed_at)
+    || !Array.isArray(link.review_evidence_ids)
+    || link.review_evidence_ids.length < 2
+  ) {
+    return {
+      blocker: blocker(
+        'verification-repair-loop:repair-recovery-invalid',
+        rawEnvelope?.id || 'repair-recovery'
+      )
+    };
+  }
+  const protectedDrift = [
+    'case_snapshot_hash',
+    'environment_hash',
+    'runtime_version',
+    'kernel_version'
+  ].filter((field) => (
+    link.after_identity[field] !== link.before_identity[field]
+  ));
+  if (
+    canonicalJson(sorted(protectedDrift))
+      !== canonicalJson(sorted(recovery.allowed_identity_drift))
+  ) {
+    return {
+      blocker: blocker(
+        'verification-repair-loop:repair-recovery-drift-invalid',
+        recovery.id,
+        protectedDrift.join(',')
+      )
+    };
+  }
+  const changedField = packet.classification === 'product_defect'
+    ? 'code_sha'
+    : 'test_sha';
+  if (link.after_identity[changedField] === link.before_identity[changedField]) {
+    return {
+      blocker: blocker(
+        'verification-repair-loop:repair-no-source-change',
+        link.id,
+        changedField
+      )
+    };
+  }
+  return { link, recovery };
+}
+
 function validateRerunPlan(
   schemaRegistry,
   trustVerifier,
@@ -1086,6 +1183,17 @@ function createRepairLoopStateMachine(options = {}) {
     const first = attempts.find((attempt) => attempt.id === packet.attempt_id);
 
     let repairLink = null;
+    if (
+      request.repair_link !== undefined
+      && request.repair_recovery !== undefined
+    ) {
+      return blocked([
+        blocker(
+          'verification-repair-loop:repair-authority-ambiguous',
+          packet.id
+        )
+      ]);
+    }
     if (request.repair_link !== undefined) {
       const repair = validateRepairLink(
         schemaRegistry,
@@ -1096,6 +1204,17 @@ function createRepairLoopStateMachine(options = {}) {
       );
       if (repair.blocker) return blocked([repair.blocker]);
       repairLink = repair.link;
+    }
+    if (request.repair_recovery !== undefined) {
+      const recovery = validateRepairRecovery(
+        schemaRegistry,
+        trustVerifier,
+        packet,
+        first,
+        request.repair_recovery
+      );
+      if (recovery.blocker) return blocked([recovery.blocker]);
+      repairLink = recovery.link;
     }
     const history = buildHistory(attempts, factsByAttempt, repairLink);
 
