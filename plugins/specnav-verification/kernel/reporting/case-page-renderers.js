@@ -188,7 +188,7 @@ function renderResult(result, safe) {
     <div class="result-summary"><span>Freshness ${statusBadge(result.freshness)}</span><span>${result.failures.length} failure(s)</span><span>${result.repairs.length} repair(s)</span></div>
     <section><h3>Runs</h3><ol class="history-list">${runs.join('')}</ol></section>
     <section><h3>Attempts</h3><ol class="history-list">${attempts.join('')}</ol></section>
-    <section><h3>Readings</h3><div class="table-scroll"><table><caption>Readings for case ${caseId}</caption><thead><tr><th scope="col">Reading</th><th scope="col">Domain</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Oracle</th><th scope="col">Verdict</th></tr></thead><tbody>${readings.join('')}</tbody></table></div></section>
+    <section><h3>Readings</h3><div class="table-scroll" role="region" aria-label="Readings for case ${caseId}" tabindex="0"><table><caption>Readings for case ${caseId}</caption><thead><tr><th scope="col">Reading</th><th scope="col">Domain</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Oracle</th><th scope="col">Verdict</th></tr></thead><tbody>${readings.join('')}</tbody></table></div></section>
     <section><h3>Evidence</h3><div class="evidence-grid">${evidence.join('')}</div></section>
     <section><h3>Case blockers</h3>${blockers}</section>
   </section>`;

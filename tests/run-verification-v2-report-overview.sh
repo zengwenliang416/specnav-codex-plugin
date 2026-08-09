@@ -7,6 +7,7 @@ cd "$ROOT"
 node --test \
   tests/verification-v2/reports/overview-browser.test.js \
   tests/verification-v2/reports/overview.test.js \
+  tests/verification-v2/reports/three-line-table.test.js \
   tests/verification-v2/reports/report-model.test.js \
   tests/verification-v2/contracts/package-content.test.js \
   tests/verification-v2/contracts/schema-registry.test.js \

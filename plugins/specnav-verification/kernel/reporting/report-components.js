@@ -77,7 +77,7 @@ function renderDomainTable(domains) {
       <td>${labelForStatus(status)} result derived from current case readings.</td>
     </tr>`;
   }).join('');
-  return `<div class="table-scroll">
+  return `<div class="table-scroll" role="region" aria-label="Six-domain verification status table" tabindex="0">
     <table class="domain-table">
       <caption>Six-domain verification status</caption>
       <thead><tr><th scope="col">Domain</th><th scope="col">Status</th><th scope="col">Authority</th></tr></thead>

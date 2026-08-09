@@ -221,6 +221,48 @@ async function assertSharedSemantics(page, pageName) {
   );
 }
 
+async function assertThreeLineTables(page, pageName) {
+  const tables = page.locator('table');
+  const count = await tables.count();
+  for (let index = 0; index < count; index += 1) {
+    const facts = await tables.nth(index).evaluate((table) => {
+      const style = getComputedStyle(table);
+      const head = table.querySelector('thead');
+      const headStyle = getComputedStyle(head);
+      const cells = [...table.querySelectorAll('th, td')];
+      const rows = [...table.querySelectorAll('tbody tr')];
+      return {
+        bottom: [style.borderBottomStyle, style.borderBottomWidth],
+        cellBordersAbsent: cells.every((cell) => {
+          const cellStyle = getComputedStyle(cell);
+          return [
+            cellStyle.borderTopWidth,
+            cellStyle.borderRightWidth,
+            cellStyle.borderBottomWidth,
+            cellStyle.borderLeftWidth
+          ].every((width) => width === '0px');
+        }),
+        header: [headStyle.borderBottomStyle, headStyle.borderBottomWidth],
+        rowBordersAbsent: rows.every((row) => {
+          const rowStyle = getComputedStyle(row);
+          return [
+            rowStyle.borderTopWidth,
+            rowStyle.borderRightWidth,
+            rowStyle.borderBottomWidth,
+            rowStyle.borderLeftWidth
+          ].every((width) => width === '0px');
+        }),
+        top: [style.borderTopStyle, style.borderTopWidth]
+      };
+    });
+    assert.deepEqual(facts.top, ['solid', '2px'], `${pageName}:table-${index}:top`);
+    assert.deepEqual(facts.header, ['solid', '1px'], `${pageName}:table-${index}:header`);
+    assert.deepEqual(facts.bottom, ['solid', '2px'], `${pageName}:table-${index}:bottom`);
+    assert.equal(facts.cellBordersAbsent, true, `${pageName}:table-${index}:cells`);
+    assert.equal(facts.rowBordersAbsent, true, `${pageName}:table-${index}:rows`);
+  }
+}
+
 test('all report pages are responsive, keyboard operable, semantic, and printable', {
   timeout: 45000
 }, async (t) => {
@@ -249,6 +291,7 @@ test('all report pages are responsive, keyboard operable, semantic, and printabl
       });
 
       await assertSharedSemantics(page, report.page);
+      await assertThreeLineTables(page, report.page);
       assert.equal(await page.evaluate(() => (
         document.documentElement.scrollWidth
         <= document.documentElement.clientWidth
@@ -303,6 +346,7 @@ test('all report pages are responsive, keyboard operable, semantic, and printabl
       }
 
       await page.emulateMedia({ media: 'print' });
+      await assertThreeLineTables(page, `${report.page}:print`);
       assert.equal(
         await page.locator('.report-navigation').evaluate((element) => (
           getComputedStyle(element).display

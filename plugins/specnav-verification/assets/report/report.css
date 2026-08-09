@@ -353,6 +353,8 @@ code {
 
 table {
   width: 100%;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
   border-collapse: collapse;
   font-size: 0.875rem;
 }
@@ -368,16 +370,24 @@ caption {
 th,
 td {
   padding: 12px;
-  border-bottom: 1px solid var(--border);
+  border: 0;
   text-align: left;
   vertical-align: top;
 }
 
+thead {
+  border-bottom: 1px solid var(--border-strong);
+}
+
 thead th {
-  background: var(--surface-subtle);
+  background: transparent;
   color: var(--muted);
   font-size: 0.75rem;
   text-transform: uppercase;
+}
+
+tbody tr {
+  border: 0;
 }
 
 tbody th {
@@ -878,6 +888,21 @@ tbody th {
   table,
   .blocker-list li {
     break-inside: avoid;
+  }
+
+  table {
+    border-top: 1.5pt solid #000;
+    border-bottom: 1.5pt solid #000;
+  }
+
+  thead {
+    border-bottom: 0.75pt solid #000;
+  }
+
+  th,
+  td,
+  tbody tr {
+    border: 0;
   }
 
   a {
