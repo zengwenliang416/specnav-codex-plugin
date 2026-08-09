@@ -19,7 +19,16 @@ product/test code repair, and Core MUST own lifecycle transitions.
 ### Requirement: Repair baseline and scope proof
 The system MUST record a clean signed repair baseline before product or test
 source changes and MUST verify the completed Git diff against the approved
-repair scope.
+repair scope. The baseline identity MUST equal the original failed attempt's
+complete execution fingerprint and MUST NOT be replaced by current state.
+
+#### Scenario: Historical failure identity drifted before repair start
+- **WHEN** code, tests, environment, runtime, Kernel, or the approved case snapshot no longer matches the original failed attempt
+- **THEN** repair start is blocked, no in-progress repair fact is signed, and current verification must create a new failure
+
+#### Scenario: Replayed repair envelope replaces original lineage
+- **WHEN** a started or completed repair envelope has valid syntax or signature but replaces any immutable requested-link field
+- **THEN** replay is blocked and the replacement envelope cannot close the failure
 
 #### Scenario: Repair changes a file outside approved scope
 - **WHEN** the baseline-to-reviewed Git diff contains an unapproved, denied, deleted, or renamed file

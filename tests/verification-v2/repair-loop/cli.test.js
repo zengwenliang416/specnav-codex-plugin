@@ -13,6 +13,12 @@ const {
   repairCompletionFingerprints
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-repair-loop');
 const {
+  createTrustedFactAuthority
+} = require('../../../plugins/specnav-verification/kernel/repair/trusted-fact-authority');
+const verificationKernel = require(
+  '../../../plugins/specnav-verification/kernel'
+);
+const {
   canonicalJson,
   sha256
 } = require('../../../plugins/specnav-verification/kernel/evidence/identity');
@@ -62,11 +68,15 @@ function projectFixture() {
   const snapshot = fixture('positive/case-snapshot.json');
   const approval = fixture('positive/case-approval.json');
   const runtimeStatus = fixture('positive/runtime-status.json');
-  const runValue = fixture('positive/verification-run.json');
+  const runValue = {
+    ...fixture('positive/verification-run.json'),
+    kernel_version: verificationKernel.metadata.version
+  };
   const attempt = {
     ...fixture('positive/attempt.json'),
     status: 'failed',
-    exit_status: 1
+    exit_status: 1,
+    kernel_version: verificationKernel.metadata.version
   };
   const reading = {
     ...fixture('positive/reading.json'),
@@ -75,7 +85,10 @@ function projectFixture() {
   };
   delete reading.step_id;
   reading.assertion_id = 'assertion-1';
-  const evidence = fixture('ac31/evidence-baseline.json');
+  const evidence = {
+    ...fixture('ac31/evidence-baseline.json'),
+    kernel_version: verificationKernel.metadata.version
+  };
   delete evidence.step_id;
   evidence.assertion_id = 'assertion-1';
   const failure = {
@@ -194,6 +207,7 @@ function projectFixture() {
     projectRoot,
     changeId,
     failure,
+    attempt,
     rootCauseFile,
     scopeFile,
     verificationRoot
@@ -203,6 +217,7 @@ function projectFixture() {
 function dependencies() {
   const schemaRegistry = readySchemaRegistry();
   return {
+    schemaRegistry,
     clock: () => FIXED_TIME,
     createSchemaRegistry: () => schemaRegistry,
     runtimeAuthority: {
@@ -378,18 +393,15 @@ test('repair CLI appends one deterministic proposal across repeated state evalua
 test('repair CLI starts from a clean baseline and completes only after scoped changes', async () => {
   const source = projectFixture();
   const baselineIdentity = {
-    case_snapshot_hash: fixture('positive/case-snapshot.json').snapshot_hash,
-    code_sha: 'b'.repeat(40),
-    test_sha: 'c'.repeat(64),
-    environment_hash: fixture(
-      'positive/attempt.json'
-    ).environment_hash,
-    runtime_version: fixture('positive/attempt.json').runtime_version,
-    kernel_version: '2.0.0-alpha.2'
+    case_snapshot_hash: source.attempt.case_snapshot_hash,
+    code_sha: source.attempt.code_sha,
+    test_sha: source.attempt.test_sha,
+    environment_hash: source.attempt.environment_hash,
+    runtime_version: source.attempt.runtime_version,
+    kernel_version: source.attempt.kernel_version
   };
   const afterIdentity = {
     ...baselineIdentity,
-    code_sha: 'd'.repeat(40),
     test_sha: 'e'.repeat(64)
   };
   let fingerprintCall = 0;
@@ -470,6 +482,193 @@ test('repair CLI starts from a clean baseline and completes only after scoped ch
     file: 'tests/specnav/repair.test.js'
   }]);
   assert.equal(completed.fallback_used, false);
+});
+
+test('repair CLI blocks start when the original failure fingerprint drifted', async () => {
+  const source = projectFixture();
+  const deps = {
+    ...dependencies(),
+    fingerprints() {
+      return {
+        codeSha: 'f'.repeat(40),
+        testSha: source.attempt.test_sha,
+        environmentHash: source.attempt.environment_hash
+      };
+    }
+  };
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run([
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ], deps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+
+  const started = await run(baseArgs(source, 'repair-start'), deps);
+  assert.equal(started.ok, false);
+  assert.deepEqual(
+    started.blockers.map((entry) => entry.id),
+    ['verification-repair:repair-baseline-drift']
+  );
+  assert.equal(started.blockers[0].detail, 'code_sha');
+  assert.equal(fs.existsSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'repair-link-started-envelope.json'
+  )), false);
+});
+
+test('repair CLI blocks replayed repair envelopes with replaced lineage', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run([
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ], deps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+
+  const repairRoot = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id
+  );
+  const requestedEnvelope = JSON.parse(fs.readFileSync(path.join(
+    repairRoot,
+    'repair-link-requested-envelope.json'
+  ), 'utf8'));
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  const envelopeBindings = {
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    run_id: source.failure.run_id,
+    case_id: source.failure.case_id
+  };
+  const replacedIdentity = {
+    ...requestedEnvelope.payload.before_identity,
+    code_sha: 'f'.repeat(40)
+  };
+  const startedEnvelope = authority.seal('repair_link', {
+    ...requestedEnvelope.payload,
+    status: 'in_progress',
+    before_identity: replacedIdentity
+  }, envelopeBindings);
+  writeJson(path.join(
+    repairRoot,
+    'repair-link-started-envelope.json'
+  ), startedEnvelope);
+
+  const replayedStart = await run(baseArgs(source, 'repair-start'), {
+    ...deps,
+    fingerprints() {
+      return {
+        codeSha: source.attempt.code_sha,
+        testSha: source.attempt.test_sha,
+        environmentHash: source.attempt.environment_hash
+      };
+    }
+  });
+  assert.equal(replayedStart.ok, false);
+  assert.deepEqual(
+    replayedStart.blockers.map((entry) => entry.id),
+    ['verification-repair:repair-baseline-invalid']
+  );
+  assert.equal(replayedStart.blockers[0].detail, 'before_identity');
+
+  fs.rmSync(path.join(
+    repairRoot,
+    'repair-link-started-envelope.json'
+  ));
+  const completedEnvelope = authority.seal('repair_link', {
+    ...requestedEnvelope.payload,
+    status: 'completed',
+    completed_at: FIXED_TIME,
+    before_identity: replacedIdentity,
+    after_identity: {
+      ...replacedIdentity,
+      test_sha: 'e'.repeat(64)
+    },
+    review_evidence_ids: [
+      'quality-review-evidence',
+      'spec-review-evidence'
+    ]
+  }, envelopeBindings);
+  writeJson(path.join(
+    repairRoot,
+    'repair-link-completed-envelope.json'
+  ), completedEnvelope);
+
+  const replayedCompletion = await run(
+    baseArgs(source, 'repair-complete'),
+    deps
+  );
+  assert.equal(replayedCompletion.ok, false);
+  assert.deepEqual(
+    replayedCompletion.blockers.map((entry) => entry.id),
+    ['verification-repair:repair-link-envelope-invalid']
+  );
+  assert.equal(
+    replayedCompletion.blockers[0].detail,
+    'before_identity'
+  );
+});
+
+test('repair request replay rejects a link that replaced failure identity', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classifyArgs = [
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ];
+  const repairArgs = [
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ];
+  const classified = await run(classifyArgs, deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run(repairArgs, deps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+
+  const linkFile = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'repair-link.json'
+  );
+  const link = JSON.parse(fs.readFileSync(linkFile, 'utf8'));
+  writeJson(linkFile, {
+    ...link,
+    before_identity: {
+      ...link.before_identity,
+      code_sha: 'f'.repeat(40)
+    }
+  });
+
+  const replayed = await run(repairArgs, deps);
+  assert.equal(replayed.ok, false);
+  assert.deepEqual(
+    replayed.blockers.map((entry) => entry.id),
+    ['verification-repair:repair-link-invalid']
+  );
+  assert.equal(replayed.blockers[0].detail, 'code_sha');
 });
 
 test('repair diff accepts lifecycle artifacts but rejects scope escape', () => {

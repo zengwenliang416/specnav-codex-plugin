@@ -56,9 +56,12 @@ case ids.
    ```
 
    Commit the generated baseline artifacts before changing repair source.
-   `repair-start` is replay-safe, requires a clean Git worktree, and binds the
-   task to the exact current code, test, runtime, environment, case, and Kernel
-   fingerprints.
+   `repair-start` is replay-safe, requires a clean Git worktree, and permits
+   the repair only when the current code, test, runtime, environment, case,
+   and Kernel fingerprints still exactly match the original failed attempt.
+   It never replaces the requested link's `before_identity`. If any field
+   drifted, preserve the historical incident and run current verification to
+   create a new failure before requesting another repair.
 5. After the scoped repair is committed and independent spec and quality
    reviews are approved, complete the repair:
 

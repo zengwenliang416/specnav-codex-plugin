@@ -231,13 +231,21 @@ An unchanged-fingerprint retry that later passes is `FLAKY`, not plain PASS.
 A repaired case that passes is `PASS AFTER FIX`. Repeated no-progress attempts
 route to break-loop governance.
 
-`repair-start` is mandatory for product and test defects. It creates a signed
-`in_progress` repair link from a clean Git state before repair edits begin.
-`repair-complete` compares that baseline commit with the reviewed commit,
-ignores only the repair task's own lifecycle artifacts, and rejects every
-changed file outside the approved scope lock. Runtime, environment, Kernel,
-and case-snapshot fingerprints must remain unchanged across that repair
-window.
+`repair-start` is mandatory for product and test defects. It may create a
+signed `in_progress` repair link only when the current code, tests,
+environment, runtime, Kernel, and case snapshot still exactly match the
+original failed attempt. The requested link's `before_identity` is immutable;
+`repair-start` never replaces it with a newer baseline. Any drift blocks with
+`verification-repair:repair-baseline-drift`. A historical failure whose
+identity already drifted must be preserved as an incident, then the current
+version must be verified to create a new current failure.
+
+`repair-complete` compares the original failed commit with the reviewed
+commit, ignores only the repair task's own lifecycle artifacts, and rejects
+every changed file outside the approved scope lock. Replayed started or
+completed envelopes must retain the requested link's immutable lineage.
+Runtime, environment, Kernel, and case-snapshot fingerprints must remain
+unchanged across the repair window.
 
 Retry stays inside the original run. Retest and regression always create new
 runs whose `origin_run_id`, `parent_run_id`, `parent_attempt_id`, and

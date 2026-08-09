@@ -513,6 +513,56 @@ function attemptFingerprint(attempt) {
   };
 }
 
+const FINGERPRINT_FIELDS = Object.freeze([
+  'case_snapshot_hash',
+  'code_sha',
+  'test_sha',
+  'environment_hash',
+  'runtime_version',
+  'kernel_version'
+]);
+
+const REPAIR_LINEAGE_FIELDS = Object.freeze([
+  'schema',
+  'id',
+  'failure_id',
+  'change_id',
+  'development_task_id',
+  'repair_kind',
+  'requested_at',
+  'scope_digest'
+]);
+
+function currentFingerprint(context, value) {
+  return {
+    case_snapshot_hash: context.snapshotValue.snapshot_hash,
+    code_sha: value.codeSha,
+    test_sha: value.testSha,
+    environment_hash: value.environmentHash,
+    runtime_version: context.runtimeStatusValue.runtime_version,
+    kernel_version: kernel.metadata.version
+  };
+}
+
+function fingerprintDrift(expected, actual) {
+  return FINGERPRINT_FIELDS.filter((field) => (
+    expected?.[field] !== actual?.[field]
+  ));
+}
+
+function repairLineageDrift(requested, candidate) {
+  const fields = REPAIR_LINEAGE_FIELDS.filter((field) => (
+    requested?.[field] !== candidate?.[field]
+  ));
+  if (fingerprintDrift(
+    requested?.before_identity,
+    candidate?.before_identity
+  ).length > 0) {
+    fields.push('before_identity');
+  }
+  return fields;
+}
+
 function integrityForAttempt(context, store, attempt) {
   return readRequiredJson(store, path.posix.join(
     'runs',
@@ -1031,6 +1081,9 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         relativeRepairPath(failure.id, 'repair-link.json')
       );
       if (existingLinkValue) {
+        const originalIdentity = attemptFingerprint(
+          initialAttempt(context, store, failure)
+        );
         const existingLink = context.schemaRegistry.validate(
           'repair-link',
           existingLinkValue
@@ -1039,10 +1092,20 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           !existingLink.ok
           || existingLink.value.failure_id !== failure.id
           || existingLink.value.change_id !== failure.change_id
+          || fingerprintDrift(
+            originalIdentity,
+            existingLink.value.before_identity
+          ).length > 0
         ) {
           return blocked(
             'verification-repair:repair-link-invalid',
-            failure.id
+            failure.id,
+            existingLink.ok
+              ? fingerprintDrift(
+                  originalIdentity,
+                  existingLink.value.before_identity
+                ).join(',')
+              : null
           );
         }
         const links = readOptionalJson(store, root.files.repairLinks, []);
@@ -1143,6 +1206,32 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     }
 
     if (action === 'repair-start') {
+      const requested = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-requested-envelope.json'
+      );
+      const originalIdentity = attemptFingerprint(
+        initialAttempt(context, store, failure)
+      );
+      if (
+        !authority.verify(requested).ok
+        || requested.kind !== 'repair_link'
+        || requested.bindings.failure_id !== failure.id
+        || requested.payload.failure_id !== failure.id
+        || requested.payload.change_id !== failure.change_id
+        || requested.payload.status !== 'requested'
+        || fingerprintDrift(
+          originalIdentity,
+          requested.payload.before_identity
+        ).length > 0
+      ) {
+        return blocked(
+          'verification-repair:repair-link-envelope-invalid',
+          failure.id
+        );
+      }
       const existing = readOptionalJson(
         store,
         relativeRepairPath(
@@ -1157,10 +1246,18 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           || existing.bindings.failure_id !== failure.id
           || existing.payload.failure_id !== failure.id
           || existing.payload.status !== 'in_progress'
+          || repairLineageDrift(
+            requested.payload,
+            existing.payload
+          ).length > 0
         ) {
           return blocked(
             'verification-repair:repair-baseline-invalid',
-            failure.id
+            failure.id,
+            repairLineageDrift(
+              requested.payload,
+              existing.payload
+            ).join(',')
           );
         }
         writeJson(
@@ -1180,39 +1277,28 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           fallback_used: false
         };
       }
-      const requested = loadEnvelope(
-        context,
-        store,
-        failure.id,
-        'repair-link-requested-envelope.json'
-      );
-      if (
-        !authority.verify(requested).ok
-        || requested.kind !== 'repair_link'
-        || requested.payload.status !== 'requested'
-      ) {
-        return blocked(
-          'verification-repair:repair-link-envelope-invalid',
-          failure.id
-        );
-      }
       const current = (dependencies.fingerprints || fingerprints)(
         context.projectRoot,
         context.snapshotValue,
         context.runtimeStatusValue,
         context.runtimeAuthority
       );
+      const currentIdentity = currentFingerprint(context, current);
+      const drift = fingerprintDrift(
+        requested.payload.before_identity,
+        currentIdentity
+      );
+      if (drift.length > 0) {
+        return blocked(
+          'verification-repair:repair-baseline-drift',
+          failure.id,
+          drift.join(',')
+        );
+      }
       const baseline = context.schemaRegistry.validate('repair-link', {
         ...requested.payload,
         status: 'in_progress',
-        before_identity: {
-          case_snapshot_hash: context.snapshotValue.snapshot_hash,
-          code_sha: current.codeSha,
-          test_sha: current.testSha,
-          environment_hash: current.environmentHash,
-          runtime_version: context.runtimeStatusValue.runtime_version,
-          kernel_version: kernel.metadata.version
-        }
+        before_identity: requested.payload.before_identity
       });
       if (!baseline.ok) {
         return blocked(
@@ -1258,6 +1344,32 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     }
 
     if (action === 'repair-complete') {
+      const requestedEnvelope = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-requested-envelope.json'
+      );
+      const originalIdentity = attemptFingerprint(
+        initialAttempt(context, store, failure)
+      );
+      if (
+        !authority.verify(requestedEnvelope).ok
+        || requestedEnvelope.kind !== 'repair_link'
+        || requestedEnvelope.bindings.failure_id !== failure.id
+        || requestedEnvelope.payload.failure_id !== failure.id
+        || requestedEnvelope.payload.change_id !== failure.change_id
+        || requestedEnvelope.payload.status !== 'requested'
+        || fingerprintDrift(
+          originalIdentity,
+          requestedEnvelope.payload.before_identity
+        ).length > 0
+      ) {
+        return blocked(
+          'verification-repair:repair-link-envelope-invalid',
+          failure.id
+        );
+      }
       const completedEnvelope = readOptionalJson(
         store,
         relativeRepairPath(
@@ -1272,10 +1384,18 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           || completedEnvelope.bindings.failure_id !== failure.id
           || completedEnvelope.payload.failure_id !== failure.id
           || completedEnvelope.payload.status !== 'completed'
+          || repairLineageDrift(
+            requestedEnvelope.payload,
+            completedEnvelope.payload
+          ).length > 0
         ) {
           return blocked(
             'verification-repair:repair-link-envelope-invalid',
-            failure.id
+            failure.id,
+            repairLineageDrift(
+              requestedEnvelope.payload,
+              completedEnvelope.payload
+            ).join(',')
           );
         }
         const links = readOptionalJson(store, root.files.repairLinks, []);
@@ -1305,10 +1425,18 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         !authority.verify(startedEnvelope).ok
         || startedEnvelope.kind !== 'repair_link'
         || startedEnvelope.payload.status !== 'in_progress'
+        || repairLineageDrift(
+          requestedEnvelope.payload,
+          startedEnvelope.payload
+        ).length > 0
       ) {
         return blocked(
           'verification-repair:repair-baseline-invalid',
-          failure.id
+          failure.id,
+          repairLineageDrift(
+            requestedEnvelope.payload,
+            startedEnvelope.payload
+          ).join(',')
         );
       }
       const currentLink = startedEnvelope.payload;
@@ -1684,7 +1812,10 @@ if (require.main === module) {
 
 module.exports = {
   attemptFact,
+  attemptFingerprint,
   evaluateState,
+  fingerprintDrift,
+  repairLineageDrift,
   run,
   scopeProjection,
   trustAuthority,
