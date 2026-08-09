@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "full_rerun": false,
+  "required_cases": [
+    "CASE-01",
+    "CASE-02",
+    "CASE-03",
+    "CASE-04",
+    "CASE-05",
+    "CASE-06",
+    "CASE-07",
+    "CASE-08"
+  ],
+  "baseline_cases": [
+    "CASE-01",
+    "CASE-02",
+    "CASE-03",
+    "CASE-04",
+    "CASE-05",
+    "CASE-06",
+    "CASE-07",
+    "CASE-08"
+  ],
+  "repaired_cases": [
+    "CASE-03"
+  ],
+  "impacted_cases": [],
+  "stale_cases": [
+    "CASE-03"
+  ],
+  "cases_to_rerun": [
+    {
+      "case_id": "CASE-01",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-02",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-03",
+      "reasons": [
+        "freshness:code_sha:current-mismatch",
+        "freshness:environment_hash:current-mismatch",
+        "freshness:kernel_version:current-mismatch",
+        "freshness:runtime_version:current-mismatch",
+        "freshness:test_sha:current-mismatch",
+        "policy-baseline",
+        "repaired-case"
+      ]
+    },
+    {
+      "case_id": "CASE-04",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-05",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-06",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-07",
+      "reasons": [
+        "policy-baseline"
+      ]
+    },
+    {
+      "case_id": "CASE-08",
+      "reasons": [
+        "policy-baseline"
+      ]
+    }
+  ],
+  "reasons_by_case": {
+    "CASE-01": [
+      "policy-baseline"
+    ],
+    "CASE-02": [
+      "policy-baseline"
+    ],
+    "CASE-03": [
+      "freshness:code_sha:current-mismatch",
+      "freshness:environment_hash:current-mismatch",
+      "freshness:kernel_version:current-mismatch",
+      "freshness:runtime_version:current-mismatch",
+      "freshness:test_sha:current-mismatch",
+      "policy-baseline",
+      "repaired-case"
+    ],
+    "CASE-04": [
+      "policy-baseline"
+    ],
+    "CASE-05": [
+      "policy-baseline"
+    ],
+    "CASE-06": [
+      "policy-baseline"
+    ],
+    "CASE-07": [
+      "policy-baseline"
+    ],
+    "CASE-08": [
+      "policy-baseline"
+    ]
+  },
+  "changed_files": [],
+  "unmapped_changes": [],
+  "domains_to_rerun": [
+    "facticity",
+    "static",
+    "unit",
+    "redteam",
+    "e2e",
+    "sensory"
+  ],
+  "codegraph_refs": [],
+  "policy_refs": [
+    "verify/rerun-policy.json#mandatory_baseline_case_ids"
+  ],
+  "warnings": [],
+  "blockers": [],
+  "change": "verification-2-0",
+  "invalidated_entries": [],
+  "blocker_ids": []
+}
