@@ -68,6 +68,27 @@ function renderMetric(label, value, detail = '') {
   </div>`;
 }
 
+function renderThreeLineTable({
+  ariaLabel,
+  caption,
+  columns,
+  note,
+  rows,
+  tableClass = ''
+}) {
+  const className = ['three-line-table', tableClass].filter(Boolean).join(' ');
+  return `<div class="table-block">
+    <div class="table-scroll" role="region" aria-label="${ariaLabel}" tabindex="0">
+      <table class="${className}">
+        <caption>${caption}</caption>
+        <thead><tr>${columns.map((column) => `<th scope="col">${column}</th>`).join('')}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p class="table-note"><strong>Note.</strong> ${note}</p>
+  </div>`;
+}
+
 function renderDomainTable(domains) {
   const rows = Object.entries(DOMAIN_LABELS).map(([domain, label]) => {
     const status = domains[domain];
@@ -77,13 +98,14 @@ function renderDomainTable(domains) {
       <td>${labelForStatus(status)} result derived from current case readings.</td>
     </tr>`;
   }).join('');
-  return `<div class="table-scroll" role="region" aria-label="Six-domain verification status table" tabindex="0">
-    <table class="domain-table">
-      <caption>Six-domain verification status</caption>
-      <thead><tr><th scope="col">Domain</th><th scope="col">Status</th><th scope="col">Authority</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  return renderThreeLineTable({
+    ariaLabel: 'Six-domain verification status table',
+    caption: 'Table 1. Six-domain verification status',
+    columns: ['Domain', 'Status', 'Authority'],
+    note: 'Domain status is derived from validated readings in the current report model.',
+    rows,
+    tableClass: 'domain-table'
+  });
 }
 
 function renderBlockers(blockers, safe, emptyMessage = (
@@ -180,6 +202,7 @@ module.exports = {
   renderMetric,
   renderRepairTimeline,
   renderReferenceList,
+  renderThreeLineTable,
   statusBadge,
   statusClass
 };

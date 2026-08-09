@@ -13,6 +13,7 @@ const {
   DOMAIN_LABELS,
   labelForStatus,
   renderBlockers,
+  renderThreeLineTable,
   statusBadge
 } = require('./report-components');
 const {
@@ -150,7 +151,7 @@ function renderEvidence(entry, safe) {
   </article>`;
 }
 
-function renderResult(result, safe) {
+function renderResult(result, safe, tableNumber) {
   const caseId = safe.text(result.case_id, 'result_case_id');
   const command = safe.text(
     [result.command.entrypoint, ...result.command.args].filter(Boolean).join(' '),
@@ -183,19 +184,26 @@ function renderResult(result, safe) {
   if ([runs, attempts, readings, evidence].some((items) => items.includes(null)) || blockers === null) {
     return null;
   }
+  const readingsTable = renderThreeLineTable({
+    ariaLabel: `Readings for case ${caseId}`,
+    caption: `Table ${tableNumber}. Readings for case ${caseId}`,
+    columns: ['Reading', 'Domain', 'Expected', 'Actual', 'Oracle', 'Verdict'],
+    note: 'Expected values, actual values, oracle identities, and verdicts are projected from immutable reading artifacts.',
+    rows: readings.join('')
+  });
   return `<section class="case-result" id="result-${caseId}" data-case-result>
     <header><div><p class="eyebrow">Case result</p><h2><code>${caseId}</code></h2><p><code>${command}</code></p></div>${statusBadge(result.status)}</header>
     <div class="result-summary"><span>Freshness ${statusBadge(result.freshness)}</span><span>${result.failures.length} failure(s)</span><span>${result.repairs.length} repair(s)</span></div>
     <section><h3>Runs</h3><ol class="history-list">${runs.join('')}</ol></section>
     <section><h3>Attempts</h3><ol class="history-list">${attempts.join('')}</ol></section>
-    <section><h3>Readings</h3><div class="table-scroll" role="region" aria-label="Readings for case ${caseId}" tabindex="0"><table><caption>Readings for case ${caseId}</caption><thead><tr><th scope="col">Reading</th><th scope="col">Domain</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Oracle</th><th scope="col">Verdict</th></tr></thead><tbody>${readings.join('')}</tbody></table></div></section>
+    <section><h3>Readings</h3>${readingsTable}</section>
     <section><h3>Evidence</h3><div class="evidence-grid">${evidence.join('')}</div></section>
     <section><h3>Case blockers</h3>${blockers}</section>
   </section>`;
 }
 
 function renderResultsBody(model, safe) {
-  const results = model.results.map((entry) => renderResult(entry, safe));
+  const results = model.results.map((entry, index) => renderResult(entry, safe, index + 1));
   const index = model.results.map((entry) => {
     const id = safe.text(entry.case_id, 'result_index_case_id');
     const target = safe.attribute(`result-${entry.case_id}`, 'result_index_target');

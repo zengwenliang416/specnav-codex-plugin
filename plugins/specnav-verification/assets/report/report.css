@@ -351,47 +351,74 @@ code {
   overflow-x: auto;
 }
 
-table {
+.table-block {
+  margin: 16px 0 0;
+}
+
+.three-line-table {
   width: 100%;
-  border-top: 2px solid var(--ink);
-  border-bottom: 2px solid var(--ink);
+  border-top: 1.5pt solid #111;
+  border-right: 0;
+  border-bottom: 1.5pt solid #111;
+  border-left: 0;
   border-collapse: collapse;
+  background: transparent;
   font-size: 0.875rem;
 }
 
-caption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+.three-line-table caption {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0 0 8px;
+  overflow: visible;
+  clip: auto;
+  caption-side: top;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
 }
 
-th,
-td {
+.three-line-table th,
+.three-line-table td {
   padding: 12px;
   border: 0;
   text-align: left;
   vertical-align: top;
 }
 
-thead {
-  border-bottom: 1px solid var(--border-strong);
+.three-line-table thead {
+  border-bottom: 0.75pt solid #111;
 }
 
-thead th {
+.three-line-table thead th {
   background: transparent;
-  color: var(--muted);
-  font-size: 0.75rem;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: none;
 }
 
-tbody tr {
+.three-line-table tbody tr {
   border: 0;
 }
 
-tbody th {
+.three-line-table tbody th {
   width: 18%;
+}
+
+.table-note {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.table-note strong {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .blocker-list {
@@ -885,24 +912,33 @@ tbody th {
 
   .section,
   .verdict-band,
-  table,
   .blocker-list li {
     break-inside: avoid;
   }
 
-  table {
+  .three-line-table {
     border-top: 1.5pt solid #000;
     border-bottom: 1.5pt solid #000;
   }
 
-  thead {
+  .three-line-table thead {
+    display: table-header-group;
     border-bottom: 0.75pt solid #000;
   }
 
-  th,
-  td,
-  tbody tr {
+  .three-line-table th,
+  .three-line-table td,
+  .three-line-table tbody tr {
     border: 0;
+  }
+
+  .three-line-table tr,
+  .table-note {
+    break-inside: avoid;
+  }
+
+  .table-note {
+    color: #000;
   }
 
   a {

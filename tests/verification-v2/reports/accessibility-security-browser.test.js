@@ -229,10 +229,16 @@ async function assertThreeLineTables(page, pageName) {
       const style = getComputedStyle(table);
       const head = table.querySelector('thead');
       const headStyle = getComputedStyle(head);
+      const captionStyle = getComputedStyle(table.querySelector('caption'));
       const cells = [...table.querySelectorAll('th, td')];
       const rows = [...table.querySelectorAll('tbody tr')];
       return {
         bottom: [style.borderBottomStyle, style.borderBottomWidth],
+        caption: [
+          captionStyle.position,
+          captionStyle.textAlign,
+          captionStyle.overflow
+        ],
         cellBordersAbsent: cells.every((cell) => {
           const cellStyle = getComputedStyle(cell);
           return [
@@ -258,6 +264,11 @@ async function assertThreeLineTables(page, pageName) {
     assert.deepEqual(facts.top, ['solid', '2px'], `${pageName}:table-${index}:top`);
     assert.deepEqual(facts.header, ['solid', '1px'], `${pageName}:table-${index}:header`);
     assert.deepEqual(facts.bottom, ['solid', '2px'], `${pageName}:table-${index}:bottom`);
+    assert.deepEqual(
+      facts.caption,
+      ['static', 'center', 'visible'],
+      `${pageName}:table-${index}:caption`
+    );
     assert.equal(facts.cellBordersAbsent, true, `${pageName}:table-${index}:cells`);
     assert.equal(facts.rowBordersAbsent, true, `${pageName}:table-${index}:rows`);
   }
