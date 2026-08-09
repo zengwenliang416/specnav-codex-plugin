@@ -9,7 +9,8 @@ const test = require('node:test');
 
 const {
   run,
-  validateRepairDiff
+  validateRepairDiff,
+  repairCompletionFingerprints
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-repair-loop');
 const {
   canonicalJson,
@@ -566,5 +567,56 @@ test('repair diff accepts lifecycle artifacts but rejects scope escape', () => {
   assert.deepEqual(
     rejected.blockers.map((entry) => entry.id),
     ['verification-repair:scope-diff-outside-lock']
+  );
+});
+
+test('repair completion fingerprints allow only the named review receipts', () => {
+  const root = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-repair-fingerprint-'
+  ));
+  fs.mkdirSync(path.join(root, 'tests'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'plugins', 'specnav-verification'), {
+    recursive: true
+  });
+  fs.mkdirSync(path.join(root, 'openspec', 'changes', 'change-v2'), {
+    recursive: true
+  });
+  fs.writeFileSync(path.join(root, 'tests', 'repair.test.js'), 'ok\n');
+  fs.writeFileSync(
+    path.join(root, 'plugins', 'specnav-verification', 'runtime.js'),
+    'ok\n'
+  );
+  git(root, ['init']);
+  git(root, ['config', 'user.email', 'specnav@example.test']);
+  git(root, ['config', 'user.name', 'SpecNav Test']);
+  git(root, ['add', '.']);
+  git(root, ['commit', '-m', 'repair source']);
+
+  const specReview = 'openspec/changes/change-v2/spec-review.json';
+  const qualityReview = 'openspec/changes/change-v2/quality-review.json';
+  fs.writeFileSync(path.join(root, specReview), '{}\n');
+  fs.writeFileSync(path.join(root, qualityReview), '{}\n');
+  const accepted = repairCompletionFingerprints(
+    root,
+    { snapshot_hash: 'a'.repeat(64) },
+    { runtime_version: '2.0.0-alpha.2', runtime_root: '/runtime' },
+    { digest: 'b'.repeat(64) },
+    [specReview, qualityReview]
+  );
+  assert.equal(accepted.codeSha, git(root, ['rev-parse', 'HEAD']));
+  assert.match(accepted.testSha, /^[a-f0-9]{64}$/);
+  assert.match(accepted.environmentHash, /^[a-f0-9]{64}$/);
+
+  fs.writeFileSync(path.join(root, 'tests', 'repair.test.js'), 'dirty\n');
+  assert.throws(
+    () => repairCompletionFingerprints(
+      root,
+      { snapshot_hash: 'a'.repeat(64) },
+      { runtime_version: '2.0.0-alpha.2', runtime_root: '/runtime' },
+      { digest: 'b'.repeat(64) },
+      [specReview, qualityReview]
+    ),
+    /verification-production:dirty-worktree/
   );
 });

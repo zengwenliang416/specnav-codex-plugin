@@ -10,7 +10,11 @@ specnav_verification_emit_assertions() {
   if [[ -z "${SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE:-}" ]]; then
     return 0
   fi
-  if [[ "${SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID:-}" != "$$" ]]; then
+  if [[ "${SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID:-}" != "$$" ]] \
+    || [[ "$BASH_SUBSHELL" -ne 0 ]]; then
+    return 0
+  fi
+  if [[ "${SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED:-0}" == "1" ]]; then
     return 0
   fi
   if [[ -z "${SPECNAV_VERIFICATION_ASSERTION_IDS:-}" ]]; then
@@ -44,4 +48,9 @@ fs.writeFileSync(file, `${records.join('\n')}\n`, {
   mode: 0o600
 });
 NODE
+  local emit_status=$?
+  if [[ "$emit_status" -eq 0 ]]; then
+    SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED=1
+  fi
+  return "$emit_status"
 }

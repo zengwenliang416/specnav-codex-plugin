@@ -3,6 +3,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 
 const kernel = require('../kernel');
@@ -139,6 +140,82 @@ function gitDiff(projectRoot, before, after) {
       const [status, ...parts] = line.split('\t');
       return { status, file: parts.at(-1) };
     });
+}
+
+function gitOutput(projectRoot, args) {
+  const result = spawnSync('git', args, {
+    cwd: projectRoot,
+    encoding: 'utf8',
+    maxBuffer: 32 * 1024 * 1024
+  });
+  if (result.status !== 0) {
+    throw new Error(result.stderr.trim() || `git ${args.join(' ')} failed`);
+  }
+  return result.stdout;
+}
+
+function repairCompletionFingerprints(
+  projectRoot,
+  snapshot,
+  runtimeStatus,
+  runtimeAuthority,
+  allowedDirtyFiles
+) {
+  const allowed = new Set(allowedDirtyFiles);
+  const status = gitOutput(projectRoot, [
+    'status',
+    '--porcelain=v1',
+    '--untracked-files=all'
+  ]);
+  const dirty = status
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  const outsideReview = dirty.filter((file) => (
+    file.includes(' -> ') || !allowed.has(file)
+  ));
+  if (outsideReview.length > 0) {
+    const error = new Error('verification-production:dirty-worktree');
+    error.blockers = [blocker(
+      'verification-production:dirty-worktree',
+      projectRoot,
+      outsideReview.slice(0, 20).join(',')
+    )];
+    throw error;
+  }
+  const head = gitOutput(projectRoot, ['rev-parse', 'HEAD']).trim();
+  if (!/^[a-f0-9]{40}$/.test(head)) {
+    throw new Error('verification-production:git-head-invalid');
+  }
+  const testInventory = gitOutput(projectRoot, [
+    'ls-tree',
+    '-r',
+    'HEAD',
+    '--',
+    'tests',
+    'plugins/specnav-verification'
+  ]);
+  const testSha = crypto.createHash('sha256')
+    .update(testInventory)
+    .update(snapshot.snapshot_hash)
+    .digest('hex');
+  const environmentHash = crypto.createHash('sha256')
+    .update(JSON.stringify({
+      platform: process.platform,
+      arch: process.arch,
+      node: process.version,
+      runtime_version: runtimeStatus.runtime_version,
+      runtime_root: runtimeStatus.runtime_root,
+      runtime_authority_hash: runtimeAuthority?.digest || null,
+      kernel_version: kernel.metadata.version
+    }))
+    .digest('hex');
+  return {
+    codeSha: head,
+    testSha,
+    environmentHash
+  };
 }
 
 function validateRepairDiff({
@@ -1235,11 +1312,36 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         );
       }
       const currentLink = startedEnvelope.payload;
-      const current = (dependencies.fingerprints || fingerprints)(
+      const specReviewArg = argValue(args, '--spec-review');
+      const qualityReviewArg = argValue(args, '--quality-review');
+      const specReviewFile = resolveChangeFile(
+        context,
+        specReviewArg,
+        'verification-repair:spec-review-required'
+      );
+      const qualityReviewFile = resolveChangeFile(
+        context,
+        qualityReviewArg,
+        'verification-repair:quality-review-required'
+      );
+      const reviewPaths = [specReviewFile, qualityReviewFile].map((file) => (
+        path.posix.join(
+          'openspec',
+          'changes',
+          context.changeId,
+          file
+        )
+      ));
+      const current = (
+        dependencies.repairFingerprints
+        || dependencies.fingerprints
+        || repairCompletionFingerprints
+      )(
         context.projectRoot,
         context.snapshotValue,
         context.runtimeStatusValue,
-        context.runtimeAuthority
+        context.runtimeAuthority,
+        reviewPaths
       );
       const after = {
         case_snapshot_hash: context.snapshotValue.snapshot_hash,
@@ -1284,7 +1386,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         reviewReceipt(
           context,
           changeStore,
-          argValue(args, '--spec-review'),
+          specReviewArg,
           'spec-review',
           currentLink,
           after
@@ -1292,7 +1394,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         reviewReceipt(
           context,
           changeStore,
-          argValue(args, '--quality-review'),
+          qualityReviewArg,
           'quality-review',
           currentLink,
           after
@@ -1586,5 +1688,6 @@ module.exports = {
   run,
   scopeProjection,
   trustAuthority,
-  validateRepairDiff
+  validateRepairDiff,
+  repairCompletionFingerprints
 };
