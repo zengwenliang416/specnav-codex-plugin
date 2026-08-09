@@ -61,6 +61,71 @@ function writeTaskContext(options, context) {
   return [{ status: exists ? 'updated' : 'created', source: 'generated:task-context', target }];
 }
 
+function appendTaskGraphNode(graph, taskId) {
+  const value = graph && typeof graph === 'object' && !Array.isArray(graph)
+    ? graph
+    : { schema_version: 1, nodes: [], edges: [] };
+  const nodes = Array.isArray(value.nodes) ? [...value.nodes] : [];
+  const hasTask = nodes.some((node) => (
+    node === taskId
+    || (
+      node
+      && typeof node === 'object'
+      && !Array.isArray(node)
+      && node.id === taskId
+    )
+  ));
+  if (!hasTask) nodes.push(taskId);
+  return {
+    ...value,
+    schema_version: value.schema_version || 1,
+    nodes,
+    edges: Array.isArray(value.edges) ? value.edges : []
+  };
+}
+
+function writeJsonAtomic(target, value) {
+  const temporary = `${target}.tmp-${process.pid}`;
+  fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`);
+  fs.renameSync(temporary, target);
+}
+
+function writeTaskGraph(options, context) {
+  const taskId = context.values.SPECNAV_TASK_ID;
+  const developmentDir = path.join(context.changeDir, 'development');
+  const manifestPath = path.join(developmentDir, 'manifest.json');
+  const graphPath = path.join(developmentDir, 'task-graph.json');
+  const useManifest = fs.existsSync(manifestPath);
+  const target = useManifest ? manifestPath : graphPath;
+
+  let current = null;
+  if (fs.existsSync(target)) {
+    current = JSON.parse(fs.readFileSync(target, 'utf8'));
+  }
+  const next = useManifest
+    ? {
+      ...current,
+      task_graph: appendTaskGraphNode(current?.task_graph, taskId)
+    }
+    : appendTaskGraphNode(current, taskId);
+
+  if (options.dryRun) {
+    return [{
+      status: fs.existsSync(target) ? 'would-update' : 'would-create',
+      source: 'generated:task-graph',
+      target
+    }];
+  }
+
+  fs.mkdirSync(developmentDir, { recursive: true });
+  writeJsonAtomic(target, next);
+  return [{
+    status: current ? 'updated' : 'created',
+    source: 'generated:task-graph',
+    target
+  }];
+}
+
 function writeCodeGraphPlan(options, context) {
   const result = codegraphPlan.plan({
     projectRoot: context.root,
@@ -111,6 +176,7 @@ process.exit(scaffold.runScaffold({
   afterCopy(options, context) {
     return [
       ...writeTaskContext(options, context),
+      ...writeTaskGraph(options, context),
       ...writeCodeGraphPlan(options, context)
     ];
   }

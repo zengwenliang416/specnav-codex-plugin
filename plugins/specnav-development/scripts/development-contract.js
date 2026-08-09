@@ -147,6 +147,23 @@ const TASK_HANDOFF_FILES = [...TASK_ENTRY_FILES, 'acceptance.json', 'report.md',
 const TASK_CONTEXT_ARRAYS = ['must_read', 'allowed_files', 'non_goals', 'expected_evidence', 'unsafe_assumptions'];
 const NON_EMPTY_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files', 'non_goals', 'expected_evidence']);
 const PATH_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files']);
+const REPAIR_TASK_SCHEMA = 'specnav.development.repair-task.v1';
+const REPAIR_CLASSIFICATIONS = new Set(['product_defect', 'test_defect']);
+const REPAIR_OWNERSHIP = Object.freeze({
+  evidence: 'verification',
+  closure: 'verification',
+  repair: 'development',
+  reviews: 'development',
+  transitions: 'core',
+  break_loop: 'core'
+});
+const REPAIR_PACKET_ARTIFACTS = new Set([
+  'brief.md',
+  'context.json',
+  'report.md',
+  'spec-review.md',
+  'quality-review.md'
+]);
 
 const LAYER_ONLY_TASKS = new Set([
   'build database',
@@ -2043,6 +2060,149 @@ function listTaskDirs(developmentDir) {
   }
 }
 
+function taskGraphNodeIds(graph) {
+  if (!isPlainObject(graph) || !Array.isArray(graph.nodes) || graph.nodes.length === 0) {
+    return null;
+  }
+
+  const ids = [];
+  for (const node of graph.nodes) {
+    const id = typeof node === 'string'
+      ? node
+      : (isPlainObject(node) ? node.id : null);
+    if (!isCleanString(id) || !isValidTaskId(id)) return null;
+    ids.push(id);
+  }
+  return unique(ids);
+}
+
+function plannedTaskIds(developmentDir, manifest) {
+  if (manifest.present) {
+    if (!manifest.ok) return null;
+    return taskGraphNodeIds(manifest.value.task_graph);
+  }
+
+  const parsed = readJsonFile(path.join(developmentDir, 'task-graph.json'));
+  if (!parsed.ok) return null;
+  return taskGraphNodeIds(parsed.value);
+}
+
+function validateRepairIncident(changeDir, activeChange, dirName, context) {
+  const relativeTaskPath = artifactPath(activeChange, path.join('tasks', dirName), true);
+  const blockers = [];
+  const value = context.value;
+
+  if (!context.ok || !isPlainObject(value)) {
+    blockers.push(`invalid-repair-incident-context:${dirName}:${context.status}`);
+  } else {
+    if (value.schema !== REPAIR_TASK_SCHEMA) blockers.push(`invalid-repair-incident:${dirName}:schema`);
+    if (value.id !== dirName) blockers.push(`invalid-repair-incident:${dirName}:id`);
+    if (value.change_id !== activeChange) blockers.push(`invalid-repair-incident:${dirName}:change_id`);
+    if (!REPAIR_CLASSIFICATIONS.has(value.classification)) {
+      blockers.push(`invalid-repair-incident:${dirName}:classification`);
+    }
+    if (value.owner !== 'development') blockers.push(`invalid-repair-incident:${dirName}:owner`);
+    if (value.packet_path !== `development/tasks/${dirName}`) {
+      blockers.push(`invalid-repair-incident:${dirName}:packet_path`);
+    }
+    if (
+      !Array.isArray(value.packet_artifacts)
+      || value.packet_artifacts.length !== REPAIR_PACKET_ARTIFACTS.size
+      || new Set(value.packet_artifacts).size !== REPAIR_PACKET_ARTIFACTS.size
+      || value.packet_artifacts.some((name) => !REPAIR_PACKET_ARTIFACTS.has(name))
+    ) {
+      blockers.push(`invalid-repair-incident:${dirName}:packet_artifacts`);
+    }
+    if (
+      !Array.isArray(value.required_reviews)
+      || value.required_reviews.length !== 2
+      || new Set(value.required_reviews).size !== 2
+      || !value.required_reviews.includes('spec-review')
+      || !value.required_reviews.includes('quality-review')
+    ) {
+      blockers.push(`invalid-repair-incident:${dirName}:required_reviews`);
+    }
+    if (
+      !isPlainObject(value.ownership)
+      || Object.entries(REPAIR_OWNERSHIP).some(([field, owner]) => value.ownership[field] !== owner)
+    ) {
+      blockers.push(`invalid-repair-incident:${dirName}:ownership`);
+    }
+    if (
+      !isPlainObject(value.frozen_failure)
+      || !isCleanString(value.frozen_failure.failure_packet_id)
+      || !isCleanString(value.frozen_failure.run_id)
+      || !isCleanString(value.frozen_failure.case_id)
+      || !isCleanString(value.frozen_failure.attempt_id)
+    ) {
+      blockers.push(`invalid-repair-incident:${dirName}:frozen_failure`);
+    }
+  }
+
+  const failureId = isPlainObject(value?.frozen_failure)
+    && isCleanString(value.frozen_failure.failure_packet_id)
+    ? value.frozen_failure.failure_packet_id
+    : null;
+  const repairStatePath = failureId
+    ? path.join(changeDir, 'verify', 'repairs', failureId, 'repair-state.json')
+    : null;
+  const repairState = repairStatePath ? readJsonFile(repairStatePath) : null;
+  const lifecycleStatus = repairState?.ok && isPlainObject(repairState.value)
+    ? repairState.value.status || 'unknown'
+    : 'missing';
+
+  return {
+    task_id: dirName,
+    kind: 'verification_repair_incident',
+    schema: value?.schema || null,
+    path: relativeTaskPath,
+    ok: blockers.length === 0,
+    blockers: unique(blockers),
+    classification: value?.classification || null,
+    owner: value?.owner || null,
+    incident_status: value?.status || null,
+    failure_id: failureId,
+    lifecycle_status: lifecycleStatus,
+    open: lifecycleStatus !== 'closed',
+    governed_by: 'verification-repair-loop'
+  };
+}
+
+function classifyTaskDirs(changeDir, developmentDir, activeChange, taskDirs, plannedIds) {
+  const planned = new Set(plannedIds || []);
+  const present = new Set(taskDirs || []);
+  const tasks = [];
+  const repairIncidents = [];
+  const blockers = [];
+
+  for (const taskId of planned) {
+    if (!present.has(taskId)) blockers.push(`missing-planned-development-task:${taskId}`);
+  }
+
+  for (const dirName of taskDirs || []) {
+    if (planned.has(dirName)) {
+      tasks.push(dirName);
+      continue;
+    }
+
+    const context = readJsonFile(path.join(developmentDir, 'tasks', dirName, 'context.json'));
+    if (context.ok && isPlainObject(context.value) && context.value.schema === REPAIR_TASK_SCHEMA) {
+      const incident = validateRepairIncident(changeDir, activeChange, dirName, context);
+      repairIncidents.push(incident);
+      blockers.push(...incident.blockers);
+      continue;
+    }
+
+    blockers.push(`unplanned-development-task-dir:${dirName}`);
+  }
+
+  return {
+    tasks,
+    repair_incidents: repairIncidents,
+    blockers: unique(blockers)
+  };
+}
+
 function validateDevelopment(root = lib.projectRoot(), options = {}) {
   const projectRoot = path.resolve(root);
   const mode = VALID_MODES.has(options.mode) ? options.mode : DEFAULT_MODE;
@@ -2063,7 +2223,8 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
       codegraph: null,
       prototype,
       artifacts: [],
-      tasks: []
+      tasks: [],
+      repair_incidents: []
     };
   }
 
@@ -2077,6 +2238,7 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
 
   const artifacts = [];
   const tasks = [];
+  const repairIncidents = [];
   const blockers = [];
   const approvalBinding = validatePrototypeApprovalBinding(projectRoot, activeChange);
   const requiredReferences = requiredSourcePaths(activeChange, approvalBinding.approved_source_path);
@@ -2111,7 +2273,20 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   } else if (taskDirs.length === 0) {
     blockers.push('missing-development-task-dir');
   } else {
-    for (const dirName of taskDirs) {
+    const plannedIds = plannedTaskIds(developmentDir, manifest);
+    if (plannedIds === null) {
+      blockers.push('development-task-ownership:task-graph-unavailable');
+    }
+    const classified = classifyTaskDirs(
+      changeDir,
+      developmentDir,
+      activeChange,
+      taskDirs,
+      plannedIds
+    );
+    blockers.push(...classified.blockers);
+    repairIncidents.push(...classified.repair_incidents);
+    for (const dirName of classified.tasks) {
       tasks.push(validateTaskDir(
         projectRoot,
         changeDir,
@@ -2176,7 +2351,8 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
     codegraph,
     prototype,
     artifacts,
-    tasks
+    tasks,
+    repair_incidents: repairIncidents
   };
 }
 
@@ -2204,6 +2380,14 @@ function markdown(result) {
   for (const task of result.tasks) {
     lines.push(`| ${task.task_id} | ${task.ok ? 'pass' : 'blocked'} | ${task.blockers.join('<br>') || '-'} |`);
   }
+  if (Array.isArray(result.repair_incidents) && result.repair_incidents.length > 0) {
+    lines.push('');
+    lines.push('| Repair Incident | Classification | Lifecycle | Owner | Contract |');
+    lines.push('| --- | --- | --- | --- | --- |');
+    for (const incident of result.repair_incidents) {
+      lines.push(`| ${incident.task_id} | ${incident.classification || '-'} | ${incident.lifecycle_status} | ${incident.governed_by} | ${incident.ok ? 'valid' : incident.blockers.join('<br>')} |`);
+    }
+  }
   return `${lines.join('\n')}\n`;
 }
 
@@ -2218,7 +2402,17 @@ function toCompact(result) {
     ...(result.light_format ? { light_format: result.light_format } : {}),
     active_change: result.active_change,
     blockers: result.blockers,
-    warnings: result.warnings || []
+    warnings: result.warnings || [],
+    task_count: Array.isArray(result.tasks) ? result.tasks.length : 0,
+    repair_incidents: Array.isArray(result.repair_incidents)
+      ? result.repair_incidents.map((incident) => ({
+        task_id: incident.task_id,
+        classification: incident.classification,
+        lifecycle_status: incident.lifecycle_status,
+        open: incident.open,
+        governed_by: incident.governed_by
+      }))
+      : []
   };
 }
 
@@ -2266,7 +2460,8 @@ function main() {
       codegraph: null,
       prototype: null,
       artifacts: [],
-      tasks: []
+      tasks: [],
+      repair_incidents: []
     };
     process.stdout.write(args.json
       ? (args.verbose ? `${JSON.stringify(result, null, 2)}\n` : `${JSON.stringify(toCompact(result))}\n`)

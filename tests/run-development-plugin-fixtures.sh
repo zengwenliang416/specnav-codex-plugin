@@ -894,6 +894,98 @@ jq -e '.mode == "handoff"' "$TMP_DIR/happy-development.json" >/dev/null
 jq -e '.active_change == "add-dashboard"' "$TMP_DIR/happy-development.json" >/dev/null
 jq -e '.prototype.ok == true' "$TMP_DIR/happy-development.json" >/dev/null
 jq -e '.tasks[] | select(.task_id == "001-dashboard-summary" and .ok == true)' "$TMP_DIR/happy-development.json" >/dev/null
+jq -e '(.tasks | length) == 1 and (.repair_incidents | length) == 0' "$TMP_DIR/happy-development.json" >/dev/null
+
+REPAIR_INCIDENT_PROJECT="$TMP_DIR/repair-incident-project"
+cp -R "$HAPPY_PROJECT" "$REPAIR_INCIDENT_PROJECT"
+REPAIR_TASK_ID="900-verification-repair-fixture"
+REPAIR_FAILURE_ID="failure-repair-fixture"
+REPAIR_TASK_DIR="$REPAIR_INCIDENT_PROJECT/openspec/changes/add-dashboard/development/tasks/$REPAIR_TASK_ID"
+REPAIR_STATE_DIR="$REPAIR_INCIDENT_PROJECT/openspec/changes/add-dashboard/verify/repairs/$REPAIR_FAILURE_ID"
+mkdir -p "$REPAIR_TASK_DIR" "$REPAIR_STATE_DIR"
+cat >"$REPAIR_TASK_DIR/context.json" <<JSON
+{
+  "schema": "specnav.development.repair-task.v1",
+  "id": "$REPAIR_TASK_ID",
+  "change_id": "add-dashboard",
+  "goal": "Repair test_defect for CASE-03.",
+  "classification": "test_defect",
+  "owner": "development",
+  "status": "requested",
+  "packet_path": "development/tasks/$REPAIR_TASK_ID",
+  "packet_artifacts": [
+    "brief.md",
+    "context.json",
+    "report.md",
+    "spec-review.md",
+    "quality-review.md"
+  ],
+  "required_reviews": ["spec-review", "quality-review"],
+  "ownership": {
+    "evidence": "verification",
+    "closure": "verification",
+    "repair": "development",
+    "reviews": "development",
+    "transitions": "core",
+    "break_loop": "core"
+  },
+  "frozen_failure": {
+    "failure_packet_id": "$REPAIR_FAILURE_ID",
+    "run_id": "run-repair-fixture",
+    "case_id": "CASE-03",
+    "attempt_id": "attempt-repair-fixture"
+  }
+}
+JSON
+cat >"$REPAIR_STATE_DIR/repair-state.json" <<'JSON'
+{
+  "ok": false,
+  "status": "blocked",
+  "label": "blocked",
+  "history": [],
+  "transition_proposal": null,
+  "blockers": [
+    {
+      "id": "verification-repair-loop:repair-baseline-invalid",
+      "artifact": "repair-fixture",
+      "detail": "before_identity"
+    }
+  ]
+}
+JSON
+run_json "$REPAIR_INCIDENT_PROJECT" "$TMP_DIR/repair-incident.json" 0
+jq -e '.ok == true and (.tasks | length == 1) and (.repair_incidents | length == 1)' \
+  "$TMP_DIR/repair-incident.json" >/dev/null
+jq -e --arg task "$REPAIR_TASK_ID" '
+  .repair_incidents[0]
+  | .task_id == $task
+    and .classification == "test_defect"
+    and .lifecycle_status == "blocked"
+    and .open == true
+    and .governed_by == "verification-repair-loop"
+' "$TMP_DIR/repair-incident.json" >/dev/null
+if jq -e --arg task "$REPAIR_TASK_ID" '
+  .blockers[]
+  | select(startswith("task-ledger-missing-status:" + $task))
+' "$TMP_DIR/repair-incident.json" >/dev/null; then
+  echo "repair incident was incorrectly governed by the standard task ledger" >&2
+  exit 1
+fi
+
+UNPLANNED_TASK_PROJECT="$TMP_DIR/unplanned-task-project"
+cp -R "$HAPPY_PROJECT" "$UNPLANNED_TASK_PROJECT"
+cp -R \
+  "$UNPLANNED_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary" \
+  "$UNPLANNED_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/900-unplanned-task"
+jq '.task_id = "900-unplanned-task"' \
+  "$UNPLANNED_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/900-unplanned-task/context.json" \
+  >"$TMP_DIR/unplanned-context.json"
+mv \
+  "$TMP_DIR/unplanned-context.json" \
+  "$UNPLANNED_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/900-unplanned-task/context.json"
+run_json "$UNPLANNED_TASK_PROJECT" "$TMP_DIR/unplanned-task.json" 2
+assert_blocker "$TMP_DIR/unplanned-task.json" 'unplanned-development-task-dir:900-unplanned-task'
+
 run_json "$HAPPY_PROJECT" "$TMP_DIR/happy-entry.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/happy-entry.json" >/dev/null
 

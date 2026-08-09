@@ -31,11 +31,19 @@ Plan, dispatch, review, and close production implementation through file-backed 
 8. Create each task packet with `brief.md` and `context.json`. Task packet IDs
    must use canonical `NNN-kebab-case`, for example
    `001-dashboard-summary`.
-9. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` contain development claims for the task. The `create-vertical-slice.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage development --write --json` after manual task restructuring.
-10. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review. Replace every scaffold marker with direct evidence before closing a task.
-11. If any task, report, requirement, or handoff mentions SQL, DDL, DML, seed data, menus, permissions, or migrations, write executable SQL under `development/migrations/`, set `development/migrations/manifest.json` to `required=true`, and document execution, validation, and rollback in `development/migrations/README.md`.
-12. No fallback around failed task review is allowed.
-13. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
+9. Keep every normal development task in the authoritative
+   `development/task-graph.json` or `development/manifest.json#task_graph`.
+   The scaffold updates that graph atomically. A directory that is absent from
+   the graph is not a development task.
+10. Treat `specnav.development.repair-task.v1` packets as Verification Repair
+    Incidents. They are reported separately from planned vertical slices and
+    remain governed by `verification-repair-loop`; do not add standard task
+    ledger completion entries to make an open incident disappear.
+11. Ensure `openspec/changes/<change>/codegraph/claims-map.json` and `evidence-query-plan.json` contain development claims for the task. The `create-vertical-slice.js` scaffold writes these automatically; re-run `node "$SPECNAV_CODEGRAPH_ROOT/scripts/codegraph-plan.js" --stage development --write --json` after manual task restructuring.
+12. Maintain task ledger, drift checks, validation logs, extraction map, reports, spec review, and quality review. Replace every scaffold marker with direct evidence before closing a task.
+13. If any task, report, requirement, or handoff mentions SQL, DDL, DML, seed data, menus, permissions, or migrations, write executable SQL under `development/migrations/`, set `development/migrations/manifest.json` to `required=true`, and document execution, validation, and rollback in `development/migrations/README.md`.
+14. No fallback around failed task review is allowed.
+15. Before verification handoff, run `node "$SPECNAV_DEVELOPMENT_ROOT/scripts/development-contract.js" --mode handoff --json`.
 
 ## Required Outputs
 
@@ -55,6 +63,10 @@ Plan, dispatch, review, and close production implementation through file-backed 
 - A baseline task is removed, merged, or renumbered without explicit user
   approval.
 - A task packet ID does not use `NNN-kebab-case`.
+- A normal task directory is absent from the authoritative task graph, or a
+  graph node has no matching task packet.
+- A Verification Repair Incident is malformed or is treated as a normal task
+  to bypass its Repair Loop lifecycle.
 - Any task report, review file, ledger, drift check, validation log, or handoff file still contains `<decision-required>`, "Replace this scaffold", `development-entry-scaffold`, `vertical-slice-scaffold`, or `pending-vertical-slices`.
 - A task lacks allowed files.
 - A task duplicates component logic that should be extracted under the component architecture spec.
