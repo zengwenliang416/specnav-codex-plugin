@@ -1056,6 +1056,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-188c50609e80075efb42003988464e412eeb5956f09225e7cb59b24226a6a922",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "sensory",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-18e4879034aeb7138cf1f07d9d3cb256ea850aa3ee5bd1fe961b3a0799797f5e",
     "change_id": "verification-2-0",
     "run_id": "run-20260809030041-56cc109de6fc4bca",
@@ -1608,6 +1634,33 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-20e92e9d5597ce49fc4e2d444f53abb2e35b81974deaa5c9dce2a358ebe474c2",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "redteam",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-2133684177f458c6d735e4e2e4be1be4d0d34b1b147a329e22179b8c5e448f96",
     "change_id": "verification-2-0",
     "run_id": "run-20260806063927-5ba14e6777c3fe97",
@@ -2082,6 +2135,33 @@
     "recorded_at": "2026-08-06T06:42:54.156Z",
     "code_sha": "3e6cf383481870ab48f1bd864ca0094836187cb7",
     "test_sha": "d66d9e38779bc9216e07353dd04f21718d1421bfb30e6315c3230cbae2dbb739"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-2ab6a7bc15397fc9b4af5fe53719dedc8d31ff35e08cce5d9524dd29ffb17220",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "e2e",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
   {
     "schema": "specnav.verification.reading.v1",
@@ -3375,6 +3455,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-4240f2e05c0d013d8d3cd88eb2988d4a115329ec85bc65681168a6292c9117f6",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "e2e",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-42baf682b031e030f4ae2d11fcb6d775e7ae8108ded420e3d28ebb58b8192a2a",
     "change_id": "verification-2-0",
     "run_id": "run-20260809030114-e950208c47d1b6e6",
@@ -4430,6 +4536,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-54952833607443d2cc711eb1f8c7c5f180fef4ed635a61eae32a0e66240079e2",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "sensory",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-5529766ec4476c68a8b565a8cead6efdc6a15db37c9f473bf6a407f8d23d6478",
     "change_id": "verification-2-0",
     "run_id": "run-20260806064305-6b866333224588a4",
@@ -4564,6 +4696,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-57e3073f896cc1e0cf5142d9195ded1f5640f1accc7c7f55841a2361cee251eb",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "facticity",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-581b42b5f330dab67a0cefdddf9b83f852ca8d25d19e15dc63eebc1902e7780a",
     "change_id": "verification-2-0",
     "run_id": "run-20260809025552-2fcc16629a425b8b",
@@ -4587,6 +4745,33 @@
     "recorded_at": "2026-08-09T02:55:54.857Z",
     "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
     "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-589bbe10819d6d57893532d2d88e8a60b033b837dac13a311633190fd1557884",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "facticity",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
   {
     "schema": "specnav.verification.reading.v1",
@@ -5169,6 +5354,32 @@
     "recorded_at": "2026-08-06T06:39:27.468Z",
     "code_sha": "3e6cf383481870ab48f1bd864ca0094836187cb7",
     "test_sha": "d66d9e38779bc9216e07353dd04f21718d1421bfb30e6315c3230cbae2dbb739"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-62c6ae9363b2f2168736d1657c4675d527205a3e3d8e13d13b5caf7b6ecd3db4",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "e2e",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
   {
     "schema": "specnav.verification.reading.v1",
@@ -5887,6 +6098,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-7375af9659dee7793f5d8ed13011ac08d244aaaf7026e0d08bbf556546cb9b02",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "unit",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-7387d27fc25628ee9fc4a7889f79bcd71af28d57c861b0c0ffa387ec2c366f0b",
     "change_id": "verification-2-0",
     "run_id": "run-20260809101233-f52c6833a93ad7f2",
@@ -6146,6 +6383,32 @@
     "recorded_at": "2026-08-09T03:01:29.642Z",
     "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
     "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-781039603be535cd0fd9ba7aa5417977d4332ab668770f62ff9308c83e087ad0",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "redteam",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
   {
     "schema": "specnav.verification.reading.v1",
@@ -7100,6 +7363,33 @@
     ],
     "verdict": "pass",
     "recorded_at": "2026-08-09T10:12:06.918Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-8aedfc16402b1f249b93c2935d548f3ffd2786134339f6605bc315db0ebec0ba",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "static",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
     "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
     "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
@@ -8109,6 +8399,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-9d1eba9ecbbf4d866a76ba4efb602b3b358bbd25a0baf9b9efcc8b0e91c65f14",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "static",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-9e3eacff4d12150ff67fa931c121445be8e0a47b4d2d64e27d5af3a4efa7f5c8",
     "change_id": "verification-2-0",
     "run_id": "run-20260809030041-56cc109de6fc4bca",
@@ -8875,6 +9191,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-a7f26f4217e25d79a63162eb642ad75d5c1663089e0392594fcdfe8b7264ad3f",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-02",
+    "assertion_id": "CASE-08-A02",
+    "domain": "unit",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+      "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-a83892d8ed7a8f304b26c5ec811a21c098dec8dae70abbc77631e5f283880bb2",
     "change_id": "verification-2-0",
     "run_id": "run-20260809101233-f52c6833a93ad7f2",
@@ -8897,6 +9239,32 @@
     ],
     "verdict": "pass",
     "recorded_at": "2026-08-09T10:13:13.607Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-a86604e7d8447ea1569148ab30fc9111d7095adf87a03f750c4ff66a612bd3eb",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "static",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
     "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
     "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
@@ -9640,6 +10008,33 @@
     "recorded_at": "2026-08-06T07:27:21.924Z",
     "code_sha": "b954d8d6999b59daba1a1e03cd3da0bf9cf398e7",
     "test_sha": "833845b48400f3062528a3927c38eda115a1e44bd29f51063d9ecea50f17d33e"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-b4ca368c9c2289058716e59012c1c972940d5a2fdb1c597615486599200431df",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "sensory",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },
   {
     "schema": "specnav.verification.reading.v1",
@@ -10538,6 +10933,32 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-c1d6eccb0f7ce983a0d7e8daac78f4c29ac0ba1f048fb26609c6dd72379a951d",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "redteam",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-c1ffb32582ff04793b6d1f11704335b25bbedaff6120364fc0e42da6a78e1db1",
     "change_id": "verification-2-0",
     "run_id": "run-20260809101127-2d54cb2b407e9dc7",
@@ -11225,6 +11646,33 @@
   },
   {
     "schema": "specnav.verification.reading.v1",
+    "id": "reading-d41530213bd3e3ef039d5868b7ef0d4458d34b985140f53ca73805a688a8366f",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-01",
+    "assertion_id": "CASE-08-A01",
+    "domain": "unit",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+      "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+      "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
     "id": "reading-d4864a19de5520e404c4c519e4f1e12d6a85f7c1fe2a586da9933373915f0cae",
     "change_id": "verification-2-0",
     "run_id": "run-20260809030041-56cc109de6fc4bca",
@@ -11799,6 +12247,32 @@
     ],
     "verdict": "pass",
     "recorded_at": "2026-08-09T10:06:24.471Z",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
+  },
+  {
+    "schema": "specnav.verification.reading.v1",
+    "id": "reading-e09ce93be4e7162efc95273391e258697f5cc5c11a84236605097bd3c389d9ab",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "step_id": "CASE-08-STEP-03",
+    "assertion_id": "CASE-08-A03",
+    "domain": "facticity",
+    "expected": true,
+    "actual": true,
+    "oracle": {
+      "type": "structured_comparison",
+      "owner": "command-runner",
+      "deterministic": true
+    },
+    "evidence_ids": [
+      "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+      "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+    ],
+    "verdict": "pass",
+    "recorded_at": "2026-08-09T10:15:53.658Z",
     "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
     "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3"
   },

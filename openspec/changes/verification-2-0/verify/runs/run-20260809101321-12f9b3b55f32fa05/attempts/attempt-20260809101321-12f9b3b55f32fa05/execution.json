@@ -1,0 +1,364 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260809101321-12f9b3b55f32fa05",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-08"
+    ],
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-09T10:13:21.904Z",
+    "started_at": "2026-08-09T10:13:21.961Z",
+    "completed_at": "2026-08-09T10:15:52.950Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260806063934-95df9951fe619e21",
+    "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+    "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260809101321-12f9b3b55f32fa05",
+    "run_id": "run-20260809101321-12f9b3b55f32fa05",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-08",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+    "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+    "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-09T10:13:21.961Z",
+    "completed_at": "2026-08-09T10:15:52.950Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101321-12f9b3b55f32fa05",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-08"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-09T10:13:21.904Z",
+      "started_at": "2026-08-09T10:13:21.961Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809101321-12f9b3b55f32fa05",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-08"
+      ],
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-09T10:13:21.904Z",
+      "started_at": "2026-08-09T10:13:21.961Z",
+      "completed_at": "2026-08-09T10:15:52.950Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260806063934-95df9951fe619e21",
+      "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101321-12f9b3b55f32fa05",
+      "run_id": "run-20260809101321-12f9b3b55f32fa05",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-09T10:13:21.961Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101321-12f9b3b55f32fa05",
+      "run_id": "run-20260809101321-12f9b3b55f32fa05",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:13:21.961Z",
+      "completed_at": "2026-08-09T10:15:52.950Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809101321-12f9b3b55f32fa05",
+      "run_id": "run-20260809101321-12f9b3b55f32fa05",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+      "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T10:13:21.961Z",
+      "completed_at": "2026-08-09T10:15:52.950Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: complete Kernel-derived release and archive proof passes and writes digests\nok 1 - complete Kernel-derived release and archive proof passes and writes digests\n  ---\n  duration_ms: 10153.981792\n  type: 'test'\n  ...\n# Subtest: no-failure release proof rejects a forged closed repair state\nok 2 - no-failure release proof rejects a forged closed repair state\n  ---\n  duration_ms: 3134.501417\n  type: 'test'\n  ...\n# Subtest: managed runtime signing key supplies the trusted fact authority by default\nok 3 - managed runtime signing key supplies the trusted fact authority by default\n  ---\n  duration_ms: 4536.964917\n  type: 'test'\n  ...\n# Subtest: missing or non-human case approval blocks release\nok 4 - missing or non-human case approval blocks release\n  ---\n  duration_ms: 3045.112708\n  type: 'test'\n  ...\n# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority\nok 5 - reviewer source hashes and approval time are revalidated by the Kernel authority\n  ---\n  duration_ms: 12789.203209\n  type: 'test'\n  ...\n# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate\nok 6 - partial-domain and light-mode input cannot reuse a persisted green gate\n  ---\n  duration_ms: 3656.821916\n  type: 'test'\n  ...\n# Subtest: full lane uses the same complete six-domain release and archive proof\nok 7 - full lane uses the same complete six-domain release and archive proof\n  ---\n  duration_ms: 4181.165416\n  type: 'test'\n  ...\n# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates\nok 8 - standard-lane missing-domain input cannot use self-consistent forged pass gates\n  ---\n  duration_ms: 3660.8595\n  type: 'test'\n  ...\n# Subtest: stale evidence and open failures block both persisted pass decisions\nok 9 - stale evidence and open failures block both persisted pass decisions\n  ---\n  duration_ms: 3715.682458\n  type: 'test'\n  ...\n# Subtest: all three HTML projections are required but never used as verdict authority\nok 10 - all three HTML projections are required but never used as verdict authority\n  ---\n  duration_ms: 3240.369042\n  type: 'test'\n  ...\n# Subtest: report render manifest is required and must bind the current report model\nok 11 - report render manifest is required and must bind the current report model\n  ---\n  duration_ms: 3120.374166\n  type: 'test'\n  ...\n# Subtest: missing evidence index cannot reuse green gates and reports\nok 12 - missing evidence index cannot reuse green gates and reports\n  ---\n  duration_ms: 4234.571583\n  type: 'test'\n  ...\n# Subtest: missing canonical execution artifacts cannot reuse green gates and reports\nok 13 - missing canonical execution artifacts cannot reuse green gates and reports\n  ---\n  duration_ms: 10813.118833\n  type: 'test'\n  ...\n# Subtest: missing or tampered authority chain anchor blocks release proof\nok 14 - missing or tampered authority chain anchor blocks release proof\n  ---\n  duration_ms: 5469.984083\n  type: 'test'\n  ...\n# Subtest: current code, test, and environment fingerprint drift blocks release proof\nok 15 - current code, test, and environment fingerprint drift blocks release proof\n  ---\n  duration_ms: 10151.413458\n  type: 'test'\n  ...\n# Subtest: required migration needs one successful schema-valid apply receipt\nok 16 - required migration needs one successful schema-valid apply receipt\n  ---\n  duration_ms: 6281.195\n  type: 'test'\n  ...\n# Subtest: required migration accepts one successful schema-valid apply receipt\nok 17 - required migration accepts one successful schema-valid apply receipt\n  ---\n  duration_ms: 5232.726\n  type: 'test'\n  ...\n# Subtest: tampered clean-install receipt and a missing host fail closed\nok 18 - tampered clean-install receipt and a missing host fail closed\n  ---\n  duration_ms: 3994.714959\n  type: 'test'\n  ...\n# Subtest: placeholder clean-install claims fail closed\nok 19 - placeholder clean-install claims fail closed\n  ---\n  duration_ms: 4205.704\n  type: 'test'\n  ...\n# Subtest: cross-host compatibility blockers stop release and archive\nok 20 - cross-host compatibility blockers stop release and archive\n  ---\n  duration_ms: 4828.822166\n  type: 'test'\n  ...\n# Subtest: persisted green host claims cannot bypass a red live host authority\nok 21 - persisted green host claims cannot bypass a red live host authority\n  ---\n  duration_ms: 3479.097334\n  type: 'test'\n  ...\n# Subtest: persisted green compatibility cannot bypass real live host wrapper drift\nok 22 - persisted green compatibility cannot bypass real live host wrapper drift\n  ---\n  duration_ms: 7551.334208\n  type: 'test'\n  ...\n# Subtest: report model must bind to the release gate, readings, evidence index, and versions\nok 23 - report model must bind to the release gate, readings, evidence index, and versions\n  ---\n  duration_ms: 2134.061125\n  type: 'test'\n  ...\n# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity\nok 24 - persisted gate edits cannot bypass Kernel-owned gate identity\n  ---\n  duration_ms: 2060.187125\n  type: 'test'\n  ...\n# Subtest: explicit change ids cannot escape or bypass the active change registry\nok 25 - explicit change ids cannot escape or bypass the active change registry\n  ---\n  duration_ms: 9.8775\n  type: 'test'\n  ...\n# Subtest: a symlinked change directory is rejected before any proof is written\nok 26 - a symlinked change directory is rejected before any proof is written\n  ---\n  duration_ms: 6.806083\n  type: 'test'\n  ...\n# Subtest: duplicate host identities cannot satisfy the clean-install contract\nok 27 - duplicate host identities cannot satisfy the clean-install contract\n  ---\n  duration_ms: 2809.152541\n  type: 'test'\n  ...\n# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts\nok 28 - duplicate compatibility hosts cannot masquerade as all three hosts\n  ---\n  duration_ms: 2413.986167\n  type: 'test'\n  ...\n# Subtest: host receipts and compatibility cannot be replayed across gate inputs\nok 29 - host receipts and compatibility cannot be replayed across gate inputs\n  ---\n  duration_ms: 2050.696583\n  type: 'test'\n  ...\n# Subtest: a symlinked operations directory cannot receive a blocked proof write\nok 30 - a symlinked operations directory cannot receive a blocked proof write\n  ---\n  duration_ms: 1988.066167\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not persist a gate or log when validation fails\nok 31 - writeArchiveGate does not persist a gate or log when validation fails\n  ---\n  duration_ms: 7974.862208\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not follow symlinked operations or parent directories\nok 32 - writeArchiveGate does not follow symlinked operations or parent directories\n  ---\n  duration_ms: 6870.91325\n  type: 'test'\n  ...\n# Subtest: safe archive JSONL append is atomic and rejects a symlink target\nok 33 - safe archive JSONL append is atomic and rejects a symlink target\n  ---\n  duration_ms: 331.137083\n  type: 'test'\n  ...\n# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes\nok 34 - descriptor-relative read rejects an ancestor swap without reading external bytes\n  ---\n  duration_ms: 265.83525\n  type: 'test'\n  ...\n# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup\nok 35 - descriptor-relative tree copy rejects a source swap and deletes the partial backup\n  ---\n  duration_ms: 103.883\n  type: 'test'\n  ...\n# Subtest: archive lock acquisition has one atomic winner and owner-bound release\nok 36 - archive lock acquisition has one atomic winner and owner-bound release\n  ---\n  duration_ms: 374.708\n  type: 'test'\n  ...\n1..36\n# tests 36\n# suites 0\n# pass 36\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 150505.618416\nverification v2 release and archive proof ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-09T10:13:21.963Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101321-12f9b3b55f32fa05",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-08"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-09T10:13:21.904Z",
+        "started_at": "2026-08-09T10:13:21.961Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-09T10:13:21.963Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101321-12f9b3b55f32fa05",
+        "run_id": "run-20260809101321-12f9b3b55f32fa05",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-08",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-09T10:13:21.961Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-09T10:13:21.969Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-release.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:13:22.396Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:15:52.803Z",
+      "chunk": "# Subtest: complete Kernel-derived release and archive proof passes and writes digests\nok 1 - complete Kernel-derived release and archive proof passes and writes digests\n  ---\n  duration_ms: 10153.981792\n  type: 'test'\n  ...\n# Subtest: no-failure release proof rejects a forged closed repair state\nok 2 - no-failure release proof rejects a forged closed repair state\n  ---\n  duration_ms: 3134.501417\n  type: 'test'\n  ...\n# Subtest: managed runtime signing key supplies the trusted fact authority by default\nok 3 - managed runtime signing key supplies the trusted fact authority by default\n  ---\n  duration_ms: 4536.964917\n  type: 'test'\n  ...\n# Subtest: missing or non-human case approval blocks release\nok 4 - missing or non-human case approval blocks release\n  ---\n  duration_ms: 3045.112708\n  type: 'test'\n  ...\n# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority\nok 5 - reviewer source hashes and approval time are revalidated by the Kernel authority\n  ---\n  duration_ms: 12789.203209\n  type: 'test'\n  ...\n# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate\nok 6 - partial-domain and light-mode input cannot reuse a persisted green gate\n  ---\n  duration_ms: 3656.821916\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:15:52.817Z",
+      "chunk": "# Subtest: full lane uses the same complete six-domain release and archive proof\nok 7 - full lane uses the same complete six-domain release and archive proof\n  ---\n  duration_ms: 4181.165416\n  type: 'test'\n  ...\n# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates\nok 8 - standard-lane missing-domain input cannot use self-consistent forged pass gates\n  ---\n  duration_ms: 3660.8595\n  type: 'test'\n  ...\n# Subtest: stale evidence and open failures block both persisted pass decisions\nok 9 - stale evidence and open failures block both persisted pass decisions\n  ---\n  duration_ms: 3715.682458\n  type: 'test'\n  ...\n# Subtest: all three HTML projections are required but never used as verdict authority\nok 10 - all three HTML projections are required but never used as verdict authority\n  ---\n  duration_ms: 3240.369042\n  type: 'test'\n  ...\n# Subtest: report render manifest is required and must bind the current report model\nok 11 - report render manifest is required and must bind the current report model\n  ---\n  duration_ms: 3120.374166\n  type: 'test'\n  ...\n# Subtest: missing evidence index cannot reuse green gates and reports\nok 12 - missing evidence index cannot reuse green gates and reports\n  ---\n  duration_ms: 4234.571583\n  type: 'test'\n  ...\n# Subtest: missing canonical execution artifacts cannot reuse green gates and reports\nok 13 - missing canonical execution artifacts cannot reuse green gates and reports\n  ---\n  duration_ms: 10813.118833\n  type: 'test'\n  ...\n# Subtest: missing or tampered authority chain anchor blocks release proof\nok 14 - missing or tampered authority chain anchor blocks release proof\n  ---\n  duration_ms: 5469.984083\n  type: 'test'\n  ...\n# Subtest: current code, test, and environment fingerprint drift blocks release proof\nok 15 - current code, test, and environment fingerprint drift blocks release proof\n  ---\n  duration_ms: 10151.413458\n  type: 'test'\n  ...\n# Subtest: required migration needs one successful schema-valid apply receipt\nok 16 - required migration needs one successful schema-valid apply receipt\n  ---\n  duration_ms: 6281.195\n  type: 'test'\n  ...\n# Subtest: required migration accepts one successful schema-valid apply receipt\nok 17 - required migration accepts one successful schema-valid apply receipt\n  ---\n  duration_ms: 5232.726\n  type: 'test'\n  ...\n# Subtest: tampered clean-install receipt and a missing host fail closed\nok 18 - tampered clean-install receipt and a missing host fail closed\n  ---\n  duration_ms: 3994.714959\n  type: 'test'\n  ...\n# Subtest: placeholder clean-install claims fail closed\nok 19 - placeholder clean-install claims fail closed\n  ---\n  duration_ms: 4205.704\n  type: 'test'\n  ...\n# Subtest: cross-host compatibility blockers stop release and archive\nok 20 - cross-host compatibility blockers stop release and archive\n  ---\n  duration_ms: 4828.822166\n  type: 'test'\n  ...\n# Subtest: persisted green host claims cannot bypass a red live host authority\nok 21 - persisted green host claims cannot bypass a red live host authority\n  ---\n  duration_ms: 3479.097334\n  type: 'test'\n  ...\n# Subtest: persisted green compatibility cannot bypass real live host wrapper drift\nok 22 - persisted green compatibility cannot bypass real live host wrapper drift\n  ---\n  duration_ms: 7551.334208\n  type: 'test'\n  ...\n# Subtest: report model must bind to the release gate, readings, evidence index, and versions\nok 23 - report model must bind to the release gate, readings, evidence index, and versions\n  ---\n  duration_ms: 2134.061125\n  type: 'test'\n  ...\n# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity\nok 24 - persisted gate edits cannot bypass Kernel-owned gate identity\n  ---\n  duration_ms: 2060.187125\n  type: 'test'\n  ...\n# Subtest: explicit change ids cannot escape or bypass the active change registry\nok 25 - explicit change ids cannot escape or bypass the active change registry\n  ---\n  duration_ms: 9.8775\n  type: 'test'\n  ...\n# Subtest: a symlinked change directory is rejected before any proof is written\nok 26 - a symlinked change directory is rejected before any proof is written\n  ---\n  duration_ms: 6.806083\n  type: 'test'\n  ...\n# Subtest: duplicate host identities cannot satisfy the clean-install contract\nok 27 - duplicate host identities cannot satisfy the clean-install contract\n  ---\n  duration_ms: 2809.152541\n  type: 'test'\n  ...\n# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts\nok 28 - duplicate compatibility hosts cannot masquerade as all three hosts\n  ---\n  duration_ms: 2413.986167\n  type: 'test'\n  ...\n# Subtest: host receipts and compatibility cannot be replayed across gate inputs\nok 29 - host receipts and compatibility cannot be replayed across gate inputs\n  ---\n  duration_ms: 2050.696583\n  type: 'test'\n  ...\n# Subtest: a symlinked operations directory cannot receive a blocked proof write\nok 30 - a symlinked operations directory cannot receive a blocked proof write\n  ---\n  duration_ms: 1988.066167\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not persist a gate or log when validation fails\nok 31 - writeArchiveGate does not persist a gate or log when validation fails\n  ---\n  duration_ms: 7974.862208\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not follow symlinked operations or parent directories\nok 32 - writeArchiveGate does not follow symlinked operations or parent directories\n  ---\n  duration_ms: 6870.91325\n  type: 'test'\n  ...\n# Subtest: safe archive JSONL append is atomic and rejects a symlink target\nok 33 - safe archive JSONL append is atomic and rejects a symlink target\n  ---\n  duration_ms: 331.137083\n  type: 'test'\n  ...\n# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes\nok 34 - descriptor-relative read rejects an ancestor swap without reading external bytes\n  ---\n  duration_ms: 265.83525\n  type: 'test'\n  ...\n# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup\nok 35 - descriptor-relative tree copy rejects a source swap and deletes the partial backup\n  ---\n  duration_ms: 103.883\n  type: 'test'\n  ...\n# Subtest: archive lock acquisition has one atomic winner and owner-bound release\nok 36 - archive lock acquisition has one atomic winner and owner-bound release\n  ---\n  duration_ms: 374.708\n  type: 'test'\n  ...\n1..36\n# tests 36\n# suites 0\n# pass 36\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 150505.618416\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-09T10:15:52.867Z",
+      "chunk": "verification v2 release and archive proof ok\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.terminal",
+      "at": "2026-08-09T10:15:52.947Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 9,
+      "type": "attempt.terminal",
+      "at": "2026-08-09T10:15:52.958Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809101321-12f9b3b55f32fa05",
+        "run_id": "run-20260809101321-12f9b3b55f32fa05",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-08",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-09T10:13:21.961Z",
+        "completed_at": "2026-08-09T10:15:52.950Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 10,
+      "type": "run.terminal",
+      "at": "2026-08-09T10:15:52.958Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809101321-12f9b3b55f32fa05",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-08"
+        ],
+        "code_sha": "4801eff2cc9f857eabda46cb0e4f02ce16cc03f0",
+        "test_sha": "9ee49d6998eaa16a160437def53b7811374a6cc528bfd027cf96e65865e4bea3",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-09T10:13:21.904Z",
+        "started_at": "2026-08-09T10:13:21.961Z",
+        "completed_at": "2026-08-09T10:15:52.950Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260806063934-95df9951fe619e21",
+        "parent_run_id": "run-20260809095902-c73dc3a4c9f5bd41",
+        "parent_attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+        "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
