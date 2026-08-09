@@ -1,14 +1,139 @@
 {
-  "ok": false,
-  "status": "blocked",
-  "label": "blocked",
-  "history": [],
-  "transition_proposal": null,
-  "blockers": [
+  "ok": true,
+  "status": "retest_required",
+  "label": "failed",
+  "history": [
     {
-      "id": "verification-repair-loop:repair-link-binding-mismatch",
-      "artifact": "repair-9b57e83fd69222e42be653ab1556914749bbab94eab309b6a14c5c8f36f26df7",
-      "detail": null
+      "kind": "initial",
+      "attempt_id": "attempt-20260806063934-95df9951fe619e21",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-14eab3189cc37ab3ef38915e809e74209f5454de63a6ea7fe8dd20fbc4dc9690",
+        "evidence-45ee76ef40a98fcfb0b66982f4b8230f885184d3a05462599a1f25322ffcb7af",
+        "evidence-50a4d0c6fb28c7febc3c59700fa40af9a81c056accbacc43afb49588ffb9542e",
+        "evidence-55691755d274e80a28246ceaf2f611eb46348c8a0e303d21ac0beb33fcf1d989",
+        "evidence-66ad57935c9eb18bd169bec8557cd5307f99e6e4aceb4f33fa2510abb212279e",
+        "evidence-8297c2cf12d7b12c99c785f94a4c375e76e6e3b6db878c90a4845ae228abe159",
+        "evidence-c40c933f30184ed1086144b69d3c53d1fcc6c7d6f665d88c20ef9101c4e9ff7f",
+        "evidence-da66b81d7911381f75e8ee8f95c81808816ebb29548cbf8ec3557f9c9c4b22f2"
+      ],
+      "recorded_at": "2026-08-06T06:42:53.487Z"
+    },
+    {
+      "kind": "repair",
+      "repair_link_id": "repair-recovered-d379658c29c420be7b0a7a656f90166fb9fb0b31b307d120239997c3ae827fb5",
+      "label": "REPAIR COMPLETED",
+      "recorded_at": "2026-08-09T09:49:27.235Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260806071222-86600c326217668e",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-4611fde34140d60e51c2487566e49fe74374282d60d1102424edfc27ddf2151f",
+        "evidence-5875d6c303d2b55aaf8e8ba8718c21fd91f750a411f9312fba72e60e259bd2fd",
+        "evidence-68c222979613a914a9de89316c0cb07239c007444a2ceeb5672a5097d7636240",
+        "evidence-6d43c9f31c25443d6e33e8e350281bf4e2fbbad4890a42a179caf782d2125b45",
+        "evidence-b214178050d713a9dd0ccd240d5aed693b497e2f10244b0bfbe3ed2f209eebc6",
+        "evidence-b7742fbdd4cb210b17d5e29678cc2ffa6cb705aada498c7787360e72d960d9e2",
+        "evidence-b873d1a7a7256152605061c6cb4430afcf7950250fd12602adbd904bab35dc79",
+        "evidence-c62d0a6a2d9af02194035279d184e6af6ef50197630e23825777c26d3bbde3a3"
+      ],
+      "recorded_at": "2026-08-06T07:13:20.531Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260806072342-3bcf781792dc4ce3",
+      "case_id": "CASE-03",
+      "label": "PASS AFTER FIX",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-05fd71d54a01c4078faf3dbe278b9de560bd13818818f239da88553622ccc80b",
+        "evidence-25a77e4175315d5faf541e71fd1cde5e83c7e6a03e5bd6debfd095155648fcff",
+        "evidence-46647fcc5e6d77078a9a83332461c72e3e8d616d1ef63698f010c95ff722c353",
+        "evidence-66d39fd6e0e80fc30ae85c4d9fd3de2c507994ce3642e5a7f86fb6964b4a89d8",
+        "evidence-67ac2326daeeae37a92168e74832b58d0e58a48a9188ee70f60efa023cd3ca70",
+        "evidence-b0ba89441cd4eb2438c7240e4e9ad6794cd509115fc5eac4c2ea8a92ae5a93c8",
+        "evidence-bbca422fb6b6ddb6e67ef12c936b0e43ed3034ec0a38b8dcf790841ebbbf6f25",
+        "evidence-f070e936779e5d90cdf86b061be773a8b253f204cb91f73d44fa9c36b035763e"
+      ],
+      "recorded_at": "2026-08-06T07:27:21.321Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260809065321-206f1514abb6b990",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-044a40c1db3317ee9d28853154702e4dfba0c709a6274f181c51a79c7ffe073a",
+        "evidence-0acc0a5d838c1eb299415f85984e4ad8962c43628539cd4995e93456ac71bdb5",
+        "evidence-15c7b451910ba510b35fe7b9ffc9eadad4036d5f638885e873eeb013835be41a",
+        "evidence-332c3c7355076d058298fd08e61b05214ab43e8b50b25a7ad3763766f1cadde5",
+        "evidence-8bcee715b1b8acc087106b952c6c6a3de22cd9674581cb85f3d95688e8d9209f",
+        "evidence-e181397ff9bc051022ce6be8e105627dab551f73ddae6bcd1d942e1a312624ac",
+        "evidence-e5221da7e4eec16c5230d74e66486d3b7ef19aebc4ea74d29d044be9e972dad3",
+        "evidence-f3e730f0ff34c36a8e715e46b8deaa8ed96dc5c29343d8eafda8af8e763da5b3"
+      ],
+      "recorded_at": "2026-08-09T06:54:12.476Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260809070009-0520dfc29bf17100",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-3747af4a3e69b0493431ded64e38f870b62cc07c28266c90277b7290f03d192a",
+        "evidence-4e483ed79eea288c458398993e689e44f04dc10b9cba0896301a206fd2652f5d",
+        "evidence-7e6e260dddfcb2f5cc8897df7d74dc6d3f76fc6c9a2533d9e8fa308021821f23",
+        "evidence-80b176bbd3b797d59ad5e06a74921516ca513d9b95e82aa90631e1c5dfff6334",
+        "evidence-c77d49969d491391c41c4a108a5a0d8b792ba3083575d9cbff404086e68aa8eb",
+        "evidence-d4dcc1a6882cc07cfeb77b8cc4d0219b77708dd5a9066315557e8346ece5547d",
+        "evidence-e4b95ec2c2edca0fad2e0500669cb67717b4678be9272f4a562259927f3186d9",
+        "evidence-ee3a879e5a29732a160d6cbd9b1bf20b6b3fc024789c9d7d4ce6eca89bc17ceb"
+      ],
+      "recorded_at": "2026-08-09T07:01:19.007Z"
     }
-  ]
+  ],
+  "transition_proposal": {
+    "schema": "specnav.verification.transition-proposal.v1",
+    "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
+    "change_id": "verification-2-0",
+    "action": "request_retest",
+    "owner": "core",
+    "from_state": "retest_required",
+    "target_state": "retest",
+    "case_ids": [
+      "CASE-03"
+    ],
+    "attempt_ids": [
+      "attempt-20260806063934-95df9951fe619e21",
+      "attempt-20260806071222-86600c326217668e",
+      "attempt-20260806072342-3bcf781792dc4ce3",
+      "attempt-20260809065321-206f1514abb6b990",
+      "attempt-20260809070009-0520dfc29bf17100"
+    ],
+    "reason_ids": [
+      "reviewed-repair-completed"
+    ],
+    "repair_link_id": "repair-recovered-d379658c29c420be7b0a7a656f90166fb9fb0b31b307d120239997c3ae827fb5",
+    "proposed_at": "2026-08-09T09:49:27.235Z",
+    "id": "transition-3eb6d00b85d7f9dc0be9d11ab2aabe1de8e95b4220485cdf5ab819a1b41d04ed"
+  },
+  "blockers": []
 }
