@@ -1,0 +1,50 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "022-case-rerun-impact",
+  "recorded_at": "2026-07-31T21:51:21.041Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-24",
+      "parent_id": "AC-24",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/022-case-rerun-impact/report.md",
+        "development/tasks/022-case-rerun-impact/spec-review.md",
+        "development/tasks/022-case-rerun-impact/quality-review.md",
+        "development/evidence/192-022-case-rerun-impact.log",
+        "development/evidence/193-022-case-rerun-impact.log",
+        "development/evidence/194-022-case-rerun-impact.log",
+        "development/evidence/195-022-case-rerun-impact.log",
+        "development/evidence/196-022-case-rerun-impact.log",
+        "development/evidence/197-022-case-rerun-impact.log",
+        "development/evidence/198-022-case-rerun-impact.log",
+        "development/evidence/199-022-case-rerun-impact.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Rerun scope returns concrete affected case ids and reasons, not only domain names."
+    },
+    {
+      "id": "AC-26",
+      "parent_id": "AC-26",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/022-case-rerun-impact/report.md",
+        "development/tasks/022-case-rerun-impact/spec-review.md",
+        "development/tasks/022-case-rerun-impact/quality-review.md",
+        "development/evidence/192-022-case-rerun-impact.log",
+        "development/evidence/193-022-case-rerun-impact.log",
+        "development/evidence/194-022-case-rerun-impact.log",
+        "development/evidence/195-022-case-rerun-impact.log",
+        "development/evidence/196-022-case-rerun-impact.log",
+        "development/evidence/197-022-case-rerun-impact.log",
+        "development/evidence/198-022-case-rerun-impact.log",
+        "development/evidence/199-022-case-rerun-impact.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Regression scope includes the repaired case, directly impacted cases, and policy-required baseline cases."
+    }
+  ],
+  "fallback_used": false
+}

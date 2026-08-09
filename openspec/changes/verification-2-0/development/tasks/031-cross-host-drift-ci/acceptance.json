@@ -1,0 +1,91 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "031-cross-host-drift-ci",
+  "recorded_at": "2026-08-02T17:51:27.970Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-37",
+      "parent_id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/031-cross-host-drift-ci/report.md",
+        "development/tasks/031-cross-host-drift-ci/spec-review.md",
+        "development/tasks/031-cross-host-drift-ci/quality-review.md",
+        "development/evidence/442-031-cross-host-drift-ci.log",
+        "development/evidence/445-031-cross-host-drift-ci.log",
+        "development/evidence/446-031-cross-host-drift-ci.log",
+        "development/evidence/447-031-cross-host-drift-ci.log",
+        "development/evidence/448-031-cross-host-drift-ci.log",
+        "development/evidence/450-031-cross-host-drift-ci.log",
+        "development/evidence/451-031-cross-host-drift-ci.log",
+        "development/evidence/452-031-cross-host-drift-ci.log",
+        "development/evidence/453-031-cross-host-drift-ci.log",
+        "development/evidence/454-031-cross-host-drift-ci.log",
+        "development/evidence/457-031-cross-host-drift-ci.log",
+        "development/evidence/459-031-cross-host-drift-ci.log",
+        "development/evidence/460-031-cross-host-drift-ci.log",
+        "development/evidence/461-031-cross-host-drift-ci.log",
+        "development/evidence/464-031-cross-host-drift-ci.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
+    },
+    {
+      "id": "AC-39",
+      "parent_id": "AC-39",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/031-cross-host-drift-ci/report.md",
+        "development/tasks/031-cross-host-drift-ci/spec-review.md",
+        "development/tasks/031-cross-host-drift-ci/quality-review.md",
+        "development/evidence/442-031-cross-host-drift-ci.log",
+        "development/evidence/445-031-cross-host-drift-ci.log",
+        "development/evidence/446-031-cross-host-drift-ci.log",
+        "development/evidence/447-031-cross-host-drift-ci.log",
+        "development/evidence/448-031-cross-host-drift-ci.log",
+        "development/evidence/450-031-cross-host-drift-ci.log",
+        "development/evidence/451-031-cross-host-drift-ci.log",
+        "development/evidence/452-031-cross-host-drift-ci.log",
+        "development/evidence/453-031-cross-host-drift-ci.log",
+        "development/evidence/454-031-cross-host-drift-ci.log",
+        "development/evidence/457-031-cross-host-drift-ci.log",
+        "development/evidence/459-031-cross-host-drift-ci.log",
+        "development/evidence/460-031-cross-host-drift-ci.log",
+        "development/evidence/461-031-cross-host-drift-ci.log",
+        "development/evidence/464-031-cross-host-drift-ci.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Playwright, Midscene, command execution, EvidenceStore, failure classification, and report rendering use explicit adapter or service boundaries."
+    },
+    {
+      "id": "AC-40",
+      "parent_id": "AC-40",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/031-cross-host-drift-ci/report.md",
+        "development/tasks/031-cross-host-drift-ci/spec-review.md",
+        "development/tasks/031-cross-host-drift-ci/quality-review.md",
+        "development/evidence/442-031-cross-host-drift-ci.log",
+        "development/evidence/445-031-cross-host-drift-ci.log",
+        "development/evidence/446-031-cross-host-drift-ci.log",
+        "development/evidence/447-031-cross-host-drift-ci.log",
+        "development/evidence/448-031-cross-host-drift-ci.log",
+        "development/evidence/450-031-cross-host-drift-ci.log",
+        "development/evidence/451-031-cross-host-drift-ci.log",
+        "development/evidence/452-031-cross-host-drift-ci.log",
+        "development/evidence/453-031-cross-host-drift-ci.log",
+        "development/evidence/454-031-cross-host-drift-ci.log",
+        "development/evidence/457-031-cross-host-drift-ci.log",
+        "development/evidence/459-031-cross-host-drift-ci.log",
+        "development/evidence/460-031-cross-host-drift-ci.log",
+        "development/evidence/461-031-cross-host-drift-ci.log",
+        "development/evidence/464-031-cross-host-drift-ci.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
+    }
+  ],
+  "fallback_used": false
+}

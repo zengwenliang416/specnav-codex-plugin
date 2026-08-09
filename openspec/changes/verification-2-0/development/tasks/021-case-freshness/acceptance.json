@@ -1,0 +1,64 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "021-case-freshness",
+  "recorded_at": "2026-07-31T21:15:20.457Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-23",
+      "parent_id": "AC-23",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/021-case-freshness/report.md",
+        "development/tasks/021-case-freshness/spec-review.md",
+        "development/tasks/021-case-freshness/quality-review.md",
+        "development/evidence/185-021-case-freshness.log",
+        "development/evidence/186-021-case-freshness.log",
+        "development/evidence/187-021-case-freshness.log",
+        "development/evidence/188-021-case-freshness.log",
+        "development/evidence/189-021-case-freshness.log",
+        "development/evidence/190-021-case-freshness.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Case-level freshness uses SHA and execution fingerprints rather than mtime alone."
+    },
+    {
+      "id": "AC-17:stale-sha",
+      "parent_id": "AC-17",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/021-case-freshness/report.md",
+        "development/tasks/021-case-freshness/spec-review.md",
+        "development/tasks/021-case-freshness/quality-review.md",
+        "development/evidence/185-021-case-freshness.log",
+        "development/evidence/186-021-case-freshness.log",
+        "development/evidence/187-021-case-freshness.log",
+        "development/evidence/188-021-case-freshness.log",
+        "development/evidence/189-021-case-freshness.log",
+        "development/evidence/190-021-case-freshness.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. (AC-17:stale-sha)"
+    },
+    {
+      "id": "AC-35:freshness-result-source",
+      "parent_id": "AC-35",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/021-case-freshness/report.md",
+        "development/tasks/021-case-freshness/spec-review.md",
+        "development/tasks/021-case-freshness/quality-review.md",
+        "development/evidence/185-021-case-freshness.log",
+        "development/evidence/186-021-case-freshness.log",
+        "development/evidence/187-021-case-freshness.log",
+        "development/evidence/188-021-case-freshness.log",
+        "development/evidence/189-021-case-freshness.log",
+        "development/evidence/190-021-case-freshness.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. (AC-35:freshness-result-source)"
+    }
+  ],
+  "fallback_used": false
+}

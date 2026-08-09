@@ -1,0 +1,48 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "007-runtime-installer",
+  "recorded_at": "2026-07-31T06:12:28.503Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-04",
+      "parent_id": "AC-04",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/007-runtime-installer/report.md",
+        "development/tasks/007-runtime-installer/spec-review.md",
+        "development/tasks/007-runtime-installer/quality-review.md",
+        "development/evidence/019-007-runtime-installer.log",
+        "development/evidence/020-007-runtime-installer.log",
+        "development/evidence/022-007-runtime-installer.log",
+        "development/evidence/023-007-runtime-installer.log",
+        "development/evidence/024-007-runtime-installer.log",
+        "development/evidence/025-007-runtime-installer.log",
+        "development/evidence/026-007-runtime-installer.log"
+      ],
+      "reused_evidence": [],
+      "claim": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."
+    },
+    {
+      "id": "AC-05",
+      "parent_id": "AC-05",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/007-runtime-installer/report.md",
+        "development/tasks/007-runtime-installer/spec-review.md",
+        "development/tasks/007-runtime-installer/quality-review.md",
+        "development/evidence/019-007-runtime-installer.log",
+        "development/evidence/020-007-runtime-installer.log",
+        "development/evidence/022-007-runtime-installer.log",
+        "development/evidence/023-007-runtime-installer.log",
+        "development/evidence/024-007-runtime-installer.log",
+        "development/evidence/025-007-runtime-installer.log",
+        "development/evidence/026-007-runtime-installer.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
+    }
+  ],
+  "fallback_used": false
+}

@@ -93,9 +93,11 @@ the current code, not the earlier blocked snapshots.
   `tests/verification-v2/cases/approval.test.js` and the CLI `null` snapshot
   path in `tests/verification-v2/cases/cli-integration.js`. Receipts `063` and
   `064`, plus my reruns of the unit and CLI commands, passed.
-- `AC-19`, `AC-20`: not part of the current Task 005 acceptance map. They
-  remain downstream responsibilities of Tasks `016` and `017` and are not
-  claimed complete here.
+
+## Downstream Scope
+
+`AC-19` and `AC-20` remain downstream responsibilities of Tasks `016` and
+`017`; Task 005 does not claim them as verified assertions.
 
 ## Independent Re-Run
 

@@ -1,0 +1,80 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "032-docs-install-runtime",
+  "recorded_at": "2026-08-02T17:47:13.652Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-04",
+      "parent_id": "AC-04",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/032-docs-install-runtime/report.md",
+        "development/tasks/032-docs-install-runtime/spec-review.md",
+        "development/tasks/032-docs-install-runtime/quality-review.md",
+        "development/evidence/462-032-docs-install-runtime.log",
+        "development/evidence/463-032-docs-install-runtime.log"
+      ],
+      "reused_evidence": [],
+      "claim": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."
+    },
+    {
+      "id": "AC-05",
+      "parent_id": "AC-05",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/032-docs-install-runtime/report.md",
+        "development/tasks/032-docs-install-runtime/spec-review.md",
+        "development/tasks/032-docs-install-runtime/quality-review.md",
+        "development/evidence/462-032-docs-install-runtime.log",
+        "development/evidence/463-032-docs-install-runtime.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
+    },
+    {
+      "id": "AC-08",
+      "parent_id": "AC-08",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/032-docs-install-runtime/report.md",
+        "development/tasks/032-docs-install-runtime/spec-review.md",
+        "development/tasks/032-docs-install-runtime/quality-review.md",
+        "development/evidence/462-032-docs-install-runtime.log",
+        "development/evidence/463-032-docs-install-runtime.log"
+      ],
+      "reused_evidence": [],
+      "claim": "overview.html shows lifecycle readiness, six-domain status, blocker counts, freshness, integrity, repair-loop state, and release verdict."
+    },
+    {
+      "id": "AC-09",
+      "parent_id": "AC-09",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/032-docs-install-runtime/report.md",
+        "development/tasks/032-docs-install-runtime/spec-review.md",
+        "development/tasks/032-docs-install-runtime/quality-review.md",
+        "development/evidence/462-032-docs-install-runtime.log",
+        "development/evidence/463-032-docs-install-runtime.log"
+      ],
+      "reused_evidence": [],
+      "claim": "test-case-catalog.html shows the approved case contract and domain coverage."
+    },
+    {
+      "id": "AC-10",
+      "parent_id": "AC-10",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/032-docs-install-runtime/report.md",
+        "development/tasks/032-docs-install-runtime/spec-review.md",
+        "development/tasks/032-docs-install-runtime/quality-review.md",
+        "development/evidence/462-032-docs-install-runtime.log",
+        "development/evidence/463-032-docs-install-runtime.log"
+      ],
+      "reused_evidence": [],
+      "claim": "test-case-results.html shows runs, attempts, readings, commands, evidence, hashes, freshness, and repair history."
+    }
+  ],
+  "fallback_used": false
+}

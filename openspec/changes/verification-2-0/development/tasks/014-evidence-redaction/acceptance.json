@@ -1,0 +1,28 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "014-evidence-redaction",
+  "recorded_at": "2026-07-31T20:40:27.177Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-30",
+      "parent_id": "AC-30",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/014-evidence-redaction/report.md",
+        "development/tasks/014-evidence-redaction/spec-review.md",
+        "development/tasks/014-evidence-redaction/quality-review.md",
+        "development/evidence/174-014-evidence-redaction.log",
+        "development/evidence/175-014-evidence-redaction.log",
+        "development/evidence/176-014-evidence-redaction.log",
+        "development/evidence/177-014-evidence-redaction.log",
+        "development/evidence/178-014-evidence-redaction.log",
+        "development/evidence/179-014-evidence-redaction.log"
+      ],
+      "reused_evidence": [],
+      "claim": "HTML rendering escapes artifact content and never exposes provider secrets."
+    }
+  ],
+  "fallback_used": false
+}

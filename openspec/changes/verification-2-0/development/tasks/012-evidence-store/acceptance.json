@@ -1,0 +1,79 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "012-evidence-store",
+  "recorded_at": "2026-07-31T18:27:58.059Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-22",
+      "parent_id": "AC-22",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/012-evidence-store/report.md",
+        "development/tasks/012-evidence-store/spec-review.md",
+        "development/tasks/012-evidence-store/quality-review.md",
+        "development/evidence/139-012-evidence-store.log",
+        "development/evidence/140-012-evidence-store.log",
+        "development/evidence/141-012-evidence-store.log",
+        "development/evidence/142-012-evidence-store.log",
+        "development/evidence/143-012-evidence-store.log",
+        "development/evidence/144-012-evidence-store.log",
+        "development/evidence/145-012-evidence-store.log",
+        "development/evidence/146-012-evidence-store.log",
+        "development/evidence/147-012-evidence-store.log",
+        "development/evidence/148-012-evidence-store.log",
+        "development/evidence/149-012-evidence-store.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Raw evidence is append-only, the summary index is rebuildable, and cache loss does not lose source truth."
+    },
+    {
+      "id": "AC-31",
+      "parent_id": "AC-31",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/012-evidence-store/report.md",
+        "development/tasks/012-evidence-store/spec-review.md",
+        "development/tasks/012-evidence-store/quality-review.md",
+        "development/evidence/139-012-evidence-store.log",
+        "development/evidence/140-012-evidence-store.log",
+        "development/evidence/141-012-evidence-store.log",
+        "development/evidence/142-012-evidence-store.log",
+        "development/evidence/143-012-evidence-store.log",
+        "development/evidence/144-012-evidence-store.log",
+        "development/evidence/145-012-evidence-store.log",
+        "development/evidence/146-012-evidence-store.log",
+        "development/evidence/147-012-evidence-store.log",
+        "development/evidence/148-012-evidence-store.log",
+        "development/evidence/149-012-evidence-store.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA."
+    },
+    {
+      "id": "AC-32:evidence-store-retention",
+      "parent_id": "AC-32",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/012-evidence-store/report.md",
+        "development/tasks/012-evidence-store/spec-review.md",
+        "development/tasks/012-evidence-store/quality-review.md",
+        "development/evidence/139-012-evidence-store.log",
+        "development/evidence/140-012-evidence-store.log",
+        "development/evidence/141-012-evidence-store.log",
+        "development/evidence/142-012-evidence-store.log",
+        "development/evidence/143-012-evidence-store.log",
+        "development/evidence/144-012-evidence-store.log",
+        "development/evidence/145-012-evidence-store.log",
+        "development/evidence/146-012-evidence-store.log",
+        "development/evidence/147-012-evidence-store.log",
+        "development/evidence/148-012-evidence-store.log",
+        "development/evidence/149-012-evidence-store.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Contribution evidence for AC-32:evidence-store-retention without full AC-32 closure"
+    }
+  ],
+  "fallback_used": false
+}

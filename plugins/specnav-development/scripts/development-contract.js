@@ -143,7 +143,7 @@ const QUALITY_REVIEW_REQUIRED_HEADINGS = [
 ];
 
 const TASK_ENTRY_FILES = ['brief.md', 'context.json'];
-const TASK_HANDOFF_FILES = [...TASK_ENTRY_FILES, 'report.md', 'spec-review.md', 'quality-review.md'];
+const TASK_HANDOFF_FILES = [...TASK_ENTRY_FILES, 'acceptance.json', 'report.md', 'spec-review.md', 'quality-review.md'];
 const TASK_CONTEXT_ARRAYS = ['must_read', 'allowed_files', 'non_goals', 'expected_evidence', 'unsafe_assumptions'];
 const NON_EMPTY_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files', 'non_goals', 'expected_evidence']);
 const PATH_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files']);
@@ -1813,6 +1813,114 @@ function validateReport(taskDir, relativeTaskPath) {
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
 
+function taskEvidencePathExists(projectRoot, changeDir, relativePath) {
+  if (!isCleanRelativePath(relativePath)) return false;
+
+  const projectRealpath = realpathSync(projectRoot);
+  const candidates = unique([
+    path.resolve(projectRoot, relativePath),
+    path.resolve(changeDir, relativePath)
+  ]);
+
+  for (const candidate of candidates) {
+    if (!isRealpathContained(projectRoot, candidate) || statKind(candidate) !== 'file') continue;
+    try {
+      if (isRealpathContained(projectRealpath, realpathSync(candidate))) return true;
+    } catch {
+      // A disappearing or unreadable evidence file cannot satisfy handoff.
+    }
+  }
+  return false;
+}
+
+function validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPath, taskId) {
+  const name = 'acceptance.json';
+  const parsed = readJsonFile(path.join(taskDir, name));
+  const blockers = [];
+  const assertionIds = [];
+
+  if (!parsed.ok) {
+    blockers.push(parsed.status === 'invalid-json' ? `invalid-json:${name}` : `missing-task-artifact:${name}`);
+    return {
+      name,
+      path: path.join(relativeTaskPath, name),
+      ok: false,
+      blockers,
+      assertion_ids: assertionIds
+    };
+  }
+  if (!isPlainObject(parsed.value)) {
+    blockers.push(`invalid-json-shape:${name}`);
+    return {
+      name,
+      path: path.join(relativeTaskPath, name),
+      ok: false,
+      blockers,
+      assertion_ids: assertionIds
+    };
+  }
+
+  const value = parsed.value;
+  if (value.schema !== 'specnav.task-acceptance-evidence.v1') {
+    blockers.push('invalid-task-acceptance:schema');
+  }
+  if (value.task_id !== taskId) blockers.push('invalid-task-acceptance:task_id');
+  if (value.status !== 'approved') blockers.push('invalid-task-acceptance:status');
+  if (value.fallback_used !== false) blockers.push('invalid-task-acceptance:fallback_used');
+
+  if (!Array.isArray(value.assertions) || value.assertions.length === 0) {
+    blockers.push('invalid-task-acceptance:assertions');
+  } else {
+    const seenIds = new Set();
+    for (const assertion of value.assertions) {
+      if (!isPlainObject(assertion) || !isCleanString(assertion.id)) {
+        blockers.push('invalid-task-acceptance:assertion-id');
+        continue;
+      }
+
+      const assertionId = assertion.id;
+      assertionIds.push(assertionId);
+      if (seenIds.has(assertionId)) {
+        blockers.push(`task-acceptance:duplicate-assertion-id:${assertionId}`);
+      }
+      seenIds.add(assertionId);
+
+      if (assertion.status !== 'passing') {
+        blockers.push(`task-acceptance:non-passing:${assertionId}`);
+      }
+
+      const evidenceFields = ['direct_evidence', 'reused_evidence'];
+      for (const field of evidenceFields) {
+        if (!Array.isArray(assertion[field])) {
+          blockers.push(`invalid-task-acceptance:${assertionId}:${field}`);
+        }
+      }
+
+      const directEvidence = Array.isArray(assertion.direct_evidence) ? assertion.direct_evidence : [];
+      const reusedEvidence = Array.isArray(assertion.reused_evidence) ? assertion.reused_evidence : [];
+      if (directEvidence.length === 0 && reusedEvidence.length === 0) {
+        blockers.push(`task-acceptance:missing-evidence:${assertionId}`);
+      }
+
+      for (const evidencePath of [...directEvidence, ...reusedEvidence]) {
+        if (!isCleanRelativePath(evidencePath)) {
+          blockers.push(`task-acceptance:invalid-evidence-path:${assertionId}:${String(evidencePath)}`);
+        } else if (!taskEvidencePathExists(projectRoot, changeDir, evidencePath)) {
+          blockers.push(`task-acceptance:missing-evidence-path:${assertionId}:${evidencePath}`);
+        }
+      }
+    }
+  }
+
+  return {
+    name,
+    path: path.join(relativeTaskPath, name),
+    ok: blockers.length === 0,
+    blockers: unique(blockers),
+    assertion_ids: unique(assertionIds)
+  };
+}
+
 function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
   const text = readTextFile(path.join(taskDir, name));
   const blockers = [];
@@ -1840,27 +1948,29 @@ function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
     if (!HANDOFF_REVIEW_VERDICTS.has(verdict)) blockers.push(`invalid-${type}:verdict`);
   }
 
-  // Generation/evaluation separation: when the change has a machine-checkable
-  // acceptance contract, an approved spec review is only valid if it cites
-  // which assertions the reviewer verified. An approval that cannot point at
-  // assertions is an opinion, not evidence.
+  // Generation/evaluation separation: an approved task review must cite the
+  // task-level assertions it verified. Parent acceptance alone cannot approve
+  // a task handoff.
   if (type === 'spec-review' && acceptanceIds && acceptanceIds.size > 0 && verdict === 'approved') {
     const assertionsHeading = findHeading(parsed, 'Acceptance Assertions Verified');
     if (!assertionsHeading) {
       blockers.push('review:unsupported-verdict');
     } else {
       const body = headingBodyLines(parsed, assertionsHeading).join('\n');
+      const validCited = [...acceptanceIds].filter((id) => {
+        const boundary = '[^A-Za-z0-9:_-]';
+        return new RegExp(`(?:^|${boundary})${escapeRegExp(id)}(?=$|${boundary})`, 'm').test(body);
+      });
       const assertionPrefixes = new Set(
         [...acceptanceIds]
           .map((id) => String(id).replace(/\d+$/, ''))
           .filter(Boolean)
       );
-      const assertionIdPattern = /\b(?:[A-Z][A-Z0-9]*\d+|[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d+)\b/g;
+      const assertionIdPattern = /\b(?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d+|[A-Z][A-Z0-9]*\d+)(?::[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?\b/g;
       const cited = Array.from(new Set(
         (body.match(assertionIdPattern) || [])
           .filter((id) => assertionPrefixes.has(id.replace(/\d+$/, '')))
       ));
-      const validCited = cited.filter((id) => acceptanceIds.has(id));
       for (const id of cited) {
         if (!acceptanceIds.has(id)) blockers.push(`review:invalid-reference:${id}`);
       }
@@ -1871,7 +1981,7 @@ function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
 
-function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMustRead, acceptanceIds) {
+function validateTaskDir(projectRoot, changeDir, developmentDir, activeChange, dirName, mode, requiredMustRead) {
   const taskDir = path.join(developmentDir, 'tasks', dirName);
   const relativeTaskPath = artifactPath(activeChange, path.join('tasks', dirName), true);
   const requiredBriefPath = artifactPath(activeChange, path.join('tasks', dirName, 'brief.md'), true);
@@ -1889,10 +1999,14 @@ function validateTaskDir(developmentDir, activeChange, dirName, mode, requiredMu
   ];
 
   if (mode === 'handoff') {
+    const acceptance = validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPath, dirName);
+    const acceptanceIds = new Set(acceptance.assertion_ids);
+    artifacts.push(acceptance);
+    blockers.push(...acceptance.blockers);
     validators.push(
       () => validateReport(taskDir, relativeTaskPath),
       () => validateVerdictFile(taskDir, relativeTaskPath, 'spec-review.md', acceptanceIds),
-      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md', acceptanceIds)
+      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md', null)
     );
   }
 
@@ -1997,13 +2111,17 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   } else if (taskDirs.length === 0) {
     blockers.push('missing-development-task-dir');
   } else {
-    const acceptanceForReviews = lib.readAcceptanceAssertions(changeDir);
-    const acceptanceIds = new Set(
-      acceptanceForReviews.present
-        ? acceptanceForReviews.assertions.map((assertion) => assertion.id).filter(Boolean)
-        : []
-    );
-    for (const dirName of taskDirs) tasks.push(validateTaskDir(developmentDir, activeChange, dirName, mode, requiredReferences, acceptanceIds));
+    for (const dirName of taskDirs) {
+      tasks.push(validateTaskDir(
+        projectRoot,
+        changeDir,
+        developmentDir,
+        activeChange,
+        dirName,
+        mode,
+        requiredReferences
+      ));
+    }
   }
 
   const taskIds = tasks.map((task) => task.task_id);

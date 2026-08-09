@@ -1,0 +1,73 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "018-failure-classification",
+  "recorded_at": "2026-08-01T06:02:36.696Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-06",
+      "parent_id": "AC-06",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/018-failure-classification/report.md",
+        "development/tasks/018-failure-classification/spec-review.md",
+        "development/tasks/018-failure-classification/quality-review.md",
+        "development/evidence/267-018-failure-classification.log",
+        "development/evidence/269-018-failure-classification.log",
+        "development/evidence/270-018-failure-classification.log",
+        "development/evidence/271-018-failure-classification.log",
+        "development/evidence/273-018-failure-classification.log",
+        "development/evidence/276-018-failure-classification.log",
+        "development/evidence/277-018-failure-classification.log",
+        "development/evidence/278-018-failure-classification.log",
+        "development/evidence/279-018-failure-classification.log"
+      ],
+      "reused_evidence": [],
+      "claim": "A reviewer can see first failure, retry, repair, retest, and regression attempts without earlier evidence being overwritten."
+    },
+    {
+      "id": "AC-25",
+      "parent_id": "AC-25",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/018-failure-classification/report.md",
+        "development/tasks/018-failure-classification/spec-review.md",
+        "development/tasks/018-failure-classification/quality-review.md",
+        "development/evidence/267-018-failure-classification.log",
+        "development/evidence/269-018-failure-classification.log",
+        "development/evidence/270-018-failure-classification.log",
+        "development/evidence/271-018-failure-classification.log",
+        "development/evidence/273-018-failure-classification.log",
+        "development/evidence/276-018-failure-classification.log",
+        "development/evidence/277-018-failure-classification.log",
+        "development/evidence/278-018-failure-classification.log",
+        "development/evidence/279-018-failure-classification.log"
+      ],
+      "reused_evidence": [],
+      "claim": "A failed case creates a frozen failure packet and routes product or test repair to a standard development task packet."
+    },
+    {
+      "id": "AC-27",
+      "parent_id": "AC-27",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/018-failure-classification/report.md",
+        "development/tasks/018-failure-classification/spec-review.md",
+        "development/tasks/018-failure-classification/quality-review.md",
+        "development/evidence/267-018-failure-classification.log",
+        "development/evidence/269-018-failure-classification.log",
+        "development/evidence/270-018-failure-classification.log",
+        "development/evidence/271-018-failure-classification.log",
+        "development/evidence/273-018-failure-classification.log",
+        "development/evidence/276-018-failure-classification.log",
+        "development/evidence/277-018-failure-classification.log",
+        "development/evidence/278-018-failure-classification.log",
+        "development/evidence/279-018-failure-classification.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Repeated no-progress repair attempts route to break-loop governance instead of silently retrying."
+    }
+  ],
+  "fallback_used": false
+}

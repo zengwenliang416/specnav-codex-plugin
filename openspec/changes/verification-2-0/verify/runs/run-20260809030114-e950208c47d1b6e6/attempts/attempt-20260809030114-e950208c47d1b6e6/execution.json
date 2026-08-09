@@ -1,0 +1,1006 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260809030114-e950208c47d1b6e6",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-07"
+    ],
+    "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+    "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-09T03:01:14.096Z",
+    "started_at": "2026-08-09T03:01:14.109Z",
+    "completed_at": "2026-08-09T03:01:29.356Z",
+    "kind": "initial",
+    "origin_run_id": null,
+    "parent_run_id": null,
+    "parent_attempt_id": null,
+    "failure_id": null
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260809030114-e950208c47d1b6e6",
+    "run_id": "run-20260809030114-e950208c47d1b6e6",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-07",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "initial",
+    "sequence": 1,
+    "runner": "command",
+    "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+    "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+    "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-09T03:01:14.109Z",
+    "completed_at": "2026-08-09T03:01:29.356Z",
+    "exit_status": 0
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809030114-e950208c47d1b6e6",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-07"
+      ],
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-09T03:01:14.096Z",
+      "started_at": "2026-08-09T03:01:14.109Z",
+      "completed_at": null,
+      "kind": "initial",
+      "origin_run_id": null,
+      "parent_run_id": null,
+      "parent_attempt_id": null,
+      "failure_id": null
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809030114-e950208c47d1b6e6",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-07"
+      ],
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-09T03:01:14.096Z",
+      "started_at": "2026-08-09T03:01:14.109Z",
+      "completed_at": "2026-08-09T03:01:29.356Z",
+      "kind": "initial",
+      "origin_run_id": null,
+      "parent_run_id": null,
+      "parent_attempt_id": null,
+      "failure_id": null
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030114-e950208c47d1b6e6",
+      "run_id": "run-20260809030114-e950208c47d1b6e6",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-07",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-09T03:01:14.109Z",
+      "completed_at": null,
+      "exit_status": null
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030114-e950208c47d1b6e6",
+      "run_id": "run-20260809030114-e950208c47d1b6e6",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-07",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T03:01:14.109Z",
+      "completed_at": "2026-08-09T03:01:29.356Z",
+      "exit_status": 0
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030114-e950208c47d1b6e6",
+      "run_id": "run-20260809030114-e950208c47d1b6e6",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-07",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T03:01:14.109Z",
+      "completed_at": "2026-08-09T03:01:29.356Z",
+      "exit_status": 0
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract\nok 1 - Claude Code describes the same full Verification 2.0 Kernel contract\n  ---\n  duration_ms: 1.091083\n  type: 'test'\n  ...\n# Subtest: Claude Code preserves exact blockers and report artifact paths\nok 2 - Claude Code preserves exact blockers and report artifact paths\n  ---\n  duration_ms: 0.541333\n  type: 'test'\n  ...\n# Subtest: Claude Code blocks partial verification, fallback, and manual green\nok 3 - Claude Code blocks partial verification, fallback, and manual green\n  ---\n  duration_ms: 0.208792\n  type: 'test'\n  ...\n# Subtest: Claude Code requires explicit approval for runtime and migration writes\nok 4 - Claude Code requires explicit approval for runtime and migration writes\n  ---\n  duration_ms: 0.194708\n  type: 'test'\n  ...\n# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback\nok 5 - Claude Code exposes forbidden or undisclosed downstream fallback\n  ---\n  duration_ms: 0.237958\n  type: 'test'\n  ...\n# Subtest: Claude Code repository consumes the synchronized canonical Kernel\nok 6 - Claude Code repository consumes the synchronized canonical Kernel\n  ---\n  duration_ms: 84.542\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer rejects the wrong repository before writes\nok 7 - Claude synchronizer rejects the wrong repository before writes\n  ---\n  duration_ms: 133.772291\n  type: 'test'\n  ...\n# Subtest: Claude synchronization preserves unrelated dirty files\nok 8 - Claude synchronization preserves unrelated dirty files\n  ---\n  duration_ms: 907.773\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer refuses owned-path conflicts and dirty overrides\nok 9 - Claude synchronizer refuses owned-path conflicts and dirty overrides\n  ---\n  duration_ms: 231.430666\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer rejects ancestor symlink escapes\nok 10 - Claude synchronizer rejects ancestor symlink escapes\n  ---\n  duration_ms: 91.901167\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer leaves no partial writes when staging fails\nok 11 - Claude synchronizer leaves no partial writes when staging fails\n  ---\n  duration_ms: 589.01075\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer commits one validated tree with host provenance\nok 12 - Claude synchronizer commits one validated tree with host provenance\n  ---\n  duration_ms: 659.661333\n  type: 'test'\n  ...\n# Subtest: Claude host code remains invocation-only\nok 13 - Claude host code remains invocation-only\n  ---\n  duration_ms: 0.702959\n  type: 'test'\n  ...\n# Subtest: CodeFree-O describes the canonical full Verification contract\nok 14 - CodeFree-O describes the canonical full Verification contract\n  ---\n  duration_ms: 0.995083\n  type: 'test'\n  ...\n# Subtest: CodeFree-O preserves shared blockers and artifacts\nok 15 - CodeFree-O preserves shared blockers and artifacts\n  ---\n  duration_ms: 0.434167\n  type: 'test'\n  ...\n# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests\nok 16 - CodeFree-O blocks partial, fallback, and manual-green requests\n  ---\n  duration_ms: 0.199583\n  type: 'test'\n  ...\n# Subtest: CodeFree-O requires explicit approval for runtime and migration writes\nok 17 - CodeFree-O requires explicit approval for runtime and migration writes\n  ---\n  duration_ms: 0.316375\n  type: 'test'\n  ...\n# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback\nok 18 - CodeFree-O exposes forbidden or undisclosed downstream fallback\n  ---\n  duration_ms: 0.177666\n  type: 'test'\n  ...\n# Subtest: CodeFree-O fails closed for invalid requests and source results\nok 19 - CodeFree-O fails closed for invalid requests and source results\n  ---\n  duration_ms: 0.23425\n  type: 'test'\n  ...\n# Subtest: CodeFree-O host wrapper remains invocation-only\nok 20 - CodeFree-O host wrapper remains invocation-only\n  ---\n  duration_ms: 0.19525\n  type: 'test'\n  ...\n# Subtest: CodeFree-O repository consumes the canonical Verification Kernel\nok 21 - CodeFree-O repository consumes the canonical Verification Kernel\n  ---\n  duration_ms: 113.934625\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization preserves unrelated dirty files\nok 22 - CodeFree-O synchronization preserves unrelated dirty files\n  ---\n  duration_ms: 878.288125\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization blocks owned-path conflicts\nok 23 - CodeFree-O synchronization blocks owned-path conflicts\n  ---\n  duration_ms: 158.902375\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization removes undeclared module files\nok 24 - CodeFree-O synchronization removes undeclared module files\n  ---\n  duration_ms: 635.478042\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes\nok 25 - CodeFree-O synchronization rejects ancestor symlink escapes\n  ---\n  duration_ms: 124.517125\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization failure leaves the module unchanged\nok 26 - CodeFree-O synchronization failure leaves the module unchanged\n  ---\n  duration_ms: 615.856333\n  type: 'test'\n  ...\n# Subtest: Codex describes the full Verification 2.0 contract from one Kernel\nok 27 - Codex describes the full Verification 2.0 contract from one Kernel\n  ---\n  duration_ms: 3.06425\n  type: 'test'\n  ...\n# Subtest: Codex invokes the shared command surface and preserves blockers\nok 28 - Codex invokes the shared command surface and preserves blockers\n  ---\n  duration_ms: 1.406084\n  type: 'test'\n  ...\n# Subtest: Codex adapter blocks simplified, fallback, and manual-green requests\nok 29 - Codex adapter blocks simplified, fallback, and manual-green requests\n  ---\n  duration_ms: 0.79625\n  type: 'test'\n  ...\n# Subtest: Codex adapter requires explicit approval for runtime mutation\nok 30 - Codex adapter requires explicit approval for runtime mutation\n  ---\n  duration_ms: 0.250709\n  type: 'test'\n  ...\n# Subtest: Codex adapter requires explicit approval for migration writes\nok 31 - Codex adapter requires explicit approval for migration writes\n  ---\n  duration_ms: 0.113041\n  type: 'test'\n  ...\n# Subtest: Codex adapter requires explicit approval for Core repair transitions\nok 32 - Codex adapter requires explicit approval for Core repair transitions\n  ---\n  duration_ms: 0.126042\n  type: 'test'\n  ...\n# Subtest: Codex adapter exposes and blocks downstream fallback signals\nok 33 - Codex adapter exposes and blocks downstream fallback signals\n  ---\n  duration_ms: 0.169625\n  type: 'test'\n  ...\n# Subtest: Codex adapter blocks a source that does not attest no fallback\nok 34 - Codex adapter blocks a source that does not attest no fallback\n  ---\n  duration_ms: 0.077833\n  type: 'test'\n  ...\n# Subtest: Codex adapter fails closed for unsupported actions and invalid results\nok 35 - Codex adapter fails closed for unsupported actions and invalid results\n  ---\n  duration_ms: 0.37325\n  type: 'test'\n  ...\n# Subtest: Codex source contains invocation only, not verdict implementation\nok 36 - Codex source contains invocation only, not verdict implementation\n  ---\n  duration_ms: 0.520334\n  type: 'test'\n  ...\n# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot\nok 37 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot\n  ---\n  duration_ms: 380.127375\n  type: 'test'\n  ...\n# Subtest: kernel identity drift returns a stable release blocker\nok 38 - kernel identity drift returns a stable release blocker\n  ---\n  duration_ms: 299.323209\n  type: 'test'\n  ...\n# Subtest: unversioned Kernel source drift cannot bypass compatibility CI\nok 39 - unversioned Kernel source drift cannot bypass compatibility CI\n  ---\n  duration_ms: 369.975666\n  type: 'test'\n  ...\n# Subtest: schema checksum drift identifies the affected schema\nok 40 - schema checksum drift identifies the affected schema\n  ---\n  duration_ms: 300.391375\n  type: 'test'\n  ...\n# Subtest: blocker registry drift cannot be hidden by a matching version\nok 41 - blocker registry drift cannot be hidden by a matching version\n  ---\n  duration_ms: 223.363375\n  type: 'test'\n  ...\n# Subtest: normalized fixture drift is release blocking\nok 42 - normalized fixture drift is release blocking\n  ---\n  duration_ms: 92.011666\n  type: 'test'\n  ...\n# Subtest: generated report model drift is release blocking\nok 43 - generated report model drift is release blocking\n  ---\n  duration_ms: 214.377959\n  type: 'test'\n  ...\n# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries\nok 44 - host-owned code cannot bypass or duplicate Kernel boundaries\n  ---\n  duration_ms: 277.049292\n  type: 'test'\n  ...\n# Subtest: missing host input fails closed without fallback\nok 45 - missing host input fails closed without fallback\n  ---\n  duration_ms: 0.658709\n  type: 'test'\n  ...\n# Subtest: omitted roots return stable input blockers\nok 46 - omitted roots return stable input blockers\n  ---\n  duration_ms: 0.434917\n  type: 'test'\n  ...\n# Subtest: manifest paths cannot escape the synchronized plugin root\nok 47 - manifest paths cannot escape the synchronized plugin root\n  ---\n  duration_ms: 205.101708\n  type: 'test'\n  ...\n# Subtest: manifest cannot omit required host-owned files or hide rogue files\nok 48 - manifest cannot omit required host-owned files or hide rogue files\n  ---\n  duration_ms: 331.279916\n  type: 'test'\n  ...\n# Subtest: host-owned wrapper bytes must match synchronized provenance\nok 49 - host-owned wrapper bytes must match synchronized provenance\n  ---\n  duration_ms: 262.25175\n  type: 'test'\n  ...\n# Subtest: updated manifest hash cannot hide transformed skill tampering\nok 50 - updated manifest hash cannot hide transformed skill tampering\n  ---\n  duration_ms: 229.305\n  type: 'test'\n  ...\n# Subtest: updated manifest hash cannot hide generated host-file tampering\nok 51 - updated manifest hash cannot hide generated host-file tampering\n  ---\n  duration_ms: 233.854459\n  type: 'test'\n  ...\n# Subtest: updated tree digest cannot hide exact canonical file tampering\nok 52 - updated tree digest cannot hide exact canonical file tampering\n  ---\n  duration_ms: 227.616458\n  type: 'test'\n  ...\n# Subtest: missing manifest returns a stable drift blocker\nok 53 - missing manifest returns a stable drift blocker\n  ---\n  duration_ms: 119.005917\n  type: 'test'\n  ...\n# Subtest: host manifests must bind to a clean locked source commit\nok 54 - host manifests must bind to a clean locked source commit\n  ---\n  duration_ms: 152.888458\n  type: 'test'\n  ...\n# Subtest: candidate JavaScript is treated as data and never executed\nok 55 - candidate JavaScript is treated as data and never executed\n  ---\n  duration_ms: 95.891083\n  type: 'test'\n  ...\n# Subtest: CI pins both downstream host repositories to immutable commits\nok 56 - CI pins both downstream host repositories to immutable commits\n  ---\n  duration_ms: 1.902083\n  type: 'test'\n  ...\n# Subtest: packaged host provenance resolves without the source repository\nok 57 - packaged host provenance resolves without the source repository\n  ---\n  duration_ms: 298.343667\n  type: 'test'\n  ...\n# Subtest: host authority validates clean repositories and fails closed on Git state\nok 58 - host authority validates clean repositories and fails closed on Git state\n  ---\n  duration_ms: 4308.032917\n  type: 'test'\n  ...\n# Subtest: host authority detects manifest, source, tree, skill, and wrapper drift\n    # Subtest: verification-drift:manifest-contract-mismatch:claude-code\n    ok 1 - verification-drift:manifest-contract-mismatch:claude-code\n      ---\n      duration_ms: 2573.624875\n      type: 'test'\n      ...\n    # Subtest: verification-drift:manifest-source-commit-mismatch:codefree-o\n    ok 2 - verification-drift:manifest-source-commit-mismatch:codefree-o\n      ---\n      duration_ms: 1998.8995\n      type: 'test'\n      ...\n    # Subtest: verification-drift:manifest-exact-file-provenance-mismatch:claude-code\n    ok 3 - verification-drift:manifest-exact-file-provenance-mismatch:claude-code\n      ---\n      duration_ms: 1938.623917\n      type: 'test'\n      ...\n    # Subtest: verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o\n    ok 4 - verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o\n      ---\n      duration_ms: 2059.975416\n      type: 'test'\n      ...\n    # Subtest: verification-drift:manifest-host-file-provenance-mismatch:claude-code\n    ok 5 - verification-drift:manifest-host-file-provenance-mismatch:claude-code\n      ---\n      duration_ms: 1872.134458\n      type: 'test'\n      ...\n    1..5\nok 59 - host authority detects manifest, source, tree, skill, and wrapper drift\n  ---\n  duration_ms: 10444.286291\n  type: 'test'\n  ...\n# Subtest: claude-code Operations proof sync preserves unrelated dirty files\nok 60 - claude-code Operations proof sync preserves unrelated dirty files\n  ---\n  duration_ms: 270.22475\n  type: 'test'\n  ...\n# Subtest: claude-code Operations proof sync blocks owned conflicts\nok 61 - claude-code Operations proof sync blocks owned conflicts\n  ---\n  duration_ms: 143.356167\n  type: 'test'\n  ...\n# Subtest: codefree-o Operations proof sync preserves unrelated dirty files\nok 62 - codefree-o Operations proof sync preserves unrelated dirty files\n  ---\n  duration_ms: 202.903833\n  type: 'test'\n  ...\n# Subtest: codefree-o Operations proof sync blocks owned conflicts\nok 63 - codefree-o Operations proof sync blocks owned conflicts\n  ---\n  duration_ms: 191.120417\n  type: 'test'\n  ...\n# Subtest: real downstream Operations proof bytes match one committed source\nok 64 - real downstream Operations proof bytes match one committed source\n  ---\n  duration_ms: 190.578875\n  type: 'test'\n  ...\n1..64\n# tests 69\n# suites 0\n# pass 69\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 15163.473417\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-09T03:01:14.110Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809030114-e950208c47d1b6e6",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-07"
+        ],
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-09T03:01:14.096Z",
+        "started_at": "2026-08-09T03:01:14.109Z",
+        "completed_at": null,
+        "kind": "initial",
+        "origin_run_id": null,
+        "parent_run_id": null,
+        "parent_attempt_id": null,
+        "failure_id": null
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-09T03:01:14.110Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809030114-e950208c47d1b6e6",
+        "run_id": "run-20260809030114-e950208c47d1b6e6",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-07",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "initial",
+        "sequence": 1,
+        "runner": "command",
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-09T03:01:14.109Z",
+        "completed_at": null,
+        "exit_status": null
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-09T03:01:14.111Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-cross-host.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:14.170Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.950Z",
+      "chunk": "# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.951Z",
+      "chunk": "ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "  ---\n  duration_ms: 1.091083\n  type: 'test'\n  ...\n# Subtest: Claude Code preserves exact blockers and report artifact paths\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "ok 2 - Claude Code preserves exact blockers and report artifact paths\n  ---\n  duration_ms: 0.541333\n  type: 'test'\n  ...\n# Subtest: Claude Code blocks partial verification, fallback, and manual green\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "ok 3 - Claude Code blocks partial verification, fallback, and manual green\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "  ---\n  duration_ms: 0.208792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "# Subtest: Claude Code requires explicit approval for runtime and migration writes\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "ok 4 - Claude Code requires explicit approval for runtime and migration writes\n  ---\n  duration_ms: 0.194708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.952Z",
+      "chunk": "# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.953Z",
+      "chunk": "ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback\n  ---\n  duration_ms: 0.237958\n  type: 'test'\n  ...\n# Subtest: Claude Code repository consumes the synchronized canonical Kernel\nok 6 - Claude Code repository consumes the synchronized canonical Kernel\n  ---\n  duration_ms: 84.542\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer rejects the wrong repository before writes\nok 7 - Claude synchronizer rejects the wrong repository before writes\n  ---\n  duration_ms: 133.772291\n  type: 'test'\n  ...\n# Subtest: Claude synchronization preserves unrelated dirty files\nok 8 - Claude synchronization preserves unrelated dirty files\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.953Z",
+      "chunk": "  ---\n  duration_ms: 907.773\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "# Subtest: Claude synchronizer refuses owned-path conflicts and dirty overrides\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "ok 9 - Claude synchronizer refuses owned-path conflicts and dirty overrides\n  ---\n  duration_ms: 231.430666\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "# Subtest: Claude synchronizer rejects ancestor symlink escapes\nok 10 - Claude synchronizer rejects ancestor symlink escapes\n  ---\n  duration_ms: 91.901167\n  type: 'test'\n  ...\n# Subtest: Claude synchronizer leaves no partial writes when staging fails\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "ok 11 - Claude synchronizer leaves no partial writes when staging fails\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "  ---\n  duration_ms: 589.01075\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.954Z",
+      "chunk": "# Subtest: Claude synchronizer commits one validated tree with host provenance\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.955Z",
+      "chunk": "ok 12 - Claude synchronizer commits one validated tree with host provenance\n  ---\n  duration_ms: 659.661333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.955Z",
+      "chunk": "# Subtest: Claude host code remains invocation-only\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.955Z",
+      "chunk": "ok 13 - Claude host code remains invocation-only\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.955Z",
+      "chunk": "  ---\n  duration_ms: 0.702959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "# Subtest: CodeFree-O describes the canonical full Verification contract\n"
+    },
+    {
+      "sequence": 27,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "ok 14 - CodeFree-O describes the canonical full Verification contract\n"
+    },
+    {
+      "sequence": 28,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "  ---\n  duration_ms: 0.995083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 29,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "# Subtest: CodeFree-O preserves shared blockers and artifacts\n"
+    },
+    {
+      "sequence": 30,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "ok 15 - CodeFree-O preserves shared blockers and artifacts\n"
+    },
+    {
+      "sequence": 31,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "  ---\n  duration_ms: 0.434167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 32,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests\n"
+    },
+    {
+      "sequence": 33,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.962Z",
+      "chunk": "ok 16 - CodeFree-O blocks partial, fallback, and manual-green requests\n  ---\n  duration_ms: 0.199583\n  type: 'test'\n  ...\n# Subtest: CodeFree-O requires explicit approval for runtime and migration writes\n"
+    },
+    {
+      "sequence": 34,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "ok 17 - CodeFree-O requires explicit approval for runtime and migration writes\n  ---\n  duration_ms: 0.316375\n  type: 'test'\n  ...\n# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback\nok 18 - CodeFree-O exposes forbidden or undisclosed downstream fallback\n  ---\n  duration_ms: 0.177666\n  type: 'test'\n  ...\n# Subtest: CodeFree-O fails closed for invalid requests and source results\nok 19 - CodeFree-O fails closed for invalid requests and source results\n"
+    },
+    {
+      "sequence": 35,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "  ---\n  duration_ms: 0.23425\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 36,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "# Subtest: CodeFree-O host wrapper remains invocation-only\n"
+    },
+    {
+      "sequence": 37,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "ok 20 - CodeFree-O host wrapper remains invocation-only\n"
+    },
+    {
+      "sequence": 38,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "  ---\n  duration_ms: 0.19525\n  type: 'test'\n  ...\n# Subtest: CodeFree-O repository consumes the canonical Verification Kernel\nok 21 - CodeFree-O repository consumes the canonical Verification Kernel\n  ---\n  duration_ms: 113.934625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 39,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "# Subtest: CodeFree-O synchronization preserves unrelated dirty files\n"
+    },
+    {
+      "sequence": 40,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "ok 22 - CodeFree-O synchronization preserves unrelated dirty files\n"
+    },
+    {
+      "sequence": 41,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "  ---\n  duration_ms: 878.288125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 42,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "# Subtest: CodeFree-O synchronization blocks owned-path conflicts\n"
+    },
+    {
+      "sequence": 43,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "ok 23 - CodeFree-O synchronization blocks owned-path conflicts\n"
+    },
+    {
+      "sequence": 44,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "  ---\n  duration_ms: 158.902375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 45,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "# Subtest: CodeFree-O synchronization removes undeclared module files\n"
+    },
+    {
+      "sequence": 46,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "ok 24 - CodeFree-O synchronization removes undeclared module files\n  ---\n  duration_ms: 635.478042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 47,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.963Z",
+      "chunk": "# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes\n"
+    },
+    {
+      "sequence": 48,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "ok 25 - CodeFree-O synchronization rejects ancestor symlink escapes\n  ---\n  duration_ms: 124.517125\n  type: 'test'\n  ...\n# Subtest: CodeFree-O synchronization failure leaves the module unchanged\nok 26 - CodeFree-O synchronization failure leaves the module unchanged\n  ---\n  duration_ms: 615.856333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 49,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "# Subtest: Codex describes the full Verification 2.0 contract from one Kernel\n"
+    },
+    {
+      "sequence": 50,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "ok 27 - Codex describes the full Verification 2.0 contract from one Kernel\n  ---\n  duration_ms: 3.06425\n  type: 'test'\n  ...\n# Subtest: Codex invokes the shared command surface and preserves blockers\n"
+    },
+    {
+      "sequence": 51,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "ok 28 - Codex invokes the shared command surface and preserves blockers\n"
+    },
+    {
+      "sequence": 52,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "  ---\n  duration_ms: 1.406084\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 53,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "# Subtest: Codex adapter blocks simplified, fallback, and manual-green requests\n"
+    },
+    {
+      "sequence": 54,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "ok 29 - Codex adapter blocks simplified, fallback, and manual-green requests\n  ---\n  duration_ms: 0.79625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 55,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "# Subtest: Codex adapter requires explicit approval for runtime mutation\nok 30 - Codex adapter requires explicit approval for runtime mutation\n  ---\n  duration_ms: 0.250709\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 56,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "# Subtest: Codex adapter requires explicit approval for migration writes\nok 31 - Codex adapter requires explicit approval for migration writes\n  ---\n  duration_ms: 0.113041\n  type: 'test'\n  ...\n# Subtest: Codex adapter requires explicit approval for Core repair transitions\n"
+    },
+    {
+      "sequence": 57,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "ok 32 - Codex adapter requires explicit approval for Core repair transitions\n"
+    },
+    {
+      "sequence": 58,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "  ---\n  duration_ms: 0.126042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 59,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.964Z",
+      "chunk": "# Subtest: Codex adapter exposes and blocks downstream fallback signals\n"
+    },
+    {
+      "sequence": 60,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "ok 33 - Codex adapter exposes and blocks downstream fallback signals\n"
+    },
+    {
+      "sequence": 61,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "  ---\n  duration_ms: 0.169625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 62,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "# Subtest: Codex adapter blocks a source that does not attest no fallback\nok 34 - Codex adapter blocks a source that does not attest no fallback\n"
+    },
+    {
+      "sequence": 63,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "  ---\n  duration_ms: 0.077833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 64,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "# Subtest: Codex adapter fails closed for unsupported actions and invalid results\n"
+    },
+    {
+      "sequence": 65,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "ok 35 - Codex adapter fails closed for unsupported actions and invalid results\n"
+    },
+    {
+      "sequence": 66,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "  ---\n  duration_ms: 0.37325\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 67,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "# Subtest: Codex source contains invocation only, not verdict implementation\n"
+    },
+    {
+      "sequence": 68,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "ok 36 - Codex source contains invocation only, not verdict implementation\n"
+    },
+    {
+      "sequence": 69,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:16.965Z",
+      "chunk": "  ---\n  duration_ms: 0.520334\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 70,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.267Z",
+      "chunk": "# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot\n"
+    },
+    {
+      "sequence": 71,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.267Z",
+      "chunk": "ok 37 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot\n  ---\n  duration_ms: 380.127375\n  type: 'test'\n  ...\n# Subtest: kernel identity drift returns a stable release blocker\nok 38 - kernel identity drift returns a stable release blocker\n  ---\n  duration_ms: 299.323209\n  type: 'test'\n  ...\n# Subtest: unversioned Kernel source drift cannot bypass compatibility CI\nok 39 - unversioned Kernel source drift cannot bypass compatibility CI\n  ---\n  duration_ms: 369.975666\n  type: 'test'\n  ...\n# Subtest: schema checksum drift identifies the affected schema\nok 40 - schema checksum drift identifies the affected schema\n  ---\n  duration_ms: 300.391375\n  type: 'test'\n  ...\n# Subtest: blocker registry drift cannot be hidden by a matching version\nok 41 - blocker registry drift cannot be hidden by a matching version\n  ---\n  duration_ms: 223.363375\n  type: 'test'\n  ...\n# Subtest: normalized fixture drift is release blocking\n"
+    },
+    {
+      "sequence": 72,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.267Z",
+      "chunk": "ok 42 - normalized fixture drift is release blocking\n  ---\n  duration_ms: 92.011666\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 73,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.267Z",
+      "chunk": "# Subtest: generated report model drift is release blocking\n"
+    },
+    {
+      "sequence": 74,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.268Z",
+      "chunk": "ok 43 - generated report model drift is release blocking\n"
+    },
+    {
+      "sequence": 75,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.268Z",
+      "chunk": "  ---\n  duration_ms: 214.377959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 76,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.268Z",
+      "chunk": "# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries\n"
+    },
+    {
+      "sequence": 77,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.268Z",
+      "chunk": "ok 44 - host-owned code cannot bypass or duplicate Kernel boundaries\n"
+    },
+    {
+      "sequence": 78,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.268Z",
+      "chunk": "  ---\n  duration_ms: 277.049292\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 79,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.269Z",
+      "chunk": "# Subtest: missing host input fails closed without fallback\nok 45 - missing host input fails closed without fallback\n  ---\n  duration_ms: 0.658709\n  type: 'test'\n  ...\n# Subtest: omitted roots return stable input blockers\nok 46 - omitted roots return stable input blockers\n  ---\n  duration_ms: 0.434917\n  type: 'test'\n  ...\n# Subtest: manifest paths cannot escape the synchronized plugin root\nok 47 - manifest paths cannot escape the synchronized plugin root\n  ---\n  duration_ms: 205.101708\n  type: 'test'\n  ...\n# Subtest: manifest cannot omit required host-owned files or hide rogue files\nok 48 - manifest cannot omit required host-owned files or hide rogue files\n  ---\n  duration_ms: 331.279916\n  type: 'test'\n  ...\n# Subtest: host-owned wrapper bytes must match synchronized provenance\nok 49 - host-owned wrapper bytes must match synchronized provenance\n  ---\n  duration_ms: 262.25175\n  type: 'test'\n  ...\n# Subtest: updated manifest hash cannot hide transformed skill tampering\nok 50 - updated manifest hash cannot hide transformed skill tampering\n  ---\n  duration_ms: 229.305\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 80,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "# Subtest: updated manifest hash cannot hide generated host-file tampering\n"
+    },
+    {
+      "sequence": 81,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "ok 51 - updated manifest hash cannot hide generated host-file tampering\n  ---\n  duration_ms: 233.854459\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 82,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "# Subtest: updated tree digest cannot hide exact canonical file tampering\n"
+    },
+    {
+      "sequence": 83,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "ok 52 - updated tree digest cannot hide exact canonical file tampering\n"
+    },
+    {
+      "sequence": 84,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "  ---\n  duration_ms: 227.616458\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 85,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "# Subtest: missing manifest returns a stable drift blocker\nok 53 - missing manifest returns a stable drift blocker\n  ---\n  duration_ms: 119.005917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 86,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "# Subtest: host manifests must bind to a clean locked source commit\n"
+    },
+    {
+      "sequence": 87,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "ok 54 - host manifests must bind to a clean locked source commit\n"
+    },
+    {
+      "sequence": 88,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "  ---\n  duration_ms: 152.888458\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 89,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "# Subtest: candidate JavaScript is treated as data and never executed\n"
+    },
+    {
+      "sequence": 90,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "ok 55 - candidate JavaScript is treated as data and never executed\n  ---\n  duration_ms: 95.891083\n  type: 'test'\n  ...\n# Subtest: CI pins both downstream host repositories to immutable commits\n"
+    },
+    {
+      "sequence": 91,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "ok 56 - CI pins both downstream host repositories to immutable commits\n"
+    },
+    {
+      "sequence": 92,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:18.270Z",
+      "chunk": "  ---\n  duration_ms: 1.902083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 93,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.302Z",
+      "chunk": "# Subtest: packaged host provenance resolves without the source repository\n"
+    },
+    {
+      "sequence": 94,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.302Z",
+      "chunk": "ok 57 - packaged host provenance resolves without the source repository\n  ---\n  duration_ms: 298.343667\n  type: 'test'\n  ...\n# Subtest: host authority validates clean repositories and fails closed on Git state\nok 58 - host authority validates clean repositories and fails closed on Git state\n  ---\n  duration_ms: 4308.032917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 95,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.302Z",
+      "chunk": "# Subtest: host authority detects manifest, source, tree, skill, and wrapper drift\n"
+    },
+    {
+      "sequence": 96,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.302Z",
+      "chunk": "    # Subtest: verification-drift:manifest-contract-mismatch:claude-code\n"
+    },
+    {
+      "sequence": 97,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    ok 1 - verification-drift:manifest-contract-mismatch:claude-code\n      ---\n      duration_ms: 2573.624875\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 98,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    # Subtest: verification-drift:manifest-source-commit-mismatch:codefree-o\n"
+    },
+    {
+      "sequence": 99,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    ok 2 - verification-drift:manifest-source-commit-mismatch:codefree-o\n      ---\n      duration_ms: 1998.8995\n      type: 'test'\n      ...\n    # Subtest: verification-drift:manifest-exact-file-provenance-mismatch:claude-code\n    ok 3 - verification-drift:manifest-exact-file-provenance-mismatch:claude-code\n      ---\n      duration_ms: 1938.623917\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 100,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    # Subtest: verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o\n    ok 4 - verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o\n      ---\n      duration_ms: 2059.975416\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 101,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    # Subtest: verification-drift:manifest-host-file-provenance-mismatch:claude-code\n"
+    },
+    {
+      "sequence": 102,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    ok 5 - verification-drift:manifest-host-file-provenance-mismatch:claude-code\n      ---\n      duration_ms: 1872.134458\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 103,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "    1..5\n"
+    },
+    {
+      "sequence": 104,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.303Z",
+      "chunk": "ok 59 - host authority detects manifest, source, tree, skill, and wrapper drift\n  ---\n  duration_ms: 10444.286291\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 105,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# Subtest: claude-code Operations proof sync preserves unrelated dirty files\n"
+    },
+    {
+      "sequence": 106,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "ok 60 - claude-code Operations proof sync preserves unrelated dirty files\n  ---\n  duration_ms: 270.22475\n  type: 'test'\n  ...\n# Subtest: claude-code Operations proof sync blocks owned conflicts\nok 61 - claude-code Operations proof sync blocks owned conflicts\n  ---\n  duration_ms: 143.356167\n  type: 'test'\n  ...\n# Subtest: codefree-o Operations proof sync preserves unrelated dirty files\nok 62 - codefree-o Operations proof sync preserves unrelated dirty files\n  ---\n  duration_ms: 202.903833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 107,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# Subtest: codefree-o Operations proof sync blocks owned conflicts\n"
+    },
+    {
+      "sequence": 108,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "ok 63 - codefree-o Operations proof sync blocks owned conflicts\n"
+    },
+    {
+      "sequence": 109,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "  ---\n  duration_ms: 191.120417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 110,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# Subtest: real downstream Operations proof bytes match one committed source\n"
+    },
+    {
+      "sequence": 111,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "ok 64 - real downstream Operations proof bytes match one committed source\n  ---\n  duration_ms: 190.578875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 112,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "1..64\n# tests 69\n# suites 0\n# pass 69\n# fail 0\n# cancelled 0\n"
+    },
+    {
+      "sequence": 113,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 114,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 115,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:29.317Z",
+      "chunk": "# duration_ms 15163.473417\n"
+    },
+    {
+      "sequence": 116,
+      "type": "command.terminal",
+      "at": "2026-08-09T03:01:29.356Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 117,
+      "type": "attempt.terminal",
+      "at": "2026-08-09T03:01:29.357Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809030114-e950208c47d1b6e6",
+        "run_id": "run-20260809030114-e950208c47d1b6e6",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-07",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "initial",
+        "sequence": 1,
+        "runner": "command",
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "scenario_hash": "f4cb442b1ef05dbd7835a69b3056970eb3273d8ce8f74802855058212abf17d7",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "67aaec2f37b0a5d4bb5bf75d1b1edfdd5156748d0e1c5de41f2edcfa80e31219",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-09T03:01:14.109Z",
+        "completed_at": "2026-08-09T03:01:29.356Z",
+        "exit_status": 0
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 118,
+      "type": "run.terminal",
+      "at": "2026-08-09T03:01:29.357Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809030114-e950208c47d1b6e6",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-07"
+        ],
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-09T03:01:14.096Z",
+        "started_at": "2026-08-09T03:01:14.109Z",
+        "completed_at": "2026-08-09T03:01:29.356Z",
+        "kind": "initial",
+        "origin_run_id": null,
+        "parent_run_id": null,
+        "parent_attempt_id": null,
+        "failure_id": null
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}

@@ -407,7 +407,7 @@ write_development_artifacts() {
   local development="$change_dir/development"
   local task="$development/tasks/001-dashboard-summary"
 
-  mkdir -p "$task" "$development/migrations"
+  mkdir -p "$task" "$development/migrations" "$development/evidence"
 
   cat >"$change_dir/scope.json" <<'JSON'
 {
@@ -531,6 +531,7 @@ JSONL
 {"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","status":"passed","ok":true}
 {"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log"}
 JSONL
+  printf '%s\n' "dashboard summary focused validation passed" >"$development/evidence/001-dashboard-summary.log"
 
   cat >"$development/migrations/manifest.json" <<'JSON'
 {
@@ -668,6 +669,29 @@ MD
 }
 JSON
 
+  cat >"$task/acceptance.json" <<'JSON'
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "task_id": "001-dashboard-summary",
+  "recorded_at": "2026-07-03T00:00:00.000Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "TASK-01",
+      "parent_id": "AC-01",
+      "status": "passing",
+      "direct_evidence": [
+        "development/evidence/001-dashboard-summary.log",
+        "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/report.md"
+      ],
+      "reused_evidence": [],
+      "claim": "The dashboard summary slice is implemented and validated."
+    }
+  ],
+  "fallback_used": false
+}
+JSON
+
   cat >"$task/report.md" <<'MD'
 # Implementation Report
 
@@ -745,6 +769,10 @@ Browser state coverage remains for verification.
 ## Required Fixes
 
 No required fixes remain.
+
+## Acceptance Assertions Verified
+
+- `TASK-01`: task-level implementation and focused validation evidence were reviewed.
 MD
 
   cat >"$task/quality-review.md" <<'MD'
@@ -869,6 +897,76 @@ jq -e '.tasks[] | select(.task_id == "001-dashboard-summary" and .ok == true)' "
 run_json "$HAPPY_PROJECT" "$TMP_DIR/happy-entry.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/happy-entry.json" >/dev/null
 
+MISSING_TASK_ACCEPTANCE_PROJECT="$TMP_DIR/missing-task-acceptance-project"
+cp -R "$HAPPY_PROJECT" "$MISSING_TASK_ACCEPTANCE_PROJECT"
+rm "$MISSING_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+run_json "$MISSING_TASK_ACCEPTANCE_PROJECT" "$TMP_DIR/missing-task-acceptance-entry.json" 0 entry
+jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/missing-task-acceptance-entry.json" >/dev/null
+run_json "$MISSING_TASK_ACCEPTANCE_PROJECT" "$TMP_DIR/missing-task-acceptance-handoff.json" 2 handoff
+assert_blocker "$TMP_DIR/missing-task-acceptance-handoff.json" 'missing-task-artifact:acceptance.json'
+
+EMPTY_TASK_ACCEPTANCE_PROJECT="$TMP_DIR/empty-task-acceptance-project"
+cp -R "$HAPPY_PROJECT" "$EMPTY_TASK_ACCEPTANCE_PROJECT"
+jq '.assertions = []' \
+  "$EMPTY_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/empty-task-acceptance.json.tmp"
+mv "$TMP_DIR/empty-task-acceptance.json.tmp" \
+  "$EMPTY_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+run_json "$EMPTY_TASK_ACCEPTANCE_PROJECT" "$TMP_DIR/empty-task-acceptance.json" 2
+assert_blocker "$TMP_DIR/empty-task-acceptance.json" 'invalid-task-acceptance:assertions'
+
+INVALID_TASK_ACCEPTANCE_PROJECT="$TMP_DIR/invalid-task-acceptance-project"
+cp -R "$HAPPY_PROJECT" "$INVALID_TASK_ACCEPTANCE_PROJECT"
+cat >"$INVALID_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" <<'JSON'
+{
+  "schema": "specnav.task-acceptance-evidence.v0",
+  "task_id": "999-wrong-task",
+  "status": "pending",
+  "assertions": [
+    {
+      "id": "TASK-01",
+      "status": "failing",
+      "direct_evidence": [],
+      "reused_evidence": []
+    },
+    {
+      "id": "TASK-01",
+      "status": "passing",
+      "direct_evidence": ["../outside.log"],
+      "reused_evidence": "development/evidence/001-dashboard-summary.log"
+    },
+    {
+      "id": "TASK-02",
+      "status": "passing",
+      "direct_evidence": ["development/evidence/missing.log"],
+      "reused_evidence": []
+    }
+  ],
+  "fallback_used": true
+}
+JSON
+run_json "$INVALID_TASK_ACCEPTANCE_PROJECT" "$TMP_DIR/invalid-task-acceptance.json" 2
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:schema'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:task_id'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:status'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:fallback_used'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:duplicate-assertion-id:TASK-01'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:non-passing:TASK-01'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:missing-evidence:TASK-01'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:TASK-01:reused_evidence'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:invalid-evidence-path:TASK-01:../outside.log'
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:missing-evidence-path:TASK-02:development/evidence/missing.log'
+
+INVALID_TASK_ASSERTION_ID_PROJECT="$TMP_DIR/invalid-task-assertion-id-project"
+cp -R "$HAPPY_PROJECT" "$INVALID_TASK_ASSERTION_ID_PROJECT"
+jq '.assertions[0].id = " "' \
+  "$INVALID_TASK_ASSERTION_ID_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/invalid-task-assertion-id.json.tmp"
+mv "$TMP_DIR/invalid-task-assertion-id.json.tmp" \
+  "$INVALID_TASK_ASSERTION_ID_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+run_json "$INVALID_TASK_ASSERTION_ID_PROJECT" "$TMP_DIR/invalid-task-assertion-id.json" 2
+assert_blocker "$TMP_DIR/invalid-task-assertion-id.json" 'invalid-task-acceptance:assertion-id'
+
 ASSERTION_REFERENCE_PROJECT="$TMP_DIR/assertion-reference-project"
 cp -R "$HAPPY_PROJECT" "$ASSERTION_REFERENCE_PROJECT"
 cat >"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/acceptance.json" <<'JSON'
@@ -877,21 +975,17 @@ cat >"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/acceptance.jso
   "change_id": "add-dashboard",
   "assertions": [
     {
-      "id": "AC-01",
+      "id": "PARENT-01",
       "statement": "The dashboard summary remains reviewable.",
       "verify_via": "static",
       "status": "passing",
-      "evidence_ref": "development/evidence/dashboard-summary.log"
+      "evidence_ref": "development/evidence/001-dashboard-summary.log"
     }
   ]
 }
 JSON
-cat >>"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md" <<'MD'
-
-## Acceptance Assertions Verified
-
-- `AC-01`: the SHA-256 fixture identity remains stable.
-MD
+perl -0pi -e 's/task-level implementation and focused validation evidence were reviewed/task-level implementation and SHA-256 fixture identity were reviewed/' \
+  "$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
 run_json "$ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/assertion-reference.json" 0
 jq -e '.ok == true' "$TMP_DIR/assertion-reference.json" >/dev/null
 if jq -e '.blockers[] | select(. == "review:invalid-reference:SHA-256")' "$TMP_DIR/assertion-reference.json" >/dev/null; then
@@ -899,14 +993,35 @@ if jq -e '.blockers[] | select(. == "review:invalid-reference:SHA-256")' "$TMP_D
   exit 1
 fi
 
+TASK_SUBCLAIM_REFERENCE_PROJECT="$TMP_DIR/task-subclaim-reference-project"
+cp -R "$ASSERTION_REFERENCE_PROJECT" "$TASK_SUBCLAIM_REFERENCE_PROJECT"
+jq '.assertions[0].id = "PARENT-01:dashboard-summary"' \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/task-subclaim-reference.json.tmp"
+mv "$TMP_DIR/task-subclaim-reference.json.tmp" \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+sed -i.bak 's/`TASK-01`/`PARENT-01:dashboard-summary`/' \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
+rm "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
+run_json "$TASK_SUBCLAIM_REFERENCE_PROJECT" "$TMP_DIR/task-subclaim-reference.json" 0
+jq -e '.ok == true' "$TMP_DIR/task-subclaim-reference.json" >/dev/null
+
 INVALID_ASSERTION_REFERENCE_PROJECT="$TMP_DIR/invalid-assertion-reference-project"
 cp -R "$ASSERTION_REFERENCE_PROJECT" "$INVALID_ASSERTION_REFERENCE_PROJECT"
-sed -i.bak 's/`AC-01`/`AC-99`/' \
+sed -i.bak 's/`TASK-01`/`TASK-99`/' \
   "$INVALID_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
 rm "$INVALID_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
 run_json "$INVALID_ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/invalid-assertion-reference.json" 2
-assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:invalid-reference:AC-99'
+assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:invalid-reference:TASK-99'
 assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:unsupported-verdict'
+
+PARENT_ONLY_ASSERTION_REFERENCE_PROJECT="$TMP_DIR/parent-only-assertion-reference-project"
+cp -R "$ASSERTION_REFERENCE_PROJECT" "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT"
+sed -i.bak 's/`TASK-01`/`PARENT-01`/' \
+  "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
+rm "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
+run_json "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/parent-only-assertion-reference.json" 2
+assert_blocker "$TMP_DIR/parent-only-assertion-reference.json" 'review:unsupported-verdict'
 
 HIERARCHICAL_TASK_PROJECT="$TMP_DIR/hierarchical-task-project"
 cp -R "$HAPPY_PROJECT" "$HIERARCHICAL_TASK_PROJECT"
@@ -1518,6 +1633,10 @@ Browser state coverage remains for verification.
 ## Required Fixes
 
 No required fixes remain.
+
+## Acceptance Assertions Verified
+
+- `TASK-01`: task-level implementation and focused validation evidence were reviewed.
 MD
 run_json "$SUBSTANTIVE_GAP_PROJECT" "$TMP_DIR/substantive-gap.json" 0
 jq -e '.ok == true' "$TMP_DIR/substantive-gap.json" >/dev/null

@@ -1,0 +1,61 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "028-codex-integration",
+  "recorded_at": "2026-08-02T14:11:23.980Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-03",
+      "parent_id": "AC-03",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/028-codex-integration/report.md",
+        "development/tasks/028-codex-integration/spec-review.md",
+        "development/tasks/028-codex-integration/quality-review.md",
+        "development/evidence/410-028-codex-integration.log",
+        "development/evidence/411-028-codex-integration.log",
+        "development/evidence/412-028-codex-integration.log",
+        "development/evidence/413-028-codex-integration.log",
+        "development/evidence/414-028-codex-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path."
+    },
+    {
+      "id": "AC-37",
+      "parent_id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/028-codex-integration/report.md",
+        "development/tasks/028-codex-integration/spec-review.md",
+        "development/tasks/028-codex-integration/quality-review.md",
+        "development/evidence/410-028-codex-integration.log",
+        "development/evidence/411-028-codex-integration.log",
+        "development/evidence/412-028-codex-integration.log",
+        "development/evidence/413-028-codex-integration.log",
+        "development/evidence/414-028-codex-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
+    },
+    {
+      "id": "AC-40",
+      "parent_id": "AC-40",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/028-codex-integration/report.md",
+        "development/tasks/028-codex-integration/spec-review.md",
+        "development/tasks/028-codex-integration/quality-review.md",
+        "development/evidence/410-028-codex-integration.log",
+        "development/evidence/411-028-codex-integration.log",
+        "development/evidence/412-028-codex-integration.log",
+        "development/evidence/413-028-codex-integration.log",
+        "development/evidence/414-028-codex-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
+    }
+  ],
+  "fallback_used": false
+}

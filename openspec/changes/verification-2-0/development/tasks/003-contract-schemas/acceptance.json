@@ -1,0 +1,55 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "003-contract-schemas",
+  "recorded_at": "2026-07-31T07:27:37.168Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-13",
+      "parent_id": "AC-13",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/003-contract-schemas/report.md",
+        "development/tasks/003-contract-schemas/spec-review.md",
+        "development/tasks/003-contract-schemas/quality-review.md",
+        "development/evidence/036-003-contract-schemas.log",
+        "development/evidence/037-003-contract-schemas.log",
+        "development/evidence/038-003-contract-schemas.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Versioned schemas validate test cases, approvals, snapshots, runs, attempts, readings, evidence, indexes, failures, runtime, reports, and gates."
+    },
+    {
+      "id": "AC-31",
+      "parent_id": "AC-31",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/003-contract-schemas/report.md",
+        "development/tasks/003-contract-schemas/spec-review.md",
+        "development/tasks/003-contract-schemas/quality-review.md",
+        "development/evidence/036-003-contract-schemas.log",
+        "development/evidence/037-003-contract-schemas.log",
+        "development/evidence/038-003-contract-schemas.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA."
+    },
+    {
+      "id": "AC-35",
+      "parent_id": "AC-35",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/003-contract-schemas/report.md",
+        "development/tasks/003-contract-schemas/spec-review.md",
+        "development/tasks/003-contract-schemas/quality-review.md",
+        "development/evidence/036-003-contract-schemas.log",
+        "development/evidence/037-003-contract-schemas.log",
+        "development/evidence/038-003-contract-schemas.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Gate decisions name source case readings, evidence index version, runtime version, kernel version, and freshness result."
+    }
+  ],
+  "fallback_used": false
+}

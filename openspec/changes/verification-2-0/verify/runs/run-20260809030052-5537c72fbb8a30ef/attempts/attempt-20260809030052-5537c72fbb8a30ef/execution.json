@@ -1,0 +1,468 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260809030052-5537c72fbb8a30ef",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-05"
+    ],
+    "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+    "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-09T03:00:52.218Z",
+    "started_at": "2026-08-09T03:00:52.237Z",
+    "completed_at": "2026-08-09T03:01:09.267Z",
+    "kind": "initial",
+    "origin_run_id": null,
+    "parent_run_id": null,
+    "parent_attempt_id": null,
+    "failure_id": null
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260809030052-5537c72fbb8a30ef",
+    "run_id": "run-20260809030052-5537c72fbb8a30ef",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-05",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "initial",
+    "sequence": 1,
+    "runner": "command",
+    "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+    "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+    "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-09T03:00:52.237Z",
+    "completed_at": "2026-08-09T03:01:09.267Z",
+    "exit_status": 0
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809030052-5537c72fbb8a30ef",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-05"
+      ],
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-09T03:00:52.218Z",
+      "started_at": "2026-08-09T03:00:52.237Z",
+      "completed_at": null,
+      "kind": "initial",
+      "origin_run_id": null,
+      "parent_run_id": null,
+      "parent_attempt_id": null,
+      "failure_id": null
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260809030052-5537c72fbb8a30ef",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-05"
+      ],
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-09T03:00:52.218Z",
+      "started_at": "2026-08-09T03:00:52.237Z",
+      "completed_at": "2026-08-09T03:01:09.267Z",
+      "kind": "initial",
+      "origin_run_id": null,
+      "parent_run_id": null,
+      "parent_attempt_id": null,
+      "failure_id": null
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030052-5537c72fbb8a30ef",
+      "run_id": "run-20260809030052-5537c72fbb8a30ef",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-09T03:00:52.237Z",
+      "completed_at": null,
+      "exit_status": null
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030052-5537c72fbb8a30ef",
+      "run_id": "run-20260809030052-5537c72fbb8a30ef",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T03:00:52.237Z",
+      "completed_at": "2026-08-09T03:01:09.267Z",
+      "exit_status": 0
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260809030052-5537c72fbb8a30ef",
+      "run_id": "run-20260809030052-5537c72fbb8a30ef",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-05",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "initial",
+      "sequence": 1,
+      "runner": "command",
+      "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+      "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+      "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-09T03:00:52.237Z",
+      "completed_at": "2026-08-09T03:01:09.267Z",
+      "exit_status": 0
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: all report pages are responsive, keyboard operable, semantic, and printable\nok 1 - all report pages are responsive, keyboard operable, semantic, and printable\n  ---\n  duration_ms: 6183.675791\n  type: 'test'\n  ...\n# Subtest: Chromium blocks an injected script while the approved catalog script still runs\nok 2 - Chromium blocks an injected script while the approved catalog script still runs\n  ---\n  duration_ms: 8424.417291\n  type: 'test'\n  ...\n# {\"artifact_directory\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef\",\"manifest\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef/manifest.json\",\"manifest_sha256\":\"3f6c33925603e80e284fab32df00a71895ba1505e3f369f6cb7ca1c2e814ccf5\",\"artifact_count\":12}\n# Subtest: real paginated PDFs preserve exact green and blocked report facts\nok 3 - real paginated PDFs preserve exact green and blocked report facts\n  ---\n  duration_ms: 1976.9625\n  type: 'test'\n  ...\n# Subtest: real Chromium renders and filters catalog and immutable results\nok 4 - real Chromium renders and filters catalog and immutable results\n  ---\n  duration_ms: 6195.099125\n  type: 'test'\n  ...\n# Subtest: real Chromium preserves mobile, keyboard, and print report facts\nok 5 - real Chromium preserves mobile, keyboard, and print report facts\n  ---\n  duration_ms: 6190.730542\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 16819.916708\nverification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef\nverification v2 report browser and print ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-09T03:00:52.238Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809030052-5537c72fbb8a30ef",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-05"
+        ],
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-09T03:00:52.218Z",
+        "started_at": "2026-08-09T03:00:52.237Z",
+        "completed_at": null,
+        "kind": "initial",
+        "origin_run_id": null,
+        "parent_run_id": null,
+        "parent_attempt_id": null,
+        "failure_id": null
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-09T03:00:52.238Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809030052-5537c72fbb8a30ef",
+        "run_id": "run-20260809030052-5537c72fbb8a30ef",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-05",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "initial",
+        "sequence": 1,
+        "runner": "command",
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-09T03:00:52.237Z",
+        "completed_at": null,
+        "exit_status": null
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-09T03:00:52.242Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-report-browser.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_REPORT_ARTIFACT_ROOT",
+          "SPECNAV_REPORT_ARTIFACT_RUN_ID",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:00:52.440Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:00:59.515Z",
+      "chunk": "# Subtest: all report pages are responsive, keyboard operable, semantic, and printable\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:00:59.515Z",
+      "chunk": "ok 1 - all report pages are responsive, keyboard operable, semantic, and printable\n  ---\n  duration_ms: 6183.675791\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:07.890Z",
+      "chunk": "# Subtest: Chromium blocks an injected script while the approved catalog script still runs\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:07.891Z",
+      "chunk": "ok 2 - Chromium blocks an injected script while the approved catalog script still runs\n  ---\n  duration_ms: 8424.417291\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.206Z",
+      "chunk": "# {\"artifact_directory\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef\",\"manifest\":\"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef/manifest.json\",\"manifest_sha256\":\"3f6c33925603e80e284fab32df00a71895ba1505e3f369f6cb7ca1c2e814ccf5\",\"artifact_count\":12}\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.206Z",
+      "chunk": "# Subtest: real paginated PDFs preserve exact green and blocked report facts\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.206Z",
+      "chunk": "ok 3 - real paginated PDFs preserve exact green and blocked report facts\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.206Z",
+      "chunk": "  ---\n  duration_ms: 1976.9625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# Subtest: real Chromium renders and filters catalog and immutable results\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "ok 4 - real Chromium renders and filters catalog and immutable results\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "  ---\n  duration_ms: 6195.099125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# Subtest: real Chromium preserves mobile, keyboard, and print report facts\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "ok 5 - real Chromium preserves mobile, keyboard, and print report facts\n  ---\n  duration_ms: 6190.730542\n  type: 'test'\n  ...\n1..5\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# tests 5\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# suites 0\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# pass 5\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# cancelled 0\n# skipped 0\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.226Z",
+      "chunk": "# duration_ms 16819.916708\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-09T03:01:09.230Z",
+      "chunk": "verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260809030052-5537c72fbb8a30ef/attempts/attempt-20260809030052-5537c72fbb8a30ef/runner-artifacts/attempt-20260809030052-5537c72fbb8a30ef\nverification v2 report browser and print ok\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.terminal",
+      "at": "2026-08-09T03:01:09.267Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 27,
+      "type": "attempt.terminal",
+      "at": "2026-08-09T03:01:09.267Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260809030052-5537c72fbb8a30ef",
+        "run_id": "run-20260809030052-5537c72fbb8a30ef",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-05",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "initial",
+        "sequence": 1,
+        "runner": "command",
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "scenario_hash": "beefb030833c846a6c7ec39354b360f9222e5d742746082f8050a707c2bac11a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "e581d99c9711c621dd62c9a5797dcfb550d7fd321b09dbfad2b45927aa46f7f4",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-09T03:00:52.237Z",
+        "completed_at": "2026-08-09T03:01:09.267Z",
+        "exit_status": 0
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 28,
+      "type": "run.terminal",
+      "at": "2026-08-09T03:01:09.267Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260809030052-5537c72fbb8a30ef",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-05"
+        ],
+        "code_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+        "test_sha": "851f4609a7af3b273600a3a96e4b6a4e1962eb965ef574b531c0f4f788950fe9",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-09T03:00:52.218Z",
+        "started_at": "2026-08-09T03:00:52.237Z",
+        "completed_at": "2026-08-09T03:01:09.267Z",
+        "kind": "initial",
+        "origin_run_id": null,
+        "parent_run_id": null,
+        "parent_attempt_id": null,
+        "failure_id": null
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}

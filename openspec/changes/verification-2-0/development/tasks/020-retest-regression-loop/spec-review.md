@@ -40,7 +40,12 @@ approved
 ## Acceptance Assertions Verified
 
 - Direct: `AC-06`, `AC-07`, `AC-27`
-- Consumption regression: `AC-15`, `AC-26`
+
+## Downstream Contribution
+
+The task also supplies consumption-regression evidence for downstream
+cross-reference and rerun-impact work; those assertions are not claimed as
+verified by Task 020.
 
 ## Ownership
 

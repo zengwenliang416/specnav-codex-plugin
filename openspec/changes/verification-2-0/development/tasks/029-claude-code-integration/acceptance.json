@@ -1,0 +1,48 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "029-claude-code-integration",
+  "recorded_at": "2026-08-02T15:13:06.788Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-37",
+      "parent_id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/029-claude-code-integration/report.md",
+        "development/tasks/029-claude-code-integration/spec-review.md",
+        "development/tasks/029-claude-code-integration/quality-review.md",
+        "development/evidence/419-029-claude-code-integration.log",
+        "development/evidence/420-029-claude-code-integration.log",
+        "development/evidence/421-029-claude-code-integration.log",
+        "development/evidence/422-029-claude-code-integration.log",
+        "development/evidence/425-029-claude-code-integration.log",
+        "development/evidence/427-029-claude-code-integration.log",
+        "development/evidence/428-029-claude-code-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
+    },
+    {
+      "id": "AC-40",
+      "parent_id": "AC-40",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/029-claude-code-integration/report.md",
+        "development/tasks/029-claude-code-integration/spec-review.md",
+        "development/tasks/029-claude-code-integration/quality-review.md",
+        "development/evidence/419-029-claude-code-integration.log",
+        "development/evidence/420-029-claude-code-integration.log",
+        "development/evidence/421-029-claude-code-integration.log",
+        "development/evidence/422-029-claude-code-integration.log",
+        "development/evidence/425-029-claude-code-integration.log",
+        "development/evidence/427-029-claude-code-integration.log",
+        "development/evidence/428-029-claude-code-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
+    }
+  ],
+  "fallback_used": false
+}

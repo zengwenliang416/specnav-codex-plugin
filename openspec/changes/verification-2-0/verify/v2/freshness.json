@@ -1,70 +1,102 @@
 {
-  "ok": true,
-  "checked_at": "2026-08-06T07:29:16.250Z",
+  "ok": false,
+  "checked_at": "2026-08-09T03:03:09.581Z",
   "summary": {
-    "status": "fresh",
+    "status": "unknown",
     "total": 8,
-    "fresh": 8,
-    "stale": 0,
+    "fresh": 7,
+    "stale": 1,
     "unknown": 0
   },
   "cases": [
     {
       "case_id": "CASE-01",
-      "attempt_id": "attempt-20260806063848-1784a9a338b3345f",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809025538-1c89bd19932da165",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-02",
-      "attempt_id": "attempt-20260806063927-5ba14e6777c3fe97",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809025552-2fcc16629a425b8b",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-03",
-      "attempt_id": "attempt-20260806071222-86600c326217668e",
-      "checked_at": "2026-08-06T07:29:16.250Z",
-      "status": "fresh",
-      "reasons": []
+      "attempt_id": "attempt-20260806072342-3bcf781792dc4ce3",
+      "checked_at": "2026-08-09T03:03:09.581Z",
+      "status": "stale",
+      "reasons": [
+        "code_sha:current-mismatch",
+        "test_sha:current-mismatch",
+        "environment_hash:current-mismatch",
+        "runtime_version:current-mismatch",
+        "kernel_version:current-mismatch"
+      ]
     },
     {
       "case_id": "CASE-04",
-      "attempt_id": "attempt-20260806064254-74e81b58046844e6",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809030041-56cc109de6fc4bca",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-05",
-      "attempt_id": "attempt-20260806064305-6b866333224588a4",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809030052-5537c72fbb8a30ef",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-06",
-      "attempt_id": "attempt-20260806064320-800b4be30a833200",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809030109-606deddff2fa2e62",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-07",
-      "attempt_id": "attempt-20260806064325-0c744659183d5cf9",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809030114-e950208c47d1b6e6",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     },
     {
       "case_id": "CASE-08",
-      "attempt_id": "attempt-20260806064329-e2477a6ad6a4b2c6",
-      "checked_at": "2026-08-06T07:29:16.250Z",
+      "attempt_id": "attempt-20260809030129-dd6d8250867adfe5",
+      "checked_at": "2026-08-09T03:03:09.581Z",
       "status": "fresh",
       "reasons": []
     }
   ],
-  "blockers": []
+  "blockers": [
+    {
+      "id": "verification-production:freshness-incomplete",
+      "artifact": "CASE-03",
+      "detail": "code_sha:current-mismatch"
+    },
+    {
+      "id": "verification-production:freshness-incomplete",
+      "artifact": "CASE-03",
+      "detail": "test_sha:current-mismatch"
+    },
+    {
+      "id": "verification-production:freshness-incomplete",
+      "artifact": "CASE-03",
+      "detail": "environment_hash:current-mismatch"
+    },
+    {
+      "id": "verification-production:freshness-incomplete",
+      "artifact": "CASE-03",
+      "detail": "runtime_version:current-mismatch"
+    },
+    {
+      "id": "verification-production:freshness-incomplete",
+      "artifact": "CASE-03",
+      "detail": "kernel_version:current-mismatch"
+    }
+  ]
 }

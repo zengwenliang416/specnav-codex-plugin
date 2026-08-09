@@ -1,0 +1,79 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "020-retest-regression-loop",
+  "recorded_at": "2026-08-01T08:10:15.197Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-06",
+      "parent_id": "AC-06",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/020-retest-regression-loop/report.md",
+        "development/tasks/020-retest-regression-loop/spec-review.md",
+        "development/tasks/020-retest-regression-loop/quality-review.md",
+        "development/evidence/296-020-retest-regression-loop.log",
+        "development/evidence/297-020-retest-regression-loop.log",
+        "development/evidence/298-020-retest-regression-loop.log",
+        "development/evidence/299-020-retest-regression-loop.log",
+        "development/evidence/300-020-retest-regression-loop.log",
+        "development/evidence/301-020-retest-regression-loop.log",
+        "development/evidence/302-020-retest-regression-loop.log",
+        "development/evidence/303-020-retest-regression-loop.log",
+        "development/evidence/304-020-retest-regression-loop.log",
+        "development/evidence/305-020-retest-regression-loop.log",
+        "development/evidence/306-020-retest-regression-loop.log"
+      ],
+      "reused_evidence": [],
+      "claim": "A reviewer can see first failure, retry, repair, retest, and regression attempts without earlier evidence being overwritten."
+    },
+    {
+      "id": "AC-07",
+      "parent_id": "AC-07",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/020-retest-regression-loop/report.md",
+        "development/tasks/020-retest-regression-loop/spec-review.md",
+        "development/tasks/020-retest-regression-loop/quality-review.md",
+        "development/evidence/296-020-retest-regression-loop.log",
+        "development/evidence/297-020-retest-regression-loop.log",
+        "development/evidence/298-020-retest-regression-loop.log",
+        "development/evidence/299-020-retest-regression-loop.log",
+        "development/evidence/300-020-retest-regression-loop.log",
+        "development/evidence/301-020-retest-regression-loop.log",
+        "development/evidence/302-020-retest-regression-loop.log",
+        "development/evidence/303-020-retest-regression-loop.log",
+        "development/evidence/304-020-retest-regression-loop.log",
+        "development/evidence/305-020-retest-regression-loop.log",
+        "development/evidence/306-020-retest-regression-loop.log"
+      ],
+      "reused_evidence": [],
+      "claim": "A retry that passes is labeled FLAKY; a repaired case that passes is labeled PASS AFTER FIX."
+    },
+    {
+      "id": "AC-27",
+      "parent_id": "AC-27",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/020-retest-regression-loop/report.md",
+        "development/tasks/020-retest-regression-loop/spec-review.md",
+        "development/tasks/020-retest-regression-loop/quality-review.md",
+        "development/evidence/296-020-retest-regression-loop.log",
+        "development/evidence/297-020-retest-regression-loop.log",
+        "development/evidence/298-020-retest-regression-loop.log",
+        "development/evidence/299-020-retest-regression-loop.log",
+        "development/evidence/300-020-retest-regression-loop.log",
+        "development/evidence/301-020-retest-regression-loop.log",
+        "development/evidence/302-020-retest-regression-loop.log",
+        "development/evidence/303-020-retest-regression-loop.log",
+        "development/evidence/304-020-retest-regression-loop.log",
+        "development/evidence/305-020-retest-regression-loop.log",
+        "development/evidence/306-020-retest-regression-loop.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Repeated no-progress repair attempts route to break-loop governance instead of silently retrying."
+    }
+  ],
+  "fallback_used": false
+}

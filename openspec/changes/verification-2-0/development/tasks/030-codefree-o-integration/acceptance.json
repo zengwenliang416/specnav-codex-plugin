@@ -1,0 +1,52 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "030-codefree-o-integration",
+  "recorded_at": "2026-08-02T16:14:08.673Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-37",
+      "parent_id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/030-codefree-o-integration/report.md",
+        "development/tasks/030-codefree-o-integration/spec-review.md",
+        "development/tasks/030-codefree-o-integration/quality-review.md",
+        "development/evidence/430-030-codefree-o-integration.log",
+        "development/evidence/432-030-codefree-o-integration.log",
+        "development/evidence/433-030-codefree-o-integration.log",
+        "development/evidence/434-030-codefree-o-integration.log",
+        "development/evidence/436-030-codefree-o-integration.log",
+        "development/evidence/437-030-codefree-o-integration.log",
+        "development/evidence/438-030-codefree-o-integration.log",
+        "development/evidence/439-030-codefree-o-integration.log",
+        "development/evidence/440-030-codefree-o-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
+    },
+    {
+      "id": "AC-40",
+      "parent_id": "AC-40",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/030-codefree-o-integration/report.md",
+        "development/tasks/030-codefree-o-integration/spec-review.md",
+        "development/tasks/030-codefree-o-integration/quality-review.md",
+        "development/evidence/430-030-codefree-o-integration.log",
+        "development/evidence/432-030-codefree-o-integration.log",
+        "development/evidence/433-030-codefree-o-integration.log",
+        "development/evidence/434-030-codefree-o-integration.log",
+        "development/evidence/436-030-codefree-o-integration.log",
+        "development/evidence/437-030-codefree-o-integration.log",
+        "development/evidence/438-030-codefree-o-integration.log",
+        "development/evidence/439-030-codefree-o-integration.log",
+        "development/evidence/440-030-codefree-o-integration.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
+    }
+  ],
+  "fallback_used": false
+}

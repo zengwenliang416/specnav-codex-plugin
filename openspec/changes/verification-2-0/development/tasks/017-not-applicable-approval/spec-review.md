@@ -27,7 +27,12 @@ approved
 ## Acceptance Assertions Verified
 
 - `AC-20`
-- `AC-19` contribution: policy-valid `not_applicable` terminal facts
+
+## Downstream Contribution
+
+The task contributes policy-valid `not_applicable` terminal facts consumed by
+the downstream six-domain aggregation work, but does not claim that downstream
+assertion as verified here.
 
 ## Verified Behavior
 

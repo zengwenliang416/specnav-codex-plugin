@@ -898,7 +898,7 @@ tbody th {
 </head>
 <body>
   <a class="skip-link" href="#report-content">Skip to report content</a>
-  <div class="report-shell" data-report-model-id="report-model-f267cb1eb3869fd1961babb12e7c4ba5f94fe6b2f17b1940fc14fc78f8cd8cf3">
+  <div class="report-shell" data-report-model-id="report-model-5a6c22a967702bcf5a235098646a4489e1a7b0b1dda90c5f6bb9a35ea148cbef">
     <header class="report-header">
       <a class="brand" href="overview.html" aria-label="SpecNav verification overview">
         <span class="brand-mark" aria-hidden="true">S</span>
@@ -906,8 +906,8 @@ tbody th {
       </a>
       <dl class="run-meta">
         <div><dt>Change</dt><dd><code>verification-2-0</code></dd></div>
-        <div><dt>Runtime</dt><dd><code>2.0.0-alpha.1</code></dd></div>
-        <div><dt>Kernel</dt><dd><code>2.0.0-alpha.1</code></dd></div>
+        <div><dt>Runtime</dt><dd><code>2.0.0-alpha.2</code></dd></div>
+        <div><dt>Kernel</dt><dd><code>2.0.0-alpha.2</code></dd></div>
       </dl>
     </header>
     <nav class="report-navigation" aria-label="Verification reports">
@@ -1012,11 +1012,26 @@ tbody th {
       <section><h3>Assertions</h3><ol class="contract-list"><li><code>CASE-08-A01</code><span>Release and archive decisions bind approved cases, six-domain readings, evidence index, freshness, runtime, kernel, reports, migration, and all hosts.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-08-A02</code><span>Any unapproved, incomplete, stale, tampered, open, missing, incompatible, or simplified input blocks release and archive.</span><small>Oracle: structured_comparison</small></li><li><code>CASE-08-A03</code><span>Archive is transactional, preserves source and failed evidence, and rolls back safely on failure.</span><small>Oracle: structured_comparison</small></li></ol></section>
     </div>
   </article></section>
-    <section class="section" data-report-section="blockers"><h2>Report blockers</h2><p class="empty-message">No active blockers are recorded in the validated report model.</p></section>
+    <section class="section" data-report-section="blockers"><h2>Report blockers</h2><ol class="blocker-list"><li>
+      <strong><code>verification-report:gate-authority-mismatch</code></strong>
+      <span>gate-19a5b122534a04624e23e5042e7d67238c283cec4c60a087a69ca428f4f941a7</span>
+      <small>Artifact: <code>gate-5408f138a402cd6ca601c7e184dd3f144ad709a95f75efaf3b4f9d23164072c7</code></small>
+      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:gate-authority-mismatch</code> for <code>gate-5408f138a402cd6ca601c7e184dd3f144ad709a95f75efaf3b4f9d23164072c7</code> in the source artifacts, then rebuild the validated report model.</span>
+    </li><li>
+      <strong><code>verification-report:freshness-invalid</code></strong>
+      <span>No detail supplied.</span>
+      <small>Artifact: <code>verification-2-0</code></small>
+      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:freshness-invalid</code> for <code>verification-2-0</code> in the source artifacts, then rebuild the validated report model.</span>
+    </li><li>
+      <strong><code>verification-report:freshness-unknown</code></strong>
+      <span>No detail supplied.</span>
+      <small>Artifact: <code>verification-2-0</code></small>
+      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:freshness-unknown</code> for <code>verification-2-0</code> in the source artifacts, then rebuild the validated report model.</span>
+    </li></ol></section>
   </article>
     </main>
     <footer class="report-footer">
-      <span>Generated <time datetime="2026-08-06T07:29:16.279Z">2026-08-06T07:29:16.279Z</time> from validated Verification 2.0 artifacts.</span>
+      <span>Generated <time datetime="2026-08-09T03:03:09.607Z">2026-08-09T03:03:09.607Z</time> from validated Verification 2.0 artifacts.</span>
       <strong>HTML is a projection, not the gate source of truth.</strong>
     </footer>
   </div>

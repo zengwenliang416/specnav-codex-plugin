@@ -1,0 +1,66 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "002-kernel-package-boundary",
+  "recorded_at": "2026-07-31T05:01:54.491Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-36",
+      "parent_id": "AC-36",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/002-kernel-package-boundary/report.md",
+        "development/tasks/002-kernel-package-boundary/spec-review.md",
+        "development/tasks/002-kernel-package-boundary/quality-review.md",
+        "development/evidence/012-002-kernel-package-boundary.log",
+        "development/evidence/013-002-kernel-package-boundary.log"
+      ],
+      "reused_evidence": [],
+      "claim": "One host-neutral Verification Kernel owns schemas, state transitions, evidence integrity, aggregation, freshness, and report model semantics."
+    },
+    {
+      "id": "AC-37",
+      "parent_id": "AC-37",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/002-kernel-package-boundary/report.md",
+        "development/tasks/002-kernel-package-boundary/spec-review.md",
+        "development/tasks/002-kernel-package-boundary/quality-review.md",
+        "development/evidence/012-002-kernel-package-boundary.log",
+        "development/evidence/013-002-kernel-package-boundary.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
+    },
+    {
+      "id": "AC-39",
+      "parent_id": "AC-39",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/002-kernel-package-boundary/report.md",
+        "development/tasks/002-kernel-package-boundary/spec-review.md",
+        "development/tasks/002-kernel-package-boundary/quality-review.md",
+        "development/evidence/012-002-kernel-package-boundary.log",
+        "development/evidence/013-002-kernel-package-boundary.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Playwright, Midscene, command execution, EvidenceStore, failure classification, and report rendering use explicit adapter or service boundaries."
+    },
+    {
+      "id": "AC-40",
+      "parent_id": "AC-40",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/002-kernel-package-boundary/report.md",
+        "development/tasks/002-kernel-package-boundary/spec-review.md",
+        "development/tasks/002-kernel-package-boundary/quality-review.md",
+        "development/evidence/012-002-kernel-package-boundary.log",
+        "development/evidence/013-002-kernel-package-boundary.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
+    }
+  ],
+  "fallback_used": false
+}

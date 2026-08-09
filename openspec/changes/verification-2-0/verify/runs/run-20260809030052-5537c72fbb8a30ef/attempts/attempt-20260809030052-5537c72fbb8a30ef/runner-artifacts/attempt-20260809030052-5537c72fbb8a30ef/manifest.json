@@ -1,0 +1,131 @@
+{
+  "schema": "specnav.verification.report-browser-artifacts.v1",
+  "task_id": "026-report-accessibility-security",
+  "run_id": "attempt-20260809030052-5537c72fbb8a30ef",
+  "generated_at": "2026-08-09T03:00:52Z",
+  "command_id": "task026-report-browser-print-artifacts",
+  "source_sha": "02b0253161705653b10fdb1a9f8336fd59add313",
+  "source_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "artifacts": [
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "overview",
+      "viewport": "desktop",
+      "file": "green-overview-desktop.png",
+      "sha256": "424f67adc9da1640e3783f52edede0148ed050ed2f1e2cfb71c9adf5a4a7ac79",
+      "size": 249329
+    },
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "catalog",
+      "viewport": "desktop",
+      "file": "green-catalog-desktop.png",
+      "sha256": "690310239e954cca318b389c7a90d73ed2917028518cfaeacace380210f82f9c",
+      "size": 105866
+    },
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "results",
+      "viewport": "desktop",
+      "file": "green-results-desktop.png",
+      "sha256": "8db194c3c859f1f9d476dbc200fa923bbe05656bf08b260968de413c7d6e9674",
+      "size": 219978
+    },
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "overview",
+      "viewport": "mobile",
+      "file": "green-overview-mobile.png",
+      "sha256": "fca0f0edac6b5ac357f8e4a39b3662ffb220ee6b6f4c870dfee0c80cb2eb9e09",
+      "size": 256479
+    },
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "catalog",
+      "viewport": "mobile",
+      "file": "green-catalog-mobile.png",
+      "sha256": "96fa1bee2b0a8050ec7e6e1cdf5139e8b4c4c25d80353cf11e0c763d6a552de8",
+      "size": 105055
+    },
+    {
+      "kind": "screenshot",
+      "verdict": "green",
+      "page": "results",
+      "viewport": "mobile",
+      "file": "green-results-mobile.png",
+      "sha256": "2f427c3150324a8619893efa64f1f126f409149ef5b6bc9cfb2dd1fa8305324a",
+      "size": 243257
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "green",
+      "page": "overview",
+      "pages": 4,
+      "tagged": true,
+      "javascript": false,
+      "file": "green-overview-print.pdf",
+      "sha256": "9ebb84a3437f37687e5bbd2513c72da7c1a6ad060b9dd514cfa9b50bcca6c2bd",
+      "size": 329030
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "green",
+      "page": "catalog",
+      "pages": 2,
+      "tagged": true,
+      "javascript": false,
+      "file": "green-catalog-print.pdf",
+      "sha256": "5b40d24d009a8590ded3f2067c42703df7c52c5fe6ce7c3d8697c3cf40ae8221",
+      "size": 218503
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "green",
+      "page": "results",
+      "pages": 4,
+      "tagged": true,
+      "javascript": false,
+      "file": "green-results-print.pdf",
+      "sha256": "6b055e852810fa954cf0b22554407ab21d6f7d3d2c9e74f0a9b2e144bae910c1",
+      "size": 278506
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "blocked",
+      "page": "overview",
+      "pages": 5,
+      "tagged": true,
+      "javascript": false,
+      "file": "blocked-overview-print.pdf",
+      "sha256": "eda7d17f45ef837a3e5ddeca4225fad59edba714abb0ff1a6efb23be5ddb8056",
+      "size": 346123
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "blocked",
+      "page": "catalog",
+      "pages": 1,
+      "tagged": true,
+      "javascript": false,
+      "file": "blocked-catalog-print.pdf",
+      "sha256": "d2787f21cfbdf78d8df23f447f0c4891f1cd3851a486eb2443a711fb4c12c809",
+      "size": 169325
+    },
+    {
+      "kind": "print-pdf",
+      "verdict": "blocked",
+      "page": "results",
+      "pages": 1,
+      "tagged": true,
+      "javascript": false,
+      "file": "blocked-results-print.pdf",
+      "sha256": "c2b45aaf4e6404de45166fe38463e79653fb948cbf20e9c563f0452abebbf62a",
+      "size": 169544
+    }
+  ]
+}

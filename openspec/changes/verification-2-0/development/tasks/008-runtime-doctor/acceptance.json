@@ -1,0 +1,28 @@
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "008-runtime-doctor",
+  "recorded_at": "2026-07-31T06:46:27.379Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-05",
+      "parent_id": "AC-05",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/008-runtime-doctor/report.md",
+        "development/tasks/008-runtime-doctor/spec-review.md",
+        "development/tasks/008-runtime-doctor/quality-review.md",
+        "development/evidence/028-008-runtime-doctor.log",
+        "development/evidence/029-008-runtime-doctor.log",
+        "development/evidence/030-008-runtime-doctor.log",
+        "development/evidence/032-008-runtime-doctor.log",
+        "development/evidence/033-008-runtime-doctor.log",
+        "development/evidence/034-008-runtime-doctor.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
+    }
+  ],
+  "fallback_used": false
+}
