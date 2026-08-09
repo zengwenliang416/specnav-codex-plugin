@@ -119,13 +119,13 @@ function stableIds(values) {
 }
 
 function compareAttempts(left, right) {
-  return left.sequence - right.sequence
-    || String(left.completed_at || '').localeCompare(
+  return String(left.completed_at || '').localeCompare(
       String(right.completed_at || '')
     )
     || String(left.started_at || '').localeCompare(
       String(right.started_at || '')
     )
+    || left.sequence - right.sequence
     || left.id.localeCompare(right.id);
 }
 

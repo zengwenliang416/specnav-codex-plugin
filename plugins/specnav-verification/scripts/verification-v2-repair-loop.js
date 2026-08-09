@@ -188,6 +188,11 @@ function repairCompletionFingerprints(
   if (!/^[a-f0-9]{40}$/.test(head)) {
     throw new Error('verification-production:git-head-invalid');
   }
+  const repositoryInventory = gitOutput(projectRoot, [
+    'ls-tree',
+    '-r',
+    'HEAD'
+  ]);
   const testInventory = gitOutput(projectRoot, [
     'ls-tree',
     '-r',
@@ -212,7 +217,7 @@ function repairCompletionFingerprints(
     }))
     .digest('hex');
   return {
-    codeSha: head,
+    codeSha: kernel.codeInventorySha(repositoryInventory),
     testSha,
     environmentHash
   };

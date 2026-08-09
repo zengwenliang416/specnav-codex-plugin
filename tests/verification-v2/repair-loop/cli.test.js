@@ -803,7 +803,12 @@ test('repair completion fingerprints allow only the named review receipts', () =
     { digest: 'b'.repeat(64) },
     [specReview, qualityReview]
   );
-  assert.equal(accepted.codeSha, git(root, ['rev-parse', 'HEAD']));
+  assert.equal(
+    accepted.codeSha,
+    verificationKernel.codeInventorySha(
+      git(root, ['ls-tree', '-r', 'HEAD'])
+    )
+  );
   assert.match(accepted.testSha, /^[a-f0-9]{64}$/);
   assert.match(accepted.environmentHash, /^[a-f0-9]{64}$/);
 

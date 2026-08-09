@@ -22,7 +22,9 @@ const {
   createEvidenceStore,
   createEvidenceIntegrityChecker,
   createSecretRedactor,
-  createCaseFreshnessEvaluator
+  createCaseFreshnessEvaluator,
+  codeInventory,
+  codeInventorySha
 } = require('./evidence');
 const {
   createCaseCatalogRenderer,
@@ -95,6 +97,8 @@ module.exports = Object.freeze({
   createV1ToV2Migrator,
   createSecretRedactor,
   createCaseFreshnessEvaluator,
+  codeInventory,
+  codeInventorySha,
   createCaseRerunPlanner,
   createDevelopmentRepairBridge,
   createFailureClassifier,

@@ -1084,6 +1084,95 @@ test('freshness selects the latest completed attempt when sequences match', () =
   assert.equal(result.cases[0].attempt_id, 'attempt-passed');
 });
 
+test('freshness selects a newer initial attempt over an older retest sequence', () => {
+  const snapshot = {
+    change_id: 'change-production',
+    cases: [{ id: 'CASE-01' }]
+  };
+  const attempts = [{
+    id: 'attempt-old-retest',
+    run_id: 'run-old-retest',
+    case_id: 'CASE-01',
+    sequence: 2,
+    started_at: '2026-08-06T00:00:00Z',
+    completed_at: '2026-08-06T00:01:00Z'
+  }, {
+    id: 'attempt-new-initial',
+    run_id: 'run-new-initial',
+    case_id: 'CASE-01',
+    sequence: 1,
+    started_at: '2026-08-09T00:00:00Z',
+    completed_at: '2026-08-09T00:01:00Z'
+  }];
+  const current = {
+    case_snapshot_hash: 'snapshot-hash',
+    code_sha: 'current-code',
+    test_sha: 'current-tests',
+    environment_hash: 'environment-hash',
+    runtime_version: 'runtime-version',
+    kernel_version: 'kernel-version'
+  };
+  const runs = attempts.map((attempt, index) => ({
+    id: attempt.run_id,
+    case_snapshot_hash: 'snapshot-hash',
+    code_sha: index === 0 ? 'old-code' : current.code_sha,
+    test_sha: index === 0 ? 'old-tests' : current.test_sha,
+    environment_hash: 'environment-hash',
+    runtime_version: 'runtime-version',
+    kernel_version: 'kernel-version'
+  }));
+  for (let index = 0; index < attempts.length; index += 1) {
+    Object.assign(attempts[index], {
+      case_snapshot_hash: runs[index].case_snapshot_hash,
+      code_sha: runs[index].code_sha,
+      test_sha: runs[index].test_sha,
+      environment_hash: runs[index].environment_hash,
+      runtime_version: runs[index].runtime_version,
+      kernel_version: runs[index].kernel_version
+    });
+  }
+
+  const result = freshnessProjection(
+    snapshot,
+    runs,
+    attempts,
+    current,
+    '2026-08-09T00:02:00Z'
+  );
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.cases[0].attempt_id, 'attempt-new-initial');
+});
+
+test('code inventory fingerprint ignores governance artifacts but tracks source', () => {
+  const base = [
+    '100644 blob aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\tplugins/runtime.js',
+    '100644 blob bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\ttests/runtime.test.js',
+    '100644 blob cccccccccccccccccccccccccccccccccccccccc\topenspec/changes/change-production/verify/v2/runs.json',
+    '100644 blob dddddddddddddddddddddddddddddddddddddddd\t.codegraph/index.json'
+  ].join('\n');
+  const governanceOnly = [
+    '100644 blob aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\tplugins/runtime.js',
+    '100644 blob bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\ttests/runtime.test.js',
+    '100644 blob eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\topenspec/changes/change-production/verify/v2/runs.json',
+    '100644 blob ffffffffffffffffffffffffffffffffffffffff\t.codegraph/index.json'
+  ].join('\n');
+  const sourceChanged = governanceOnly.replace(
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    '1111111111111111111111111111111111111111'
+  );
+
+  assert.equal(
+    kernel.codeInventorySha(base),
+    kernel.codeInventorySha(governanceOnly)
+  );
+  assert.notEqual(
+    kernel.codeInventorySha(base),
+    kernel.codeInventorySha(sourceChanged)
+  );
+  assert.match(kernel.codeInventorySha(base), /^[a-f0-9]{40}$/);
+});
+
 test('artifact store rejects traversal and symlinked parent paths', () => {
   const source = fixture();
   const store = kernel.createVerificationArtifactStore({

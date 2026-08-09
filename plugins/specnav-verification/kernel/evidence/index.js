@@ -12,10 +12,16 @@ const {
 const {
   createCaseFreshnessEvaluator
 } = require('./case-freshness');
+const {
+  codeInventory,
+  codeInventorySha
+} = require('./repository-fingerprint');
 
 module.exports = {
   createEvidenceStore,
   createEvidenceIntegrityChecker,
   createSecretRedactor,
-  createCaseFreshnessEvaluator
+  createCaseFreshnessEvaluator,
+  codeInventory,
+  codeInventorySha
 };

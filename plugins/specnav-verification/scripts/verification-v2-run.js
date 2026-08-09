@@ -74,6 +74,11 @@ function fingerprints(projectRoot, snapshot, runtimeStatus, runtimeAuthority = n
     )];
     throw error;
   }
+  const repositoryInventory = git(projectRoot, [
+    'ls-tree',
+    '-r',
+    'HEAD'
+  ]);
   const testInventory = git(projectRoot, [
     'ls-tree',
     '-r',
@@ -98,7 +103,7 @@ function fingerprints(projectRoot, snapshot, runtimeStatus, runtimeAuthority = n
     }))
     .digest('hex');
   return {
-    codeSha: head,
+    codeSha: kernel.codeInventorySha(repositoryInventory),
     testSha,
     environmentHash
   };
