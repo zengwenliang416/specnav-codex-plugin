@@ -1,11 +1,11 @@
 {
-  "ok": false,
+  "ok": true,
   "states": [
     {
       "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
       "root_failure_digest": "17827e4138a8fac4b22873bb591481145a10e67d841e9677dc0a0144508d8cd6",
-      "classification_envelope_id": null,
-      "logical_status": "unclassified",
+      "classification_envelope_id": "trusted-fact-b8da7ab86a2872896d73b5f36ce50fab44ab8a5dc8867401b238274d13d5bdad",
+      "logical_status": "repair_required",
       "transition_receipt_id": null
     },
     {
@@ -54,17 +54,17 @@
         "evidence-c40c933f30184ed1086144b69d3c53d1fcc6c7d6f665d88c20ef9101c4e9ff7f",
         "evidence-da66b81d7911381f75e8ee8f95c81808816ebb29548cbf8ec3557f9c9c4b22f2"
       ],
-      "classification": null,
-      "status": "open",
-      "next_action": "blocked_for_decision",
-      "summary": "Verification did not pass for CASE-03.",
-      "root_cause": "Classification is required before retry or development repair.",
+      "classification": "test_defect",
+      "status": "repair_required",
+      "next_action": "repair_required",
+      "summary": "CASE-03 assertions passed, but the test harness terminated with EEXIST while writing assertion-results.jsonl.",
+      "root_cause": "The test command attempted to create the same immutable assertion-results.jsonl path more than once in one attempt. The duplicate write failed even though CASE-03-A01, CASE-03-A02, and CASE-03-A03 had passed.",
       "failed_assertion_ids": [
         "CASE-03-A01",
         "CASE-03-A02",
         "CASE-03-A03"
       ],
-      "owner": "verification",
+      "owner": "development",
       "created_at": "2026-08-06T06:42:54.254Z",
       "frozen_at": "2026-08-06T06:42:54.254Z",
       "id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
@@ -73,11 +73,5 @@
   "open_failure_ids": [
     "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12"
   ],
-  "blockers": [
-    {
-      "id": "verification-failure-state:classification-missing-or-invalid",
-      "artifact": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
-      "detail": null
-    }
-  ]
+  "blockers": []
 }

@@ -360,47 +360,74 @@ code {
   overflow-x: auto;
 }
 
-table {
+.table-block {
+  margin: 16px 0 0;
+}
+
+.three-line-table {
   width: 100%;
-  border-top: 2px solid var(--ink);
-  border-bottom: 2px solid var(--ink);
+  border-top: 1.5pt solid #111;
+  border-right: 0;
+  border-bottom: 1.5pt solid #111;
+  border-left: 0;
   border-collapse: collapse;
+  background: transparent;
   font-size: 0.875rem;
 }
 
-caption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+.three-line-table caption {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0 0 8px;
+  overflow: visible;
+  clip: auto;
+  caption-side: top;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
 }
 
-th,
-td {
+.three-line-table th,
+.three-line-table td {
   padding: 12px;
   border: 0;
   text-align: left;
   vertical-align: top;
 }
 
-thead {
-  border-bottom: 1px solid var(--border-strong);
+.three-line-table thead {
+  border-bottom: 0.75pt solid #111;
 }
 
-thead th {
+.three-line-table thead th {
   background: transparent;
-  color: var(--muted);
-  font-size: 0.75rem;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: none;
 }
 
-tbody tr {
+.three-line-table tbody tr {
   border: 0;
 }
 
-tbody th {
+.three-line-table tbody th {
   width: 18%;
+}
+
+.table-note {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.table-note strong {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .blocker-list {
@@ -894,24 +921,33 @@ tbody th {
 
   .section,
   .verdict-band,
-  table,
   .blocker-list li {
     break-inside: avoid;
   }
 
-  table {
+  .three-line-table {
     border-top: 1.5pt solid #000;
     border-bottom: 1.5pt solid #000;
   }
 
-  thead {
+  .three-line-table thead {
+    display: table-header-group;
     border-bottom: 0.75pt solid #000;
   }
 
-  th,
-  td,
-  tbody tr {
+  .three-line-table th,
+  .three-line-table td,
+  .three-line-table tbody tr {
     border: 0;
+  }
+
+  .three-line-table tr,
+  .table-note {
+    break-inside: avoid;
+  }
+
+  .table-note {
+    color: #000;
   }
 
   a {
@@ -923,7 +959,7 @@ tbody th {
 </head>
 <body>
   <a class="skip-link" href="#report-content">Skip to report content</a>
-  <div class="report-shell" data-report-model-id="report-model-5a6c22a967702bcf5a235098646a4489e1a7b0b1dda90c5f6bb9a35ea148cbef">
+  <div class="report-shell" data-report-model-id="report-model-f6cc3f1c79a2160399018e115b4bb90db5606d144d3f6f195312f897fdd4f27d">
     <header class="report-header">
       <a class="brand" href="overview.html" aria-label="SpecNav verification overview">
         <span class="brand-mark" aria-hidden="true">S</span>
@@ -1039,9 +1075,14 @@ tbody th {
   </article></section>
     <section class="section" data-report-section="blockers"><h2>Report blockers</h2><ol class="blocker-list"><li>
       <strong><code>verification-report:gate-authority-mismatch</code></strong>
-      <span>gate-19a5b122534a04624e23e5042e7d67238c283cec4c60a087a69ca428f4f941a7</span>
-      <small>Artifact: <code>gate-5408f138a402cd6ca601c7e184dd3f144ad709a95f75efaf3b4f9d23164072c7</code></small>
-      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:gate-authority-mismatch</code> for <code>gate-5408f138a402cd6ca601c7e184dd3f144ad709a95f75efaf3b4f9d23164072c7</code> in the source artifacts, then rebuild the validated report model.</span>
+      <span>gate-039fc1f91ae2c8b673fcba0d63b269ed8da20b03c2336bac231d751ca93ab3f7</span>
+      <small>Artifact: <code>gate-a8ff055a2144287a291f998f3dd07c72ebc0f6c9158601a88f9c7c6da8d3cf20</code></small>
+      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:gate-authority-mismatch</code> for <code>gate-a8ff055a2144287a291f998f3dd07c72ebc0f6c9158601a88f9c7c6da8d3cf20</code> in the source artifacts, then rebuild the validated report model.</span>
+    </li><li>
+      <strong><code>verification-report:source-binding-mismatch</code></strong>
+      <span>repair</span>
+      <small>Artifact: <code>repair-9b57e83fd69222e42be653ab1556914749bbab94eab309b6a14c5c8f36f26df7</code></small>
+      <span class="next-action"><strong>Next action:</strong> Resolve <code>verification-report:source-binding-mismatch</code> for <code>repair-9b57e83fd69222e42be653ab1556914749bbab94eab309b6a14c5c8f36f26df7</code> in the source artifacts, then rebuild the validated report model.</span>
     </li><li>
       <strong><code>verification-report:freshness-invalid</code></strong>
       <span>No detail supplied.</span>
@@ -1056,7 +1097,7 @@ tbody th {
   </article>
     </main>
     <footer class="report-footer">
-      <span>Generated <time datetime="2026-08-09T03:03:09.607Z">2026-08-09T03:03:09.607Z</time> from validated Verification 2.0 artifacts.</span>
+      <span>Generated <time datetime="2026-08-09T08:05:43.236Z">2026-08-09T08:05:43.236Z</time> from validated Verification 2.0 artifacts.</span>
       <strong>HTML is a projection, not the gate source of truth.</strong>
     </footer>
   </div>
