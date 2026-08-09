@@ -1,0 +1,41 @@
+{
+  "schema": "specnav.verification.repair-lineage-recovery-review.v1",
+  "id": "repair-lineage-recovery-review-case-03-test-defect-02",
+  "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
+  "change_id": "verification-2-0",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-09T09:47:41Z",
+  "reason": "The human reviewer approved CASE-03 as test_defect and authorized continuation of the Repair Loop. This second recovery authority binds the final synchronized three-host runtime after the approved append-only recovery and rerun-plan governance repair, while preserving every prior recovery and invalid historical envelope.",
+  "requested_envelope_digest": "d4dd17b0103db503dfee4419a9f488e2dd8fef98582cdee04bdaae27dec4cbc9",
+  "invalid_envelopes": [
+    {
+      "artifact": "repair-link-completed-envelope.json",
+      "envelope_digest": "beef795c4d9aecf3bb3153ac8b34999f758d6fb09ea5bbd11f5c93e534c6983f",
+      "drift_fields": [
+        "before_identity"
+      ]
+    },
+    {
+      "artifact": "repair-link-started-envelope.json",
+      "envelope_digest": "e4dc3826aa4d1334e784c5b44e673921ef03689b9ac0979510e717b45c7b7118",
+      "drift_fields": [
+        "before_identity"
+      ]
+    }
+  ],
+  "repair_revision_range": {
+    "before_revision": "7b770ca5a7dadcf9c29a4e15cd1afba79d87bdb9",
+    "after_revision": "3016019bebbdf85a6d88cf86f992cb22abcbe455"
+  },
+  "allowed_identity_drift": [
+    "environment_hash",
+    "kernel_version",
+    "runtime_version"
+  ],
+  "expected_current_identity_digest": "3f29730baee75607cbcdf5a2a2125d09e39a8aee7bb4b0a061ec18102c99e31b"
+}
