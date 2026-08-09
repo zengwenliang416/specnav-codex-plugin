@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "status": "retest_required",
-  "label": "failed",
+  "status": "closure_ready",
+  "label": "pass_after_fix",
   "history": [
     {
       "kind": "initial",
@@ -108,32 +108,200 @@
         "evidence-ee3a879e5a29732a160d6cbd9b1bf20b6b3fc024789c9d7d4ce6eca89bc17ceb"
       ],
       "recorded_at": "2026-08-09T07:01:19.007Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "case_id": "CASE-03",
+      "label": "PASS AFTER FIX",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-03c09563c5c3ff69ade4bb7dd8b599c4cb44f05e59ae524329cd68649f831261",
+        "evidence-12c568838185b0d49f81dadcf9bad62c887605a2e5769dce7fe20a06e27791d1",
+        "evidence-3ce68622f29387bc3bb31036f38f7d53a48da446ef99c50bff00d31de6a366bc",
+        "evidence-64d16c3077e60e20fcf1c6f5c35fc6f81d0e5bef75a08eea90a3030a1caf3e03",
+        "evidence-7257965844221c22d2c9355b7115187b7cdc3327d87ccab6d9209b1b7236e95c",
+        "evidence-95efb673ba48c85381f4d81a9750ebff830bf72482fc0ff3d979abae76b67d33",
+        "evidence-9ff46cc7a69a1052f29b7ad95b7d31f027e5edd4e8631316274bb74f5e88e678",
+        "evidence-bba56fe8b18eee1c5f8545b0e96fc529fd57d4adf7db65854e68193d32392578"
+      ],
+      "recorded_at": "2026-08-09T10:06:23.508Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809100849-083776f3b912513c",
+      "case_id": "CASE-01",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-20bc96352d12f3100cf078e6a77638c037bd305d7b97180e281227f54bde2c3e",
+        "evidence-2a26964e083cddee526717b4c9ab7437222b3fe15e14c9f823aa032e9cf53d89",
+        "evidence-47771c21d0018026e7d454aec176159d4f2dbf5a2886afa2dfd33c1719b43d68",
+        "evidence-a444428691422b34d9e119af3be4de736a88c050aade5f81fa86e9dce943797b",
+        "evidence-c9750b766848bbef95e920f68b719b6be7bdbb90397d849ba41a30648fb8339c",
+        "evidence-dcf84a542da5927849d4af0cdf486336ed068f99c6f82ca385c95a4fccacc60d"
+      ],
+      "recorded_at": "2026-08-09T10:09:00.386Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101033-f415cbe200973058",
+      "case_id": "CASE-02",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-10989c1ef660866aea2885a7725d0a81027dcf6351c72d5abc3e81d20bda26bc",
+        "evidence-1be0ee7e05367535621708a10745604f42a374af6f401c889785714115b225c0",
+        "evidence-2892f3ea9ec5d81cac155e75b94b934e145b1fca3b875731ef39b0a753a3b19a",
+        "evidence-5ded5e83b414deb8e29011926bc96d2817cde04f5a2678cd17831616857e3019",
+        "evidence-a7a58bc2db0b16d8ed1fe030824b9e43861467f69ffc42941b68ac8445eb0dd5",
+        "evidence-b48ea8db03b35278cde667a95395d57a5681367c2e6472968aca618bb89b540f"
+      ],
+      "recorded_at": "2026-08-09T10:10:37.875Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101046-833247a31e6c4f0a",
+      "case_id": "CASE-04",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-201031621a976adacceb4d16df1d25ed1864c3188b1c458de197091b13b1e1d8",
+        "evidence-339d2af82c7aaece3b7a4ccd3792962734e54d00d702961bf03615b36a603e7c",
+        "evidence-7021d97b8e07ee3a661157701baca0be03c14578c0e26939140757aedd76e961",
+        "evidence-964713146942666fb2435c3689f0e3e0ba93fc3541d8f8968802e59236b252f5",
+        "evidence-bf0a4a78789a2fbe7b6a838036e4243fba1f319e43577b2916be19bcac23fca3",
+        "evidence-c49494d699574fc0e73add9975104432b4ada973fbbba282174f69609a0b384d",
+        "evidence-e99e86cf1949576d1dae3440221a5fa0d0cfc351f846c04191df3574da0ab834"
+      ],
+      "recorded_at": "2026-08-09T10:11:22.594Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101127-2d54cb2b407e9dc7",
+      "case_id": "CASE-05",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-135ad0769c6a3c00159c596c2f869772c350e7b2f185710e21f8a4ccd665f13e",
+        "evidence-1aed609d110d7ff73798971f8debc217bef82919a865a265a3ba7c72be3bed72",
+        "evidence-8ea4dff64b4bb1029b3edb5a629ff7e7589e56be8668487b8b78c4e2f9fe8e66",
+        "evidence-a4b47c04a6fe581afb1752fee83fef8379408a99a902d4037cb5555874e1ccbf",
+        "evidence-aa26b3157dae732889622037d6fa7401a17fe4f84638f65ef188f1a9dd54e7cf",
+        "evidence-af3bccff54b717bae3c6971a540e781ff0994a732a8ad776894fd93c8c8b578a",
+        "evidence-ccc25af232bb0370b5c061f0242ca79ee57cf08e3922ef6b900ede78d040df1f",
+        "evidence-e71855d1d2adf6deecf8497a96355f42de49f67cea1c287333162b22b3877bcd",
+        "evidence-e98f8ef5fedf57e57bd0d9ba4fe905f6b467862a0609bfdfe995dcf0b2428686"
+      ],
+      "recorded_at": "2026-08-09T10:12:06.230Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101213-1870b06e98c0c70e",
+      "case_id": "CASE-06",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-06b655f0b8b04b9d04353cceae4ceace5e2fa01f5a30d3d2699751f3d39e5e10",
+        "evidence-3af5b6c18c42eb910d65f8bd3ac2f8f8c0f14a59b50e5e76b00399f8ba91b467",
+        "evidence-4fead2083e38c40accfe80f1b8d1c79fb4dcdc7bb61439141d5263383f3bb9c1",
+        "evidence-88a3ca39918aa352d5ecd81c27f3f6d5a3b28b817c572620662ec0aea1bfb90c",
+        "evidence-a2832eb99199f9156a40bd1586c23bfd37b5b643d1e5b38c0072de1c63d9d9fc",
+        "evidence-c22cb7f9410dea8da3166fe04fee2484e70bff651ebacb8cbc36608c3036642f"
+      ],
+      "recorded_at": "2026-08-09T10:12:29.113Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101233-f52c6833a93ad7f2",
+      "case_id": "CASE-07",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-4858230b8928076671474ad1e28efa3166a9f5bc1abcb58bb2e99cfd0867dd1a",
+        "evidence-6325dda4d24de0d7b3c740461fceba61d27a4c0ddb31f38aef83f084d4839c05",
+        "evidence-6e85f5d3b397b615d52dba8afcba99b83119a005798bdffa1fc74d67a39c5808",
+        "evidence-9d26830f1a2660cec36660194a73e38b6a97bc09effd8288bd76f8a31836d7f7",
+        "evidence-c156e73689d6b407a64dbc28bc71c56ad96c57b7343fb354d139604fff0d2edd",
+        "evidence-f0980b197ffa2d455d4077524deed63ff62b14b7935cb9a42f23aa2f26d55e08",
+        "evidence-f896843ba0488319827824da159983459671ad1ac7ee4301e5118cda1d1261e3"
+      ],
+      "recorded_at": "2026-08-09T10:13:12.722Z"
+    },
+    {
+      "kind": "regression",
+      "attempt_id": "attempt-20260809101321-12f9b3b55f32fa05",
+      "case_id": "CASE-08",
+      "label": "PASS",
+      "verdict": "pass",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-277684913ed134c659bcc54e343acf96e95a13ce4ebaeb84cada5000b851ee50",
+        "evidence-29feb82e6a067a0325440cd7c77d7dac0c83ce4433e63ec62785016e50675539",
+        "evidence-2dcb881151cb47b280c36ff7b0b58f84cff03d540d90f63a1e84c186c2a1661b",
+        "evidence-439b2f1de7781543a5d12dd4e1c5b6630f0d86a864f9a7815b205dfd67ae50bb",
+        "evidence-534e4e35693efe20b7f3c801e6932241f2f1ae765af8e2e73f893450beb19bf3",
+        "evidence-b670880ca769647c86b6cb7c2b391ef4677b5846837b967ec16ab5e645c44bab",
+        "evidence-cf610d1a65d723a4a45dda093ec12adc1b5474fb464935787c206de7e3602389"
+      ],
+      "recorded_at": "2026-08-09T10:15:52.950Z"
     }
   ],
   "transition_proposal": {
     "schema": "specnav.verification.transition-proposal.v1",
     "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
     "change_id": "verification-2-0",
-    "action": "request_retest",
+    "action": "close_failure",
     "owner": "core",
-    "from_state": "retest_required",
-    "target_state": "retest",
+    "from_state": "closure_ready",
+    "target_state": "closed",
     "case_ids": [
-      "CASE-03"
+      "CASE-01",
+      "CASE-02",
+      "CASE-03",
+      "CASE-04",
+      "CASE-05",
+      "CASE-06",
+      "CASE-07",
+      "CASE-08"
     ],
     "attempt_ids": [
       "attempt-20260806063934-95df9951fe619e21",
       "attempt-20260806071222-86600c326217668e",
       "attempt-20260806072342-3bcf781792dc4ce3",
       "attempt-20260809065321-206f1514abb6b990",
-      "attempt-20260809070009-0520dfc29bf17100"
+      "attempt-20260809070009-0520dfc29bf17100",
+      "attempt-20260809095902-c73dc3a4c9f5bd41",
+      "attempt-20260809100849-083776f3b912513c",
+      "attempt-20260809101033-f415cbe200973058",
+      "attempt-20260809101046-833247a31e6c4f0a",
+      "attempt-20260809101127-2d54cb2b407e9dc7",
+      "attempt-20260809101213-1870b06e98c0c70e",
+      "attempt-20260809101233-f52c6833a93ad7f2",
+      "attempt-20260809101321-12f9b3b55f32fa05"
     ],
     "reason_ids": [
-      "reviewed-repair-completed"
+      "required-regression-passed"
     ],
     "repair_link_id": "repair-recovered-d379658c29c420be7b0a7a656f90166fb9fb0b31b307d120239997c3ae827fb5",
-    "proposed_at": "2026-08-09T09:49:27.235Z",
-    "id": "transition-3eb6d00b85d7f9dc0be9d11ab2aabe1de8e95b4220485cdf5ab819a1b41d04ed"
+    "scope_digest": "7ebe3776ff38c93fbb7b250c7e2b83914f3cd5b7683f21f502d31bcc20e834bd",
+    "proposed_at": "2026-08-09T10:15:52.950Z",
+    "id": "transition-11bf1a6a90d0f8b43470f0886f3cc0bdf0e7578603561dbab4cebb520e62ab94"
   },
   "blockers": []
 }
