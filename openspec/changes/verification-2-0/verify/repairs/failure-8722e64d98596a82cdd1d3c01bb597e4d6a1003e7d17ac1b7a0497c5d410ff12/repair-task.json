@@ -1,0 +1,135 @@
+{
+  "schema": "specnav.development.repair-task.v1",
+  "id": "900-verification-repair-2119e2b03a127fe1",
+  "change_id": "verification-2-0",
+  "goal": "Repair test_defect for CASE-03.",
+  "classification": "test_defect",
+  "owner": "development",
+  "status": "requested",
+  "requested_at": "2026-08-09T05:53:48.799Z",
+  "packet_path": "development/tasks/900-verification-repair-2119e2b03a127fe1",
+  "scope": {
+    "owner": "development",
+    "source": "approved-development-scope-lock",
+    "allowed_files": [
+      "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+      "tests/verification-v2/command-result-protocol.sh",
+      "tests/verification-v2/production/command-result-protocol.test.js",
+      "tests/verification-v2/repair-loop/cli.test.js"
+    ],
+    "denied_files": [
+      "openspec/changes/archive/**"
+    ],
+    "requires_review_on": [
+      "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+      "tests/verification-v2/command-result-protocol.sh",
+      "tests/verification-v2/production/command-result-protocol.test.js",
+      "tests/verification-v2/repair-loop/cli.test.js"
+    ],
+    "allowed_operations": {
+      "create": true,
+      "modify": true,
+      "delete": false,
+      "rename": false
+    },
+    "digest": "d0e396269211179f5cb7059d1a8488a112fcd459b5845588b8f7e7edc3d3b8c7"
+  },
+  "packet_artifacts": [
+    "brief.md",
+    "context.json",
+    "report.md",
+    "spec-review.md",
+    "quality-review.md"
+  ],
+  "required_reviews": [
+    "spec-review",
+    "quality-review"
+  ],
+  "ownership": {
+    "evidence": "verification",
+    "closure": "verification",
+    "repair": "development",
+    "reviews": "development",
+    "transitions": "core",
+    "break_loop": "core"
+  },
+  "frozen_failure": {
+    "failure_packet_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
+    "failure_packet_digest": "0996d151c4bfb77c0edc3b07dc18abbd65ab533fd77084b27e746e6fb55ad24c",
+    "run_id": "run-20260806063934-95df9951fe619e21",
+    "case_id": "CASE-03",
+    "attempt_id": "attempt-20260806063934-95df9951fe619e21",
+    "evidence_ids": [
+      "evidence-14eab3189cc37ab3ef38915e809e74209f5454de63a6ea7fe8dd20fbc4dc9690",
+      "evidence-45ee76ef40a98fcfb0b66982f4b8230f885184d3a05462599a1f25322ffcb7af",
+      "evidence-50a4d0c6fb28c7febc3c59700fa40af9a81c056accbacc43afb49588ffb9542e",
+      "evidence-55691755d274e80a28246ceaf2f611eb46348c8a0e303d21ac0beb33fcf1d989",
+      "evidence-66ad57935c9eb18bd169bec8557cd5307f99e6e4aceb4f33fa2510abb212279e",
+      "evidence-8297c2cf12d7b12c99c785f94a4c375e76e6e3b6db878c90a4845ae228abe159",
+      "evidence-c40c933f30184ed1086144b69d3c53d1fcc6c7d6f665d88c20ef9101c4e9ff7f",
+      "evidence-da66b81d7911381f75e8ee8f95c81808816ebb29548cbf8ec3557f9c9c4b22f2"
+    ],
+    "evidence_content": [
+      {
+        "id": "evidence-14eab3189cc37ab3ef38915e809e74209f5454de63a6ea7fe8dd20fbc4dc9690",
+        "digest": "e8ff0631b74d44f13bc37a3b1173cd51952aa5f70ab9a1565934190031bd163e"
+      },
+      {
+        "id": "evidence-45ee76ef40a98fcfb0b66982f4b8230f885184d3a05462599a1f25322ffcb7af",
+        "digest": "8cc7616ec98606cffd23e889fd0145853e4084d78d8a78cc09895357784c7ac8"
+      },
+      {
+        "id": "evidence-50a4d0c6fb28c7febc3c59700fa40af9a81c056accbacc43afb49588ffb9542e",
+        "digest": "526f2088f7dbc1daf8090ad62a2df3ca21123e8977930036bad9d04f12503bf0"
+      },
+      {
+        "id": "evidence-55691755d274e80a28246ceaf2f611eb46348c8a0e303d21ac0beb33fcf1d989",
+        "digest": "da1d1308e7be01752fcde2fffd9db5f0a8f8efd66cba4788caa10f2dc1021285"
+      },
+      {
+        "id": "evidence-66ad57935c9eb18bd169bec8557cd5307f99e6e4aceb4f33fa2510abb212279e",
+        "digest": "74be31c73ffc092a9a83e1af659a6f08cb2d7d255175793cbf94fa07cee21642"
+      },
+      {
+        "id": "evidence-8297c2cf12d7b12c99c785f94a4c375e76e6e3b6db878c90a4845ae228abe159",
+        "digest": "ce42d0d84c90b0c0de5628b17731232c8dbbb5e633640324e7db546fe53077b7"
+      },
+      {
+        "id": "evidence-c40c933f30184ed1086144b69d3c53d1fcc6c7d6f665d88c20ef9101c4e9ff7f",
+        "digest": "26ab42d0370a5a39b9a61c3321dd504c2f826f1d1b4302fdbda4220398e56670"
+      },
+      {
+        "id": "evidence-da66b81d7911381f75e8ee8f95c81808816ebb29548cbf8ec3557f9c9c4b22f2",
+        "digest": "f8041cdf8995c18f52e71d232bafb880bfe702180dde2a2165785b17953ef55a"
+      }
+    ],
+    "reading_ids": [
+      "reading-0ff5a3434f2efb2995f63b60acb1b4d524acc91921ea34a0d8eac44708c2f796",
+      "reading-1e450df296ab479201eb96e291e894a70e1b328bab1d175304a1fb55ad3142a3",
+      "reading-2a0871297560618a7d70f6f2d24129abb48789eb8ae52ba510f4758e06222b2c",
+      "reading-312c1dd6ed416a4fc7649296744528579f6afbc3e7839770c01d6a1df9a9c3fb",
+      "reading-37f8f54dc984f8fee1322a6d644dca107d41cd1573656cd1509dc353f0c83095",
+      "reading-382cfd50d58aef301261be855ba06301316a2cd15a8974ed2e76e67088d67897",
+      "reading-64ce57f9da3687c6e491c38c24e338c7361e6d7b7f331af9f3d344e2f41c2215",
+      "reading-6607ac42334a35e760abc0ee6c4bc70090dae2dacea27cec574e4b8acb552131",
+      "reading-886440841d0d5717eaa6af9a0c3c0790a163da93f88026e6b7ea10b1c16ba1bd",
+      "reading-a51332cd517d96b64c812dac11b8e231f2b8dd4c6ba476cf84cc0563644aceec",
+      "reading-aee43133cff5a3b1272ac05ec0cb426f8d8339a360d4d88d8f0791e4284e45b2",
+      "reading-b248bd71da1bf62d7f06582aaf8408eac19e3fced9655421f78a1a5d86eed7c6",
+      "reading-bb025f090ff445571aece4555ad3db967873e84501e45b9aa079276bcba73015",
+      "reading-cb66bffe0abbe61501e539a4dc0f9c890bb63213862148eef6bafc3347eb38ba",
+      "reading-d0c88c6354bc3f2ac8523cfcfa5f7c016ff2b3a0ca08cc8bcac2c0ad73609669",
+      "reading-e8cace4f07b24d212574d20e0842769be98edd64b6c284cb7621ed0aa24269a0",
+      "reading-f1efb4ba62d67070572e2f2c9cc305941b85d6e246b7a64d1a45a2304f06859d",
+      "reading-f9412d9e8f7dfff48af7f5d851b3774c7f583403a5a939855d3d355994b282a3"
+    ],
+    "failed_assertion_ids": [
+      "CASE-03-A01",
+      "CASE-03-A02",
+      "CASE-03-A03"
+    ],
+    "summary": "CASE-03 assertions passed, but the test harness terminated with EEXIST while writing assertion-results.jsonl.",
+    "root_cause": "The test command attempted to create the same immutable assertion-results.jsonl path more than once in one attempt. The duplicate write failed even though CASE-03-A01, CASE-03-A02, and CASE-03-A03 had passed.",
+    "frozen_at": "2026-08-06T06:42:54.254Z"
+  }
+}

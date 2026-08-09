@@ -1,13 +1,15 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const childProcess = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
 const {
-  run
+  run,
+  validateRepairDiff
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-repair-loop');
 const {
   canonicalJson,
@@ -220,6 +222,52 @@ function dependencies() {
   };
 }
 
+function writeRepairReview({
+  source,
+  taskId,
+  link,
+  afterIdentity,
+  kind,
+  reviewerId
+}) {
+  const taskRoot = path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'development',
+    'tasks',
+    taskId
+  );
+  const file = path.join(taskRoot, `${kind}.json`);
+  writeJson(file, {
+    schema: 'specnav.verification.repair-review.v1',
+    id: `${kind}-cli`,
+    kind,
+    verdict: 'approved',
+    reviewer_id: reviewerId,
+    reviewer_kind: 'human',
+    reviewed_at: FIXED_TIME,
+    evidence_id: `${kind}-evidence-cli`,
+    task_id: taskId,
+    failure_id: source.failure.id,
+    repair_link_id: link.id,
+    repair_link_digest: sha256(canonicalJson(link)),
+    scope_digest: link.scope_digest,
+    after_identity_digest: sha256(canonicalJson(afterIdentity))
+  });
+  return file;
+}
+
+function git(root, args) {
+  const result = childProcess.spawnSync('git', args, {
+    cwd: root,
+    encoding: 'utf8'
+  });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout.trim();
+}
+
 function baseArgs(source, action) {
   return [
     action,
@@ -323,5 +371,200 @@ test('repair CLI appends one deterministic proposal across repeated state evalua
   assert.equal(
     proposalEnvelope.bindings.previous_envelope_digest,
     null
+  );
+});
+
+test('repair CLI starts from a clean baseline and completes only after scoped changes', async () => {
+  const source = projectFixture();
+  const baselineIdentity = {
+    case_snapshot_hash: fixture('positive/case-snapshot.json').snapshot_hash,
+    code_sha: 'b'.repeat(40),
+    test_sha: 'c'.repeat(64),
+    environment_hash: fixture(
+      'positive/attempt.json'
+    ).environment_hash,
+    runtime_version: fixture('positive/attempt.json').runtime_version,
+    kernel_version: '2.0.0-alpha.2'
+  };
+  const afterIdentity = {
+    ...baselineIdentity,
+    code_sha: 'd'.repeat(40),
+    test_sha: 'e'.repeat(64)
+  };
+  let fingerprintCall = 0;
+  const deps = {
+    ...dependencies(),
+    fingerprints() {
+      const value = fingerprintCall === 0 ? baselineIdentity : afterIdentity;
+      fingerprintCall += 1;
+      return {
+        codeSha: value.code_sha,
+        testSha: value.test_sha,
+        environmentHash: value.environment_hash
+      };
+    },
+    validateRepairDiff() {
+      return {
+        ok: true,
+        status: 'scope_verified',
+        changes: [{
+          status: 'M',
+          file: 'tests/specnav/repair.test.js'
+        }],
+        blockers: [],
+        fallback_used: false
+      };
+    }
+  };
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run([
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ], deps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+  const started = await run(baseArgs(source, 'repair-start'), deps);
+  assert.equal(started.ok, true, JSON.stringify(started.blockers));
+  assert.deepEqual(started.baseline_identity, baselineIdentity);
+
+  const link = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'repair-link.json'
+  ), 'utf8'));
+  const specReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link,
+    afterIdentity,
+    kind: 'spec-review',
+    reviewerId: 'spec-reviewer'
+  });
+  const qualityReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link,
+    afterIdentity,
+    kind: 'quality-review',
+    reviewerId: 'quality-reviewer'
+  });
+  const completed = await run([
+    ...baseArgs(source, 'repair-complete'),
+    '--spec-review',
+    path.relative(source.projectRoot, specReview),
+    '--quality-review',
+    path.relative(source.projectRoot, qualityReview)
+  ], deps);
+  assert.equal(completed.ok, true, JSON.stringify(completed.blockers));
+  assert.equal(completed.status, 'repair_completed');
+  assert.deepEqual(completed.after_identity, afterIdentity);
+  assert.deepEqual(completed.verified_changes, [{
+    status: 'M',
+    file: 'tests/specnav/repair.test.js'
+  }]);
+  assert.equal(completed.fallback_used, false);
+});
+
+test('repair diff accepts lifecycle artifacts but rejects scope escape', () => {
+  const root = fs.mkdtempSync(path.join(
+    os.tmpdir(),
+    'specnav-repair-diff-'
+  ));
+  const changeId = 'change-v2';
+  const failureId = 'failure-cli';
+  const taskId = '900-verification-repair-cli';
+  fs.mkdirSync(path.join(root, 'tests', 'specnav'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+  fs.mkdirSync(path.join(
+    root,
+    'openspec',
+    'changes',
+    changeId,
+    'development',
+    'tasks',
+    taskId
+  ), { recursive: true });
+  fs.writeFileSync(path.join(root, 'tests', 'specnav', 'repair.test.js'), 'a\n');
+  fs.writeFileSync(path.join(root, 'src', 'app.js'), 'a\n');
+  fs.writeFileSync(path.join(
+    root,
+    'openspec',
+    'changes',
+    changeId,
+    'development',
+    'tasks',
+    taskId,
+    'report.md'
+  ), 'pending\n');
+  git(root, ['init']);
+  git(root, ['config', 'user.email', 'specnav@example.test']);
+  git(root, ['config', 'user.name', 'SpecNav Test']);
+  git(root, ['add', '.']);
+  git(root, ['commit', '-m', 'baseline']);
+  const baseline = git(root, ['rev-parse', 'HEAD']);
+
+  fs.writeFileSync(path.join(root, 'tests', 'specnav', 'repair.test.js'), 'b\n');
+  fs.writeFileSync(path.join(
+    root,
+    'openspec',
+    'changes',
+    changeId,
+    'development',
+    'tasks',
+    taskId,
+    'report.md'
+  ), 'approved\n');
+  git(root, ['add', '.']);
+  git(root, ['commit', '-m', 'scoped repair']);
+  const scopedHead = git(root, ['rev-parse', 'HEAD']);
+  const task = {
+    id: taskId,
+    scope: {
+      allowed_files: ['tests/specnav/**'],
+      denied_files: ['openspec/changes/archive/**'],
+      allowed_operations: {
+        create: true,
+        modify: true,
+        delete: false,
+        rename: false
+      }
+    }
+  };
+  const accepted = validateRepairDiff({
+    projectRoot: root,
+    changeId,
+    failureId,
+    task,
+    beforeIdentity: { code_sha: baseline },
+    afterIdentity: { code_sha: scopedHead }
+  });
+  assert.equal(accepted.ok, true, JSON.stringify(accepted.blockers));
+  assert.deepEqual(accepted.changes, [{
+    status: 'M',
+    file: 'tests/specnav/repair.test.js'
+  }]);
+
+  fs.writeFileSync(path.join(root, 'src', 'app.js'), 'b\n');
+  git(root, ['add', '.']);
+  git(root, ['commit', '-m', 'scope escape']);
+  const escapedHead = git(root, ['rev-parse', 'HEAD']);
+  const rejected = validateRepairDiff({
+    projectRoot: root,
+    changeId,
+    failureId,
+    task,
+    beforeIdentity: { code_sha: baseline },
+    afterIdentity: { code_sha: escapedHead }
+  });
+  assert.equal(rejected.ok, false);
+  assert.deepEqual(
+    rejected.blockers.map((entry) => entry.id),
+    ['verification-repair:scope-diff-outside-lock']
   );
 });

@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.verification.root-cause-review.v1",
+  "id": "root-cause-review-case-03-eexist",
+  "failure_id": "failure-8722e64d98596a82cdd1d3c01bb597e4d6a1003e7d17ac1b7a0497c5d410ff12",
+  "root_failure_digest": "17827e4138a8fac4b22873bb591481145a10e67d841e9677dc0a0144508d8cd6",
+  "change_id": "verification-2-0",
+  "run_id": "run-20260806063934-95df9951fe619e21",
+  "case_id": "CASE-03",
+  "attempt_id": "attempt-20260806063934-95df9951fe619e21",
+  "classification": "test_defect",
+  "summary": "CASE-03 assertions passed, but the test harness terminated with EEXIST while writing assertion-results.jsonl.",
+  "root_cause": "The test command attempted to create the same immutable assertion-results.jsonl path more than once in one attempt. The duplicate write failed even though CASE-03-A01, CASE-03-A02, and CASE-03-A03 had passed.",
+  "failed_assertion_ids": [
+    "CASE-03-A01",
+    "CASE-03-A02",
+    "CASE-03-A03"
+  ],
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "decision": "approved",
+  "reviewed_at": "2026-08-09T05:49:54.000Z"
+}

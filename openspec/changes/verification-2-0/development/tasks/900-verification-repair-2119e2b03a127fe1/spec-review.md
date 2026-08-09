@@ -1,0 +1,5 @@
+# Spec Review
+
+## Verdict
+
+pending

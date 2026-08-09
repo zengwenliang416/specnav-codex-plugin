@@ -1,0 +1,23 @@
+{
+  "allowed_files": [
+    "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+    "tests/verification-v2/command-result-protocol.sh",
+    "tests/verification-v2/production/command-result-protocol.test.js",
+    "tests/verification-v2/repair-loop/cli.test.js"
+  ],
+  "denied_files": [
+    "openspec/changes/archive/**"
+  ],
+  "requires_review_on": [
+    "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+    "tests/verification-v2/command-result-protocol.sh",
+    "tests/verification-v2/production/command-result-protocol.test.js",
+    "tests/verification-v2/repair-loop/cli.test.js"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  }
+}

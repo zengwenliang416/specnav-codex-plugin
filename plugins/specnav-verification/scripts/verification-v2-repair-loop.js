@@ -3,6 +3,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 
 const kernel = require('../kernel');
 const {
@@ -76,6 +77,146 @@ function paths(context, failureId = null) {
     attemptFacts: 'v2/attempt-facts.jsonl',
     failureState: 'v2/failure-state.json',
     evidenceIndex: 'evidence/index.json'
+  };
+}
+
+function globPattern(pattern) {
+  let source = '^';
+  for (let index = 0; index < pattern.length; index += 1) {
+    const character = pattern[index];
+    if (character === '*' && pattern[index + 1] === '*') {
+      source += '.*';
+      index += 1;
+    } else if (character === '*') {
+      source += '[^/]*';
+    } else if (character === '?') {
+      source += '[^/]';
+    } else {
+      source += /[\\^$.*+?()[\]{}|]/.test(character)
+        ? `\\${character}`
+        : character;
+    }
+  }
+  return new RegExp(`${source}$`);
+}
+
+function matchesAny(file, patterns) {
+  return patterns.some((pattern) => globPattern(pattern).test(file));
+}
+
+function lifecycleRepairPath(changeId, failureId, taskId, file) {
+  return file.startsWith(
+    `openspec/changes/${changeId}/verify/repairs/${failureId}/`
+  )
+    || file.startsWith(
+      `openspec/changes/${changeId}/development/tasks/${taskId}/`
+    )
+    || file === (
+      `openspec/changes/${changeId}/verify/v2/repair-links.json`
+    );
+}
+
+function gitDiff(projectRoot, before, after) {
+  const result = spawnSync('git', [
+    'diff',
+    '--name-status',
+    '--no-renames',
+    before,
+    after
+  ], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+    maxBuffer: 16 * 1024 * 1024
+  });
+  if (result.status !== 0) {
+    throw new Error(result.stderr.trim() || 'git diff failed');
+  }
+  return result.stdout
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => {
+      const [status, ...parts] = line.split('\t');
+      return { status, file: parts.at(-1) };
+    });
+}
+
+function validateRepairDiff({
+  projectRoot,
+  changeId,
+  failureId,
+  task,
+  beforeIdentity,
+  afterIdentity
+}) {
+  if (
+    !task
+    || typeof task !== 'object'
+    || !task.scope
+    || !Array.isArray(task.scope.allowed_files)
+    || !Array.isArray(task.scope.denied_files)
+    || !task.scope.allowed_operations
+    || !/^[a-f0-9]{40}$/.test(beforeIdentity?.code_sha || '')
+    || !/^[a-f0-9]{40}$/.test(afterIdentity?.code_sha || '')
+  ) {
+    return blocked(
+      'verification-repair:scope-diff-input-invalid',
+      task?.id || 'repair-task'
+    );
+  }
+  let changes;
+  try {
+    changes = gitDiff(
+      projectRoot,
+      beforeIdentity.code_sha,
+      afterIdentity.code_sha
+    );
+  } catch (error) {
+    return blocked(
+      'verification-repair:scope-diff-failed',
+      task.id,
+      error instanceof Error ? error.message : String(error)
+    );
+  }
+  const sourceChanges = changes.filter((change) => !lifecycleRepairPath(
+    changeId,
+    failureId,
+    task.id,
+    change.file
+  ));
+  if (sourceChanges.length === 0) {
+    return blocked(
+      'verification-repair:scope-diff-empty',
+      task.id
+    );
+  }
+  for (const change of sourceChanges) {
+    const operation = change.status === 'A'
+      ? 'create'
+      : change.status === 'M'
+        ? 'modify'
+        : change.status === 'D'
+          ? 'delete'
+          : 'rename';
+    if (
+      !change.file
+      || !matchesAny(change.file, task.scope.allowed_files)
+      || matchesAny(change.file, task.scope.denied_files)
+      || task.scope.allowed_operations[operation] !== true
+    ) {
+      return blocked(
+        'verification-repair:scope-diff-outside-lock',
+        change.file || task.id,
+        change.status
+      );
+    }
+  }
+  return {
+    ok: true,
+    status: 'scope_verified',
+    changes: sourceChanges,
+    blockers: [],
+    fallback_used: false
   };
 }
 
@@ -382,7 +523,14 @@ function repairEnvelope(context, store, failureId) {
       'repair-link-completed-envelope.json'
     )
   );
-  return completed || loadEnvelope(
+  const started = readOptionalJson(
+    store,
+    path.posix.join(
+      paths(context, failureId).repairRoot,
+      'repair-link-started-envelope.json'
+    )
+  );
+  return completed || started || loadEnvelope(
     context,
     store,
     failureId,
@@ -697,6 +845,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
   const allowed = [
     'classify',
     'repair-request',
+    'repair-start',
     'repair-complete',
     'rerun-plan',
     'evaluate',
@@ -916,6 +1065,121 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       };
     }
 
+    if (action === 'repair-start') {
+      const existing = readOptionalJson(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-started-envelope.json'
+        )
+      );
+      if (existing) {
+        if (
+          !authority.verify(existing).ok
+          || existing.kind !== 'repair_link'
+          || existing.bindings.failure_id !== failure.id
+          || existing.payload.failure_id !== failure.id
+          || existing.payload.status !== 'in_progress'
+        ) {
+          return blocked(
+            'verification-repair:repair-baseline-invalid',
+            failure.id
+          );
+        }
+        writeJson(
+          store,
+          relativeRepairPath(failure.id, 'repair-link.json'),
+          existing.payload
+        );
+        return {
+          ok: true,
+          status: 'repair_in_progress',
+          failure_id: failure.id,
+          repair_link_id: existing.payload.id,
+          baseline_identity: existing.payload.before_identity,
+          envelope_id: existing.id,
+          replayed: true,
+          blockers: [],
+          fallback_used: false
+        };
+      }
+      const requested = loadEnvelope(
+        context,
+        store,
+        failure.id,
+        'repair-link-requested-envelope.json'
+      );
+      if (
+        !authority.verify(requested).ok
+        || requested.kind !== 'repair_link'
+        || requested.payload.status !== 'requested'
+      ) {
+        return blocked(
+          'verification-repair:repair-link-envelope-invalid',
+          failure.id
+        );
+      }
+      const current = (dependencies.fingerprints || fingerprints)(
+        context.projectRoot,
+        context.snapshotValue,
+        context.runtimeStatusValue,
+        context.runtimeAuthority
+      );
+      const baseline = context.schemaRegistry.validate('repair-link', {
+        ...requested.payload,
+        status: 'in_progress',
+        before_identity: {
+          case_snapshot_hash: context.snapshotValue.snapshot_hash,
+          code_sha: current.codeSha,
+          test_sha: current.testSha,
+          environment_hash: current.environmentHash,
+          runtime_version: context.runtimeStatusValue.runtime_version,
+          kernel_version: kernel.metadata.version
+        }
+      });
+      if (!baseline.ok) {
+        return blocked(
+          'verification-repair:repair-baseline-invalid',
+          failure.id
+        );
+      }
+      const envelope = authority.seal(
+        'repair_link',
+        baseline.value,
+        bindings(failure)
+      );
+      const persisted = persistTrustedEnvelope(
+        store,
+        relativeRepairPath(
+          failure.id,
+          'repair-link-started-envelope.json'
+        ),
+        envelope,
+        authority
+      );
+      const links = readOptionalJson(store, root.files.repairLinks, []);
+      writeJson(store, root.files.repairLinks, mergeById(
+        links,
+        [baseline.value]
+      ));
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link.json'),
+        baseline.value
+      );
+      return {
+        ok: true,
+        status: 'repair_in_progress',
+        failure_id: failure.id,
+        repair_link_id: baseline.value.id,
+        baseline_identity: baseline.value.before_identity,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.persisted,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
     if (action === 'repair-complete') {
       const completedEnvelope = readOptionalJson(
         store,
@@ -954,19 +1218,29 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
           fallback_used: false
         };
       }
-      const currentLink = loadEnvelope(
+      const startedEnvelope = loadEnvelope(
         context,
         store,
         failure.id,
-        'repair-link.json'
+        'repair-link-started-envelope.json'
       );
+      if (
+        !authority.verify(startedEnvelope).ok
+        || startedEnvelope.kind !== 'repair_link'
+        || startedEnvelope.payload.status !== 'in_progress'
+      ) {
+        return blocked(
+          'verification-repair:repair-baseline-invalid',
+          failure.id
+        );
+      }
+      const currentLink = startedEnvelope.payload;
       const current = (dependencies.fingerprints || fingerprints)(
         context.projectRoot,
         context.snapshotValue,
         context.runtimeStatusValue,
         context.runtimeAuthority
       );
-      const before = currentLink.before_identity;
       const after = {
         case_snapshot_hash: context.snapshotValue.snapshot_hash,
         code_sha: current.codeSha,
@@ -975,6 +1249,37 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         runtime_version: context.runtimeStatusValue.runtime_version,
         kernel_version: kernel.metadata.version
       };
+      const task = readRequiredJson(
+        changeStore,
+        path.posix.join(
+          'development',
+          'tasks',
+          currentLink.development_task_id,
+          'context.json'
+        ),
+        'verification-repair:repair-task-read-failed'
+      );
+      if (
+        task.id !== currentLink.development_task_id
+        || task.change_id !== failure.change_id
+        || sha256(canonicalJson(task.scope)) !== currentLink.scope_digest
+      ) {
+        return blocked(
+          'verification-repair:repair-task-invalid',
+          currentLink.development_task_id
+        );
+      }
+      const diffValidation = (
+        dependencies.validateRepairDiff || validateRepairDiff
+      )({
+        projectRoot: context.projectRoot,
+        changeId: context.changeId,
+        failureId: failure.id,
+        task,
+        beforeIdentity: currentLink.before_identity,
+        afterIdentity: after
+      });
+      if (!diffValidation.ok) return diffValidation;
       const reviews = [
         reviewReceipt(
           context,
@@ -1002,24 +1307,6 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         reviews
       });
       if (!result.ok) return { ...result, fallback_used: false };
-      if (
-        result.repair_link.repair_kind === 'test_code'
-        && after.code_sha !== before.code_sha
-      ) {
-        return blocked(
-          'verification-repair:test-repair-code-sha-changed',
-          failure.id
-        );
-      }
-      if (
-        result.repair_link.repair_kind === 'product_code'
-        && after.test_sha !== before.test_sha
-      ) {
-        return blocked(
-          'verification-repair:product-repair-test-sha-changed',
-          failure.id
-        );
-      }
       const envelope = authority.seal(
         'repair_link',
         result.repair_link,
@@ -1050,6 +1337,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         failure_id: failure.id,
         repair_link_id: result.repair_link.id,
         after_identity: result.repair_link.after_identity,
+        verified_changes: diffValidation.changes,
         envelope_id: persisted.envelope.id,
         replayed: !persisted.persisted,
         blockers: [],
@@ -1297,5 +1585,6 @@ module.exports = {
   evaluateState,
   run,
   scopeProjection,
-  trustAuthority
+  trustAuthority,
+  validateRepairDiff
 };

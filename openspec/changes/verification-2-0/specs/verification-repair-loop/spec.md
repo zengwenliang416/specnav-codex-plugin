@@ -16,6 +16,15 @@ product/test code repair, and Core MUST own lifecycle transitions.
 - **WHEN** a failure is classified as a product defect
 - **THEN** verification creates a development repair handoff referencing frozen failure evidence
 
+### Requirement: Repair baseline and scope proof
+The system MUST record a clean signed repair baseline before product or test
+source changes and MUST verify the completed Git diff against the approved
+repair scope.
+
+#### Scenario: Repair changes a file outside approved scope
+- **WHEN** the baseline-to-reviewed Git diff contains an unapproved, denied, deleted, or renamed file
+- **THEN** repair completion is blocked and no completed repair fact is signed
+
 ### Requirement: Retry retest and regression separation
 The system MUST record retry, retest, and regression as distinct attempt kinds
 with distinct eligibility rules.

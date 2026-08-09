@@ -30,6 +30,7 @@ const SUPPORTED_ACTIONS = new Set([
   'runtime-repair',
   'repair-classify',
   'repair-request',
+  'repair-start',
   'repair-complete',
   'repair-rerun-plan',
   'repair-evaluate',
@@ -81,6 +82,7 @@ const ACTIONS = Object.freeze([
   ['runtime-repair', true],
   ['repair-classify', false],
   ['repair-request', false],
+  ['repair-start', false],
   ['repair-complete', false],
   ['repair-rerun-plan', false],
   ['repair-evaluate', false],
@@ -522,6 +524,7 @@ function commandFor(pluginRoot, request) {
     const repairAction = {
       'repair-classify': 'classify',
       'repair-request': 'repair-request',
+      'repair-start': 'repair-start',
       'repair-complete': 'repair-complete',
       'repair-rerun-plan': 'rerun-plan',
       'repair-evaluate': 'evaluate',

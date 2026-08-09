@@ -94,6 +94,17 @@ test('repair actions route to the dedicated append-only repair-loop CLI', () => 
     assert.equal(classified[index + 1], value, flag);
   }
 
+  const started = command('repair-start', {
+    change: 'change-v2',
+    reviewer_id: 'reviewer-1',
+    failure_id: 'failure-open'
+  });
+  assert.equal(
+    path.basename(started[0]),
+    'verification-v2-repair-loop.js'
+  );
+  assert.equal(started[1], 'repair-start');
+
   const applied = command('repair-transition-apply', {
     change: 'change-v2',
     reviewer_id: 'reviewer-1',

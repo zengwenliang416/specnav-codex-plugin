@@ -45,7 +45,21 @@ case ids.
    ```
 
    Replaying this command must not overwrite task reports or review files.
-4. After the scoped repair is committed and independent spec and quality
+4. Before editing any repair source, record the clean repair baseline:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-start --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --json
+   ```
+
+   Commit the generated baseline artifacts before changing repair source.
+   `repair-start` is replay-safe, requires a clean Git worktree, and binds the
+   task to the exact current code, test, runtime, environment, case, and Kernel
+   fingerprints.
+5. After the scoped repair is committed and independent spec and quality
    reviews are approved, complete the repair:
 
    ```bash
@@ -58,14 +72,17 @@ case ids.
      --json
    ```
 
-   A test repair may change only `test_sha`; a product repair may change only
-   `code_sha`. Any other fingerprint drift blocks.
-5. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
+   `repair-complete` compares the baseline commit with the reviewed commit.
+   Every non-lifecycle changed file must be covered by the approved scope lock.
+   Denied files, deletes, renames, empty diffs, runtime drift, environment
+   drift, case-contract drift, or unreviewed changes block. Test repairs must
+   change `test_sha`; product repairs must change `code_sha`.
+6. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
    `verify/v2/requirements-source.json`, `verify/v2/acceptance-source.json`,
    `verify/v2/freshness.json`, `verify/rerun-policy.json`, and
    `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
    valid `codegraph/impact-report.json`.
-6. Persist the trusted repaired, impacted, and baseline scope:
+7. Persist the trusted repaired, impacted, and baseline scope:
 
    ```bash
    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -81,13 +98,13 @@ case ids.
    them with a manually chosen domain list.
    Pass `--reviewer-id <authenticated-human-id>` so the current approval is
    revalidated against the current snapshot and source hashes.
-7. If the result is blocked, stop. Unknown references, missing freshness,
+8. If the result is blocked, stop. Unknown references, missing freshness,
    malformed CodeGraph evidence, and unmapped production changes may expand
    scope but may never silently shrink it.
-8. Task 020 executes the returned cases as retest or regression attempts.
+9. Task 020 executes the returned cases as retest or regression attempts.
    Preserve prior failed attempts and evidence; do not edit the stale marker
    by hand.
-9. Execute every returned case through the V2 `execute` action using the
+10. Execute every returned case through the V2 `execute` action using the
    required retry, retest, or regression identity. Never overwrite the first
    failed attempt.
    - Retry uses the original run and requires unchanged fingerprints:
@@ -114,7 +131,7 @@ case ids.
        --attempt-kind regression --parent-attempt "<retest-attempt-id>" \
        --failure-id "<failure-id>" --json
      ```
-10. Evaluate the repair state after each retest or regression batch:
+11. Evaluate the repair state after each retest or regression batch:
 
     ```bash
     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -126,7 +143,7 @@ case ids.
 
     Continue only with the exact Core-owned transition proposal. Never set a
     failure status by hand.
-11. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
+12. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
     explicit user approval:
 
     ```bash
@@ -142,7 +159,7 @@ case ids.
     Transition proposals and applications are append-only JSONL facts.
     Repeating the same idempotency key returns the original receipt; a
     conflicting replay blocks.
-12. Run the V2 `finalize` action only after every `required_cases` member has
+13. Run the V2 `finalize` action only after every `required_cases` member has
    fresh terminal evidence and all required six-domain readings.
 
 ## Required Outputs

@@ -220,6 +220,7 @@ FAIL
   -> freeze failure packet and evidence
   -> classify product, test, environment, or flaky cause
   -> create a scoped development repair task
+  -> record a clean repair baseline before edits
   -> review the repair
   -> retest the exact failed case
   -> run directly impacted and policy baseline regression cases
@@ -229,6 +230,14 @@ FAIL
 An unchanged-fingerprint retry that later passes is `FLAKY`, not plain PASS.
 A repaired case that passes is `PASS AFTER FIX`. Repeated no-progress attempts
 route to break-loop governance.
+
+`repair-start` is mandatory for product and test defects. It creates a signed
+`in_progress` repair link from a clean Git state before repair edits begin.
+`repair-complete` compares that baseline commit with the reviewed commit,
+ignores only the repair task's own lifecycle artifacts, and rejects every
+changed file outside the approved scope lock. Runtime, environment, Kernel,
+and case-snapshot fingerprints must remain unchanged across that repair
+window.
 
 Retry stays inside the original run. Retest and regression always create new
 runs whose `origin_run_id`, `parent_run_id`, `parent_attempt_id`, and
