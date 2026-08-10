@@ -418,21 +418,19 @@ jq -e '.blockers[] | select(. == "verification-operations:archive-lock:exists")'
 test -d "$LOCKED/openspec/changes/add-dashboard"
 grep -Fxq 'other-process:lock-token' "$LOCKED/openspec/.specnav/archive.lock"
 
-NO_PYTHON="$TMP_DIR/no-python"
-write_archive_ready_project "$NO_PYTHON"
-node "$ROOT/tests/verification-v2/release/populate-project.js" "$NO_PYTHON" add-dashboard
-set +e
-PROJECT_DIR="$NO_PYTHON" SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
+UNTRUSTED_PYTHON_OVERRIDE="$TMP_DIR/untrusted-python-override"
+write_archive_ready_project "$UNTRUSTED_PYTHON_OVERRIDE"
+node "$ROOT/tests/verification-v2/release/populate-project.js" \
+  "$UNTRUSTED_PYTHON_OVERRIDE" add-dashboard
+PROJECT_DIR="$UNTRUSTED_PYTHON_OVERRIDE" \
+  SPECNAV_OPENSPEC_BIN="$FAKE_OPENSPEC" \
   SPECNAV_PYTHON_BIN="$TMP_DIR/python-does-not-exist" \
-  node "$OPS/scripts/archive-change.js" --json >"$TMP_DIR/no-python.json"
-status=$?
-set -e
-if [[ "$status" != "2" ]]; then
-  echo "expected missing safe filesystem runtime to block, got $status" >&2
-  cat "$TMP_DIR/no-python.json" >&2
-  exit 1
-fi
-jq -e '.blockers[] | select(. == "verification-operations:safe-fs-python-unavailable")' \
-  "$TMP_DIR/no-python.json" >/dev/null
+  node "$OPS/scripts/archive-change.js" --json \
+  >"$TMP_DIR/untrusted-python-override.json"
+jq -e '
+  .ok == true
+  and .archive_path == "openspec/changes/archive/2026-06-29-add-dashboard"
+  and (.blockers | length) == 0
+' "$TMP_DIR/untrusted-python-override.json" >/dev/null
 
 echo "operations archive action fixtures ok"

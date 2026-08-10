@@ -29,7 +29,8 @@ const {
 } = require('../../../plugins/specnav-verification/kernel/pipeline/production-runner');
 const {
   HOST_DESCRIPTORS,
-  expectedHostCommands
+  hostProofRunnerSourceDigest,
+  managedFixtureManifestDigest
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
 const { readySchemaRegistry } = require('../contracts/cross-reference/test-helpers');
 
@@ -37,6 +38,46 @@ const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
+}
+
+function canonicalize(value) {
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(
+    Object.keys(value).sort().map((key) => [key, canonicalize(value[key])])
+  );
+}
+
+function canonicalJson(value) {
+  return JSON.stringify(canonicalize(value));
+}
+
+function executable(file) {
+  const real = fs.realpathSync(file);
+  return {
+    path: real,
+    sha256: sha256(fs.readFileSync(real))
+  };
+}
+
+function hostToolchain() {
+  const npmPath = path.resolve(
+    path.dirname(process.execPath),
+    '../lib/node_modules/npm/bin/npm-cli.js'
+  );
+  const sandboxPath = process.platform === 'darwin'
+    ? '/usr/bin/sandbox-exec'
+    : ['/usr/bin/bwrap', '/bin/bwrap'].find((entry) => fs.existsSync(entry));
+  if (!sandboxPath) {
+    throw new Error('verification-fixture:sandbox-unavailable');
+  }
+  return {
+    node: executable(process.execPath),
+    git: executable('/usr/bin/git'),
+    bash: executable('/bin/bash'),
+    npm: executable(npmPath),
+    sandbox: executable(sandboxPath)
+  };
 }
 
 function writeJson(file, value) {
@@ -532,50 +573,274 @@ function populateProject(projectRoot, change, options = {}) {
   if (!hostAuthority.ok) {
     throw new Error(JSON.stringify(hostAuthority.blockers));
   }
+  const repositoryRoot = path.resolve(__dirname, '../../..');
+  const fixtureRoot = options.fixtureRoot
+    || process.env.SPECNAV_VERIFICATION_FIXTURE_ROOT
+    || path.join(
+      repositoryRoot,
+      'plugins',
+      'specnav-verification',
+      'assets',
+      'contract-fixtures'
+    );
+  const runId = 'host-proof-fixture';
+  const runRoot = `operations/host-proof-runs/${runId}`;
+  const lockPath = `${runRoot}/cross-host-lock.json`;
+  fs.mkdirSync(path.dirname(path.join(changeDir, lockPath)), {
+    recursive: true
+  });
+  fs.writeFileSync(path.join(changeDir, lockPath), hostLock.bytes);
+  const toolchain = hostToolchain();
+  const runnerSourceSha256 = hostProofRunnerSourceDigest(repositoryRoot);
+  const runnerIdentitySha256 = kernel.createHostRunnerIdentity(
+    runnerSourceSha256,
+    toolchain
+  );
+  const fixtureManifestSha256 = managedFixtureManifestDigest(fixtureRoot);
+  const fixtureSnapshotDigest = sha256('managed-fixture-snapshot');
+  const workspace = path.dirname(hostAuthority.roots.codex);
+  const repositoryInventory = git(root, ['ls-tree', '-r', 'HEAD']);
+  const managedRuntimeProbe = path.join(
+    hostAuthority.roots.codex,
+    hostAuthority.lock.source.plugin_path,
+    'scripts',
+    'verification-runtime.js'
+  );
+  let commandSequence = 0;
+
+  function hostCommand(host, id, argv, stdoutValue = null) {
+    const index = commandSequence++;
+    const stdoutPath = `${runRoot}/${host}-${index + 1}.stdout.log`;
+    const stderrPath = `${runRoot}/${host}-${index + 1}.stderr.log`;
+    const stdout = Buffer.from(stdoutValue ?? `completed ${id}\n`);
+    const stderr = Buffer.alloc(0);
+    fs.mkdirSync(path.dirname(path.join(changeDir, stdoutPath)), {
+      recursive: true
+    });
+    fs.writeFileSync(path.join(changeDir, stdoutPath), stdout);
+    fs.writeFileSync(path.join(changeDir, stderrPath), stderr);
+    const startedAt = new Date(
+      Date.parse('2026-08-02T00:00:05Z') + index * 1000
+    ).toISOString();
+    const sandboxed = [
+      'dependency-install',
+      'runtime-doctor',
+      'host-smoke'
+    ].includes(id);
+    const sandbox = sandboxed
+      ? kernel.createHostSandboxPlan({
+          toolchain,
+          allowedRoots: [
+            ...HOSTS.map((candidate) => hostAuthority.roots[candidate]),
+            ...(id === 'runtime-doctor'
+              ? [runtimeResolution.runtimeRoot]
+              : []),
+            path.dirname(path.dirname(toolchain.node.path))
+          ],
+          writableRoots: [
+            path.join(workspace, '.runtime', host),
+            ...(id === 'dependency-install'
+              ? [hostAuthority.roots[host]]
+              : [])
+          ],
+          pathAliases: [{
+            path: workspace,
+            identity: '$WORKSPACE'
+          }],
+          allowNetwork: id === 'dependency-install'
+        })
+      : null;
+    return {
+      id,
+      argv,
+      executable_realpath: argv[0],
+      executable_sha256: sha256(fs.readFileSync(argv[0])),
+      sandbox_executable_realpath: sandbox?.executable.path || null,
+      sandbox_executable_sha256: sandbox?.executable.sha256 || null,
+      sandbox_policy_sha256: sandbox?.policy_sha256 || null,
+      sandbox_argv: sandbox?.argv || null,
+      exit_status: 0,
+      signal: null,
+      stdout_sha256: sha256(stdout),
+      stderr_sha256: sha256(stderr),
+      stdout_path: stdoutPath,
+      stderr_path: stderrPath,
+      started_at: startedAt,
+      completed_at: new Date(Date.parse(startedAt) + 500).toISOString()
+    };
+  }
+
+  function hostCommands(host, locked) {
+    const rootPath = hostAuthority.roots[host];
+    const commands = [
+      hostCommand(host, 'remote-ref', [
+        toolchain.git.path,
+        'ls-remote',
+        '--refs',
+        locked.repository,
+        locked.ref
+      ], `${locked.commit}\t${locked.ref}\n`),
+      hostCommand(host, 'checkout-init', [
+        toolchain.git.path,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'init',
+        '--quiet'
+      ]),
+      hostCommand(host, 'checkout-remote', [
+        toolchain.git.path,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'remote',
+        'add',
+        'origin',
+        locked.repository
+      ]),
+      hostCommand(host, 'checkout-fetch', [
+        toolchain.git.path,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'fetch',
+        '--quiet',
+        '--depth=1',
+        'origin',
+        locked.ref
+      ]),
+      hostCommand(host, 'checkout-detach', [
+        toolchain.git.path,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'checkout',
+        '--quiet',
+        '--detach',
+        locked.commit
+      ]),
+      hostCommand(host, 'checkout-head', [
+        toolchain.git.path,
+        'rev-parse',
+        'HEAD^{commit}'
+      ], `${locked.commit}\n`)
+    ];
+    if (host === 'codex') {
+      commands.push(hostCommand(host, 'checkout-tree', [
+        toolchain.git.path,
+        'ls-tree',
+        '-r',
+        'HEAD'
+      ], repositoryInventory));
+    }
+    if (host === 'codefree-o') {
+      commands.push(hostCommand(host, 'dependency-install', [
+        toolchain.npm.path,
+        'ci',
+        '--ignore-scripts',
+        '--no-audit',
+        '--no-fund'
+      ]));
+    }
+    commands.push(
+      hostCommand(host, 'runtime-doctor', [
+        toolchain.node.path,
+        managedRuntimeProbe,
+        'doctor',
+        '--version',
+        runtimeStatus.runtime_version,
+        '--project',
+        rootPath,
+        '--root',
+        path.dirname(runtimeResolution.runtimeRoot),
+        '--json'
+      ]),
+      hostCommand(host, 'host-smoke', [
+        toolchain.bash.path,
+        path.join(rootPath, 'tests', 'run-smoke.sh')
+      ])
+    );
+    return commands;
+  }
+
   const hosts = HOSTS.map((host) => {
-    const receiptPath = `operations/install-receipts/${host}.json`;
+    const receiptPath = `${runRoot}/${host}.receipt.json`;
     const locked = host === 'codex'
       ? hostAuthority.lock.source
       : hostAuthority.lock.hosts[host];
-    const commandArgv = expectedHostCommands(
+    const commands = hostCommands(host, locked);
+    const execution = {
+      schema: 'specnav.verification.host-execution.v1',
+      change_id: change,
+      run_id: runId,
       host,
-      hostAuthority.roots[host],
-      locked,
-      {},
+      status: 'passed',
+      repository: locked.repository,
+      ref: locked.ref,
+      commit: hostCommits[host],
+      host_lock_sha256: hostAuthority.summary.lock_sha256,
+      ...releaseBindings,
+      runtime_authority_digest: runtimeResolution.authority.digest,
+      host_authority_digest: hostAuthority.summary.digest,
+      source_snapshot_digest: hostAuthority.summary.snapshots[host],
+      runner_identity_sha256: runnerIdentitySha256,
+      runner_source_sha256: runnerSourceSha256,
+      environment_sha256: sha256('host-proof-environment'),
+      fixture_snapshot_digest: fixtureSnapshotDigest,
+      fixture_manifest_sha256: fixtureManifestSha256,
+      observations: {
+        advertised_commit: hostCommits[host],
+        checkout_head: hostCommits[host],
+        source_code_inventory_sha: host === 'codex'
+          ? fingerprints.code_sha
+          : null,
+        package_lock_sha256: host === 'codefree-o'
+          ? sha256(
+              fs.existsSync(path.join(
+                hostAuthority.roots[host],
+                'package-lock.json'
+              ))
+                ? fs.readFileSync(path.join(
+                    hostAuthority.roots[host],
+                    'package-lock.json'
+                  ))
+                : 'synthetic-codefree-package-lock'
+            )
+          : null
+      },
+      commands,
+      blocker: null,
+      started_at: commands[0].started_at,
+      completed_at: commands.at(-1).completed_at
+    };
+    const executionValidation = schemaRegistry.validate(
+      'host-execution',
+      execution
+    );
+    if (!executionValidation.ok) {
+      throw new Error(JSON.stringify(executionValidation.blockers));
+    }
+    const executionEnvelope = trustedFactAuthority.seal(
+      'host_execution',
+      executionValidation.value,
       {
-        managedRuntimeProbe: path.join(
-          __dirname,
-          '../../../plugins/specnav-verification/scripts/verification-runtime.js'
-        ),
-        runtimeBase: path.dirname(runtimeStatus.runtime_root),
-        runtimeVersion: runtimeStatus.runtime_version
+        failure_id: runId,
+        change_id: change,
+        run_id: runId,
+        case_id: host
       }
     );
-    const commands = commandArgv.map((argv, index) => {
-      const stdoutPath = `operations/install-receipts/logs/${host}-${index + 1}.stdout.log`;
-      const stderrPath = `operations/install-receipts/logs/${host}-${index + 1}.stderr.log`;
-      const stdout = Buffer.from(`completed ${argv.join(' ')}\n`);
-      const stderr = Buffer.alloc(0);
-      fs.mkdirSync(path.dirname(path.join(changeDir, stdoutPath)), {
-        recursive: true
-      });
-      fs.writeFileSync(path.join(changeDir, stdoutPath), stdout);
-      fs.writeFileSync(path.join(changeDir, stderrPath), stderr);
-      return {
-        argv,
-        exit_status: 0,
-        stdout_sha256: sha256(stdout),
-        stderr_sha256: sha256(stderr),
-        stdout_path: stdoutPath,
-        stderr_path: stderrPath
-      };
-    });
+    const envelopePath = `${runRoot}/${host}.execution-envelope.json`;
+    writeJson(path.join(changeDir, envelopePath), executionEnvelope);
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
       ...releaseBindings,
       host_lock_sha256: hostAuthority.summary.lock_sha256,
+      runtime_authority_digest: runtimeResolution.authority.digest,
+      runner_identity_sha256: runnerIdentitySha256,
+      runner_source_sha256: runnerSourceSha256,
+      source_snapshot_digest: hostAuthority.summary.snapshots[host],
+      fixture_snapshot_digest: fixtureSnapshotDigest,
+      fixture_manifest_sha256: fixtureManifestSha256,
       repository: locked.repository,
+      ref: locked.ref,
       commit: hostCommits[host],
       remote_commit_reachable: true,
       checkout_realpath: hostAuthority.roots[host],
@@ -609,17 +874,35 @@ function populateProject(projectRoot, change, options = {}) {
         }
       ],
       execution: {
-        commands,
-        environment_sha256: 'b'.repeat(64),
-        started_at: '2026-08-02T00:00:05Z',
-        completed_at: '2026-08-02T00:00:06Z'
+        commands: commands.map((command) => ({
+          argv: command.argv,
+          exit_status: command.exit_status,
+          stdout_sha256: command.stdout_sha256,
+          stderr_sha256: command.stderr_sha256,
+          stdout_path: command.stdout_path,
+          stderr_path: command.stderr_path
+        })),
+        environment_sha256: execution.environment_sha256,
+        started_at: execution.started_at,
+        completed_at: execution.completed_at
       },
+      execution_envelope_path: envelopePath,
+      execution_envelope_sha256: sha256(
+        fs.readFileSync(path.join(changeDir, envelopePath))
+      ),
       attestation: 'system-executed',
       fallback_used: false,
       recorded_at: '2026-08-02T00:00:05Z'
     };
+    const receiptValidation = schemaRegistry.validate(
+      'host-install-receipt',
+      receipt
+    );
+    if (!receiptValidation.ok) {
+      throw new Error(JSON.stringify(receiptValidation.blockers));
+    }
     const receiptFile = path.join(changeDir, receiptPath);
-    writeJson(receiptFile, receipt);
+    writeJson(receiptFile, receiptValidation.value);
     return {
       host,
       receipt_path: receiptPath,
@@ -627,14 +910,16 @@ function populateProject(projectRoot, change, options = {}) {
       commit: receipt.commit
     };
   });
-  writeJson(path.join(opsDir, 'host-installation-receipts.json'), {
+  const indexPath = `${runRoot}/host-installation-index.json`;
+  writeJson(path.join(changeDir, indexPath), {
     schema: 'specnav.verification.host-installation-index.v1',
     change_id: change,
     host_lock_sha256: hostAuthority.summary.lock_sha256,
     hosts,
     fallback_used: false
   });
-  writeJson(path.join(opsDir, 'cross-host-compatibility.json'), {
+  const compatibilityPath = `${runRoot}/cross-host-compatibility.json`;
+  writeJson(path.join(changeDir, compatibilityPath), {
     schema: 'specnav.verification.cross-host-release-result.v1',
     ...releaseBindings,
     host_lock_sha256: hostAuthority.summary.lock_sha256,
@@ -652,6 +937,46 @@ function populateProject(projectRoot, change, options = {}) {
     fallback_used: false,
     recorded_at: '2026-08-02T00:00:06Z'
   });
+  const pointer = {
+    schema: 'specnav.verification.host-proof-pointer.v1',
+    change_id: change,
+    run_id: runId,
+    generation: 1,
+    previous_pointer: null,
+    host_lock_sha256: hostAuthority.summary.lock_sha256,
+    runtime_authority_digest: runtimeResolution.authority.digest,
+    lock: {
+      path: lockPath,
+      sha256: hostAuthority.summary.lock_sha256
+    },
+    index: {
+      path: indexPath,
+      sha256: sha256(fs.readFileSync(path.join(changeDir, indexPath)))
+    },
+    compatibility: {
+      path: compatibilityPath,
+      sha256: sha256(
+        fs.readFileSync(path.join(changeDir, compatibilityPath))
+      )
+    },
+    published_at: '2026-08-02T00:00:06Z',
+    fallback_used: false
+  };
+  const pointerValidation = schemaRegistry.validate(
+    'host-proof-pointer',
+    pointer
+  );
+  if (!pointerValidation.ok) {
+    throw new Error(JSON.stringify(pointerValidation.blockers));
+  }
+  writeJson(
+    path.join(changeDir, `${runRoot}/host-proof-pointer.json`),
+    pointerValidation.value
+  );
+  writeJson(
+    path.join(opsDir, 'host-proof-current.json'),
+    pointerValidation.value
+  );
 }
 
 if (require.main === module) {

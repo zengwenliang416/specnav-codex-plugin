@@ -264,7 +264,97 @@ function hostProofRunnerSourceFiles(repositoryRoot) {
   return [...files].sort();
 }
 
+function synchronizedRunnerSourceDigest(repositoryRoot) {
+  const root = fs.realpathSync(path.resolve(repositoryRoot));
+  const candidates = [
+    'plugins/specnav-operations/specnav-verification-proof-source.json',
+    'modules/specnav-operations/specnav-verification-proof-source.json'
+  ].filter((relative) => fs.existsSync(path.join(root, relative)));
+  if (candidates.length !== 1) {
+    throw new Error('verification-host-contract:runner-authority-invalid');
+  }
+  const manifestFile = confinedRegularFile(
+    root,
+    candidates[0],
+    'verification-host-contract:runner-authority-invalid'
+  );
+  let manifest;
+  try {
+    manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  } catch {
+    throw new Error('verification-host-contract:runner-authority-invalid');
+  }
+  if (
+    manifest?.schema !== 'specnav.operations.verification-proof-sync.v1'
+    || manifest.generated !== true
+    || manifest.source_repository !== 'specnav-codex-plugin'
+    || !/^[a-f0-9]{40}$/.test(manifest.source_commit || '')
+    || manifest.source_dirty !== false
+    || !/^[a-f0-9]{64}$/.test(manifest.runner_source_sha256 || '')
+    || !Array.isArray(manifest.files)
+  ) {
+    throw new Error('verification-host-contract:runner-authority-invalid');
+  }
+  const operationsRoot = path.posix.dirname(candidates[0]);
+  const requiredFiles = new Set([
+    'scripts/verification-v2-host-artifacts.js',
+    'scripts/verification-v2-host-contract.js',
+    'scripts/verification-v2-proof.js',
+    'scripts/verification-v2-trusted-runtime.js'
+  ]);
+  for (const entry of manifest.files) {
+    if (
+      !entry
+      || typeof entry.path !== 'string'
+      || !/^[a-f0-9]{64}$/.test(entry.sha256 || '')
+    ) {
+      throw new Error('verification-host-contract:runner-authority-invalid');
+    }
+    const relative = path.posix.join(operationsRoot, entry.path);
+    const file = confinedRegularFile(
+      root,
+      relative,
+      'verification-host-contract:runner-authority-invalid'
+    );
+    if (sha256(fs.readFileSync(file)) !== entry.sha256) {
+      throw new Error('verification-host-contract:runner-authority-invalid');
+    }
+    requiredFiles.delete(entry.path);
+  }
+  if (requiredFiles.size > 0) {
+    throw new Error('verification-host-contract:runner-authority-invalid');
+  }
+  return manifest.runner_source_sha256;
+}
+
 function hostProofRunnerSourceDigest(repositoryRoot) {
+  const root = fs.realpathSync(path.resolve(repositoryRoot));
+  const canonicalMarker = path.join(
+    root,
+    '.agents',
+    'plugins',
+    'marketplace.json'
+  );
+  const synchronizedMarkers = [
+    path.join(
+      root,
+      'plugins',
+      'specnav-operations',
+      'specnav-verification-proof-source.json'
+    ),
+    path.join(
+      root,
+      'modules',
+      'specnav-operations',
+      'specnav-verification-proof-source.json'
+    )
+  ].filter((candidate) => fs.existsSync(candidate));
+  if (fs.existsSync(canonicalMarker) === (synchronizedMarkers.length > 0)) {
+    throw new Error('verification-host-contract:runner-authority-invalid');
+  }
+  if (synchronizedMarkers.length > 0) {
+    return synchronizedRunnerSourceDigest(root);
+  }
   const records = hostProofRunnerSourceFiles(repositoryRoot).map((relative) => {
     const file = confinedRegularFile(
       repositoryRoot,

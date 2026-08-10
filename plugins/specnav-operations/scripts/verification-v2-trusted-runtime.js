@@ -44,7 +44,35 @@ function requireTrustedCore(repositoryRoot) {
   return require(trustedCoreScript(repositoryRoot));
 }
 
+function trustedVerificationRoot(repositoryRoot) {
+  const root = fs.realpathSync(path.resolve(repositoryRoot));
+  const candidates = [
+    path.join(root, 'plugins', 'specnav-verification'),
+    path.join(root, 'modules', 'specnav-verification')
+  ].filter((candidate) => fs.existsSync(candidate));
+  if (candidates.length !== 1) {
+    throw new Error('verification-operations:trusted-verification-root-invalid');
+  }
+  const candidate = candidates[0];
+  rejectSymlinkComponents(root, candidate);
+  const real = fs.realpathSync(candidate);
+  if (!containedPath(root, real) || !fs.statSync(real).isDirectory()) {
+    throw new Error('verification-operations:trusted-verification-root-invalid');
+  }
+  for (const relative of ['kernel/index.js', 'kernel/repair/index.js']) {
+    const file = path.join(real, relative);
+    rejectSymlinkComponents(root, file);
+    if (!fs.statSync(file).isFile()) {
+      throw new Error(
+        'verification-operations:trusted-verification-root-invalid'
+      );
+    }
+  }
+  return real;
+}
+
 module.exports = {
   requireTrustedCore,
+  trustedVerificationRoot,
   trustedCoreScript
 };

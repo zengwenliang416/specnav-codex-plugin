@@ -5,6 +5,11 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const {
+  hostProofRunnerSourceDigest
+} = require(
+  '../plugins/specnav-operations/scripts/verification-v2-host-contract'
+);
 
 const ROOT = path.resolve(__dirname, '..');
 const SOURCE_ROOT = path.join(ROOT, 'plugins/specnav-operations');
@@ -13,7 +18,12 @@ const PROOF_FILES = Object.freeze([
   'scripts/operations-gate.js',
   'scripts/safe-filesystem.js',
   'scripts/safe-filesystem.py',
-  'scripts/verification-v2-proof.js'
+  'scripts/verification-v2-host-artifacts.js',
+  'scripts/verification-v2-host-contract.js',
+  'scripts/verification-v2-pointer-chain.js',
+  'scripts/verification-v2-proof.js',
+  'scripts/verification-v2-trusted-runtime.js',
+  'specnav-stage.json'
 ]);
 const HOSTS = Object.freeze({
   'claude-code': Object.freeze({
@@ -132,9 +142,6 @@ function validateTarget(targetRepository, host) {
   for (const relative of PROOF_FILES) {
     const target = path.join(operationsRoot, relative);
     rejectSymlinkComponents(root, target, relative);
-    if (!fs.existsSync(target)) {
-      throw new Error(`operations-proof-sync:target-file-missing:${relative}`);
-    }
   }
   return { descriptor, operationsRoot, root };
 }
@@ -181,6 +188,7 @@ function buildStagedTree(stagingRoot, host) {
     source_repository: 'specnav-codex-plugin',
     source_commit: git(ROOT, ['rev-parse', 'HEAD']),
     source_dirty: false,
+    runner_source_sha256: hostProofRunnerSourceDigest(ROOT),
     files: PROOF_FILES.map((relative) => ({
       path: relative,
       sha256: sha256(path.join(SOURCE_ROOT, relative))

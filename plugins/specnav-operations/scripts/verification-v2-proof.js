@@ -7,7 +7,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const safeFs = require('./safe-filesystem');
 const {
-  requireTrustedCore
+  requireTrustedCore,
+  trustedVerificationRoot
 } = require('./verification-v2-trusted-runtime');
 const {
   validateHostProofPointerChain
@@ -21,10 +22,8 @@ const {
 } = require('./verification-v2-host-contract');
 
 const LOCAL_REPOSITORY_ROOT = path.resolve(__dirname, '../../..');
-const LOCAL_VERIFICATION_ROOT = path.join(
-  LOCAL_REPOSITORY_ROOT,
-  'plugins',
-  'specnav-verification'
+const LOCAL_VERIFICATION_ROOT = trustedVerificationRoot(
+  LOCAL_REPOSITORY_ROOT
 );
 const kernel = require(path.join(LOCAL_VERIFICATION_ROOT, 'kernel'));
 const {

@@ -15,4 +15,5 @@ node --test \
   tests/verification-v2/cross-host/codefree-o-adapter.test.js \
   tests/verification-v2/cross-host/drift-detector.test.js \
   tests/verification-v2/cross-host/host-authority.integration.test.js \
+  tests/verification-v2/cross-host/runner-authority.test.js \
   tests/verification-v2/cross-host/operations-proof-sync.test.js

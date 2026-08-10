@@ -162,6 +162,35 @@ for (const host of ['claude-code', 'codefree-o']) {
     );
     assert.equal(fs.readFileSync(target, 'utf8'), 'local owned edit\n');
   });
+
+  test(`${host} Operations proof sync installs newly owned files`, (t) => {
+    const fixture = targetFixture(t, host);
+    const relative = 'scripts/verification-v2-host-artifacts.js';
+    const target = path.join(fixture.root, fixture.targetPath, relative);
+    fs.rmSync(target);
+    git(fixture.root, [
+      'add',
+      '-u',
+      '--',
+      path.join(fixture.targetPath, relative)
+    ]);
+    git(fixture.root, [
+      '-c',
+      'user.name=SpecNav Tests',
+      '-c',
+      'user.email=specnav@example.invalid',
+      'commit',
+      '-qm',
+      'remove future owned file'
+    ]);
+
+    synchronizeFixture(t, fixture, host);
+
+    assert.equal(
+      sha256(target),
+      sha256(path.join(SOURCE_ROOT, relative))
+    );
+  });
 }
 
 test('real downstream Operations proof bytes match one committed source', () => {
