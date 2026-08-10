@@ -586,6 +586,76 @@ test('retest and regression create new runs with immutable cross-run lineage', a
   }
 });
 
+test('failed retest and regression attempts retain subordinate failure packets', async () => {
+  const source = fixture({
+    runnerSource: [
+      "'use strict';",
+      "const fs = require('node:fs');",
+      'fs.writeFileSync(',
+      '  process.env.SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE,',
+      "  `${JSON.stringify({",
+      "    assertion_id: 'ASSERT-1',",
+      "    method: 'equal',",
+      '    expected: true,',
+      '    actual: false,',
+      "    status: 'failed'",
+      "  })}\\n`,",
+      "  { flag: 'wx' }",
+      ');',
+      'process.exit(1);',
+      ''
+    ].join('\n')
+  });
+  const initial = await runner(source).executeCase(source.testCase.id);
+  assert.equal(initial.failure_packet?.status, 'open');
+
+  const retest = await runner(source, {
+    codeSha: '3'.repeat(40)
+  }).executeCase(source.testCase.id, {
+    kind: 'retest',
+    parentAttemptId: initial.attempt.id,
+    failureId: initial.failure_packet.id
+  });
+  assert.equal(retest.status, 'failed');
+  assert.equal(retest.failure_packet?.attempt_id, retest.attempt.id);
+  assert.equal(retest.repair_handoff, null);
+
+  const regression = await runner(source, {
+    codeSha: '3'.repeat(40)
+  }).executeCase(source.testCase.id, {
+    kind: 'regression',
+    parentAttemptId: retest.attempt.id,
+    failureId: initial.failure_packet.id
+  });
+  assert.equal(regression.status, 'failed');
+  assert.equal(regression.failure_packet?.attempt_id, regression.attempt.id);
+  assert.equal(regression.repair_handoff, null);
+
+  const failures = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failures.json'
+  ), 'utf8'));
+  assert.deepEqual(
+    failures.map((failure) => failure.attempt_id).sort(),
+    [
+      initial.attempt.id,
+      regression.attempt.id,
+      retest.attempt.id
+    ].sort()
+  );
+  for (const followup of [retest, regression]) {
+    const rows = fs.readFileSync(path.join(
+      source.verificationRoot,
+      'runs',
+      followup.run.id,
+      'failures.jsonl'
+    ), 'utf8').trim().split('\n').map(JSON.parse);
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].id, followup.failure_packet.id);
+  }
+});
+
 test('finalize derives release and archive gates from raw failures and signed closure logs', async () => {
   const source = fixture({
     runnerSource: [

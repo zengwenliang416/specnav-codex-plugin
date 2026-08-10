@@ -5,53 +5,39 @@ const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
-const runtime = require('./plugin-runtime');
 const safeFs = require('./safe-filesystem');
+const {
+  requireTrustedCore
+} = require('./verification-v2-trusted-runtime');
+const {
+  validateHostProofPointerChain
+} = require('./verification-v2-pointer-chain');
+const {
+  HOST_DESCRIPTORS,
+  REQUIRED_HOSTS,
+  hostProofRunnerSourceDigest,
+  managedFixtureManifestDigest,
+  officialHostLockValid
+} = require('./verification-v2-host-contract');
 
-const kernel = runtime.requirePluginScript('specnav-verification', 'kernel');
+const LOCAL_REPOSITORY_ROOT = path.resolve(__dirname, '../../..');
+const LOCAL_VERIFICATION_ROOT = path.join(
+  LOCAL_REPOSITORY_ROOT,
+  'plugins',
+  'specnav-verification'
+);
+const kernel = require(path.join(LOCAL_VERIFICATION_ROOT, 'kernel'));
 const {
   createTrustedFactAuthority
-} = runtime.requirePluginScript(
-  'specnav-verification',
-  'kernel/repair'
-);
-const core = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
+} = require(path.join(LOCAL_VERIFICATION_ROOT, 'kernel', 'repair'));
+const core = requireTrustedCore(LOCAL_REPOSITORY_ROOT);
 
-const REQUIRED_HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
 const REQUIRED_REPORTS = Object.freeze([
   'overview.html',
   'test-case-catalog.html',
   'test-case-results.html'
 ]);
 const PROOF_SCHEMA = 'specnav.operations.verification-v2-proof.v1';
-const HOST_DESCRIPTORS = Object.freeze({
-  codex: Object.freeze({
-    plugin: 'plugins/specnav-verification',
-    manifest: null,
-    hostFiles: Object.freeze(['scripts/codex-verification-adapter.js'])
-  }),
-  'claude-code': Object.freeze({
-    plugin: 'plugins/specnav-verification',
-    manifest: 'plugins/specnav-verification/specnav-kernel-source.json',
-    hostFiles: Object.freeze([
-      'commands/specnav-verification.md',
-      'commands/specnav-verify.md',
-      'scripts/claude-verification-adapter.js',
-      'scripts/plugin-runtime.js',
-      'specnav-stage.json',
-      '.claude-plugin/plugin.json'
-    ])
-  }),
-  'codefree-o': Object.freeze({
-    plugin: 'modules/specnav-verification',
-    manifest: 'modules/specnav-verification/specnav-kernel-source.json',
-    hostFiles: Object.freeze([
-      'scripts/codefree-o-verification-adapter.js',
-      'scripts/plugin-runtime.js',
-      'specnav-stage.json'
-    ])
-  })
-});
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -349,8 +335,8 @@ function resolveCurrentFingerprints(
   runtimeStatus,
   runtimeAuthority
 ) {
-  const codeSha = git(projectRoot, ['rev-parse', 'HEAD']).trim();
-  if (!/^[a-f0-9]{40}$/.test(codeSha)) {
+  const head = git(projectRoot, ['rev-parse', 'HEAD']).trim();
+  if (!/^[a-f0-9]{40}$/.test(head)) {
     throw new Error('verification-release:git-head-invalid');
   }
   const status = git(projectRoot, [
@@ -361,6 +347,11 @@ function resolveCurrentFingerprints(
   if (status.trim() !== '') {
     throw new Error('verification-release:dirty-worktree');
   }
+  const repositoryInventory = git(projectRoot, [
+    'ls-tree',
+    '-r',
+    'HEAD'
+  ]);
   const testInventory = git(projectRoot, [
     'ls-tree',
     '-r',
@@ -371,7 +362,7 @@ function resolveCurrentFingerprints(
   ]);
   return {
     case_snapshot_hash: snapshot.snapshot_hash,
-    code_sha: codeSha,
+    code_sha: kernel.codeInventorySha(repositoryInventory),
     test_sha: crypto.createHash('sha256')
       .update(testInventory)
       .update(snapshot.snapshot_hash)
@@ -908,52 +899,588 @@ function validateMigration(
   };
 }
 
+function hostRepositoryLock(lock, host) {
+  return host === 'codex' ? lock?.source : lock?.hosts?.[host];
+}
+
+function expectedCommandIds(host) {
+  return [
+    'checkout-detach',
+    'checkout-fetch',
+    'checkout-head',
+    'checkout-init',
+    'checkout-remote',
+    ...(host === 'codex' ? ['checkout-tree'] : []),
+    ...(host === 'codefree-o' ? ['dependency-install'] : []),
+    'host-smoke',
+    'remote-ref',
+    'runtime-doctor'
+  ].sort();
+}
+
+function executableDigestValid(command) {
+  try {
+    const real = fs.realpathSync(command.executable_realpath);
+    return real === command.argv[0]
+      && real === command.executable_realpath
+      && sha256(fs.readFileSync(real)) === command.executable_sha256;
+  } catch {
+    return false;
+  }
+}
+
+function optionalExecutableDigestValid(realpath, digest) {
+  if (realpath === null && digest === null) return true;
+  try {
+    const real = fs.realpathSync(realpath);
+    return real === realpath
+      && sha256(fs.readFileSync(real)) === digest;
+  } catch {
+    return false;
+  }
+}
+
+function trustedSandboxExecutable(realpath) {
+  try {
+    const actual = fs.realpathSync(realpath);
+    if (process.platform === 'darwin') {
+      return actual === fs.realpathSync('/usr/bin/sandbox-exec');
+    }
+    if (process.platform === 'linux') {
+      return ['/usr/bin/bwrap', '/bin/bwrap']
+        .filter((candidate) => fs.existsSync(candidate))
+        .map((candidate) => fs.realpathSync(candidate))
+        .includes(actual);
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+function commandPlanValid(
+  host,
+  commands,
+  receipt,
+  locked,
+  execution,
+  outputs,
+  runtimeAuthority,
+  lock,
+  checkoutRoots,
+  expectedRunnerIdentitySha256,
+  expectedRunnerSourceSha256,
+  expectedFixtureManifestSha256,
+  expectedSourceInventory,
+  diagnostics = null
+) {
+  const byId = new Map(commands.map((command) => [command.id, command]));
+  const commandIdsValid = byId.size === commands.length
+    && canonicalJson([...byId.keys()].sort())
+      === canonicalJson(expectedCommandIds(host));
+  const commandExecutionsValid = commands.every((command) => (
+    command.exit_status === 0
+    && command.signal === null
+    && executableDigestValid(command)
+  ));
+  if (!commandIdsValid || !commandExecutionsValid) {
+    if (diagnostics) {
+      Object.assign(diagnostics, {
+        command_ids_valid: commandIdsValid,
+        command_executions_valid: commandExecutionsValid
+      });
+    }
+    return false;
+  }
+  const checkoutRootsValid = isRecord(checkoutRoots)
+    && REQUIRED_HOSTS.every((candidate) => (
+      isConcreteString(checkoutRoots[candidate])
+      && path.isAbsolute(checkoutRoots[candidate])
+    ));
+  const lockDescriptorsValid = isRecord(lock?.source)
+    && isRecord(locked)
+    && isConcreteString(lock.source.plugin_path)
+    && isConcreteString(locked.repository)
+    && isConcreteString(locked.ref)
+    && isConcreteString(locked.commit);
+  if (!checkoutRootsValid || !lockDescriptorsValid) {
+    if (diagnostics) {
+      Object.assign(diagnostics, {
+        command_ids_valid: commandIdsValid,
+        command_executions_valid: commandExecutionsValid,
+        checkout_roots_valid: checkoutRootsValid,
+        lock_descriptors_valid: lockDescriptorsValid
+      });
+    }
+    return false;
+  }
+  const remote = byId.get('remote-ref');
+  const init = byId.get('checkout-init');
+  const addRemote = byId.get('checkout-remote');
+  const fetch = byId.get('checkout-fetch');
+  const detach = byId.get('checkout-detach');
+  const head = byId.get('checkout-head');
+  const doctor = byId.get('runtime-doctor');
+  const smoke = byId.get('host-smoke');
+  const tree = byId.get('checkout-tree');
+  const checkoutRoot = receipt.checkout_realpath;
+  const gitExecutable = remote.argv[0];
+  const setupValid = canonicalJson(remote.argv)
+      === canonicalJson([
+        gitExecutable,
+        'ls-remote',
+        '--refs',
+        locked.repository,
+        locked.ref
+      ])
+    && canonicalJson(init.argv) === canonicalJson([
+      gitExecutable,
+      '-c',
+      'core.hooksPath=/dev/null',
+      'init',
+      '--quiet'
+    ])
+    && canonicalJson(addRemote.argv) === canonicalJson([
+      gitExecutable,
+      '-c',
+      'core.hooksPath=/dev/null',
+      'remote',
+      'add',
+      'origin',
+      locked.repository
+    ])
+    && canonicalJson(fetch.argv) === canonicalJson([
+      gitExecutable,
+      '-c',
+      'core.hooksPath=/dev/null',
+      'fetch',
+      '--quiet',
+      '--depth=1',
+      'origin',
+      locked.ref
+    ])
+    && canonicalJson(detach.argv) === canonicalJson([
+      gitExecutable,
+      '-c',
+      'core.hooksPath=/dev/null',
+      'checkout',
+      '--quiet',
+      '--detach',
+      locked.commit
+    ])
+    && canonicalJson(head.argv) === canonicalJson([
+      gitExecutable,
+      'rev-parse',
+      'HEAD^{commit}'
+    ])
+    && (
+      host !== 'codex'
+      || canonicalJson(tree.argv) === canonicalJson([
+        gitExecutable,
+        'ls-tree',
+        '-r',
+        'HEAD'
+      ])
+    );
+  const managedRuntimeProbe = path.join(
+    checkoutRoots.codex,
+    lock.source.plugin_path,
+    'scripts',
+    'verification-runtime.js'
+  );
+  const probeValid = canonicalJson(doctor.argv)
+      === canonicalJson([
+        doctor.argv[0],
+        managedRuntimeProbe,
+        'doctor',
+        '--version',
+        runtimeAuthority?.runtime_version,
+        '--project',
+        checkoutRoot,
+        '--root',
+        path.dirname(runtimeAuthority?.runtime_root || ''),
+        '--json'
+      ])
+    && canonicalJson(smoke.argv.slice(1))
+      === canonicalJson([path.join(checkoutRoot, 'tests', 'run-smoke.sh')]);
+  const dependencyValid = host !== 'codefree-o'
+    || canonicalJson(byId.get('dependency-install').argv.slice(1))
+      === canonicalJson([
+        'ci',
+        '--ignore-scripts',
+        '--no-audit',
+        '--no-fund'
+      ]);
+  const setupCommands = commands.filter((command) => (
+    !['dependency-install', 'runtime-doctor', 'host-smoke']
+      .includes(command.id)
+  ));
+  const sandboxedCommands = [
+    ...(host === 'codefree-o' ? [byId.get('dependency-install')] : []),
+    doctor,
+    smoke
+  ];
+  const workspaceRoots = new Set(
+    Object.values(checkoutRoots).map((root) => path.dirname(root))
+  );
+  const workspace = workspaceRoots.size === 1
+    ? [...workspaceRoots][0]
+    : null;
+  const nodeExecutable = doctor.argv[0];
+  const sandboxPlanDiagnostics = [];
+  const sandboxPlansValid = workspace !== null
+    && sandboxedCommands.map((command) => {
+      const executableValid = (
+        trustedSandboxExecutable(command.sandbox_executable_realpath)
+        && optionalExecutableDigestValid(
+          command.sandbox_executable_realpath,
+          command.sandbox_executable_sha256
+        )
+      );
+      if (!executableValid) {
+        sandboxPlanDiagnostics.push({
+          id: command.id,
+          executable_valid: false
+        });
+        return false;
+      }
+      const expected = kernel.createHostSandboxPlan({
+        toolchain: {
+          sandbox: {
+            path: command.sandbox_executable_realpath,
+            sha256: command.sandbox_executable_sha256
+          }
+        },
+        allowedRoots: [
+          ...REQUIRED_HOSTS.map((candidate) => checkoutRoots[candidate]),
+          ...(command.id === 'runtime-doctor'
+            ? [runtimeAuthority?.runtime_root]
+            : []),
+          path.dirname(path.dirname(nodeExecutable))
+        ],
+        writableRoots: [
+          path.join(workspace, '.runtime', host),
+          ...(command.id === 'dependency-install' ? [checkoutRoot] : [])
+        ],
+        pathAliases: [{
+          path: workspace,
+          identity: '$WORKSPACE'
+        }],
+        allowNetwork: command.id === 'dependency-install'
+      });
+      const argvValid = canonicalJson(command.sandbox_argv)
+          === canonicalJson(expected.argv)
+        && command.sandbox_policy_sha256 === expected.policy_sha256;
+      sandboxPlanDiagnostics.push({
+        id: command.id,
+        executable_valid: true,
+        argv_valid: argvValid,
+        actual_argv: command.sandbox_argv,
+        expected_argv: expected.argv
+      });
+      return argvValid;
+    }).every(Boolean);
+  const sandboxValid = setupCommands.every((command) => (
+    command.sandbox_executable_realpath === null
+    && command.sandbox_executable_sha256 === null
+    && command.sandbox_policy_sha256 === null
+    && command.sandbox_argv === null
+  ))
+    && sandboxPlansValid;
+  const remoteOutput = outputs.get('remote-ref')?.toString('utf8').trim()
+    .split(/\s+/)[0];
+  const headOutput = outputs.get('checkout-head')?.toString('utf8').trim();
+  const treeInventory = outputs.get('checkout-tree')?.toString('utf8');
+  const observationsValid = remoteOutput === locked.commit
+    && headOutput === locked.commit
+    && execution.observations.advertised_commit === locked.commit
+    && execution.observations.checkout_head === locked.commit
+    && (
+      host === 'codex'
+        ? (
+            execution.observations.source_code_inventory_sha
+              === kernel.codeInventorySha(treeInventory || '')
+            && execution.observations.source_code_inventory_sha
+              === expectedSourceInventory
+          )
+        : execution.observations.source_code_inventory_sha === null
+    )
+    && (
+      host === 'codefree-o'
+        ? /^[a-f0-9]{64}$/.test(
+            execution.observations.package_lock_sha256 || ''
+          )
+        : execution.observations.package_lock_sha256 === null
+    );
+  const runnerSourceValid =
+    receipt.runner_source_sha256 === expectedRunnerSourceSha256
+    && execution.runner_source_sha256 === expectedRunnerSourceSha256
+    && receipt.runner_identity_sha256 === expectedRunnerIdentitySha256
+    && execution.runner_identity_sha256 === expectedRunnerIdentitySha256;
+  const fixtureManifestValid =
+    receipt.fixture_manifest_sha256 === expectedFixtureManifestSha256
+    && execution.fixture_manifest_sha256 === expectedFixtureManifestSha256;
+  if (diagnostics) {
+    Object.assign(diagnostics, {
+      command_ids_valid: commandIdsValid,
+      command_executions_valid: commandExecutionsValid,
+      setup_valid: setupValid,
+      probe_valid: probeValid,
+      dependency_valid: dependencyValid,
+      sandbox_valid: sandboxValid,
+      sandbox_plans: sandboxPlanDiagnostics,
+      observations_valid: observationsValid,
+      runner_source_valid: runnerSourceValid,
+      fixture_manifest_valid: fixtureManifestValid
+    });
+  }
+  return setupValid
+    && probeValid
+    && dependencyValid
+    && sandboxValid
+    && observationsValid
+    && runnerSourceValid
+    && fixtureManifestValid;
+}
+
+function loadHostProofBundle(
+  schemaRegistry,
+  changeDir,
+  pointerRead,
+  changeId,
+  runtimeAuthority,
+  blockers
+) {
+  const artifact = 'operations/host-proof-current.json';
+  const pointer = validateSchema(
+    schemaRegistry,
+    'host-proof-pointer',
+    pointerRead.value,
+    artifact,
+    blockers
+  );
+  if (!pointer) return null;
+  if (
+    pointer.change_id !== changeId
+    || pointer.runtime_authority_digest !== runtimeAuthority?.digest
+  ) {
+    blockers.push(blocker(
+      'verification-release:host-proof-pointer-binding-mismatch',
+      artifact
+    ));
+  }
+  const reads = {};
+  const expectedRunPrefix = `operations/host-proof-runs/${pointer.run_id}/`;
+  const immutablePointerPath = `${expectedRunPrefix}host-proof-pointer.json`;
+  const immutablePointerRead = readJson(
+    changeDir,
+    immutablePointerPath,
+    immutablePointerPath,
+    blockers
+  );
+  const immutablePointer = validateSchema(
+    schemaRegistry,
+    'host-proof-pointer',
+    immutablePointerRead.value,
+    immutablePointerPath,
+    blockers
+  );
+  if (
+    !immutablePointerRead.bytes
+    || !pointerRead.bytes
+    || !immutablePointerRead.bytes.equals(pointerRead.bytes)
+    || !immutablePointer
+  ) {
+    blockers.push(blocker(
+      'verification-release:host-proof-pointer-copy-mismatch',
+      immutablePointerPath
+    ));
+  }
+  try {
+    validateHostProofPointerChain({
+      changeId,
+      pointer,
+      pointerPath: artifact,
+      readPointer(pointerPath) {
+        return readJson(
+          changeDir,
+          pointerPath,
+          pointerPath,
+          blockers
+        );
+      },
+      sha256,
+      validatePointer(candidate, pointerArtifact) {
+        const validated = validateSchema(
+          schemaRegistry,
+          'host-proof-pointer',
+          candidate,
+          pointerArtifact,
+          blockers
+        );
+        if (!validated) {
+          const error = new Error(
+            'verification-release:host-proof-pointer-predecessor-invalid'
+          );
+          error.artifact = pointerArtifact;
+          throw error;
+        }
+        return validated;
+      }
+    });
+  } catch (error) {
+    blockers.push(blocker(
+      error instanceof Error
+        ? error.message
+        : 'verification-release:host-proof-pointer-chain-invalid',
+      error?.artifact || artifact,
+      error?.detail || null
+    ));
+  }
+  for (const [name, entityType] of [
+    ['lock', 'cross-host-lock'],
+    ['index', 'host-installation-index'],
+    ['compatibility', 'cross-host-release-result']
+  ]) {
+    const reference = pointer[name];
+    if (!reference.path.startsWith(expectedRunPrefix)) {
+      blockers.push(blocker(
+        'verification-release:host-proof-run-mismatch',
+        reference.path
+      ));
+    }
+    const read = readJson(
+      changeDir,
+      reference.path,
+      reference.path,
+      blockers
+    );
+    reads[name] = read;
+    if (
+      !read.bytes
+      || sha256(read.bytes) !== reference.sha256
+    ) {
+      blockers.push(blocker(
+        `verification-release:host-proof-${name}-hash-mismatch`,
+        reference.path
+      ));
+    }
+    const validated = validateSchema(
+      schemaRegistry,
+      entityType,
+      read.value,
+      reference.path,
+      blockers
+    );
+    reads[name].validated = validated;
+  }
+  if (
+    pointer.host_lock_sha256 !== pointer.lock.sha256
+    || reads.lock.validated
+      && pointer.host_lock_sha256 !== sha256(reads.lock.bytes)
+  ) {
+    blockers.push(blocker(
+      'verification-release:host-proof-lock-binding-mismatch',
+      pointer.lock.path
+    ));
+  }
+  if (!officialHostLockValid(reads.lock.validated)) {
+    blockers.push(blocker(
+      'verification-release:host-lock-policy-invalid',
+      pointer.lock.path
+    ));
+  }
+  return {
+    pointer,
+    immutablePointer: immutablePointerRead,
+    ...reads
+  };
+}
+
 function validateHostInstallations(
+  schemaRegistry,
+  trustedFactAuthority,
   changeDir,
   index,
   bindings,
-  authority,
+  pointer,
+  lock,
+  runtimeAuthority,
+  expectedRunnerSourceSha256,
+  expectedFixtureManifestSha256,
+  expectedSourceInventory,
   blockers
 ) {
-  const artifact = 'operations/host-installation-receipts.json';
-  const hostIds = Array.isArray(index?.hosts)
+  const artifact = pointer.index.path;
+  const rawHostIds = Array.isArray(index?.hosts)
     ? index.hosts.map((entry) => entry?.host)
     : [];
-  const exactHosts = hostIds.length === REQUIRED_HOSTS.length
-    && new Set(hostIds).size === REQUIRED_HOSTS.length
-    && REQUIRED_HOSTS.every((host) => hostIds.includes(host));
-  if (
-    !index
-    || index.schema !== 'specnav.verification.host-installation-index.v1'
-    || index.fallback_used !== false
-    || !Array.isArray(index.hosts)
-  ) {
+  const validatedIndex = validateSchema(
+    schemaRegistry,
+    'host-installation-index',
+    index,
+    artifact,
+    blockers
+  );
+  const effectiveIndex = validatedIndex || (
+    index
+    && typeof index === 'object'
+    && !Array.isArray(index)
+    && Array.isArray(index.hosts)
+      ? index
+      : null
+  );
+  if (!validatedIndex) {
     blockers.push(blocker(
       'verification-release:host-installation-index-invalid',
       artifact
     ));
-    return [];
+    for (const host of REQUIRED_HOSTS) {
+      if (!rawHostIds.includes(host)) {
+        blockers.push(blocker(
+          `verification-release:host-installation-missing:${host}`,
+          artifact
+        ));
+      }
+    }
+    if (rawHostIds.some((host) => !REQUIRED_HOSTS.includes(host))) {
+      blockers.push(blocker(
+        'verification-release:host-installation-unknown-host',
+        artifact
+      ));
+    }
+    if (!effectiveIndex) return [];
   }
+  const hostIds = effectiveIndex.hosts.map((entry) => entry?.host);
+  const exactHosts = hostIds.length === REQUIRED_HOSTS.length
+    && new Set(hostIds).size === REQUIRED_HOSTS.length
+    && REQUIRED_HOSTS.every((host) => hostIds.includes(host));
   if (!exactHosts) {
     blockers.push(blocker(
       'verification-release:host-installation-index-invalid',
       artifact
     ));
   }
-  const records = [];
+  if (
+    effectiveIndex.change_id !== bindings.change_id
+    || effectiveIndex.host_lock_sha256 !== pointer.host_lock_sha256
+  ) {
+    blockers.push(blocker(
+      'verification-release:host-installation-index-binding-mismatch',
+      artifact
+    ));
+  }
+  const preloaded = new Map();
+  const checkoutRoots = {};
   for (const host of REQUIRED_HOSTS) {
-    const entry = index.hosts.find((candidate) => candidate?.host === host);
-    if (!entry) {
-      blockers.push(blocker(
-        `verification-release:host-installation-missing:${host}`,
-        artifact
-      ));
-      continue;
-    }
+    const entry = effectiveIndex.hosts.find(
+      (candidate) => candidate?.host === host
+    );
+    if (!entry) continue;
     const parsed = readJson(
       changeDir,
       entry.receipt_path,
-      entry.receipt_path || `${host}-receipt`,
+      entry.receipt_path,
       blockers
     );
     if (!parsed.bytes) continue;
@@ -964,27 +1491,233 @@ function validateHostInstallations(
         entry.receipt_path
       ));
     }
-    if (!parsed.value) continue;
-    const receipt = parsed.value;
-    const valid = receipt.schema === 'specnav.verification.host-install-receipt.v1'
-      && receipt.host === host
+    const receipt = validateSchema(
+      schemaRegistry,
+      'host-install-receipt',
+      parsed.value,
+      entry.receipt_path,
+      blockers
+    );
+    if (!receipt) {
+      blockers.push(blocker(
+        `verification-release:install-receipt-invalid:${host}`,
+        entry.receipt_path
+      ));
+      continue;
+    }
+    const envelopeRead = readJson(
+      changeDir,
+      receipt.execution_envelope_path,
+      receipt.execution_envelope_path,
+      blockers
+    );
+    checkoutRoots[host] = receipt.checkout_realpath;
+    preloaded.set(host, {
+      actualHash,
+      entry,
+      receipt,
+      envelopeRead
+    });
+  }
+  function preloadedCommand(id, host = null) {
+    const records = host
+      ? [preloaded.get(host)].filter(Boolean)
+      : [...preloaded.values()];
+    for (const record of records) {
+      const envelope = record.envelopeRead.value;
+      const command = envelope?.payload?.commands?.find(
+        (candidate) => candidate.id === id
+      );
+      if (command) return command;
+    }
+    return null;
+  }
+  let expectedRunnerIdentitySha256 = null;
+  try {
+    const commandByTool = {
+      node: preloadedCommand('runtime-doctor'),
+      git: preloadedCommand('remote-ref'),
+      bash: preloadedCommand('host-smoke'),
+      npm: preloadedCommand('dependency-install', 'codefree-o'),
+      sandbox: preloadedCommand('runtime-doctor')
+    };
+    const tools = Object.fromEntries(
+      Object.entries(commandByTool).map(([name, command]) => {
+        if (!command) throw new Error(`missing-tool:${name}`);
+        return [name, {
+          path: name === 'sandbox'
+            ? command.sandbox_executable_realpath
+            : command.executable_realpath,
+          sha256: name === 'sandbox'
+            ? command.sandbox_executable_sha256
+            : command.executable_sha256
+        }];
+      })
+    );
+    expectedRunnerIdentitySha256 = kernel.createHostRunnerIdentity(
+      expectedRunnerSourceSha256,
+      tools
+    );
+  } catch (error) {
+    blockers.push(blocker(
+      'verification-release:runner-identity-unavailable',
+      artifact,
+      error instanceof Error ? error.message : String(error)
+    ));
+  }
+  const records = [];
+  for (const host of REQUIRED_HOSTS) {
+    const preload = preloaded.get(host);
+    if (!preload) {
+      blockers.push(blocker(
+        `verification-release:host-installation-missing:${host}`,
+        artifact
+      ));
+      continue;
+    }
+    const { actualHash, entry, receipt, envelopeRead } = preload;
+    const lockedRepository = hostRepositoryLock(lock, host);
+    const envelopeHashValid = envelopeRead.bytes
+      && sha256(envelopeRead.bytes) === receipt.execution_envelope_sha256;
+    const envelopeVerification = envelopeRead.value
+      ? trustedFactAuthority.verify(envelopeRead.value)
+      : { ok: false };
+    const execution = envelopeRead.value?.payload;
+    if (!envelopeHashValid || !envelopeVerification.ok) {
+      blockers.push(blocker(
+        `verification-release:host-execution-envelope-invalid:${host}`,
+        receipt.execution_envelope_path
+      ));
+    }
+    const commandOutputs = new Map();
+    const commandPlanDiagnostics = {};
+    const outputReads = new Map();
+    function commandOutput(relative, artifact) {
+      if (!outputReads.has(relative)) {
+        outputReads.set(
+          relative,
+          readFile(changeDir, relative, artifact, blockers)
+        );
+      }
+      return outputReads.get(relative);
+    }
+    const receiptOutputsValid = receipt.execution.commands.every(
+      (command, index) => {
+      const stdoutArtifact = `${entry.receipt_path}:stdout:${index + 1}`;
+      const stderrArtifact = `${entry.receipt_path}:stderr:${index + 1}`;
+      const stdout = commandOutput(
+        command.stdout_path,
+        stdoutArtifact
+      );
+      const stderr = commandOutput(
+        command.stderr_path,
+        stderrArtifact
+      );
+      commandOutputs.set(
+        execution?.commands?.[index]?.id || `command-${index + 1}`,
+        stdout
+      );
+      return stdout !== null
+        && stderr !== null
+        && sha256(stdout) === command.stdout_sha256
+        && sha256(stderr) === command.stderr_sha256;
+      }
+    );
+    const executionOutputsValid = execution
+      && execution.commands.every((command, index) => {
+        const stdout = commandOutput(
+          command.stdout_path,
+          `${receipt.execution_envelope_path}:stdout:${index + 1}`
+        );
+        const stderr = commandOutput(
+          command.stderr_path,
+          `${receipt.execution_envelope_path}:stderr:${index + 1}`
+        );
+        return stdout !== null
+          && stderr !== null
+          && sha256(stdout) === command.stdout_sha256
+          && sha256(stderr) === command.stderr_sha256;
+      });
+    const commandsValid = receiptOutputsValid
+      && executionOutputsValid
+      && canonicalJson(receipt.execution.commands)
+        === canonicalJson(execution.commands.map((command) => ({
+          argv: command.argv,
+          exit_status: command.exit_status,
+          stdout_sha256: command.stdout_sha256,
+          stderr_sha256: command.stderr_sha256,
+          stdout_path: command.stdout_path,
+          stderr_path: command.stderr_path
+        })))
+      && commandPlanValid(
+        host,
+        execution.commands,
+        receipt,
+        lockedRepository,
+        execution,
+        commandOutputs,
+        runtimeAuthority,
+        lock,
+        checkoutRoots,
+        expectedRunnerIdentitySha256,
+        expectedRunnerSourceSha256,
+        expectedFixtureManifestSha256,
+        expectedSourceInventory,
+        commandPlanDiagnostics
+      );
+    const checksValid = canonicalJson(
+      receipt.checks.map((check) => check.id).sort()
+    ) === canonicalJson([
+      'host-smoke',
+      'plugin-discovery',
+      'remote-commit-reachability',
+      'runtime-doctor'
+    ]);
+    if (!commandsValid) {
+      blockers.push(blocker(
+        `verification-release:install-command-evidence-mismatch:${host}`,
+        entry.receipt_path,
+        commandPlanDiagnostics
+      ));
+    }
+    const valid = receipt.host === host
       && receipt.change_id === bindings.change_id
       && receipt.release_gate_id === bindings.release_gate_id
       && receipt.archive_gate_id === bindings.archive_gate_id
       && receipt.gate_input_sha256 === bindings.gate_input_sha256
       && receipt.evidence_index_digest === bindings.evidence_index_digest
+      && receipt.host_lock_sha256 === pointer.host_lock_sha256
+      && receipt.runtime_authority_digest === runtimeAuthority?.digest
       && receipt.commit === entry.commit
-      && receipt.commit === authority?.commits?.[host]
-      && /^https:\/\/github\.com\/[^/]+\/[^/]+(?:\.git)?$/.test(receipt.source || '')
-      && /^[a-f0-9]{40}$/.test(receipt.commit || '')
-      && receipt.clean_checkout === true
-      && receipt.plugin_discovered === true
-      && receipt.runtime_ready === true
-      && receipt.fixture_verification === 'pass'
-      && isConcreteString(receipt.command)
-      && receipt.exit_status === 0
-      && receipt.attestation === 'system-executed'
-      && receipt.fallback_used === false;
+      && receipt.commit === lockedRepository?.commit
+      && receipt.repository === lockedRepository?.repository
+      && receipt.ref === lockedRepository?.ref
+      && receipt.plugin_realpath === path.join(
+        receipt.checkout_realpath,
+        lockedRepository?.plugin_path || ''
+      )
+      && receipt.runner_identity_sha256 === execution?.runner_identity_sha256
+      && receipt.runner_source_sha256 === execution?.runner_source_sha256
+      && receipt.source_snapshot_digest === execution?.source_snapshot_digest
+      && receipt.fixture_snapshot_digest === execution?.fixture_snapshot_digest
+      && receipt.fixture_manifest_sha256 === execution?.fixture_manifest_sha256
+      && execution?.status === 'passed'
+      && execution?.blocker === null
+      && execution?.host === host
+      && execution?.change_id === bindings.change_id
+      && execution?.run_id === pointer.run_id
+      && execution?.repository === lockedRepository?.repository
+      && execution?.ref === lockedRepository?.ref
+      && execution?.commit === lockedRepository?.commit
+      && execution?.host_lock_sha256 === pointer.host_lock_sha256
+      && execution?.release_gate_id === bindings.release_gate_id
+      && execution?.archive_gate_id === bindings.archive_gate_id
+      && execution?.gate_input_sha256 === bindings.gate_input_sha256
+      && execution?.evidence_index_digest === bindings.evidence_index_digest
+      && execution?.runtime_authority_digest === runtimeAuthority?.digest
+      && receipt.execution.environment_sha256 === execution?.environment_sha256
+      && commandsValid
+      && checksValid;
     if (!valid) {
       blockers.push(blocker(
         `verification-release:install-receipt-invalid:${host}`,
@@ -995,69 +1728,160 @@ function validateHostInstallations(
       host,
       commit: entry.commit,
       receipt_path: entry.receipt_path,
-      receipt_sha256: actualHash
+      receipt_sha256: actualHash,
+      repository: receipt.repository,
+      snapshot_digest: receipt.source_snapshot_digest,
+      fixture_snapshot_digest: receipt.fixture_snapshot_digest,
+      fixture_manifest_sha256: receipt.fixture_manifest_sha256,
+      host_authority_digest: execution?.host_authority_digest || null,
+      execution_envelope_id: envelopeRead.value?.id || null
     });
   }
-  if (index.hosts.some((entry) => !REQUIRED_HOSTS.includes(entry?.host))) {
+  if (effectiveIndex.hosts.some(
+    (entry) => !REQUIRED_HOSTS.includes(entry?.host)
+  )) {
     blockers.push(blocker(
       'verification-release:host-installation-unknown-host',
       artifact
+    ));
+  }
+  const fixtureDigests = new Set(
+    records.map((entry) => entry.fixture_snapshot_digest)
+  );
+  const fixtureManifestDigests = new Set(
+    records.map((entry) => entry.fixture_manifest_sha256)
+  );
+  if (
+    records.length === REQUIRED_HOSTS.length
+    && fixtureDigests.size !== 1
+  ) {
+    blockers.push(blocker(
+      'verification-release:fixture-snapshot-mismatch',
+      artifact,
+      Object.fromEntries(records.map((entry) => [
+        entry.host,
+        entry.fixture_snapshot_digest
+      ]))
+    ));
+  }
+  if (
+    records.length === REQUIRED_HOSTS.length
+    && (
+      fixtureManifestDigests.size !== 1
+      || !fixtureManifestDigests.has(expectedFixtureManifestSha256)
+    )
+  ) {
+    blockers.push(blocker(
+      'verification-release:fixture-manifest-mismatch',
+      artifact,
+      Object.fromEntries(records.map((entry) => [
+        entry.host,
+        entry.fixture_manifest_sha256
+      ]))
     ));
   }
   return records.sort((left, right) => left.host.localeCompare(right.host));
 }
 
 function validateCompatibility(
+  schemaRegistry,
   candidate,
   input,
   hosts,
   bindings,
-  authority,
+  pointer,
+  lock,
   blockers
 ) {
-  const artifact = 'operations/cross-host-compatibility.json';
+  const artifact = pointer.compatibility.path;
+  const validated = validateSchema(
+    schemaRegistry,
+    'cross-host-release-result',
+    candidate,
+    artifact,
+    blockers
+  );
+  if (!validated) {
+    blockers.push(blocker(
+      'verification-release:cross-host-compatibility-blocked',
+      artifact
+    ));
+    return null;
+  }
   const commits = new Map(hosts.map((entry) => [entry.host, entry.commit]));
-  const candidateHostIds = Array.isArray(candidate?.hosts)
-    ? candidate.hosts.map((entry) => entry?.host)
-    : [];
-  const validHosts = Array.isArray(candidate?.hosts)
-    && candidate.hosts.length === REQUIRED_HOSTS.length
+  const receipts = new Map(
+    hosts.map((entry) => [entry.host, entry.receipt_sha256])
+  );
+  const candidateHostIds = validated.hosts.map((entry) => entry.host);
+  const validHosts = validated.hosts.length === REQUIRED_HOSTS.length
     && new Set(candidateHostIds).size === REQUIRED_HOSTS.length
     && REQUIRED_HOSTS.every((host) => candidateHostIds.includes(host))
-    && candidate.hosts.every((entry) => (
-      REQUIRED_HOSTS.includes(entry?.host)
+    && validated.hosts.every((entry) => (
+      REQUIRED_HOSTS.includes(entry.host)
       && commits.get(entry.host) === entry.commit
+      && receipts.get(entry.host) === entry.receipt_sha256
+      && hosts.find((host) => host.host === entry.host)?.snapshot_digest
+        === entry.snapshot_digest
     ));
+  const commitsObject = Object.fromEntries(hosts.map((entry) => [
+    entry.host,
+    entry.commit
+  ]));
+  const repositoriesObject = Object.fromEntries(hosts.map((entry) => [
+    entry.host,
+    entry.repository
+  ]));
+  const snapshotsObject = Object.fromEntries(hosts.map((entry) => [
+    entry.host,
+    entry.snapshot_digest
+  ]));
+  const reconstructedAuthority = {
+    lock_sha256: pointer.host_lock_sha256,
+    commits: commitsObject,
+    repositories: repositoriesObject,
+    heads: commitsObject,
+    snapshots: snapshotsObject,
+    comparison: validated.comparison_digest
+  };
+  const authorityDigest = sha256(canonicalJson(reconstructedAuthority));
+  const signedAuthorityDigests = new Set(
+    hosts.map((entry) => entry.host_authority_digest)
+  );
   if (
-    !candidate
-    || candidate.schema !== 'specnav.verification.cross-host-release-result.v1'
-    || candidate.change_id !== input.change_id
-    || candidate.release_gate_id !== bindings.release_gate_id
-    || candidate.archive_gate_id !== bindings.archive_gate_id
-    || candidate.gate_input_sha256 !== bindings.gate_input_sha256
-    || candidate.evidence_index_digest !== bindings.evidence_index_digest
-    || candidate.ok !== true
-    || candidate.kernel_version !== input.kernel_version
+    validated.change_id !== input.change_id
+    || validated.release_gate_id !== bindings.release_gate_id
+    || validated.archive_gate_id !== bindings.archive_gate_id
+    || validated.gate_input_sha256 !== bindings.gate_input_sha256
+    || validated.evidence_index_digest !== bindings.evidence_index_digest
+    || validated.host_lock_sha256 !== pointer.host_lock_sha256
+    || validated.authority_digest !== authorityDigest
+    || validated.kernel_version !== input.kernel_version
     || !validHosts
-    || authority?.comparison?.ok !== true
-    || canonicalJson(candidate.blockers)
-      !== canonicalJson(authority?.comparison?.blockers || [])
-    || !Array.isArray(candidate.blockers)
-    || candidate.blockers.length > 0
-    || candidate.fallback_used !== false
+    || signedAuthorityDigests.size !== 1
+    || !signedAuthorityDigests.has(validated.authority_digest)
+    || canonicalJson(validated.blockers) !== canonicalJson([])
+    || REQUIRED_HOSTS.some((host) => (
+      hostRepositoryLock(lock, host)?.commit !== commits.get(host)
+      || hostRepositoryLock(lock, host)?.repository
+        !== repositoriesObject[host]
+    ))
   ) {
     blockers.push(blocker(
       'verification-release:cross-host-compatibility-blocked',
       artifact,
-      candidate?.blockers || null
+      validated.blockers
     ));
   }
-  return candidate ? {
-    ok: candidate.ok === true,
-    kernel_version: candidate.kernel_version || null,
-    hosts: Array.isArray(candidate.hosts) ? candidate.hosts : [],
-    sha256: sha256(Buffer.from(canonicalJson(candidate)))
-  } : null;
+  return {
+    ok: validated.ok === true,
+    kernel_version: validated.kernel_version,
+    hosts: validated.hosts,
+    authority_summary: {
+      ...reconstructedAuthority,
+      digest: authorityDigest
+    },
+    sha256: sha256(Buffer.from(canonicalJson(validated)))
+  };
 }
 
 function proofPath(changeDir, relative) {
@@ -1097,18 +1921,14 @@ function createReleaseProofValidator(options = {}) {
   const clock = options.clock || (() => new Date().toISOString());
   const runtimeAuthority = options.runtimeAuthority
     || kernel.createRuntimeAuthority();
-  const hostCompatibilityAuthority = options.hostCompatibilityAuthority
-    || kernel.createHostCompatibilityAuthority({
-      lockFile: process.env.SPECNAV_VERIFICATION_HOST_LOCK,
-      fixtureRoot: process.env.SPECNAV_VERIFICATION_FIXTURE_ROOT,
-      descriptors: HOST_DESCRIPTORS,
-      sourceHost: 'codex',
-      roots: {
-        codex: process.env.SPECNAV_CODEX_REPOSITORY_ROOT,
-        'claude-code': process.env.SPECNAV_CLAUDE_REPOSITORY_ROOT,
-        'codefree-o': process.env.SPECNAV_CODEFREE_O_REPOSITORY_ROOT
-      }
-    });
+  const expectedHostRunnerSourceSha256 = options.expectedHostRunnerSourceSha256
+    || hostProofRunnerSourceDigest(LOCAL_REPOSITORY_ROOT);
+  const expectedFixtureManifestSha256 = options.expectedFixtureManifestSha256
+    || managedFixtureManifestDigest(path.join(
+      LOCAL_VERIFICATION_ROOT,
+      'assets',
+      'contract-fixtures'
+    ));
   if (typeof clock !== 'function') {
     throw new Error('verification-release:clock-invalid');
   }
@@ -1266,16 +2086,10 @@ function createReleaseProofValidator(options = {}) {
       'verify/evidence/index.json',
       blockers
     );
-    const installRead = readJson(
+    const pointerRead = readJson(
       changeDir,
-      'operations/host-installation-receipts.json',
-      'operations/host-installation-receipts.json',
-      blockers
-    );
-    const compatibilityRead = readJson(
-      changeDir,
-      'operations/cross-host-compatibility.json',
-      'operations/cross-host-compatibility.json',
+      'operations/host-proof-current.json',
+      'operations/host-proof-current.json',
       blockers
     );
     const canonicalReads = {
@@ -1368,7 +2182,10 @@ function createReleaseProofValidator(options = {}) {
     let hosts = [];
     let compatibility = null;
     let hostAuthorityResult = null;
+    let hostBundle = null;
+    let trustedFactAuthority = options.trustedFactAuthority || null;
     let canonicalRebuild = null;
+    let currentFingerprints = null;
     if (inputComplete) {
       approval = validateApproval(
         schemaRegistry,
@@ -1379,7 +2196,6 @@ function createReleaseProofValidator(options = {}) {
         input,
         blockers
       );
-      let trustedFactAuthority = options.trustedFactAuthority || null;
       if (
         !trustedFactAuthority
         && runtimeResolution?.signingKey
@@ -1407,7 +2223,7 @@ function createReleaseProofValidator(options = {}) {
         try {
           const fingerprintResolver = options.fingerprints
             || resolveCurrentFingerprints;
-          const currentFingerprints = fingerprintResolver(
+          currentFingerprints = fingerprintResolver(
             root,
             approval.snapshot,
             runtimeResolution.runtimeStatus,
@@ -1528,39 +2344,43 @@ function createReleaseProofValidator(options = {}) {
         gate_input_sha256: inputRead.bytes ? sha256(inputRead.bytes) : null,
         evidence_index_digest: evidenceIndex?.source_digest || null
       };
-      try {
-        hostAuthorityResult = hostCompatibilityAuthority.resolve();
-      } catch (error) {
-        hostAuthorityResult = {
-          ok: false,
-          blockers: [blocker(
-            'verification-release:host-authority-unavailable',
-            'host-authority',
-            error instanceof Error ? error.message : String(error)
-          )]
-        };
-      }
-      if (hostAuthorityResult?.ok !== true) {
-        blockers.push(...(hostAuthorityResult?.blockers || [blocker(
-          'verification-release:host-authority-unavailable',
-          'host-authority'
-        )]));
-      }
-      hosts = validateHostInstallations(
+      hostBundle = loadHostProofBundle(
+        schemaRegistry,
         changeDir,
-        installRead.value,
-        releaseBindings,
-        hostAuthorityResult,
+        pointerRead,
+        change,
+        runtimeResolution?.authority,
         blockers
       );
-      compatibility = validateCompatibility(
-        compatibilityRead.value,
-        input,
-        hosts,
-        releaseBindings,
-        hostAuthorityResult,
-        blockers
-      );
+      if (hostBundle && trustedFactAuthority) {
+        hosts = validateHostInstallations(
+          schemaRegistry,
+          trustedFactAuthority,
+          changeDir,
+          hostBundle.index.value,
+          releaseBindings,
+          hostBundle.pointer,
+          hostBundle.lock.validated,
+          runtimeResolution?.authority,
+          expectedHostRunnerSourceSha256,
+          expectedFixtureManifestSha256,
+          currentFingerprints?.code_sha,
+          blockers
+        );
+        compatibility = validateCompatibility(
+          schemaRegistry,
+          hostBundle.compatibility.value,
+          input,
+          hosts,
+          releaseBindings,
+          hostBundle.pointer,
+          hostBundle.lock.validated,
+          blockers
+        );
+        hostAuthorityResult = compatibility
+          ? { summary: compatibility.authority_summary }
+          : null;
+      }
     }
     const reports = validateReports(
       changeDir,
@@ -1595,9 +2415,12 @@ function createReleaseProofValidator(options = {}) {
         ? sha256(evidenceIndexRead.bytes)
         : null,
       migration_status: migrationRead.bytes ? sha256(migrationRead.bytes) : null,
-      host_installations: installRead.bytes ? sha256(installRead.bytes) : null,
-      cross_host_compatibility: compatibilityRead.bytes
-        ? sha256(compatibilityRead.bytes)
+      host_proof_pointer: pointerRead.bytes ? sha256(pointerRead.bytes) : null,
+      host_installations: hostBundle?.index?.bytes
+        ? sha256(hostBundle.index.bytes)
+        : null,
+      cross_host_compatibility: hostBundle?.compatibility?.bytes
+        ? sha256(hostBundle.compatibility.bytes)
         : null
     };
     const semantic = {
@@ -1710,8 +2533,10 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  HOST_DESCRIPTORS,
   PROOF_SCHEMA,
   REQUIRED_HOSTS,
   REQUIRED_REPORTS,
-  createReleaseProofValidator
+  createReleaseProofValidator,
+  resolveCurrentFingerprints
 };

@@ -11,9 +11,9 @@ specnav_verification_prepare_live_authority() {
   local claude_commit
   local codefree_commit
 
-  source_commit="$(jq -er '.source_commit' "$lock_file")"
-  claude_commit="$(jq -er '.hosts["claude-code"].ref' "$lock_file")"
-  codefree_commit="$(jq -er '.hosts["codefree-o"].ref' "$lock_file")"
+  source_commit="$(jq -er '.source.commit' "$lock_file")"
+  claude_commit="$(jq -er '.hosts["claude-code"].commit' "$lock_file")"
+  codefree_commit="$(jq -er '.hosts["codefree-o"].commit' "$lock_file")"
 
   mkdir -p "$authority_root"
   git clone -q --no-checkout "$source_root" "$authority_root/codex"

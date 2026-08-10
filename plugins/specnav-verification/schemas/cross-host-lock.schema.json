@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/cross-host-lock.schema.json",
+  "title": "SpecNav Verification 2.0 Cross-Host Lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_host",
+    "source",
+    "hosts",
+    "generated_at",
+    "fallback_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.cross-host-lock.v1"
+    },
+    "source_host": {
+      "const": "codex"
+    },
+    "source": {
+      "$ref": "#/$defs/repository"
+    },
+    "hosts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claude-code",
+        "codefree-o"
+      ],
+      "properties": {
+        "claude-code": {
+          "$ref": "#/$defs/repository"
+        },
+        "codefree-o": {
+          "$ref": "#/$defs/repository"
+        }
+      }
+    },
+    "generated_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "fallback_used": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "ref",
+        "commit",
+        "plugin_path",
+        "manifest_path"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:\\.git)?$"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^refs/(?:heads|tags)/[A-Za-z0-9._/-]+$"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "plugin_path": {
+          "$ref": "common.schema.json#/$defs/relativePath"
+        },
+        "manifest_path": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

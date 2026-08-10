@@ -1,0 +1,285 @@
+[
+  {
+    "id": "cross-host-lock-rejects-parent-path",
+    "entity_type": "cross-host-lock",
+    "fixture": "positive/cross-host-lock.json",
+    "coverage": "path-constraint",
+    "pointer": "/source/plugin_path",
+    "value": "../plugins/specnav-verification",
+    "expected_field": "/source/plugin_path"
+  },
+  {
+    "id": "cross-host-lock-rejects-fallback",
+    "entity_type": "cross-host-lock",
+    "fixture": "positive/cross-host-lock.json",
+    "coverage": "fallback-forbidden",
+    "pointer": "/fallback_used",
+    "value": true,
+    "expected_field": "/fallback_used"
+  },
+  {
+    "id": "host-execution-passed-requires-zero-exit",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "passed-failed-conditions",
+    "pointer": "/commands/0/exit_status",
+    "value": 1,
+    "expected_field": "/commands/0/exit_status"
+  },
+  {
+    "id": "host-execution-passed-requires-null-blocker",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "passed-failed-conditions",
+    "pointer": "/blocker",
+    "value": {
+      "id": "unexpected-blocker",
+      "artifact": null,
+      "detail": "passed executions cannot retain blockers"
+    },
+    "expected_field": "/blocker"
+  },
+  {
+    "id": "host-execution-failed-requires-blocker",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "passed-failed-conditions",
+    "pointer": "/status",
+    "value": "failed",
+    "expected_field": "/blocker"
+  },
+  {
+    "id": "host-execution-rejects-parent-output-path",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "path-constraint",
+    "pointer": "/commands/0/stdout_path",
+    "value": "../codex.stdout.log",
+    "expected_field": "/commands/0/stdout_path"
+  },
+  {
+    "id": "host-execution-rejects-malformed-digest",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "digest-format",
+    "pointer": "/host_authority_digest",
+    "value": "not-a-sha256",
+    "expected_field": "/host_authority_digest"
+  },
+  {
+    "id": "host-execution-rejects-partial-sandbox-identity",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "sandbox-identity-coherence",
+    "pointer": "/commands/0/sandbox_policy_sha256",
+    "value": null,
+    "expected_field": "/commands/0"
+  },
+  {
+    "id": "host-execution-failed-requires-failed-command",
+    "entity_type": "host-execution",
+    "fixture": "positive/host-execution.json",
+    "coverage": "passed-failed-conditions",
+    "mutations": [
+      {
+        "pointer": "/status",
+        "value": "failed"
+      },
+      {
+        "pointer": "/blocker",
+        "value": {
+          "id": "command-failed",
+          "artifact": "host-smoke",
+          "detail": "fixture"
+        }
+      }
+    ],
+    "expected_field": "/commands"
+  },
+  {
+    "id": "host-install-receipt-requires-envelope-digest-binding",
+    "entity_type": "host-install-receipt",
+    "fixture": "positive/host-install-receipt.json",
+    "coverage": "receipt-envelope-binding",
+    "operation": "remove",
+    "pointer": "/execution_envelope_sha256",
+    "expected_field": "/execution_envelope_sha256"
+  },
+  {
+    "id": "host-install-receipt-rejects-parent-envelope-path",
+    "entity_type": "host-install-receipt",
+    "fixture": "positive/host-install-receipt.json",
+    "coverage": "path-constraint",
+    "pointer": "/execution_envelope_path",
+    "value": "../codex.execution-envelope.json",
+    "expected_field": "/execution_envelope_path"
+  },
+  {
+    "id": "host-install-receipt-rejects-malformed-envelope-digest",
+    "entity_type": "host-install-receipt",
+    "fixture": "positive/host-install-receipt.json",
+    "coverage": "digest-format",
+    "pointer": "/execution_envelope_sha256",
+    "value": "not-a-sha256",
+    "expected_field": "/execution_envelope_sha256"
+  },
+  {
+    "id": "host-install-receipt-rejects-fallback",
+    "entity_type": "host-install-receipt",
+    "fixture": "positive/host-install-receipt.json",
+    "coverage": "fallback-forbidden",
+    "pointer": "/fallback_used",
+    "value": true,
+    "expected_field": "/fallback_used"
+  },
+  {
+    "id": "host-installation-index-requires-unique-hosts",
+    "entity_type": "host-installation-index",
+    "fixture": "positive/host-installation-index.json",
+    "coverage": "host-uniqueness",
+    "pointer": "/hosts/2/host",
+    "value": "codex",
+    "expected_field": "/hosts"
+  },
+  {
+    "id": "host-installation-index-requires-receipt-digest-binding",
+    "entity_type": "host-installation-index",
+    "fixture": "positive/host-installation-index.json",
+    "coverage": "receipt-envelope-binding",
+    "operation": "remove",
+    "pointer": "/hosts/1/receipt_sha256",
+    "expected_field": "/hosts/1/receipt_sha256"
+  },
+  {
+    "id": "host-installation-index-rejects-parent-receipt-path",
+    "entity_type": "host-installation-index",
+    "fixture": "positive/host-installation-index.json",
+    "coverage": "path-constraint",
+    "pointer": "/hosts/0/receipt_path",
+    "value": "../claude-code.json",
+    "expected_field": "/hosts/0/receipt_path"
+  },
+  {
+    "id": "host-installation-index-rejects-malformed-receipt-digest",
+    "entity_type": "host-installation-index",
+    "fixture": "positive/host-installation-index.json",
+    "coverage": "digest-format",
+    "pointer": "/hosts/0/receipt_sha256",
+    "value": "not-a-sha256",
+    "expected_field": "/hosts/0/receipt_sha256"
+  },
+  {
+    "id": "host-installation-index-rejects-fallback",
+    "entity_type": "host-installation-index",
+    "fixture": "positive/host-installation-index.json",
+    "coverage": "fallback-forbidden",
+    "pointer": "/fallback_used",
+    "value": true,
+    "expected_field": "/fallback_used"
+  },
+  {
+    "id": "host-proof-pointer-rejects-zero-generation",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "pointer-generation-previous",
+    "pointer": "/generation",
+    "value": 0,
+    "expected_field": "/generation"
+  },
+  {
+    "id": "host-proof-pointer-rejects-scalar-previous",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "pointer-generation-previous",
+    "pointer": "/previous_pointer",
+    "value": "host-proof-0",
+    "expected_field": "/previous_pointer"
+  },
+  {
+    "id": "host-proof-pointer-previous-artifact-requires-digest",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "pointer-generation-previous",
+    "pointer": "/previous_pointer",
+    "value": {
+      "path": "operations/host-proof-runs/host-proof-0/host-proof-pointer.json"
+    },
+    "expected_field": "/previous_pointer/sha256"
+  },
+  {
+    "id": "host-proof-pointer-rejects-parent-artifact-path",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "path-constraint",
+    "pointer": "/lock/path",
+    "value": "../cross-host-lock.json",
+    "expected_field": "/lock/path"
+  },
+  {
+    "id": "host-proof-pointer-rejects-malformed-digest",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "digest-format",
+    "pointer": "/host_lock_sha256",
+    "value": "not-a-sha256",
+    "expected_field": "/host_lock_sha256"
+  },
+  {
+    "id": "host-proof-pointer-rejects-fallback",
+    "entity_type": "host-proof-pointer",
+    "fixture": "positive/host-proof-pointer.json",
+    "coverage": "fallback-forbidden",
+    "pointer": "/fallback_used",
+    "value": true,
+    "expected_field": "/fallback_used"
+  },
+  {
+    "id": "cross-host-release-result-requires-unique-hosts",
+    "entity_type": "cross-host-release-result",
+    "fixture": "positive/cross-host-release-result.json",
+    "coverage": "host-uniqueness",
+    "pointer": "/hosts/2/host",
+    "value": "codex",
+    "expected_field": "/hosts"
+  },
+  {
+    "id": "cross-host-release-result-requires-ok",
+    "entity_type": "cross-host-release-result",
+    "fixture": "positive/cross-host-release-result.json",
+    "coverage": "passed-failed-conditions",
+    "pointer": "/ok",
+    "value": false,
+    "expected_field": "/ok"
+  },
+  {
+    "id": "cross-host-release-result-requires-empty-blockers",
+    "entity_type": "cross-host-release-result",
+    "fixture": "positive/cross-host-release-result.json",
+    "coverage": "passed-failed-conditions",
+    "pointer": "/blockers",
+    "value": [
+      {
+        "id": "unexpected-blocker"
+      }
+    ],
+    "expected_field": "/blockers"
+  },
+  {
+    "id": "cross-host-release-result-rejects-malformed-digest",
+    "entity_type": "cross-host-release-result",
+    "fixture": "positive/cross-host-release-result.json",
+    "coverage": "digest-format",
+    "pointer": "/comparison_digest",
+    "value": "not-a-sha256",
+    "expected_field": "/comparison_digest"
+  },
+  {
+    "id": "cross-host-release-result-rejects-fallback",
+    "entity_type": "cross-host-release-result",
+    "fixture": "positive/cross-host-release-result.json",
+    "coverage": "fallback-forbidden",
+    "pointer": "/fallback_used",
+    "value": true,
+    "expected_field": "/fallback_used"
+  }
+]

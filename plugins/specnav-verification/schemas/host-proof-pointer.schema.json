@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/host-proof-pointer.schema.json",
+  "title": "SpecNav Verification 2.0 Current Host Proof Pointer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "change_id",
+    "run_id",
+    "generation",
+    "previous_pointer",
+    "host_lock_sha256",
+    "runtime_authority_digest",
+    "lock",
+    "index",
+    "compatibility",
+    "published_at",
+    "fallback_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.host-proof-pointer.v1"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_pointer": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/artifact"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "host_lock_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "runtime_authority_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "lock": {
+      "$ref": "#/$defs/artifact"
+    },
+    "index": {
+      "$ref": "#/$defs/artifact"
+    },
+    "compatibility": {
+      "$ref": "#/$defs/artifact"
+    },
+    "published_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "fallback_used": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "common.schema.json#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

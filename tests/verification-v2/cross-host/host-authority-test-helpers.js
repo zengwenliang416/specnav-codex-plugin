@@ -18,36 +18,10 @@ const {
 const {
   buildStagedModule
 } = require('../../../integrations/codefree-o/sync-verification-module');
+const {
+  HOST_DESCRIPTORS
+} = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
 const kernel = require(SOURCE_PLUGIN);
-
-const HOST_DESCRIPTORS = Object.freeze({
-  codex: Object.freeze({
-    plugin: 'plugins/specnav-verification',
-    manifest: null,
-    hostFiles: Object.freeze(['scripts/codex-verification-adapter.js'])
-  }),
-  'claude-code': Object.freeze({
-    plugin: 'plugins/specnav-verification',
-    manifest: 'plugins/specnav-verification/specnav-kernel-source.json',
-    hostFiles: Object.freeze([
-      'commands/specnav-verification.md',
-      'commands/specnav-verify.md',
-      'scripts/claude-verification-adapter.js',
-      'scripts/plugin-runtime.js',
-      'specnav-stage.json',
-      '.claude-plugin/plugin.json'
-    ])
-  }),
-  'codefree-o': Object.freeze({
-    plugin: 'modules/specnav-verification',
-    manifest: 'modules/specnav-verification/specnav-kernel-source.json',
-    hostFiles: Object.freeze([
-      'scripts/codefree-o-verification-adapter.js',
-      'scripts/plugin-runtime.js',
-      'specnav-stage.json'
-    ])
-  })
-});
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -141,17 +115,35 @@ function createHostAuthorityFixture(t) {
   const lockFile = path.join(tempRoot, 'host-lock.json');
   const lock = {
     schema: 'specnav.verification.cross-host-lock.v1',
-    source_commit: sourceCommit,
+    source_host: 'codex',
+    source: {
+      repository:
+        'https://github.com/zengwenliang416/specnav-codex-plugin.git',
+      ref: 'refs/heads/main',
+      commit: sourceCommit,
+      plugin_path: HOST_DESCRIPTORS.codex.plugin,
+      manifest_path: HOST_DESCRIPTORS.codex.manifest
+    },
     hosts: {
       'claude-code': {
-        repository: 'fixture/claude',
-        ref: git(roots['claude-code'], ['rev-parse', 'HEAD'])
+        repository:
+          'https://github.com/zengwenliang416/specnav-claude-plugin.git',
+        ref: 'refs/heads/main',
+        commit: git(roots['claude-code'], ['rev-parse', 'HEAD']),
+        plugin_path: HOST_DESCRIPTORS['claude-code'].plugin,
+        manifest_path: HOST_DESCRIPTORS['claude-code'].manifest
       },
       'codefree-o': {
-        repository: 'fixture/codefree',
-        ref: git(roots['codefree-o'], ['rev-parse', 'HEAD'])
+        repository:
+          'https://github.com/zengwenliang416/specnav-codefree-o-plugin.git',
+        ref: 'refs/heads/main',
+        commit: git(roots['codefree-o'], ['rev-parse', 'HEAD']),
+        plugin_path: HOST_DESCRIPTORS['codefree-o'].plugin,
+        manifest_path: HOST_DESCRIPTORS['codefree-o'].manifest
       }
-    }
+    },
+    generated_at: '2026-08-09T00:00:00Z',
+    fallback_used: false
   };
   writeJson(lockFile, lock);
 
@@ -171,7 +163,7 @@ function createHostAuthorityFixture(t) {
 
   function updateHostRef(host) {
     const current = readLock();
-    current.hosts[host].ref = git(roots[host], ['rev-parse', 'HEAD']);
+    current.hosts[host].commit = git(roots[host], ['rev-parse', 'HEAD']);
     writeJson(lockFile, current);
   }
 

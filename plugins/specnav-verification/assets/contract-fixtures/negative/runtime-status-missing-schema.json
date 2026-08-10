@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "readiness": "ready",
+  "runtime_version": "1.0.0",
+  "runtime_root": "/tmp/specnav-verification-runtime",
+  "checks": {
+    "lock": {
+      "ok": true
+    },
+    "runtime": {
+      "ok": true,
+      "root": "/tmp/specnav-verification-runtime"
+    },
+    "receipt": {
+      "ok": true,
+      "path": "/tmp/specnav-verification-runtime/install-receipt.json"
+    },
+    "permissions": [],
+    "packages": [],
+    "browsers": [],
+    "provider": {
+      "configured": false,
+      "model_name_present": false,
+      "model_family_present": false,
+      "credential_source": null,
+      "base_url_present": false,
+      "secret_values_exposed": false
+    }
+  },
+  "blockers": [],
+  "warnings": [],
+  "actions": [],
+  "fallback_used": false
+}

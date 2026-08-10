@@ -1,0 +1,31 @@
+{
+  "schema": "specnav.verification.authority-chain-anchor.v1",
+  "id": "authority-chain-anchor-minimal",
+  "change_id": "change-v2",
+  "logs": {
+    "transition_proposals": {
+      "kind": "transition_proposal",
+      "path": "v2/transition-proposals.jsonl",
+      "sequence": 0,
+      "latest_digest": null,
+      "terminal_envelope_id": null
+    },
+    "transition_receipts": {
+      "kind": "transition_application",
+      "path": "v2/transition-receipts.jsonl",
+      "sequence": 0,
+      "latest_digest": null,
+      "terminal_envelope_id": null
+    },
+    "attempt_facts": {
+      "kind": "attempt_fact",
+      "path": "v2/attempt-facts.jsonl",
+      "sequence": 0,
+      "latest_digest": null,
+      "terminal_envelope_id": null
+    }
+  },
+  "anchored_at": "2026-08-06T00:00:00Z",
+  "signature_algorithm": "hmac-sha256",
+  "signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

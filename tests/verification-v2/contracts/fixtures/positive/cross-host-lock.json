@@ -1,0 +1,29 @@
+{
+  "schema": "specnav.verification.cross-host-lock.v1",
+  "source_host": "codex",
+  "source": {
+    "repository": "https://github.com/example/specnav-codex-plugin.git",
+    "ref": "refs/heads/main",
+    "commit": "1111111111111111111111111111111111111111",
+    "plugin_path": "plugins/specnav-verification",
+    "manifest_path": null
+  },
+  "hosts": {
+    "claude-code": {
+      "repository": "https://github.com/example/specnav-claude-plugin.git",
+      "ref": "refs/heads/main",
+      "commit": "2222222222222222222222222222222222222222",
+      "plugin_path": "plugins/specnav-verification",
+      "manifest_path": "plugins/specnav-verification/specnav-kernel-source.json"
+    },
+    "codefree-o": {
+      "repository": "https://github.com/example/specnav-codefree-o-plugin.git",
+      "ref": "refs/heads/main",
+      "commit": "3333333333333333333333333333333333333333",
+      "plugin_path": "modules/specnav-verification",
+      "manifest_path": "modules/specnav-verification/specnav-kernel-source.json"
+    }
+  },
+  "generated_at": "2026-08-09T00:00:00Z",
+  "fallback_used": false
+}

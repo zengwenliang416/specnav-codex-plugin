@@ -27,7 +27,13 @@ const ENTITY_TYPES = Object.freeze([
   'runtime-status',
   'report-model',
   'gate-decision',
-  'migration-receipt'
+  'migration-receipt',
+  'cross-host-lock',
+  'host-execution',
+  'host-install-receipt',
+  'host-installation-index',
+  'host-proof-pointer',
+  'cross-host-release-result'
 ]);
 
 const SCHEMA_REGISTRIES = new WeakSet();

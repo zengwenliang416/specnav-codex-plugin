@@ -10,6 +10,21 @@ const ROOT = path.resolve(__dirname, '../..');
 const SOURCE_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
 const DEFAULT_TARGET = path.resolve(ROOT, '../specnav-codefree-o-plugin');
 const OWNED_PATH = 'modules/specnav-verification';
+const REQUIRED_STAGED_EXACT_FILES = Object.freeze([
+  'assets/contract-fixtures/manifest.json',
+  'kernel/contracts/schema-registry.js',
+  'kernel/execution/host-proof-launcher.js',
+  'kernel/execution/index.js',
+  'kernel/index.js',
+  'kernel/repair/trusted-fact-authority.js',
+  'schemas/cross-host-lock.schema.json',
+  'schemas/cross-host-release-result.schema.json',
+  'schemas/host-execution.schema.json',
+  'schemas/host-install-receipt.schema.json',
+  'schemas/host-installation-index.schema.json',
+  'schemas/host-proof-pointer.schema.json',
+  'schemas/trusted-fact-envelope.schema.json'
+]);
 const {
   SHARED_SCRIPTS,
   createHostSyncPlan,
@@ -236,8 +251,22 @@ function transformSkill(source) {
   return transformHostSkill(source, 'codefree-o');
 }
 
+function assertRequiredStagedFiles(plan) {
+  const exactFiles = new Set(plan.exactFiles);
+  const missing = REQUIRED_STAGED_EXACT_FILES.filter(
+    (relative) => !exactFiles.has(relative)
+  );
+  if (missing.length) {
+    throw new Error(
+      'codefree-o-verification-sync:required-staged-files-missing:'
+      + JSON.stringify(missing)
+    );
+  }
+}
+
 function validateStagedModule(stagingModule, manifest) {
   const plan = createHostSyncPlan('codefree-o');
+  assertRequiredStagedFiles(plan);
   for (const relative of manifest.files) {
     if (
       sha256(path.join(SOURCE_PLUGIN, relative))
@@ -292,6 +321,7 @@ function validateStagedModule(stagingModule, manifest) {
 
 function buildStagedModule(stagingModule) {
   const plan = createHostSyncPlan('codefree-o');
+  assertRequiredStagedFiles(plan);
   rejectSymlinks(SOURCE_PLUGIN, 'source');
   rejectSymlinks(stagingModule, 'staging');
 
@@ -444,7 +474,9 @@ if (require.main === module) main();
 
 module.exports = {
   OWNED_PATH,
+  REQUIRED_STAGED_EXACT_FILES,
   SHARED_SCRIPTS,
+  assertRequiredStagedFiles,
   assertOwnedPathsClean,
   buildStagedModule,
   rejectSymlinkComponents,

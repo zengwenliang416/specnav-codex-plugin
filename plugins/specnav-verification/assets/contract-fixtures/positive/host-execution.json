@@ -1,0 +1,59 @@
+{
+  "schema": "specnav.verification.host-execution.v1",
+  "change_id": "verification-2-0",
+  "run_id": "host-proof-1",
+  "host": "codex",
+  "status": "passed",
+  "repository": "https://github.com/zengwenliang416/specnav-codex-plugin.git",
+  "ref": "refs/heads/main",
+  "commit": "1111111111111111111111111111111111111111",
+  "host_lock_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "release_gate_id": "gate-release",
+  "archive_gate_id": "gate-archive",
+  "gate_input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "evidence_index_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "runtime_authority_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "host_authority_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+  "source_snapshot_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+  "runner_identity_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "runner_source_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "environment_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "fixture_snapshot_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "fixture_manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "observations": {
+    "advertised_commit": "1111111111111111111111111111111111111111",
+    "checkout_head": "1111111111111111111111111111111111111111",
+    "source_code_inventory_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "package_lock_sha256": null
+  },
+  "commands": [
+    {
+      "id": "host-smoke",
+      "argv": [
+        "/bin/bash",
+        "/tmp/specnav-hosts/codex/tests/run-smoke.sh"
+      ],
+      "executable_realpath": "/bin/bash",
+      "executable_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+      "sandbox_executable_realpath": "/usr/bin/sandbox-exec",
+      "sandbox_executable_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "sandbox_policy_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "sandbox_argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (deny default)"
+      ],
+      "exit_status": 0,
+      "signal": null,
+      "stdout_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+      "stderr_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+      "stdout_path": "operations/host-proof-runs/host-proof-1/codex-1.stdout.log",
+      "stderr_path": "operations/host-proof-runs/host-proof-1/codex-1.stderr.log",
+      "started_at": "2026-08-09T00:00:01Z",
+      "completed_at": "2026-08-09T00:00:02Z"
+    }
+  ],
+  "blocker": null,
+  "started_at": "2026-08-09T00:00:01Z",
+  "completed_at": "2026-08-09T00:00:02Z"
+}

@@ -10,7 +10,7 @@ const test = require('node:test');
 const ROOT = path.resolve(__dirname, '../../..');
 const FIXTURE_ROOT = path.join(
   ROOT,
-  'tests/verification-v2/contracts/fixtures'
+  'plugins/specnav-verification/assets/contract-fixtures'
 );
 const CODEX_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
 const CLAUDE_ROOT = path.resolve(
@@ -116,7 +116,7 @@ test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', () =
         'specnav-kernel-source.json'
       ),
       hostFiles: CLAUDE_HOST_FILES,
-      expectedSourceCommit: HOST_LOCK.source_commit
+      expectedSourceCommit: HOST_LOCK.source.commit
     }),
     snapshot({
       host: 'codefree-o',
@@ -126,7 +126,7 @@ test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', () =
         'specnav-kernel-source.json'
       ),
       hostFiles: CODEFREE_HOST_FILES,
-      expectedSourceCommit: HOST_LOCK.source_commit
+      expectedSourceCommit: HOST_LOCK.source.commit
     })
   ]);
 
@@ -218,6 +218,40 @@ test('normalized fixture drift is release blocking', (t) => {
   assert.deepEqual(blockerIds(result), [
     'verification-drift:fixture-output-mismatch:drifted'
   ]);
+});
+
+test('fixture manifest entries cannot traverse outside the fixture root', (t) => {
+  const fixtureRoot = copyFixtures(t);
+  const manifestFile = path.join(fixtureRoot, 'manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+  manifest.positive[0].file = '../outside.json';
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  assert.throws(
+    () => snapshot({
+      host: 'unsafe-fixture',
+      fixtureRoot
+    }),
+    /verification-drift:fixture-path-unsafe:unsafe-fixture/
+  );
+});
+
+test('fixture manifest entries cannot follow symlinks', (t) => {
+  const fixtureRoot = copyFixtures(t);
+  const outside = path.join(fixtureRoot, '../outside-fixture.json');
+  const fixtureFile = path.join(fixtureRoot, 'positive/test-case.json');
+  t.after(() => fs.rmSync(outside, { force: true }));
+  fs.writeFileSync(outside, '{}\n');
+  fs.rmSync(fixtureFile);
+  fs.symlinkSync(outside, fixtureFile);
+
+  assert.throws(
+    () => snapshot({
+      host: 'symlinked-fixture',
+      fixtureRoot
+    }),
+    /verification-drift:fixture-path-unsafe:symlinked-fixture/
+  );
 });
 
 test('generated report model drift is release blocking', (t) => {
@@ -534,12 +568,13 @@ test('CI pins both downstream host repositories to immutable commits', () => {
     HOST_LOCK.schema,
     'specnav.verification.cross-host-lock.v1'
   );
-  assert.match(HOST_LOCK.source_commit, /^[a-f0-9]{40}$/);
+  assert.equal(HOST_LOCK.source_host, 'codex');
+  assert.match(HOST_LOCK.source.commit, /^[a-f0-9]{40}$/);
   for (const [host, output] of [
     ['claude-code', 'claude_ref'],
     ['codefree-o', 'codefree_ref']
   ]) {
-    assert.match(HOST_LOCK.hosts[host].ref, /^[a-f0-9]{40}$/);
+    assert.match(HOST_LOCK.hosts[host].commit, /^[a-f0-9]{40}$/);
     assert.match(workflow, new RegExp(`ref: \\\${{ steps\\.host-lock\\.outputs\\.${output} }}`));
   }
   assert.match(workflow, /host-lock\.json/);

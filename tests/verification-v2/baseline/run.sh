@@ -23,12 +23,14 @@ file_size() {
 enrich_clean_control() {
   local project="$1"
   local change_dir="$project/openspec/changes/add-dashboard"
+  local task_dir="$change_dir/development/tasks/001-dashboard-summary"
+  local development_evidence="$change_dir/development/evidence"
   local verify="$change_dir/verify"
   local evidence_dir="$verify/evidence"
   local code_sha
   local test_sha
 
-  mkdir -p "$evidence_dir" "$verify/e2e/screenshots"
+  mkdir -p "$development_evidence" "$evidence_dir" "$verify/e2e/screenshots"
   cat >"$change_dir/acceptance.json" <<'JSON'
 {
   "schema_version": 2,
@@ -45,7 +47,35 @@ enrich_clean_control() {
 }
 JSON
 
-  cat >>"$change_dir/development/tasks/001-dashboard-summary/spec-review.md" <<'MD'
+  printf 'npm test passed for dashboard summary fixture\n' \
+    >"$development_evidence/001-dashboard-summary.log"
+  cat >"$task_dir/acceptance.json" <<'JSON'
+{
+  "schema": "specnav.task-acceptance-evidence.v1",
+  "generated_by": "specnav-development/task-acceptance-evidence",
+  "task_id": "001-dashboard-summary",
+  "recorded_at": "2026-07-03T00:00:00.000Z",
+  "status": "approved",
+  "assertions": [
+    {
+      "id": "AC-DASHBOARD-01",
+      "parent_id": "AC-DASHBOARD-01",
+      "status": "passing",
+      "direct_evidence": [
+        "development/tasks/001-dashboard-summary/report.md",
+        "development/tasks/001-dashboard-summary/spec-review.md",
+        "development/tasks/001-dashboard-summary/quality-review.md",
+        "development/evidence/001-dashboard-summary.log"
+      ],
+      "reused_evidence": [],
+      "claim": "Dashboard summary handles populated, loading, empty, and error states."
+    }
+  ],
+  "fallback_used": false
+}
+JSON
+
+  cat >>"$task_dir/spec-review.md" <<'MD'
 ## Acceptance Assertions Verified
 - AC-DASHBOARD-01
 MD

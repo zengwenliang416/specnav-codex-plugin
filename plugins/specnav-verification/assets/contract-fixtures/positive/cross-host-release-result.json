@@ -1,0 +1,36 @@
+{
+  "schema": "specnav.verification.cross-host-release-result.v1",
+  "change_id": "verification-2-0",
+  "release_gate_id": "gate-release",
+  "archive_gate_id": "gate-archive",
+  "gate_input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "evidence_index_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "host_lock_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "authority_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "comparison_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "ok": true,
+  "hosts": [
+    {
+      "host": "claude-code",
+      "commit": "2222222222222222222222222222222222222222",
+      "snapshot_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "receipt_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    {
+      "host": "codex",
+      "commit": "1111111111111111111111111111111111111111",
+      "snapshot_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+      "receipt_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+    },
+    {
+      "host": "codefree-o",
+      "commit": "3333333333333333333333333333333333333333",
+      "snapshot_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+      "receipt_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+    }
+  ],
+  "kernel_version": "2.0.0-alpha.2",
+  "blockers": [],
+  "fallback_used": false,
+  "recorded_at": "2026-08-09T00:00:03Z"
+}

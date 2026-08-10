@@ -76,6 +76,33 @@ function fixtureManifest() {
   ));
 }
 
+function fixtureValue(file) {
+  return JSON.parse(fs.readFileSync(
+    path.join(FIXTURE_ROOT, file),
+    'utf8'
+  ));
+}
+
+function mutateJsonPointer(value, mutation) {
+  const { pointer } = mutation;
+  const segments = pointer.slice(1).split('/').map((segment) => (
+    segment.replaceAll('~1', '/').replaceAll('~0', '~')
+  ));
+  const field = segments.pop();
+  let parent = value;
+  for (const segment of segments) parent = parent[segment];
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(parent, field),
+    true,
+    pointer
+  );
+  if (mutation.operation === 'remove') {
+    delete parent[field];
+    return;
+  }
+  parent[field] = mutation.value;
+}
+
 test('registry compiles and validates every Verification Contract V2 entity', () => {
   const runtimeStatus = readyRuntime();
   const registry = createSchemaRegistry({
@@ -106,7 +133,13 @@ test('registry compiles and validates every Verification Contract V2 entity', ()
     'runtime-status',
     'report-model',
     'gate-decision',
-    'migration-receipt'
+    'migration-receipt',
+    'cross-host-lock',
+    'host-execution',
+    'host-install-receipt',
+    'host-installation-index',
+    'host-proof-pointer',
+    'cross-host-release-result'
   ];
   assert.deepEqual(ENTITY_TYPES, expectedTypes);
   assert.deepEqual(registry.list(), expectedTypes);
@@ -181,6 +214,76 @@ test('negative fixture corpus returns exact artifact and field blockers', () => 
       JSON.stringify(result.blockers)
     );
   }
+});
+
+test('host and cross-host schemas reject the declared negative contracts', () => {
+  const runtimeStatus = readyRuntime();
+  const registry = createSchemaRegistry({
+    runtimeStatus,
+    runtimeRoot: runtimeStatus.runtime_root,
+    schemaRoot: SCHEMA_ROOT
+  });
+  const manifest = fixtureManifest();
+  const matrix = fixtureValue(manifest.host_cross_host_negative_matrix);
+  assert.deepEqual(
+    [...new Set(matrix.map((entry) => entry.entity_type))].sort(),
+    [
+      'cross-host-lock',
+      'cross-host-release-result',
+      'host-execution',
+      'host-install-receipt',
+      'host-installation-index',
+      'host-proof-pointer'
+    ]
+  );
+  assert.deepEqual(
+    [...new Set(matrix.map((entry) => entry.coverage))].sort(),
+    [
+      'digest-format',
+      'fallback-forbidden',
+      'host-uniqueness',
+      'passed-failed-conditions',
+      'path-constraint',
+      'pointer-generation-previous',
+      'receipt-envelope-binding',
+      'sandbox-identity-coherence'
+    ]
+  );
+  assert.equal(new Set(matrix.map((entry) => entry.id)).size, matrix.length);
+
+  const failures = [];
+  for (const fixture of matrix) {
+    const invalid = fixtureValue(fixture.fixture);
+    for (const mutation of fixture.mutations || [fixture]) {
+      mutateJsonPointer(invalid, mutation);
+    }
+    const artifactPath = `memory://${fixture.id}`;
+    const result = registry.validate(fixture.entity_type, invalid, {
+      artifactPath
+    });
+    if (result.ok) {
+      failures.push(`${fixture.id}: accepted`);
+      continue;
+    }
+    if (!result.blockers.every((entry) => (
+        entry.id === 'verification-contract:schema-invalid'
+        && entry.artifact_path === artifactPath
+      ))) {
+      failures.push(
+        `${fixture.id}: unexpected blockers ${JSON.stringify(result.blockers)}`
+      );
+      continue;
+    }
+    if (!result.blockers.some((entry) => (
+      entry.field === fixture.expected_field
+    ))) {
+      failures.push(
+        `${fixture.id}: missing ${fixture.expected_field} `
+        + JSON.stringify(result.blockers)
+      );
+    }
+  }
+  assert.deepEqual(failures, []);
 });
 
 test('evidence and gate schemas directly enforce AC-31 and AC-35 fields', () => {

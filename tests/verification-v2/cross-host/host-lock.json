@@ -1,14 +1,29 @@
 {
   "schema": "specnav.verification.cross-host-lock.v1",
-  "source_commit": "81e277c5395ec206825277e38706539ba69605f3",
+  "source_host": "codex",
+  "source": {
+    "repository": "https://github.com/zengwenliang416/specnav-codex-plugin.git",
+    "ref": "refs/heads/main",
+    "commit": "81e277c5395ec206825277e38706539ba69605f3",
+    "plugin_path": "plugins/specnav-verification",
+    "manifest_path": null
+  },
   "hosts": {
     "claude-code": {
-      "repository": "zengwenliang416/specnav-claude-plugin",
-      "ref": "16af49d25cffe39c77d66116025cdf7728ea6135"
+      "repository": "https://github.com/zengwenliang416/specnav-claude-plugin.git",
+      "ref": "refs/heads/main",
+      "commit": "16af49d25cffe39c77d66116025cdf7728ea6135",
+      "plugin_path": "plugins/specnav-verification",
+      "manifest_path": "plugins/specnav-verification/specnav-kernel-source.json"
     },
     "codefree-o": {
-      "repository": "zengwenliang416/specnav-codefree-o-plugin",
-      "ref": "4bd39077ad9c1db000110e9dcedbfb4663f49a97"
+      "repository": "https://github.com/zengwenliang416/specnav-codefree-o-plugin.git",
+      "ref": "refs/heads/main",
+      "commit": "4bd39077ad9c1db000110e9dcedbfb4663f49a97",
+      "plugin_path": "modules/specnav-verification",
+      "manifest_path": "modules/specnav-verification/specnav-kernel-source.json"
     }
-  }
+  },
+  "generated_at": "2026-08-09T00:00:00Z",
+  "fallback_used": false
 }

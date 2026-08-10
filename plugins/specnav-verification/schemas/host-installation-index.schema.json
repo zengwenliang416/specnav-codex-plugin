@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/host-installation-index.schema.json",
+  "title": "SpecNav Verification 2.0 Host Installation Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "change_id",
+    "host_lock_sha256",
+    "hosts",
+    "fallback_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.host-installation-index.v1"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "host_lock_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "hosts": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "claude-code"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "codex"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "codefree-o"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "host",
+          "receipt_path",
+          "receipt_sha256",
+          "commit"
+        ],
+        "properties": {
+          "host": {
+            "enum": [
+              "claude-code",
+              "codex",
+              "codefree-o"
+            ]
+          },
+          "receipt_path": {
+            "$ref": "common.schema.json#/$defs/relativePath"
+          },
+          "receipt_sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          }
+        }
+      }
+    },
+    "fallback_used": {
+      "const": false
+    }
+  }
+}

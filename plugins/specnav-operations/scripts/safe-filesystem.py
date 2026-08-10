@@ -323,12 +323,22 @@ def atomic_write(request):
                 raise
             os.fsync(parent_fd)
             return {"written": True, "replaced": False}
+        expected = UNSET
+        if "expected_exists" in request:
+            if request["expected_exists"] is True:
+                expected = base64.b64decode(
+                    request["expected_base64"],
+                    validate=True,
+                )
+            else:
+                expected = None
         previous = replace_bytes(
             parent_fd,
             leaf,
             data,
             blocker,
             exclusive=False,
+            expected=expected,
         )
         try:
             verify_root(request["root"], root_identity, blocker)

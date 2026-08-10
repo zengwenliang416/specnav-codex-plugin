@@ -16,7 +16,10 @@ const {
   createMidsceneAdapter
 } = require('./adapters/midscene-adapter');
 const {
-  createExecutionOrchestrator
+  createExecutionOrchestrator,
+  createHostRunnerIdentity,
+  createHostSandboxPlan,
+  createHostProofLauncher
 } = require('./execution');
 const {
   createEvidenceStore,
@@ -92,6 +95,9 @@ module.exports = Object.freeze({
   createMidsceneAdapter,
   createPlaywrightAdapter,
   createExecutionOrchestrator,
+  createHostRunnerIdentity,
+  createHostSandboxPlan,
+  createHostProofLauncher,
   createEvidenceStore,
   createEvidenceIntegrityChecker,
   createV1ToV2Migrator,

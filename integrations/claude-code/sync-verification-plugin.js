@@ -9,6 +9,21 @@ const { spawnSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '../..');
 const SOURCE_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
 const DEFAULT_TARGET = path.resolve(ROOT, '../specnav-claude-plugin');
+const REQUIRED_STAGED_EXACT_FILES = Object.freeze([
+  'assets/contract-fixtures/manifest.json',
+  'kernel/contracts/schema-registry.js',
+  'kernel/execution/host-proof-launcher.js',
+  'kernel/execution/index.js',
+  'kernel/index.js',
+  'kernel/repair/trusted-fact-authority.js',
+  'schemas/cross-host-lock.schema.json',
+  'schemas/cross-host-release-result.schema.json',
+  'schemas/host-execution.schema.json',
+  'schemas/host-install-receipt.schema.json',
+  'schemas/host-installation-index.schema.json',
+  'schemas/host-proof-pointer.schema.json',
+  'schemas/trusted-fact-envelope.schema.json'
+]);
 const {
   SHARED_SCRIPTS,
   createHostSyncPlan,
@@ -241,8 +256,22 @@ function writeJson(file, value) {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+function assertRequiredStagedFiles(plan) {
+  const exactFiles = new Set(plan.exactFiles);
+  const missing = REQUIRED_STAGED_EXACT_FILES.filter(
+    (relative) => !exactFiles.has(relative)
+  );
+  if (missing.length) {
+    throw new Error(
+      'claude-verification-sync:required-staged-files-missing:'
+      + JSON.stringify(missing)
+    );
+  }
+}
+
 function validateStagedPlugin(stagingPlugin, manifest) {
   const plan = createHostSyncPlan('claude-code');
+  assertRequiredStagedFiles(plan);
   for (const relative of manifest.files) {
     if (
       sha256(path.join(SOURCE_PLUGIN, relative))
@@ -297,6 +326,7 @@ function validateStagedPlugin(stagingPlugin, manifest) {
 
 function buildStagedPlugin(stagingPlugin) {
   const plan = createHostSyncPlan('claude-code');
+  assertRequiredStagedFiles(plan);
   rejectSymlinks(SOURCE_PLUGIN, 'source');
   rejectSymlinks(stagingPlugin, 'staging');
 
@@ -455,7 +485,9 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  REQUIRED_STAGED_EXACT_FILES,
   SHARED_SCRIPTS,
+  assertRequiredStagedFiles,
   assertOwnedPathClean,
   buildStagedPlugin,
   commitStagedPlugin,

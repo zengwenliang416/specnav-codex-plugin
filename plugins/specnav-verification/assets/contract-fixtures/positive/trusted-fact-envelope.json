@@ -1,0 +1,25 @@
+{
+  "schema": "specnav.verification.trusted-fact-envelope.v1",
+  "id": "trusted-fact-4f3ca10f9cc0981c27a38e84ea0c7ebaa14a89022614c408650e19b7754777d4",
+  "kind": "attempt_fact",
+  "producer": "specnav-execution-evidence",
+  "payload": {
+    "attempt_id": "attempt-minimal",
+    "case_id": "case-minimal",
+    "verdict": "pass"
+  },
+  "payload_digest": "4f3ca10f9cc0981c27a38e84ea0c7ebaa14a89022614c408650e19b7754777d4",
+  "issued_at": "2026-08-01T07:30:00Z",
+  "bindings": {
+    "failure_id": "failure-minimal",
+    "change_id": "change-v2",
+    "run_id": "run-minimal",
+    "case_id": "case-minimal",
+    "attempt_id": "attempt-minimal"
+  },
+  "claims": [
+    "evidence-integrity:verified"
+  ],
+  "signature_algorithm": "hmac-sha256",
+  "signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

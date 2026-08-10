@@ -1,0 +1,25 @@
+{
+  "schema": "specnav.verification.failure-packet.v1",
+  "id": "failure-minimal",
+  "change_id": "change-v2",
+  "run_id": "run-minimal",
+  "case_id": "case-minimal",
+  "attempt_id": "attempt-minimal",
+  "reading_ids": [
+    "reading-minimal"
+  ],
+  "evidence_ids": [
+    "evidence-minimal"
+  ],
+  "classification": "product_defect",
+  "status": "repair_required",
+  "next_action": "repair_required",
+  "summary": "The deterministic assertion failed",
+  "root_cause": "The product returned an unexpected value",
+  "failed_assertion_ids": [
+    "assertion-1"
+  ],
+  "owner": "development",
+  "created_at": "2026-07-31T00:00:01Z",
+  "frozen_at": "2026-07-31T00:00:02Z"
+}

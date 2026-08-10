@@ -27,14 +27,13 @@ const {
 const {
   mergeIntegrityResults
 } = require('../../../plugins/specnav-verification/kernel/pipeline/production-runner');
+const {
+  HOST_DESCRIPTORS,
+  expectedHostCommands
+} = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
 const { readySchemaRegistry } = require('../contracts/cross-reference/test-helpers');
 
 const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
-const HOST_REPOSITORIES = Object.freeze({
-  'claude-code': 'zengwenliang416/specnav-claude-plugin',
-  codex: 'zengwenliang416/specnav-codex-plugin',
-  'codefree-o': 'zengwenliang416/specnav-codefree-o-plugin'
-});
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -85,7 +84,11 @@ function ensureFixtureRepository(root) {
 }
 
 function currentFingerprints(root, snapshot, runtimeStatus, runtimeAuthority) {
-  const codeSha = git(root, ['rev-parse', 'HEAD']).trim();
+  const repositoryInventory = git(root, [
+    'ls-tree',
+    '-r',
+    'HEAD'
+  ]);
   const testInventory = git(root, [
     'ls-tree',
     '-r',
@@ -96,7 +99,7 @@ function currentFingerprints(root, snapshot, runtimeStatus, runtimeAuthority) {
   ]);
   return {
     case_snapshot_hash: snapshot.snapshot_hash,
-    code_sha: codeSha,
+    code_sha: kernel.codeInventorySha(repositoryInventory),
     test_sha: crypto.createHash('sha256')
       .update(testInventory)
       .update(snapshot.snapshot_hash)
@@ -228,22 +231,24 @@ function evidence(change, caseId, source, fingerprints) {
   };
 }
 
-function loadHostCommits(lockFile) {
+function loadHostLock(lockFile) {
   if (typeof lockFile !== 'string' || lockFile.trim() === '') {
     throw new Error('verification-fixture:host-lock-required');
   }
-  const lock = JSON.parse(fs.readFileSync(path.resolve(lockFile), 'utf8'));
+  const file = fs.realpathSync(path.resolve(lockFile));
+  const bytes = fs.readFileSync(file);
+  const lock = JSON.parse(bytes.toString('utf8'));
   const commits = {
-    codex: lock.source_commit,
-    'claude-code': lock.hosts?.['claude-code']?.ref,
-    'codefree-o': lock.hosts?.['codefree-o']?.ref
+    codex: lock.source?.commit,
+    'claude-code': lock.hosts?.['claude-code']?.commit,
+    'codefree-o': lock.hosts?.['codefree-o']?.commit
   };
   for (const host of HOSTS) {
     if (!/^[a-f0-9]{40}$/.test(commits[host] || '')) {
       throw new Error(`verification-fixture:host-lock-invalid:${host}`);
     }
   }
-  return commits;
+  return { bytes, commits, file, lock };
 }
 
 function populateProject(projectRoot, change, options = {}) {
@@ -346,9 +351,10 @@ function populateProject(projectRoot, change, options = {}) {
     key: runtimeResolution.signingKey,
     clock: () => '2026-08-02T00:00:03Z'
   });
-  const hostCommits = loadHostCommits(
+  const hostLock = loadHostLock(
     options.hostLockFile || process.env.SPECNAV_VERIFICATION_HOST_LOCK
   );
+  const hostCommits = hostLock.commits;
   const readings = kernel.SIX_DOMAINS.map((domain) => (
     reading(change, caseId, domain, fingerprints)
   ));
@@ -511,20 +517,103 @@ function populateProject(projectRoot, change, options = {}) {
     ),
     evidence_index_digest: evidenceIndex.source_digest
   };
+  const hostAuthority = kernel.createHostCompatibilityAuthority({
+    lockFile: hostLock.file,
+    fixtureRoot: options.fixtureRoot
+      || process.env.SPECNAV_VERIFICATION_FIXTURE_ROOT,
+    descriptors: HOST_DESCRIPTORS,
+    sourceHost: 'codex',
+    roots: options.hostRoots || {
+      codex: process.env.SPECNAV_CODEX_REPOSITORY_ROOT,
+      'claude-code': process.env.SPECNAV_CLAUDE_REPOSITORY_ROOT,
+      'codefree-o': process.env.SPECNAV_CODEFREE_O_REPOSITORY_ROOT
+    }
+  }).resolve();
+  if (!hostAuthority.ok) {
+    throw new Error(JSON.stringify(hostAuthority.blockers));
+  }
   const hosts = HOSTS.map((host) => {
     const receiptPath = `operations/install-receipts/${host}.json`;
+    const locked = host === 'codex'
+      ? hostAuthority.lock.source
+      : hostAuthority.lock.hosts[host];
+    const commandArgv = expectedHostCommands(
+      host,
+      hostAuthority.roots[host],
+      locked,
+      {},
+      {
+        managedRuntimeProbe: path.join(
+          __dirname,
+          '../../../plugins/specnav-verification/scripts/verification-runtime.js'
+        ),
+        runtimeBase: path.dirname(runtimeStatus.runtime_root),
+        runtimeVersion: runtimeStatus.runtime_version
+      }
+    );
+    const commands = commandArgv.map((argv, index) => {
+      const stdoutPath = `operations/install-receipts/logs/${host}-${index + 1}.stdout.log`;
+      const stderrPath = `operations/install-receipts/logs/${host}-${index + 1}.stderr.log`;
+      const stdout = Buffer.from(`completed ${argv.join(' ')}\n`);
+      const stderr = Buffer.alloc(0);
+      fs.mkdirSync(path.dirname(path.join(changeDir, stdoutPath)), {
+        recursive: true
+      });
+      fs.writeFileSync(path.join(changeDir, stdoutPath), stdout);
+      fs.writeFileSync(path.join(changeDir, stderrPath), stderr);
+      return {
+        argv,
+        exit_status: 0,
+        stdout_sha256: sha256(stdout),
+        stderr_sha256: sha256(stderr),
+        stdout_path: stdoutPath,
+        stderr_path: stderrPath
+      };
+    });
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
       ...releaseBindings,
-      source: `https://github.com/${HOST_REPOSITORIES[host]}.git`,
+      host_lock_sha256: hostAuthority.summary.lock_sha256,
+      repository: locked.repository,
       commit: hostCommits[host],
+      remote_commit_reachable: true,
+      checkout_realpath: hostAuthority.roots[host],
+      plugin_realpath: path.join(
+        hostAuthority.roots[host],
+        locked.plugin_path
+      ),
       clean_checkout: true,
       plugin_discovered: true,
       runtime_ready: true,
-      fixture_verification: 'pass',
-      command: `verify ${host}`,
-      exit_status: 0,
+      checks: [
+        {
+          id: 'plugin-discovery',
+          status: 'pass',
+          evidence: 'The expected plugin path exists.'
+        },
+        {
+          id: 'remote-commit-reachability',
+          status: 'pass',
+          evidence: 'The locked commit is reachable.'
+        },
+        {
+          id: 'runtime-doctor',
+          status: 'pass',
+          evidence: 'The runtime doctor completed.'
+        },
+        {
+          id: 'host-smoke',
+          status: 'pass',
+          evidence: 'The host smoke command completed.'
+        }
+      ],
+      execution: {
+        commands,
+        environment_sha256: 'b'.repeat(64),
+        started_at: '2026-08-02T00:00:05Z',
+        completed_at: '2026-08-02T00:00:06Z'
+      },
       attestation: 'system-executed',
       fallback_used: false,
       recorded_at: '2026-08-02T00:00:05Z'
@@ -541,16 +630,22 @@ function populateProject(projectRoot, change, options = {}) {
   writeJson(path.join(opsDir, 'host-installation-receipts.json'), {
     schema: 'specnav.verification.host-installation-index.v1',
     change_id: change,
+    host_lock_sha256: hostAuthority.summary.lock_sha256,
     hosts,
     fallback_used: false
   });
   writeJson(path.join(opsDir, 'cross-host-compatibility.json'), {
     schema: 'specnav.verification.cross-host-release-result.v1',
     ...releaseBindings,
+    host_lock_sha256: hostAuthority.summary.lock_sha256,
+    authority_digest: hostAuthority.summary.digest,
+    comparison_digest: hostAuthority.summary.comparison,
     ok: true,
     hosts: hosts.map((entry) => ({
       host: entry.host,
-      commit: entry.commit
+      commit: entry.commit,
+      snapshot_digest: hostAuthority.summary.snapshots[entry.host],
+      receipt_sha256: entry.receipt_sha256
     })),
     kernel_version: input.kernel_version,
     blockers: [],

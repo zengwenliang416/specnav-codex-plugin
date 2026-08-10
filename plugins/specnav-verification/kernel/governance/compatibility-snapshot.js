@@ -245,17 +245,19 @@ function blockerRegistry(pluginRoot) {
   });
 }
 
-function fixtureSnapshot(fixtureRoot) {
+function fixtureSnapshot(fixtureRoot, host) {
   const manifest = readJson(path.join(fixtureRoot, 'manifest.json'));
+  const blockerId = `verification-drift:fixture-path-unsafe:${host}`;
   const records = [];
   for (const group of ['positive', 'negative']) {
     for (const entry of manifest[group] || []) {
+      const fixture = confinedFile(fixtureRoot, entry.file, blockerId);
       records.push({
         group,
         entity_type: entry.entity_type,
-        file: entry.file,
+        file: fixture.relative,
         expected_field: entry.expected_field || null,
-        value: canonicalValue(readJson(path.join(fixtureRoot, entry.file)))
+        value: canonicalValue(readJson(fixture.file))
       });
     }
   }
@@ -671,7 +673,7 @@ function createCompatibilitySnapshot(options = {}) {
     kernel_source: kernelSourceSnapshot(pluginRoot),
     schemas: schemaSnapshot(pluginRoot),
     blocker_registry: blockerRegistry(pluginRoot),
-    fixtures: fixtureSnapshot(fixtureRoot),
+    fixtures: fixtureSnapshot(fixtureRoot, host),
     report_model: reportModelSnapshot(pluginRoot, fixtureRoot),
     architecture: architectureSnapshot(pluginRoot, hostFiles, host),
     manifest

@@ -14,6 +14,7 @@ const PRODUCERS = Object.freeze({
   repair_baseline: 'specnav-repair-baseline-recorder',
   repair_recovery: 'specnav-repair-lineage-recovery',
   attempt_fact: 'specnav-execution-evidence',
+  host_execution: 'specnav-managed-host-proof-runner',
   rerun_plan: 'specnav-case-rerun-planner',
   transition_proposal: 'specnav-repair-state-machine',
   transition_application: 'specnav-core-transition-applier'
@@ -40,6 +41,11 @@ const CLAIMS = Object.freeze({
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
     'evidence-integrity:verified'
+  ]),
+  host_execution: Object.freeze([
+    'host-execution:managed-runtime-authorized',
+    'host-execution:command-results-bound',
+    'host-execution:source-and-gates-bound'
   ]),
   rerun_plan: Object.freeze([
     'rerun-scope:approved-current',
@@ -153,6 +159,14 @@ function payloadValid(schemaRegistry, kind, payload, bindings) {
       && validDate(payload.recorded_at)
       && payload.attempt_id === bindings.attempt_id
       && payload.case_id === bindings.case_id;
+  }
+  if (kind === 'host_execution') {
+    const execution = schemaRegistry.validate('host-execution', payload);
+    return execution.ok
+      && execution.value.change_id === bindings.change_id
+      && execution.value.run_id === bindings.run_id
+      && execution.value.host === bindings.case_id
+      && bindings.failure_id === execution.value.run_id;
   }
   if (kind === 'rerun_plan') {
     return payload.ok === true

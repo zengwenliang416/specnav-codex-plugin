@@ -1,0 +1,70 @@
+{
+  "schema": "specnav.verification.host-install-receipt.v1",
+  "host": "codex",
+  "change_id": "verification-2-0",
+  "release_gate_id": "gate-release",
+  "archive_gate_id": "gate-archive",
+  "gate_input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "evidence_index_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "host_lock_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "runtime_authority_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "runner_identity_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "runner_source_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "source_snapshot_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+  "fixture_snapshot_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "fixture_manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository": "https://github.com/zengwenliang416/specnav-codex-plugin.git",
+  "ref": "refs/heads/main",
+  "commit": "1111111111111111111111111111111111111111",
+  "remote_commit_reachable": true,
+  "checkout_realpath": "/tmp/specnav-hosts/codex",
+  "plugin_realpath": "/tmp/specnav-hosts/codex/plugins/specnav-verification",
+  "clean_checkout": true,
+  "plugin_discovered": true,
+  "runtime_ready": true,
+  "checks": [
+    {
+      "id": "plugin-discovery",
+      "status": "pass",
+      "evidence": "Canonical host smoke verified plugin discovery."
+    },
+    {
+      "id": "remote-commit-reachability",
+      "status": "pass",
+      "evidence": "The locked GitHub commit was fetched successfully."
+    },
+    {
+      "id": "runtime-doctor",
+      "status": "pass",
+      "evidence": "Managed Verification runtime doctor passed."
+    },
+    {
+      "id": "host-smoke",
+      "status": "pass",
+      "evidence": "Committed host smoke verification passed."
+    }
+  ],
+  "execution": {
+    "commands": [
+      {
+        "argv": [
+          "bash",
+          "tests/run-smoke.sh"
+        ],
+        "exit_status": 0,
+        "stdout_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "stderr_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "stdout_path": "operations/host-proof-runs/host-proof-1/codex-1.stdout.log",
+        "stderr_path": "operations/host-proof-runs/host-proof-1/codex-1.stderr.log"
+      }
+    ],
+    "environment_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "started_at": "2026-08-09T00:00:01Z",
+    "completed_at": "2026-08-09T00:00:02Z"
+  },
+  "execution_envelope_path": "operations/host-proof-runs/host-proof-1/codex.execution-envelope.json",
+  "execution_envelope_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "attestation": "system-executed",
+  "fallback_used": false,
+  "recorded_at": "2026-08-09T00:00:02Z"
+}

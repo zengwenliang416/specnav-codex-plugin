@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/cross-host-release-result.schema.json",
+  "title": "SpecNav Verification 2.0 Cross-Host Release Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "change_id",
+    "release_gate_id",
+    "archive_gate_id",
+    "gate_input_sha256",
+    "evidence_index_digest",
+    "host_lock_sha256",
+    "authority_digest",
+    "comparison_digest",
+    "ok",
+    "hosts",
+    "kernel_version",
+    "blockers",
+    "fallback_used",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.cross-host-release-result.v1"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "release_gate_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "archive_gate_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "gate_input_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "evidence_index_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "host_lock_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "authority_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "comparison_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "ok": {
+      "const": true
+    },
+    "hosts": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "claude-code"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "codex"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "codefree-o"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "host",
+          "commit",
+          "snapshot_digest",
+          "receipt_sha256"
+        ],
+        "properties": {
+          "host": {
+            "enum": [
+              "claude-code",
+              "codex",
+              "codefree-o"
+            ]
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "snapshot_digest": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "receipt_sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "kernel_version": {
+      "$ref": "common.schema.json#/$defs/semver"
+    },
+    "blockers": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "fallback_used": {
+      "const": false
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "specnav.verification.host-installation-index.v1",
+  "change_id": "verification-2-0",
+  "host_lock_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "hosts": [
+    {
+      "host": "claude-code",
+      "receipt_path": "operations/host-proof-runs/host-proof-1/claude-code.json",
+      "receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "commit": "2222222222222222222222222222222222222222"
+    },
+    {
+      "host": "codex",
+      "receipt_path": "operations/host-proof-runs/host-proof-1/codex.json",
+      "receipt_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "commit": "1111111111111111111111111111111111111111"
+    },
+    {
+      "host": "codefree-o",
+      "receipt_path": "operations/host-proof-runs/host-proof-1/codefree-o.json",
+      "receipt_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "commit": "3333333333333333333333333333333333333333"
+    }
+  ],
+  "fallback_used": false
+}

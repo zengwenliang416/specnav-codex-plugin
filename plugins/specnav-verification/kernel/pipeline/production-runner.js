@@ -1399,21 +1399,16 @@ function createProductionVerificationRunner(options = {}) {
       runIntegrity
     );
     if (!runIntegrityWrite.ok) blockers.push(...runIntegrityWrite.blockers);
-    const failure = execution.attempt.kind === 'initial'
-      ? failureProjection({
-          kernel,
-          schemaRegistry,
-          testCase,
-          execution,
-          readings: readingResult.readings,
-          evidence: stored.evidence,
-          integrity: finalIntegrity,
-          clock
-        })
-      : {
-          packet: null,
-          blockers: []
-        };
+    const failure = failureProjection({
+      kernel,
+      schemaRegistry,
+      testCase,
+      execution,
+      readings: readingResult.readings,
+      evidence: stored.evidence,
+      integrity: finalIntegrity,
+      clock
+    });
     blockers.push(...failure.blockers);
     if (failure.packet) {
       const runFailureWrite = artifactStore.appendJsonl(
@@ -1488,7 +1483,7 @@ function createProductionVerificationRunner(options = {}) {
       integrity: finalIntegrity,
       readings: readingResult.readings,
       failure_packet: failure.packet,
-      repair_handoff: failure.packet ? {
+      repair_handoff: failure.packet && execution.attempt.kind === 'initial' ? {
         failure_id: failure.packet.id,
         status: 'classification_required',
         next_action: 'classify_failure',

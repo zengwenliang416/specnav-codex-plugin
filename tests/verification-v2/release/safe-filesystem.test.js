@@ -196,3 +196,72 @@ test('archive lock acquisition has one atomic winner and owner-bound release', a
   assert.equal(JSON.parse(release.stdout).released, true);
   assert.equal(fs.existsSync(path.join(root, relative)), false);
 });
+
+test('atomic write compare-and-swap rejects a stale expected value', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-safe-cas-'));
+  const target = path.join(root, 'operations', 'host-proof-current.json');
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const initial = Buffer.from('{"generation":1}\n');
+  const concurrent = Buffer.from('{"generation":2}\n');
+  const stale = Buffer.from('{"generation":3}\n');
+  fs.writeFileSync(target, initial);
+  fs.writeFileSync(target, concurrent);
+
+  const result = await runRequest({
+    action: 'atomic_write',
+    root,
+    relative: 'operations/host-proof-current.json',
+    blocker_id: 'verification-host-artifacts:test-cas',
+    data_base64: stale.toString('base64'),
+    expected_exists: true,
+    expected_base64: initial.toString('base64')
+  });
+
+  assert.equal(result.status, 2, result.stderr);
+  assert.equal(
+    JSON.parse(result.stdout).error,
+    'verification-host-artifacts:test-cas:changed-during-write'
+  );
+  assert.deepEqual(fs.readFileSync(target), concurrent);
+});
+
+test('safe filesystem ignores an environment-selected Python executable', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-safe-python-'));
+  const target = path.join(root, 'artifact.json');
+  const fakePython = path.join(root, 'fake-python');
+  const marker = path.join(root, 'fake-python-ran');
+  const modulePath = path.resolve(
+    __dirname,
+    '../../../plugins/specnav-operations/scripts/safe-filesystem.js'
+  );
+  fs.writeFileSync(target, '{"trusted":true}\n');
+  fs.writeFileSync(
+    fakePython,
+    `#!/bin/sh\nprintf 'ran\\n' > ${JSON.stringify(marker)}\nprintf '%s\\n' '{"ok":true,"exists":true,"data_base64":"Zm9yZ2Vk"}'\n`
+  );
+  fs.chmodSync(fakePython, 0o755);
+
+  const result = childProcess.spawnSync(process.execPath, [
+    '-e',
+    [
+      'const safeFs = require(process.argv[1]);',
+      'const bytes = safeFs.readRegularFile(',
+      '  process.argv[2], process.argv[3], "verification-release:test"',
+      ');',
+      'process.stdout.write(bytes);'
+    ].join('\n'),
+    modulePath,
+    root,
+    target
+  ], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      SPECNAV_PYTHON_BIN: fakePython
+    }
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout, '{"trusted":true}\n');
+  assert.equal(fs.existsSync(marker), false);
+});

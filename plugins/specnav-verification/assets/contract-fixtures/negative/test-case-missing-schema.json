@@ -1,0 +1,106 @@
+{
+  "id": "case-minimal",
+  "change_id": "change-v2",
+  "requirement_ids": [
+    "REQ-1"
+  ],
+  "acceptance_ids": [
+    "AC-13"
+  ],
+  "title": "Validate the V2 contract",
+  "goal": "Prove the contract accepts a valid entity",
+  "actor": "plugin-author",
+  "priority": "P1",
+  "preconditions": [],
+  "steps": [
+    {
+      "id": "step-1",
+      "action": "Validate the fixture",
+      "expected": "The fixture is accepted",
+      "assertion_ids": [
+        "assertion-1"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assertion-1",
+      "statement": "The schema accepts the fixture",
+      "expected": true,
+      "oracle": {
+        "type": "structured_comparison",
+        "human_signoff_allowed": false
+      },
+      "evidence_kinds": [
+        "structured_comparison"
+      ]
+    }
+  ],
+  "domains": {
+    "facticity": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    },
+    "static": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    },
+    "unit": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    },
+    "redteam": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    },
+    "e2e": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    },
+    "sensory": {
+      "mode": "required",
+      "assertion_ids": [
+        "assertion-1"
+      ],
+      "runner": "command"
+    }
+  },
+  "runner": {
+    "kind": "command",
+    "timeout_ms": 1000,
+    "entrypoint": "node",
+    "args": [
+      "--test"
+    ],
+    "cwd": ".",
+    "env_keys": [],
+    "requires_midscene": false
+  },
+  "evidence_policy": {
+    "allowed_kinds": [
+      "structured_comparison"
+    ],
+    "required_kinds": [
+      "structured_comparison"
+    ],
+    "retain_on_failure": true,
+    "content_addressed": true
+  },
+  "status": "ready",
+  "created_at": "2026-07-31T00:00:00Z"
+}

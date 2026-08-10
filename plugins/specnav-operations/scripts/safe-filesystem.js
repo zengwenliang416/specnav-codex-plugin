@@ -1,18 +1,43 @@
 'use strict';
 
 const childProcess = require('node:child_process');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const HELPER = path.join(__dirname, 'safe-filesystem.py');
+const PYTHON = '/usr/bin/python3';
 const MAX_OUTPUT = 256 * 1024 * 1024;
 
+function trustedPython() {
+  let real;
+  let stat;
+  try {
+    real = fs.realpathSync(PYTHON);
+    stat = fs.statSync(real);
+  } catch {
+    throw new Error('verification-operations:safe-fs-python-unavailable');
+  }
+  if (
+    !real.startsWith('/usr/bin/')
+    || !stat.isFile()
+    || (stat.mode & 0o022) !== 0
+    || typeof stat.uid === 'number' && stat.uid !== 0
+  ) {
+    throw new Error('verification-operations:safe-fs-python-untrusted');
+  }
+  return real;
+}
+
 function invoke(request) {
-  const python = process.env.SPECNAV_PYTHON_BIN || 'python3';
-  const result = childProcess.spawnSync(python, [HELPER], {
+  const result = childProcess.spawnSync(trustedPython(), [HELPER], {
     input: `${JSON.stringify(request)}\n`,
     encoding: 'utf8',
     maxBuffer: MAX_OUTPUT,
-    env: process.env
+    env: {
+      LANG: 'C',
+      LC_ALL: 'C',
+      PATH: '/usr/bin:/bin'
+    }
   });
   if (result.error) {
     const id = result.error.code === 'ENOENT'
@@ -69,6 +94,35 @@ function atomicWriteJson(root, file, value, blockerId, exclusive = false) {
     Buffer.from(`${JSON.stringify(value, null, 2)}\n`),
     blockerId,
     exclusive
+  );
+}
+
+function atomicCompareAndSwapFile(root, file, bytes, expectedBytes, blockerId) {
+  if (expectedBytes !== null && !Buffer.isBuffer(expectedBytes)) {
+    throw new TypeError('verification-operations:safe-fs-expected-invalid');
+  }
+  const relative = path.relative(root, file).split(path.sep).join('/');
+  const request = {
+    action: 'atomic_write',
+    root: path.resolve(root),
+    relative,
+    blocker_id: blockerId,
+    data_base64: Buffer.from(bytes).toString('base64'),
+    expected_exists: expectedBytes !== null
+  };
+  if (expectedBytes !== null) {
+    request.expected_base64 = expectedBytes.toString('base64');
+  }
+  return invoke(request);
+}
+
+function atomicCompareAndSwapJson(root, file, value, expectedBytes, blockerId) {
+  return atomicCompareAndSwapFile(
+    root,
+    file,
+    Buffer.from(`${JSON.stringify(value, null, 2)}\n`),
+    expectedBytes,
+    blockerId
   );
 }
 
@@ -149,6 +203,8 @@ function releaseLock(root, relative, token, blockerId) {
 }
 
 module.exports = {
+  atomicCompareAndSwapFile,
+  atomicCompareAndSwapJson,
   atomicWriteFile,
   atomicWriteJson,
   appendJsonl,

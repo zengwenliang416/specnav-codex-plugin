@@ -5,13 +5,16 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const childProcess = require('node:child_process');
 const test = require('node:test');
 
+const kernel = require('../../../plugins/specnav-verification/kernel');
 const {
   SIX_DOMAINS,
+  codeInventorySha,
   createDecisionEngine,
   createSixDomainAggregator
-} = require('../../../plugins/specnav-verification/kernel');
+} = kernel;
 const {
   createTrustedFactAuthority
 } = require('../../../plugins/specnav-verification/kernel/repair');
@@ -29,21 +32,40 @@ const {
   reportModel
 } = require('../reports/report-test-helpers');
 const {
-  createReleaseProofValidator
+  createReleaseProofValidator,
+  resolveCurrentFingerprints
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-proof');
 const {
   writeArchiveGate
 } = require('../../../plugins/specnav-operations/scripts/operations-gate');
 const safeFs = require('../../../plugins/specnav-operations/scripts/safe-filesystem');
 const {
-  createHostAuthorityFixture
-} = require('../cross-host/host-authority-test-helpers');
-
+  hostProofRunnerSourceDigest,
+  managedFixtureManifestDigest
+} = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
+const {
+  validateHostProofPointerChain
+} = require('../../../plugins/specnav-operations/scripts/verification-v2-pointer-chain');
 const CHANGE = 'release-proof-change';
 const CASE_ID = 'case-release-proof';
 const HOSTS = ['claude-code', 'codex', 'codefree-o'];
 const RUNTIME_VERSION = loadRuntimeLock().runtime_version;
 const TRUST_KEY = Buffer.alloc(32, 17);
+const ROOT = path.resolve(__dirname, '../../..');
+const RUNNER_SOURCE_SHA256 = hostProofRunnerSourceDigest(ROOT);
+const FIXTURE_MANIFEST_SHA256 = managedFixtureManifestDigest(path.join(
+  ROOT,
+  'plugins',
+  'specnav-verification',
+  'assets',
+  'contract-fixtures'
+));
+const SOURCE_TREE_INVENTORY = [
+  '100644 blob 1111111111111111111111111111111111111111\tREADME.md',
+  '100644 blob 2222222222222222222222222222222222222222\tsrc/index.js',
+  ''
+].join('\n');
+const SOURCE_CODE_SHA = codeInventorySha(SOURCE_TREE_INVENTORY);
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -193,7 +215,7 @@ function reading(domain) {
     evidence_ids: [`evidence-${domain}`],
     verdict: 'pass',
     recorded_at: '2026-08-02T00:00:02Z',
-    code_sha: '1'.repeat(40),
+    code_sha: SOURCE_CODE_SHA,
     test_sha: '2'.repeat(40)
   };
 }
@@ -375,6 +397,7 @@ function makeProject(options = {}) {
   assert.equal(snapshotResult.ok, true, JSON.stringify(snapshotResult.blockers));
   const snapshot = snapshotResult.snapshot;
   const input = gateInput();
+  if (options.lane) input.lane = options.lane;
   input.case_snapshot_id = snapshot.id;
   input.case_snapshot_hash = snapshot.snapshot_hash;
   const run = {
@@ -384,7 +407,7 @@ function makeProject(options = {}) {
     case_snapshot_id: snapshot.id,
     case_snapshot_hash: snapshot.snapshot_hash,
     case_ids: [CASE_ID],
-    code_sha: '1'.repeat(40),
+    code_sha: SOURCE_CODE_SHA,
     test_sha: '2'.repeat(40),
     environment_hash: '4'.repeat(64),
     runtime_version: input.runtime_version,
@@ -658,20 +681,388 @@ function makeProject(options = {}) {
   const configuredCommits = options.hostCommits || Object.fromEntries(
     HOSTS.map((host, index) => [host, String(index + 7).repeat(40)])
   );
+  const hostRepositories = {
+    'claude-code':
+      'https://github.com/zengwenliang416/specnav-claude-plugin.git',
+    codex: 'https://github.com/zengwenliang416/specnav-codex-plugin.git',
+    'codefree-o':
+      'https://github.com/zengwenliang416/specnav-codefree-o-plugin.git'
+  };
+  const hostPluginPaths = {
+    'claude-code': 'plugins/specnav-verification',
+    codex: 'plugins/specnav-verification',
+    'codefree-o': 'modules/specnav-verification'
+  };
+  const defaultHostRoots = Object.fromEntries(HOSTS.map((host) => {
+    const hostRoot = path.join(root, '.host-authority', host);
+    fs.mkdirSync(path.join(hostRoot, hostPluginPaths[host]), {
+      recursive: true
+    });
+    return [host, hostRoot];
+  }));
+  const defaultHostLock = {
+    schema: 'specnav.verification.cross-host-lock.v1',
+    source_host: 'codex',
+    source: {
+      repository: hostRepositories.codex,
+      ref: 'refs/heads/main',
+      commit: configuredCommits.codex,
+      plugin_path: hostPluginPaths.codex,
+      manifest_path: null
+    },
+    hosts: {
+      'claude-code': {
+        repository: hostRepositories['claude-code'],
+        ref: 'refs/heads/main',
+        commit: configuredCommits['claude-code'],
+        plugin_path: hostPluginPaths['claude-code'],
+        manifest_path: 'plugins/specnav-verification/specnav-kernel-source.json'
+      },
+      'codefree-o': {
+        repository: hostRepositories['codefree-o'],
+        ref: 'refs/heads/main',
+        commit: configuredCommits['codefree-o'],
+        plugin_path: hostPluginPaths['codefree-o'],
+        manifest_path: 'modules/specnav-verification/specnav-kernel-source.json'
+      }
+    },
+    generated_at: '2026-08-02T00:00:05Z',
+    fallback_used: false
+  };
+  const runId = 'host-proof-release';
+  const runRoot = path.join('operations', 'host-proof-runs', runId);
+  const lockPath = path.join(runRoot, 'cross-host-lock.json');
+  writeJson(path.join(changeDir, lockPath), defaultHostLock);
+  const lockSha = sha256(fs.readFileSync(path.join(changeDir, lockPath)));
+  const snapshots = Object.fromEntries(HOSTS.map((host) => [
+    host,
+    sha256(`snapshot:${host}`)
+  ]));
+  const comparisonDigest = sha256('comparison:green');
+  const authoritySummary = {
+    lock_sha256: lockSha,
+    commits: configuredCommits,
+    repositories: hostRepositories,
+    heads: configuredCommits,
+    snapshots,
+    comparison: comparisonDigest
+  };
+  authoritySummary.digest = sha256(canonicalJson(authoritySummary));
+  const tools = {
+    node: fs.realpathSync(process.execPath),
+    git: fs.realpathSync('/usr/bin/git'),
+    bash: fs.realpathSync('/bin/bash'),
+    npm: fs.realpathSync(path.resolve(
+      path.dirname(process.execPath),
+      '../lib/node_modules/npm/bin/npm-cli.js'
+    )),
+    sandbox: fs.realpathSync(process.platform === 'darwin'
+      ? '/usr/bin/sandbox-exec'
+      : ['/usr/bin/bwrap', '/bin/bwrap'].find((entry) => fs.existsSync(entry)))
+  };
+  const toolchain = Object.fromEntries(
+    Object.entries(tools).map(([name, file]) => [
+      name,
+      {
+        path: file,
+        sha256: sha256(fs.readFileSync(file))
+      }
+    ])
+  );
+  const runnerIdentitySha256 = kernel.createHostRunnerIdentity(
+    RUNNER_SOURCE_SHA256,
+    toolchain
+  );
+  let commandSequence = 0;
+  function hostCommand(host, id, argv, stdoutValue = null) {
+    const index = commandSequence++;
+    const stdoutPath = path.join(
+      runRoot,
+      `${host}-${index + 1}.stdout.log`
+    );
+    const stderrPath = path.join(
+      runRoot,
+      `${host}-${index + 1}.stderr.log`
+    );
+    const stdout = Buffer.from(stdoutValue ?? `completed ${id}\n`);
+    const stderr = Buffer.alloc(0);
+    fs.mkdirSync(path.dirname(path.join(changeDir, stdoutPath)), {
+      recursive: true
+    });
+    fs.writeFileSync(path.join(changeDir, stdoutPath), stdout);
+    fs.writeFileSync(path.join(changeDir, stderrPath), stderr);
+    const startedAt = new Date(
+      Date.parse('2026-08-02T00:00:05Z') + index * 1000
+    ).toISOString();
+    const sandboxed = [
+      'dependency-install',
+      'runtime-doctor',
+      'host-smoke'
+    ].includes(id);
+    const sandbox = sandboxed
+      ? kernel.createHostSandboxPlan({
+          toolchain,
+          allowedRoots: [
+            ...HOSTS.map((candidate) => defaultHostRoots[candidate]),
+            ...(id === 'runtime-doctor'
+              ? [schemaRegistry.runtime_root]
+              : []),
+            path.dirname(path.dirname(tools.node))
+          ],
+          writableRoots: [
+            path.join(
+              path.dirname(defaultHostRoots.codex),
+              '.runtime',
+              host
+            ),
+            ...(id === 'dependency-install'
+              ? [defaultHostRoots[host]]
+              : [])
+          ],
+          pathAliases: [{
+            path: path.dirname(defaultHostRoots.codex),
+            identity: '$WORKSPACE'
+          }],
+          allowNetwork: id === 'dependency-install'
+        })
+      : null;
+    const effectiveSandbox = typeof options.sandboxPlanMutator === 'function'
+      ? (
+          options.sandboxPlanMutator({
+            defaultHostRoots,
+            host,
+            id,
+            runtimeRoot: schemaRegistry.runtime_root,
+            sandbox,
+            toolchain
+          }) || sandbox
+        )
+      : sandbox;
+    return {
+      id,
+      argv,
+      executable_realpath: argv[0],
+      executable_sha256: sha256(fs.readFileSync(argv[0])),
+      sandbox_executable_realpath: effectiveSandbox?.executable.path || null,
+      sandbox_executable_sha256: effectiveSandbox?.executable.sha256 || null,
+      sandbox_policy_sha256: effectiveSandbox?.policy_sha256 || null,
+      sandbox_argv: effectiveSandbox?.argv || null,
+      exit_status: 0,
+      signal: null,
+      stdout_sha256: sha256(stdout),
+      stderr_sha256: sha256(stderr),
+      stdout_path: stdoutPath,
+      stderr_path: stderrPath,
+      started_at: startedAt,
+      completed_at: new Date(Date.parse(startedAt) + 500).toISOString()
+    };
+  }
+  function hostCommands(host, rootPath, locked) {
+    const commands = [
+      hostCommand(host, 'remote-ref', [
+        tools.git,
+        'ls-remote',
+        '--refs',
+        locked.repository,
+        locked.ref
+      ], `${locked.commit}\t${locked.ref}\n`),
+      hostCommand(host, 'checkout-init', [
+        tools.git,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'init',
+        '--quiet'
+      ]),
+      hostCommand(host, 'checkout-remote', [
+        tools.git,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'remote',
+        'add',
+        'origin',
+        locked.repository
+      ]),
+      hostCommand(host, 'checkout-fetch', [
+        tools.git,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'fetch',
+        '--quiet',
+        '--depth=1',
+        'origin',
+        locked.ref
+      ]),
+      hostCommand(host, 'checkout-detach', [
+        tools.git,
+        '-c',
+        'core.hooksPath=/dev/null',
+        'checkout',
+        '--quiet',
+        '--detach',
+        locked.commit
+      ]),
+      hostCommand(host, 'checkout-head', [
+        tools.git,
+        'rev-parse',
+        'HEAD^{commit}'
+      ], `${locked.commit}\n`)
+    ];
+    if (host === 'codex') {
+      commands.push(hostCommand(host, 'checkout-tree', [
+        tools.git,
+        'ls-tree',
+        '-r',
+        'HEAD'
+      ], SOURCE_TREE_INVENTORY));
+    }
+    if (host === 'codefree-o') {
+      commands.push(hostCommand(host, 'dependency-install', [
+        tools.npm,
+        'ci',
+        '--ignore-scripts',
+        '--no-audit',
+        '--no-fund'
+      ]));
+    }
+    commands.push(
+      hostCommand(host, 'runtime-doctor', [
+        tools.node,
+        path.join(
+          defaultHostRoots.codex,
+          hostPluginPaths.codex,
+          'scripts',
+          'verification-runtime.js'
+        ),
+        'doctor',
+        '--version',
+        RUNTIME_VERSION,
+        '--project',
+        rootPath,
+        '--root',
+        path.dirname(schemaRegistry.runtime_root),
+        '--json'
+      ]),
+      hostCommand(host, 'host-smoke', [
+        tools.bash,
+        path.join(rootPath, 'tests', 'run-smoke.sh')
+      ])
+    );
+    return commands;
+  }
   const records = HOSTS.map((host) => {
-    const receiptPath = path.join('operations', 'install-receipts', `${host}.json`);
+    const receiptPath = path.join(runRoot, `${host}.receipt.json`);
+    const locked = host === 'codex'
+      ? defaultHostLock.source
+      : defaultHostLock.hosts[host];
+    const commands = hostCommands(host, defaultHostRoots[host], locked);
+    const executionPayload = {
+      schema: 'specnav.verification.host-execution.v1',
+      change_id: CHANGE,
+      run_id: runId,
+      host,
+      status: 'passed',
+      repository: locked.repository,
+      ref: locked.ref,
+      commit: locked.commit,
+      host_lock_sha256: lockSha,
+      ...releaseBindings,
+      runtime_authority_digest: 'b'.repeat(64),
+      host_authority_digest: authoritySummary.digest,
+      source_snapshot_digest: snapshots[host],
+      runner_identity_sha256: runnerIdentitySha256,
+      runner_source_sha256: RUNNER_SOURCE_SHA256,
+      environment_sha256: '8'.repeat(64),
+      fixture_snapshot_digest: options.hostFixtureDigests?.[host]
+        || sha256('managed-fixture-snapshot'),
+      fixture_manifest_sha256: options.fixtureManifestSha256
+        || FIXTURE_MANIFEST_SHA256,
+      observations: {
+        advertised_commit: locked.commit,
+        checkout_head: locked.commit,
+        source_code_inventory_sha: host === 'codex' ? SOURCE_CODE_SHA : null,
+        package_lock_sha256: host === 'codefree-o'
+          ? sha256('codefree-package-lock')
+          : null
+      },
+      commands,
+      blocker: null,
+      started_at: commands[0].started_at,
+      completed_at: commands.at(-1).completed_at
+    };
+    const executionEnvelope = trustedFactAuthority.seal(
+      'host_execution',
+      executionPayload,
+      {
+        failure_id: runId,
+        change_id: CHANGE,
+        run_id: runId,
+        case_id: host
+      }
+    );
+    const envelopePath = path.join(runRoot, `${host}.execution-envelope.json`);
+    writeJson(path.join(changeDir, envelopePath), executionEnvelope);
     const receipt = {
       schema: 'specnav.verification.host-install-receipt.v1',
       host,
       ...releaseBindings,
-      source: `https://github.com/example/specnav-${host}.git`,
-      commit: configuredCommits[host],
+      host_lock_sha256: lockSha,
+      runtime_authority_digest: 'b'.repeat(64),
+      runner_identity_sha256: runnerIdentitySha256,
+      runner_source_sha256: RUNNER_SOURCE_SHA256,
+      source_snapshot_digest: snapshots[host],
+      fixture_snapshot_digest: executionPayload.fixture_snapshot_digest,
+      fixture_manifest_sha256: executionPayload.fixture_manifest_sha256,
+      repository: locked.repository,
+      ref: locked.ref,
+      commit: locked.commit,
+      remote_commit_reachable: true,
+      checkout_realpath: defaultHostRoots[host],
+      plugin_realpath: path.join(
+        defaultHostRoots[host],
+        locked.plugin_path
+      ),
       clean_checkout: true,
       plugin_discovered: true,
       runtime_ready: true,
-      fixture_verification: 'pass',
-      command: `verify ${host}`,
-      exit_status: 0,
+      checks: [
+        {
+          id: 'plugin-discovery',
+          status: 'pass',
+          evidence: 'The expected plugin path exists.'
+        },
+        {
+          id: 'remote-commit-reachability',
+          status: 'pass',
+          evidence: 'The locked commit is reachable.'
+        },
+        {
+          id: 'runtime-doctor',
+          status: 'pass',
+          evidence: 'The runtime doctor completed.'
+        },
+        {
+          id: 'host-smoke',
+          status: 'pass',
+          evidence: 'The host smoke command completed.'
+        }
+      ],
+      execution: {
+        commands: commands.map((command) => ({
+          argv: command.argv,
+          exit_status: command.exit_status,
+          stdout_sha256: command.stdout_sha256,
+          stderr_sha256: command.stderr_sha256,
+          stdout_path: command.stdout_path,
+          stderr_path: command.stderr_path
+        })),
+        environment_sha256: executionPayload.environment_sha256,
+        started_at: executionPayload.started_at,
+        completed_at: executionPayload.completed_at
+      },
+      execution_envelope_path: envelopePath,
+      execution_envelope_sha256: sha256(
+        fs.readFileSync(path.join(changeDir, envelopePath))
+      ),
       attestation: 'system-executed',
       fallback_used: false,
       recorded_at: '2026-08-02T00:00:05Z'
@@ -685,56 +1076,61 @@ function makeProject(options = {}) {
       commit: receipt.commit
     };
   });
-  writeJson(path.join(opsDir, 'host-installation-receipts.json'), {
+  const indexPath = path.join(runRoot, 'host-installation-index.json');
+  writeJson(path.join(changeDir, indexPath), {
     schema: 'specnav.verification.host-installation-index.v1',
     change_id: CHANGE,
+    host_lock_sha256: lockSha,
     hosts: records,
     fallback_used: false
   });
-  writeJson(path.join(opsDir, 'cross-host-compatibility.json'), {
+  const compatibilityPath = path.join(
+    runRoot,
+    'cross-host-compatibility.json'
+  );
+  writeJson(path.join(changeDir, compatibilityPath), {
     schema: 'specnav.verification.cross-host-release-result.v1',
     ...releaseBindings,
+    host_lock_sha256: lockSha,
+    authority_digest: authoritySummary.digest,
+    comparison_digest: authoritySummary.comparison,
     ok: true,
     hosts: records.map((entry) => ({
       host: entry.host,
-      commit: entry.commit
+      commit: entry.commit,
+      snapshot_digest: snapshots[entry.host],
+      receipt_sha256: entry.receipt_sha256
     })),
     kernel_version: input.kernel_version,
     blockers: [],
     fallback_used: false,
     recorded_at: '2026-08-02T00:00:06Z'
   });
-
-  const commits = Object.fromEntries(records.map((entry) => [
-    entry.host,
-    entry.commit
-  ]));
-  const defaultHostCompatibilityAuthority = {
-    resolve() {
-      return options.hostAuthorityResult || {
-        ok: true,
-        commits,
-        comparison: {
-          ok: true,
-          blockers: []
-        },
-        summary: {
-          digest: 'd'.repeat(64),
-          lock_sha256: 'e'.repeat(64),
-          commits,
-          heads: commits,
-          snapshots: Object.fromEntries(HOSTS.map((host) => [
-            host,
-            'f'.repeat(64)
-          ])),
-          comparison: 'a'.repeat(64)
-        },
-        blockers: []
-      };
-    }
+  const pointer = {
+    schema: 'specnav.verification.host-proof-pointer.v1',
+    change_id: CHANGE,
+    run_id: runId,
+    host_lock_sha256: lockSha,
+    runtime_authority_digest: 'b'.repeat(64),
+    generation: 1,
+    previous_pointer: null,
+    lock: {
+      path: lockPath,
+      sha256: lockSha
+    },
+    index: {
+      path: indexPath,
+      sha256: sha256(fs.readFileSync(path.join(changeDir, indexPath)))
+    },
+    compatibility: {
+      path: compatibilityPath,
+      sha256: sha256(fs.readFileSync(path.join(changeDir, compatibilityPath)))
+    },
+    published_at: '2026-08-02T00:00:06Z',
+    fallback_used: false
   };
-  const hostCompatibilityAuthority = options.hostCompatibilityAuthority
-    || defaultHostCompatibilityAuthority;
+  writeJson(path.join(opsDir, 'host-proof-current.json'), pointer);
+  writeJson(path.join(changeDir, runRoot, 'host-proof-pointer.json'), pointer);
   const runtimeAuthority = {
     resolve(candidate) {
       return options.runtimeAuthorityResult || {
@@ -763,7 +1159,8 @@ function makeProject(options = {}) {
       runtime_version: run.runtime_version,
       kernel_version: run.kernel_version
     })),
-    hostCompatibilityAuthority,
+    expectedHostRunnerSourceSha256: RUNNER_SOURCE_SHA256,
+    expectedFixtureManifestSha256: FIXTURE_MANIFEST_SHA256,
     clock: () => '2026-08-02T00:00:07Z'
   };
   if (options.useRuntimeTrustedAuthority !== true) {
@@ -776,12 +1173,39 @@ function makeProject(options = {}) {
     reportsDir,
     opsDir,
     schemaRegistry,
+    hostProof: {
+      runId,
+      lockPath,
+      indexPath,
+      compatibilityPath
+    },
     validator: createReleaseProofValidator(validatorOptions)
   };
 }
 
 function blockers(result) {
   return new Set(result.blockers.map((entry) => entry.id));
+}
+
+function hostProofPointer(fixture) {
+  return readJson(path.join(fixture.opsDir, 'host-proof-current.json'));
+}
+
+function hostProofArtifact(fixture, name) {
+  const pointer = hostProofPointer(fixture);
+  const reference = pointer[name];
+  return {
+    pointer,
+    file: path.join(fixture.changeDir, reference.path),
+    value: readJson(path.join(fixture.changeDir, reference.path))
+  };
+}
+
+function writeHostProofArtifact(fixture, name, value) {
+  const { pointer, file } = hostProofArtifact(fixture, name);
+  writeJson(file, value);
+  pointer[name].sha256 = sha256(fs.readFileSync(file));
+  writeJson(path.join(fixture.opsDir, 'host-proof-current.json'), pointer);
 }
 
 test('complete Kernel-derived release and archive proof passes and writes digests', () => {
@@ -900,31 +1324,7 @@ test('partial-domain and light-mode input cannot reuse a persisted green gate', 
 });
 
 test('full lane uses the same complete six-domain release and archive proof', () => {
-  const fixture = makeProject();
-  const inputPath = path.join(fixture.verifyV2, 'gate-input.json');
-  const input = readJson(inputPath);
-  input.lane = 'full';
-  writeJson(inputPath, input);
-
-  const gateInputSha256 = sha256(fs.readFileSync(inputPath));
-  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
-  const index = readJson(indexPath);
-  for (const entry of index.hosts) {
-    const receiptPath = path.join(fixture.changeDir, entry.receipt_path);
-    const receipt = readJson(receiptPath);
-    receipt.gate_input_sha256 = gateInputSha256;
-    writeJson(receiptPath, receipt);
-    entry.receipt_sha256 = sha256(fs.readFileSync(receiptPath));
-  }
-  writeJson(indexPath, index);
-  const compatibilityPath = path.join(
-    fixture.opsDir,
-    'cross-host-compatibility.json'
-  );
-  const compatibility = readJson(compatibilityPath);
-  compatibility.gate_input_sha256 = gateInputSha256;
-  writeJson(compatibilityPath, compatibility);
-
+  const fixture = makeProject({ lane: 'full' });
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, true, JSON.stringify(result.blockers));
 });
@@ -1118,6 +1518,66 @@ test('current code, test, and environment fingerprint drift blocks release proof
   }
 });
 
+test('release proof uses the same governance-excluding code fingerprint as execution', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specnav-release-fingerprint-'));
+  fs.mkdirSync(path.join(root, 'openspec'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'plugins', 'specnav-verification'), {
+    recursive: true
+  });
+  fs.mkdirSync(path.join(root, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'product.js'), 'module.exports = 1;\n');
+  fs.writeFileSync(path.join(root, 'openspec', 'state.json'), '{}\n');
+  fs.writeFileSync(
+    path.join(root, 'plugins', 'specnav-verification', 'kernel.js'),
+    'module.exports = true;\n'
+  );
+  fs.writeFileSync(path.join(root, 'tests', 'smoke.js'), 'process.exit(0);\n');
+  const runGit = (args) => {
+    const result = require('node:child_process').spawnSync('git', args, {
+      cwd: root,
+      encoding: 'utf8'
+    });
+    assert.equal(result.status, 0, result.stderr);
+    return result.stdout;
+  };
+  runGit(['init', '--quiet']);
+  runGit(['config', 'user.name', 'SpecNav Test']);
+  runGit(['config', 'user.email', 'specnav@example.invalid']);
+  runGit(['add', '.']);
+  runGit(['commit', '--quiet', '-m', 'test: fixture']);
+
+  const snapshot = { snapshot_hash: 'a'.repeat(64) };
+  const runtimeStatus = {
+    runtime_version: RUNTIME_VERSION,
+    runtime_root: '/tmp/specnav-runtime'
+  };
+  const runtimeAuthority = { digest: 'b'.repeat(64) };
+  const before = resolveCurrentFingerprints(
+    root,
+    snapshot,
+    runtimeStatus,
+    runtimeAuthority
+  );
+  const inventory = runGit(['ls-tree', '-r', 'HEAD']);
+  assert.equal(
+    before.code_sha,
+    require('../../../plugins/specnav-verification/kernel')
+      .codeInventorySha(inventory)
+  );
+
+  fs.writeFileSync(path.join(root, 'openspec', 'state.json'), '{"updated":true}\n');
+  runGit(['add', 'openspec/state.json']);
+  runGit(['commit', '--quiet', '-m', 'test: governance-only change']);
+  const after = resolveCurrentFingerprints(
+    root,
+    snapshot,
+    runtimeStatus,
+    runtimeAuthority
+  );
+  assert.equal(after.code_sha, before.code_sha);
+  assert.equal(after.test_sha, before.test_sha);
+});
+
 test('required migration needs one successful schema-valid apply receipt', () => {
   const fixture = makeProject();
   writeJson(path.join(fixture.verifyV2, 'migration-status.json'), {
@@ -1186,17 +1646,20 @@ test('required migration accepts one successful schema-valid apply receipt', () 
 
 test('tampered clean-install receipt and a missing host fail closed', () => {
   const fixture = makeProject();
-  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
-  const index = readJson(indexPath);
+  const { value: index } = hostProofArtifact(fixture, 'index');
   const claude = index.hosts.find((entry) => entry.host === 'claude-code');
-  fs.appendFileSync(path.join(fixture.changeDir, claude.receipt_path), 'tamper\n');
+  const receiptFile = path.join(fixture.changeDir, claude.receipt_path);
+  const receipt = readJson(receiptFile);
+  receipt.recorded_at = '2026-08-02T00:00:06Z';
+  writeJson(receiptFile, receipt);
   index.hosts = index.hosts.filter((entry) => entry.host !== 'codefree-o');
-  writeJson(indexPath, index);
+  writeHostProofArtifact(fixture, 'index', index);
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(
     blockers(result).has('verification-release:install-receipt-hash-mismatch:claude-code'),
-    true
+    true,
+    JSON.stringify(result.blockers)
   );
   assert.equal(
     blockers(result).has('verification-release:host-installation-missing:codefree-o'),
@@ -1206,19 +1669,14 @@ test('tampered clean-install receipt and a missing host fail closed', () => {
 
 test('placeholder clean-install claims fail closed', () => {
   const fixture = makeProject();
-  const index = readJson(
-    path.join(fixture.opsDir, 'host-installation-receipts.json')
-  );
+  const { value: index } = hostProofArtifact(fixture, 'index');
   const codex = index.hosts.find((entry) => entry.host === 'codex');
   const receiptFile = path.join(fixture.changeDir, codex.receipt_path);
   const receipt = readJson(receiptFile);
-  receipt.command = '<decision-required>';
+  receipt.execution.commands[0].argv = ['<decision-required>'];
   writeJson(receiptFile, receipt);
   codex.receipt_sha256 = sha256(fs.readFileSync(receiptFile));
-  writeJson(
-    path.join(fixture.opsDir, 'host-installation-receipts.json'),
-    index
-  );
+  writeHostProofArtifact(fixture, 'index', index);
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(
@@ -1229,11 +1687,13 @@ test('placeholder clean-install claims fail closed', () => {
 
 test('cross-host compatibility blockers stop release and archive', () => {
   const fixture = makeProject();
-  const file = path.join(fixture.opsDir, 'cross-host-compatibility.json');
-  const compatibility = readJson(file);
+  const { value: compatibility } = hostProofArtifact(
+    fixture,
+    'compatibility'
+  );
   compatibility.ok = false;
   compatibility.blockers = ['verification-drift:schema-mismatch:claude-code:reading'];
-  writeJson(file, compatibility);
+  writeHostProofArtifact(fixture, 'compatibility', compatibility);
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(
@@ -1242,24 +1702,10 @@ test('cross-host compatibility blockers stop release and archive', () => {
   );
 });
 
-test('persisted green host claims cannot bypass a red live host authority', () => {
+test('all host executions must use the same managed fixture snapshot', () => {
   const fixture = makeProject({
-    hostAuthorityResult: {
-      ok: false,
-      commits: {},
-      comparison: {
-        ok: false,
-        blockers: [{
-          id: 'verification-drift:kernel-source-mismatch:claude-code'
-        }]
-      },
-      summary: {
-        digest: '0'.repeat(64)
-      },
-      blockers: [{
-        id: 'verification-release:host-head-mismatch:claude-code',
-        artifact: 'claude-code'
-      }]
+    hostFixtureDigests: {
+      codex: sha256('different-managed-fixture-snapshot')
     }
   });
 
@@ -1267,61 +1713,406 @@ test('persisted green host claims cannot bypass a red live host authority', () =
 
   assert.equal(result.ok, false);
   assert.equal(
-    blockers(result).has(
-      'verification-release:host-head-mismatch:claude-code'
-    ),
+    blockers(result).has('verification-release:fixture-snapshot-mismatch'),
+    true,
+    JSON.stringify(result.blockers)
+  );
+});
+
+test('release proof reconstructs exact sandbox plans and rejects permission drift', () => {
+  const mutations = [
+    {
+      name: 'fake-executable',
+      mutate({ host, id, sandbox }) {
+        if (host !== 'codex' || id !== 'host-smoke') return sandbox;
+        const executable = {
+          path: fs.realpathSync('/bin/bash'),
+          sha256: sha256(fs.readFileSync('/bin/bash'))
+        };
+        return {
+          ...sandbox,
+          executable,
+          argv: [executable.path, ...sandbox.argv.slice(1)]
+        };
+      }
+    },
+    {
+      name: 'random-policy',
+      mutate({ host, id, sandbox }) {
+        if (host !== 'codex' || id !== 'host-smoke') return sandbox;
+        return {
+          ...sandbox,
+          policy_sha256: '0'.repeat(64)
+        };
+      }
+    },
+    {
+      name: 'smoke-runtime-read',
+      mutate({
+        defaultHostRoots,
+        host,
+        id,
+        runtimeRoot,
+        sandbox,
+        toolchain
+      }) {
+        if (host !== 'codex' || id !== 'host-smoke') return sandbox;
+        return kernel.createHostSandboxPlan({
+          toolchain,
+          allowedRoots: [
+            ...HOSTS.map((candidate) => defaultHostRoots[candidate]),
+            runtimeRoot,
+            path.dirname(path.dirname(toolchain.node.path))
+          ],
+          writableRoots: [path.join(
+            path.dirname(defaultHostRoots.codex),
+            '.runtime',
+            host
+          )],
+          allowNetwork: false
+        });
+      }
+    },
+    {
+      name: 'doctor-network',
+      mutate({
+        defaultHostRoots,
+        host,
+        id,
+        runtimeRoot,
+        sandbox,
+        toolchain
+      }) {
+        if (host !== 'codex' || id !== 'runtime-doctor') return sandbox;
+        return kernel.createHostSandboxPlan({
+          toolchain,
+          allowedRoots: [
+            ...HOSTS.map((candidate) => defaultHostRoots[candidate]),
+            runtimeRoot,
+            path.dirname(path.dirname(toolchain.node.path))
+          ],
+          writableRoots: [path.join(
+            path.dirname(defaultHostRoots.codex),
+            '.runtime',
+            host
+          )],
+          allowNetwork: true
+        });
+      }
+    },
+    {
+      name: 'dependency-checkout-read-only',
+      mutate({
+        defaultHostRoots,
+        host,
+        id,
+        sandbox,
+        toolchain
+      }) {
+        if (host !== 'codefree-o' || id !== 'dependency-install') {
+          return sandbox;
+        }
+        return kernel.createHostSandboxPlan({
+          toolchain,
+          allowedRoots: [
+            ...HOSTS.map((candidate) => defaultHostRoots[candidate]),
+            path.dirname(path.dirname(toolchain.node.path))
+          ],
+          writableRoots: [path.join(
+            path.dirname(defaultHostRoots.codex),
+            '.runtime',
+            host
+          )],
+          allowNetwork: true
+        });
+      }
+    }
+  ];
+
+  for (const mutation of mutations) {
+    const fixture = makeProject({
+      sandboxPlanMutator: mutation.mutate
+    });
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    assert.equal(result.ok, false, mutation.name);
+    assert.equal(
+      [...blockers(result)].some((id) => (
+        id.startsWith(
+          'verification-release:install-command-evidence-mismatch:'
+        )
+      )),
+      true,
+      mutation.name
+    );
+  }
+});
+
+test('managed fixture manifest is bound to the trusted local corpus', () => {
+  const fixture = makeProject({
+    fixtureManifestSha256: '0'.repeat(64)
+  });
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockers(result).has('verification-release:fixture-manifest-mismatch'),
     true
   );
+});
+
+test('a tampered host execution envelope cannot manufacture trusted facts', () => {
+  const fixture = makeProject();
+  const { value: index } = hostProofArtifact(fixture, 'index');
+  const codex = index.hosts.find((entry) => entry.host === 'codex');
+  const receiptFile = path.join(fixture.changeDir, codex.receipt_path);
+  const receipt = readJson(receiptFile);
+  const envelopeFile = path.join(
+    fixture.changeDir,
+    receipt.execution_envelope_path
+  );
+  const envelope = readJson(envelopeFile);
+  envelope.payload.host_authority_digest = '0'.repeat(64);
+  writeJson(envelopeFile, envelope);
+  receipt.execution_envelope_sha256 = sha256(fs.readFileSync(envelopeFile));
+  writeJson(receiptFile, receipt);
+  codex.receipt_sha256 = sha256(fs.readFileSync(receiptFile));
+  writeHostProofArtifact(fixture, 'index', index);
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+  assert.equal(result.ok, false);
   assert.equal(
     blockers(result).has(
-      'verification-release:cross-host-compatibility-blocked'
+      'verification-release:host-execution-envelope-invalid:codex'
     ),
     true
   );
 });
 
-test('persisted green compatibility cannot bypass real live host wrapper drift', (t) => {
-  const hosts = createHostAuthorityFixture(t);
-  const green = hosts.authority().resolve();
-  assert.equal(green.ok, true, JSON.stringify(green.blockers, null, 2));
-  const fixture = makeProject({
-    hostCompatibilityAuthority: hosts.authority(),
-    hostCommits: green.commits
-  });
-  const wrapper = path.join(
-    hosts.roots['claude-code'],
-    hosts.descriptors['claude-code'].plugin,
-    'scripts/claude-verification-adapter.js'
+test('the current pointer cannot mix artifacts from different proof runs', () => {
+  const fixture = makeProject();
+  const pointer = hostProofPointer(fixture);
+  const source = path.join(
+    fixture.changeDir,
+    pointer.compatibility.path
   );
-  fs.appendFileSync(wrapper, '\n// live wrapper drift\n');
-
-  const result = fixture.validator.validate(fixture.root, CHANGE);
-  const ids = blockers(result);
-  const persisted = readJson(path.join(
-    fixture.opsDir,
+  const alternatePath = path.join(
+    'operations',
+    'host-proof-runs',
+    'different-run',
     'cross-host-compatibility.json'
-  ));
-
-  assert.equal(persisted.ok, true);
+  );
+  const alternateFile = path.join(fixture.changeDir, alternatePath);
+  fs.mkdirSync(path.dirname(alternateFile), { recursive: true });
+  fs.copyFileSync(source, alternateFile);
+  pointer.compatibility = {
+    path: alternatePath,
+    sha256: sha256(fs.readFileSync(alternateFile))
+  };
+  writeJson(path.join(fixture.opsDir, 'host-proof-current.json'), pointer);
+  const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
   assert.equal(
-    ids.has('verification-release:host-worktree-dirty:claude-code'),
+    blockers(result).has('verification-release:host-proof-run-mismatch'),
     true
   );
+});
+
+test('a rolled-back current pointer cannot disagree with its immutable copy', () => {
+  const fixture = makeProject();
+  const pointer = hostProofPointer(fixture);
+  pointer.published_at = '2026-08-01T00:00:00Z';
+  writeJson(path.join(fixture.opsDir, 'host-proof-current.json'), pointer);
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
   assert.equal(
-    ids.has(
-      'verification-drift:manifest-host-file-digest-mismatch:claude-code'
+    blockers(result).has(
+      'verification-release:host-proof-pointer-copy-mismatch'
     ),
     true
   );
+});
+
+test('host proof pointer generation semantics fail closed', () => {
+  for (const mutation of [
+    {
+      generation: 1,
+      previous_pointer: {
+        path: 'operations/host-proof-runs/old/host-proof-pointer.json',
+        sha256: 'a'.repeat(64)
+      }
+    },
+    {
+      generation: 2,
+      previous_pointer: null
+    }
+  ]) {
+    const fixture = makeProject();
+    const pointer = {
+      ...hostProofPointer(fixture),
+      ...mutation
+    };
+    writeJson(path.join(fixture.opsDir, 'host-proof-current.json'), pointer);
+    writeJson(
+      path.join(
+        fixture.changeDir,
+        'operations',
+        'host-proof-runs',
+        pointer.run_id,
+        'host-proof-pointer.json'
+      ),
+      pointer
+    );
+
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+
+    assert.equal(result.ok, false, JSON.stringify(mutation));
+    assert.equal(
+      blockers(result).has(
+        'verification-release:host-proof-pointer-generation-invalid'
+      ),
+      true,
+      JSON.stringify(mutation)
+    );
+  }
+});
+
+test('host proof pointer rejects a forged predecessor digest', () => {
+  const fixture = makeProject();
+  const pointer = {
+    ...hostProofPointer(fixture),
+    generation: 2,
+    previous_pointer: {
+      path: 'operations/host-proof-runs/forged/host-proof-pointer.json',
+      sha256: 'f'.repeat(64)
+    }
+  };
+  writeJson(path.join(fixture.opsDir, 'host-proof-current.json'), pointer);
+  writeJson(
+    path.join(
+      fixture.changeDir,
+      'operations',
+      'host-proof-runs',
+      pointer.run_id,
+      'host-proof-pointer.json'
+    ),
+    pointer
+  );
+
+  const result = fixture.validator.validate(fixture.root, CHANGE);
+
+  assert.equal(result.ok, false);
   assert.equal(
-    ids.has('verification-release:cross-host-compatibility-blocked'),
+    blockers(result).has(
+      'verification-release:host-proof-pointer-predecessor-hash-mismatch'
+    ),
     true
   );
-  assert.equal(
-    [...ids].some((id) => id.includes('install-receipt-invalid')),
-    false
+});
+
+test('host proof pointer accepts a complete generation-two chain', () => {
+  const previous = {
+    schema: 'specnav.verification.host-proof-pointer.v1',
+    change_id: CHANGE,
+    run_id: 'host-proof-release-1',
+    generation: 1,
+    previous_pointer: null
+  };
+  const previousBytes = Buffer.from(`${JSON.stringify(previous)}\n`);
+  const previousPath = (
+    `operations/host-proof-runs/${previous.run_id}/`
+    + 'host-proof-pointer.json'
   );
+  const pointer = {
+    ...previous,
+    run_id: 'host-proof-release-2',
+    generation: 2,
+    previous_pointer: {
+      path: previousPath,
+      sha256: sha256(previousBytes)
+    }
+  };
+  assert.equal(validateHostProofPointerChain({
+    changeId: CHANGE,
+    pointer,
+    pointerPath: 'operations/host-proof-current.json',
+    readPointer(candidate) {
+      assert.equal(candidate, previousPath);
+      return { bytes: previousBytes, value: previous };
+    },
+    sha256,
+    validatePointer(candidate) {
+      return candidate;
+    }
+  }), true);
+});
+
+test('specnav core environment overrides cannot execute trusted entry imports', () => {
+  const workspace = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-malicious-core-root-')
+  );
+  const fakeRoot = path.join(workspace, 'specnav-core');
+  const marker = path.join(workspace, 'marker');
+  const trustedModules = [
+    '../../../plugins/specnav-operations/scripts/verification-v2-proof.js',
+    (
+      '../../../plugins/specnav-operations/scripts/'
+      + 'verification-v2-host-artifacts.js'
+    )
+  ].map((relative) => path.resolve(__dirname, relative));
+  fs.mkdirSync(path.join(fakeRoot, '.codex-plugin'), { recursive: true });
+  fs.mkdirSync(path.join(fakeRoot, 'scripts'), { recursive: true });
+  writeJson(path.join(fakeRoot, '.codex-plugin', 'plugin.json'), {
+    name: 'specnav-core'
+  });
+  fs.writeFileSync(
+    path.join(fakeRoot, 'scripts', 'specnav-lib.js'),
+    [
+      `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'ran\\n');`,
+      'module.exports = { activeChangeState() { return { change: null }; } };'
+    ].join('\n')
+  );
+
+  const result = childProcess.spawnSync(process.execPath, [
+    '-e',
+    'for (const file of process.argv.slice(1)) require(file);',
+    ...trustedModules
+  ], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      SPECNAV_SPECNAV_CORE_ROOT: fakeRoot
+    }
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(fs.existsSync(marker), false);
+});
+
+test('verification plugin root environment overrides cannot replace trusted code', () => {
+  const fakeRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-malicious-verification-root-')
+  );
+  const previous = process.env.SPECNAV_SPECNAV_VERIFICATION_ROOT;
+  fs.mkdirSync(path.join(fakeRoot, 'kernel'), { recursive: true });
+  fs.writeFileSync(
+    path.join(fakeRoot, 'kernel', 'index.js'),
+    'module.exports = { createHostSandboxPlan() { return {}; } };\n'
+  );
+  process.env.SPECNAV_SPECNAV_VERIFICATION_ROOT = fakeRoot;
+  try {
+    const fixture = makeProject();
+    const result = fixture.validator.validate(fixture.root, CHANGE);
+    assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  } finally {
+    if (previous === undefined) {
+      delete process.env.SPECNAV_SPECNAV_VERIFICATION_ROOT;
+    } else {
+      process.env.SPECNAV_SPECNAV_VERIFICATION_ROOT = previous;
+    }
+    fs.rmSync(fakeRoot, { recursive: true, force: true });
+  }
 });
 
 test('report model must bind to the release gate, readings, evidence index, and versions', () => {
@@ -1388,10 +2179,9 @@ test('a symlinked change directory is rejected before any proof is written', () 
 
 test('duplicate host identities cannot satisfy the clean-install contract', () => {
   const fixture = makeProject();
-  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
-  const index = readJson(indexPath);
+  const { value: index } = hostProofArtifact(fixture, 'index');
   index.hosts.push({ ...index.hosts[0] });
-  writeJson(indexPath, index);
+  writeHostProofArtifact(fixture, 'index', index);
 
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
@@ -1403,14 +2193,16 @@ test('duplicate host identities cannot satisfy the clean-install contract', () =
 
 test('duplicate compatibility hosts cannot masquerade as all three hosts', () => {
   const fixture = makeProject();
-  const file = path.join(fixture.opsDir, 'cross-host-compatibility.json');
-  const compatibility = readJson(file);
+  const { value: compatibility } = hostProofArtifact(
+    fixture,
+    'compatibility'
+  );
   compatibility.hosts = [
     { ...compatibility.hosts[0] },
     { ...compatibility.hosts[0] },
     { ...compatibility.hosts[0] }
   ];
-  writeJson(file, compatibility);
+  writeHostProofArtifact(fixture, 'compatibility', compatibility);
 
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);
@@ -1422,23 +2214,21 @@ test('duplicate compatibility hosts cannot masquerade as all three hosts', () =>
 
 test('host receipts and compatibility cannot be replayed across gate inputs', () => {
   const fixture = makeProject();
-  const indexPath = path.join(fixture.opsDir, 'host-installation-receipts.json');
-  const index = readJson(indexPath);
+  const { value: index } = hostProofArtifact(fixture, 'index');
   const codex = index.hosts.find((entry) => entry.host === 'codex');
   const receiptFile = path.join(fixture.changeDir, codex.receipt_path);
   const receipt = readJson(receiptFile);
   receipt.release_gate_id = 'gate-from-an-older-release';
   writeJson(receiptFile, receipt);
   codex.receipt_sha256 = sha256(fs.readFileSync(receiptFile));
-  writeJson(indexPath, index);
+  writeHostProofArtifact(fixture, 'index', index);
 
-  const compatibilityFile = path.join(
-    fixture.opsDir,
-    'cross-host-compatibility.json'
+  const { value: compatibility } = hostProofArtifact(
+    fixture,
+    'compatibility'
   );
-  const compatibility = readJson(compatibilityFile);
   compatibility.gate_input_sha256 = '0'.repeat(64);
-  writeJson(compatibilityFile, compatibility);
+  writeHostProofArtifact(fixture, 'compatibility', compatibility);
 
   const result = fixture.validator.validate(fixture.root, CHANGE);
   assert.equal(result.ok, false);

@@ -48,12 +48,13 @@ jobs:
           lock="tests/verification-v2/cross-host/host-lock.json"
           jq -e '
             .schema == "specnav.verification.cross-host-lock.v1"
-            and (.source_commit | test("^[a-f0-9]{40}$"))
-            and (.hosts["claude-code"].ref | test("^[a-f0-9]{40}$"))
-            and (.hosts["codefree-o"].ref | test("^[a-f0-9]{40}$"))
+            and .source_host == "codex"
+            and (.source.commit | test("^[a-f0-9]{40}$"))
+            and (.hosts["claude-code"].commit | test("^[a-f0-9]{40}$"))
+            and (.hosts["codefree-o"].commit | test("^[a-f0-9]{40}$"))
           ' "$lock" >/dev/null
-          echo "claude_ref=$(jq -r '.hosts["claude-code"].ref' "$lock")" >> "$GITHUB_OUTPUT"
-          echo "codefree_ref=$(jq -r '.hosts["codefree-o"].ref' "$lock")" >> "$GITHUB_OUTPUT"
+          echo "claude_ref=$(jq -r '.hosts["claude-code"].commit' "$lock")" >> "$GITHUB_OUTPUT"
+          echo "codefree_ref=$(jq -r '.hosts["codefree-o"].commit' "$lock")" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Claude Code host
         uses: actions/checkout@v4

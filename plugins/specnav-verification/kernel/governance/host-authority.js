@@ -45,8 +45,32 @@ function git(root, args) {
 function expectedCommits(lock, descriptors, sourceHost) {
   return Object.fromEntries(Object.keys(descriptors).map((host) => [
     host,
-    host === sourceHost ? lock.source_commit : lock.hosts?.[host]?.ref
+    host === sourceHost ? lock.source?.commit : lock.hosts?.[host]?.commit
   ]));
+}
+
+function repositoryLock(lock, host, sourceHost) {
+  return host === sourceHost ? lock.source : lock.hosts?.[host];
+}
+
+function validRepositoryLock(value) {
+  return value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && /^https:\/\/github\.com\/[^/]+\/[^/]+(?:\.git)?$/.test(
+      value.repository || ''
+    )
+    && /^refs\/(?:heads|tags)\/[A-Za-z0-9._/-]+$/.test(value.ref || '')
+    && /^[a-f0-9]{40}$/.test(value.commit || '')
+    && typeof value.plugin_path === 'string'
+    && value.plugin_path !== ''
+    && (
+      value.manifest_path === null
+      || (
+        typeof value.manifest_path === 'string'
+        && value.manifest_path !== ''
+      )
+    );
 }
 
 function createHostCompatibilityAuthority(options = {}) {
@@ -82,9 +106,18 @@ function createHostCompatibilityAuthority(options = {}) {
       }
       lockBytes = fs.readFileSync(fs.realpathSync(config.lockFile));
       lock = JSON.parse(lockBytes.toString('utf8'));
+      const downstreamHosts = hosts.filter((host) => host !== config.sourceHost);
       if (
         lock.schema !== 'specnav.verification.cross-host-lock.v1'
-        || !/^[a-f0-9]{40}$/.test(lock.source_commit || '')
+        || lock.source_host !== config.sourceHost
+        || !validRepositoryLock(lock.source)
+        || !lock.hosts
+        || typeof lock.hosts !== 'object'
+        || Array.isArray(lock.hosts)
+        || Object.keys(lock.hosts).sort().join('\0')
+          !== downstreamHosts.sort().join('\0')
+        || downstreamHosts.some((host) => !validRepositoryLock(lock.hosts[host]))
+        || lock.fallback_used !== false
       ) {
         throw new Error('lock-invalid');
       }
@@ -118,7 +151,19 @@ function createHostCompatibilityAuthority(options = {}) {
     );
     const snapshots = {};
     const heads = {};
+    const roots = {};
     for (const [host, descriptor] of Object.entries(config.descriptors)) {
+      const lockedRepository = repositoryLock(lock, host, config.sourceHost);
+      if (
+        lockedRepository.plugin_path !== descriptor.plugin
+        || lockedRepository.manifest_path !== descriptor.manifest
+      ) {
+        blockers.push(blocker(
+          `verification-release:host-lock-descriptor-mismatch:${host}`,
+          config.lockFile
+        ));
+        continue;
+      }
       let repositoryRoot;
       try {
         repositoryRoot = fs.realpathSync(config.roots[host]);
@@ -133,6 +178,7 @@ function createHostCompatibilityAuthority(options = {}) {
         ));
         continue;
       }
+      roots[host] = repositoryRoot;
       try {
         const head = git(repositoryRoot, ['rev-parse', 'HEAD']);
         const dirty = git(repositoryRoot, [
@@ -166,7 +212,7 @@ function createHostCompatibilityAuthority(options = {}) {
           hostFiles: descriptor.hostFiles,
           expectedSourceCommit: host === config.sourceHost
             ? null
-            : lock.source_commit
+            : lock.source.commit
         });
       } catch (error) {
         blockers.push(blocker(
@@ -193,6 +239,10 @@ function createHostCompatibilityAuthority(options = {}) {
     const summary = {
       lock_sha256: sha256(lockBytes),
       commits: expected,
+      repositories: Object.fromEntries(hosts.map((host) => [
+        host,
+        repositoryLock(lock, host, config.sourceHost).repository
+      ])),
       heads,
       snapshots: Object.fromEntries(
         Object.entries(snapshots).map(([host, snapshot]) => [
@@ -208,6 +258,7 @@ function createHostCompatibilityAuthority(options = {}) {
       ok: blockers.length === 0 && comparison?.ok === true,
       lock,
       commits: expected,
+      roots,
       snapshots,
       comparison,
       summary: {
