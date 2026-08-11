@@ -1,0 +1,2782 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260811050759-348801b49d969b5c",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-03"
+    ],
+    "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+    "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-11T05:07:59.616Z",
+    "started_at": "2026-08-11T05:07:59.635Z",
+    "completed_at": "2026-08-11T05:08:10.698Z",
+    "kind": "retest",
+    "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+    "parent_run_id": "run-20260811034955-8ce30ac9436b696c",
+    "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+    "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260811050759-348801b49d969b5c",
+    "run_id": "run-20260811050759-348801b49d969b5c",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-03",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "retest",
+    "sequence": 2,
+    "runner": "command",
+    "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+    "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+    "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-11T05:07:59.635Z",
+    "completed_at": "2026-08-11T05:08:10.698Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260811050759-348801b49d969b5c",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-03"
+      ],
+      "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+      "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-11T05:07:59.616Z",
+      "started_at": "2026-08-11T05:07:59.635Z",
+      "completed_at": null,
+      "kind": "retest",
+      "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+      "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260811050759-348801b49d969b5c",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-03"
+      ],
+      "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+      "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-11T05:07:59.616Z",
+      "started_at": "2026-08-11T05:07:59.635Z",
+      "completed_at": "2026-08-11T05:08:10.698Z",
+      "kind": "retest",
+      "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+      "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811050759-348801b49d969b5c",
+      "run_id": "run-20260811050759-348801b49d969b5c",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-03",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "retest",
+      "sequence": 2,
+      "runner": "command",
+      "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+      "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+      "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-11T05:07:59.635Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811050759-348801b49d969b5c",
+      "run_id": "run-20260811050759-348801b49d969b5c",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-03",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "retest",
+      "sequence": 2,
+      "runner": "command",
+      "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+      "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+      "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-11T05:07:59.635Z",
+      "completed_at": "2026-08-11T05:08:10.698Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811050759-348801b49d969b5c",
+      "run_id": "run-20260811050759-348801b49d969b5c",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-03",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "retest",
+      "sequence": 2,
+      "runner": "command",
+      "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+      "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+      "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-11T05:07:59.635Z",
+      "completed_at": "2026-08-11T05:08:10.698Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: fixture graph is shape-valid before Task 004 validation\nok 1 - fixture graph is shape-valid before Task 004 validation\n  ---\n  duration_ms: 1757.027959\n  type: 'test'\n  ...\n# Subtest: factory requires the Task 003 schema registry and exposes one validator API\n    # Subtest: rejects missing schemaRegistry without fallback\n    ok 1 - rejects missing schemaRegistry without fallback\n      ---\n      duration_ms: 0.34625\n      type: 'test'\n      ...\n    # Subtest: returns cross-reference and retry validators\n    ok 2 - returns cross-reference and retry validators\n      ---\n      duration_ms: 0.088709\n      type: 'test'\n      ...\n    1..2\nok 2 - factory requires the Task 003 schema registry and exposes one validator API\n  ---\n  duration_ms: 0.634959\n  type: 'test'\n  ...\n# Subtest: accepts the complete graph without approval or evidence integrity checks\nok 3 - accepts the complete graph without approval or evidence integrity checks\n  ---\n  duration_ms: 1.708667\n  type: 'test'\n  ...\n# Subtest: binds active change, snapshot, run, case, and attempt identities\n    # Subtest: case-snapshot.change_id matches activeChangeId\n    ok 1 - case-snapshot.change_id matches activeChangeId\n      ---\n      duration_ms: 1.550667\n      type: 'test'\n      ...\n    # Subtest: test-case.change_id matches activeChangeId\n    ok 2 - test-case.change_id matches activeChangeId\n      ---\n      duration_ms: 0.733916\n      type: 'test'\n      ...\n    # Subtest: verification-run.change_id matches activeChangeId\n    ok 3 - verification-run.change_id matches activeChangeId\n      ---\n      duration_ms: 0.744\n      type: 'test'\n      ...\n    # Subtest: attempt.change_id matches activeChangeId\n    ok 4 - attempt.change_id matches activeChangeId\n      ---\n      duration_ms: 2.954459\n      type: 'test'\n      ...\n    # Subtest: reading.change_id matches activeChangeId\n    ok 5 - reading.change_id matches activeChangeId\n      ---\n      duration_ms: 0.561584\n      type: 'test'\n      ...\n    # Subtest: evidence.change_id matches activeChangeId\n    ok 6 - evidence.change_id matches activeChangeId\n      ---\n      duration_ms: 0.323292\n      type: 'test'\n      ...\n    # Subtest: run.case_snapshot_id matches the supplied snapshot\n    ok 7 - run.case_snapshot_id matches the supplied snapshot\n      ---\n      duration_ms: 0.351792\n      type: 'test'\n      ...\n    # Subtest: run.case_snapshot_hash matches the supplied snapshot\n    ok 8 - run.case_snapshot_hash matches the supplied snapshot\n      ---\n      duration_ms: 0.46075\n      type: 'test'\n      ...\n    # Subtest: attempt case exists in the case snapshot\n    ok 9 - attempt case exists in the case snapshot\n      ---\n      duration_ms: 0.624167\n      type: 'test'\n      ...\n    # Subtest: attempt case exists in run.case_ids\n    ok 10 - attempt case exists in run.case_ids\n      ---\n      duration_ms: 0.336625\n      type: 'test'\n      ...\n    # Subtest: attempt.run_id matches run, snapshot, or case\n    ok 11 - attempt.run_id matches run, snapshot, or case\n      ---\n      duration_ms: 0.29625\n      type: 'test'\n      ...\n    # Subtest: attempt.case_snapshot_hash matches run, snapshot, or case\n    ok 12 - attempt.case_snapshot_hash matches run, snapshot, or case\n      ---\n      duration_ms: 0.28125\n      type: 'test'\n      ...\n    # Subtest: attempt.change_id matches run, snapshot, or case\n    ok 13 - attempt.change_id matches run, snapshot, or case\n      ---\n      duration_ms: 0.270958\n      type: 'test'\n      ...\n    # Subtest: attempt.case_id matches run, snapshot, or case\n    ok 14 - attempt.case_id matches run, snapshot, or case\n      ---\n      duration_ms: 0.267917\n      type: 'test'\n      ...\n    # Subtest: attempt.code_sha matches run, snapshot, or case\n    ok 15 - attempt.code_sha matches run, snapshot, or case\n      ---\n      duration_ms: 0.2595\n      type: 'test'\n      ...\n    # Subtest: attempt.test_sha matches run, snapshot, or case\n    ok 16 - attempt.test_sha matches run, snapshot, or case\n      ---\n      duration_ms: 0.254875\n      type: 'test'\n      ...\n    # Subtest: attempt.environment_hash matches run, snapshot, or case\n    ok 17 - attempt.environment_hash matches run, snapshot, or case\n      ---\n      duration_ms: 0.24125\n      type: 'test'\n      ...\n    # Subtest: attempt.runtime_version matches run, snapshot, or case\n    ok 18 - attempt.runtime_version matches run, snapshot, or case\n      ---\n      duration_ms: 0.258167\n      type: 'test'\n      ...\n    # Subtest: attempt.kernel_version matches run, snapshot, or case\n    ok 19 - attempt.kernel_version matches run, snapshot, or case\n      ---\n      duration_ms: 0.296\n      type: 'test'\n      ...\n    # Subtest: attempt.runner matches run, snapshot, or case\n    ok 20 - attempt.runner matches run, snapshot, or case\n      ---\n      duration_ms: 0.239416\n      type: 'test'\n      ...\n    1..20\nok 4 - binds active change, snapshot, run, case, and attempt identities\n  ---\n  duration_ms: 12.302\n  type: 'test'\n  ...\n# Subtest: case internals and browser execution identity are cross-referenced\n    # Subtest: browser attempt matches case runner browser_project\n    ok 1 - browser attempt matches case runner browser_project\n      ---\n      duration_ms: 0.397875\n      type: 'test'\n      ...\n    # Subtest: command runner uses deterministic none browser project\n    ok 2 - command runner uses deterministic none browser project\n      ---\n      duration_ms: 0.384833\n      type: 'test'\n      ...\n    # Subtest: duplicate case step ids are rejected deterministically\n    ok 3 - duplicate case step ids are rejected deterministically\n      ---\n      duration_ms: 0.7065\n      type: 'test'\n      ...\n    # Subtest: duplicate case assertion ids are rejected deterministically\n    ok 4 - duplicate case assertion ids are rejected deterministically\n      ---\n      duration_ms: 0.617125\n      type: 'test'\n      ...\n    # Subtest: step assertion_ids resolve to case assertions\n    ok 5 - step assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.313459\n      type: 'test'\n      ...\n    # Subtest: facticity assertion_ids resolve to case assertions\n    ok 6 - facticity assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.285459\n      type: 'test'\n      ...\n    # Subtest: static assertion_ids resolve to case assertions\n    ok 7 - static assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.260709\n      type: 'test'\n      ...\n    # Subtest: unit assertion_ids resolve to case assertions\n    ok 8 - unit assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.245833\n      type: 'test'\n      ...\n    # Subtest: redteam assertion_ids resolve to case assertions\n    ok 9 - redteam assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.254\n      type: 'test'\n      ...\n    # Subtest: e2e assertion_ids resolve to case assertions\n    ok 10 - e2e assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.270958\n      type: 'test'\n      ...\n    # Subtest: sensory assertion_ids resolve to case assertions\n    ok 11 - sensory assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.278458\n      type: 'test'\n      ...\n    # Subtest: reading assertion_id belongs to its selected step\n    ok 12 - reading assertion_id belongs to its selected step\n      ---\n      duration_ms: 0.410167\n      type: 'test'\n      ...\n    # Subtest: evidence assertion_id belongs to its selected step\n    ok 13 - evidence assertion_id belongs to its selected step\n      ---\n      duration_ms: 0.354708\n      type: 'test'\n      ...\n    # Subtest: matching step and assertion ids pass together\n    ok 14 - matching step and assertion ids pass together\n      ---\n      duration_ms: 0.306167\n      type: 'test'\n      ...\n    1..14\nok 5 - case internals and browser execution identity are cross-referenced\n  ---\n  duration_ms: 5.540417\n  type: 'test'\n  ...\n# Subtest: reading references resolve through run, case, attempt, and evidence\n    # Subtest: reading.run_id\n    ok 1 - reading.run_id\n      ---\n      duration_ms: 0.444833\n      type: 'test'\n      ...\n    # Subtest: reading.case_id\n    ok 2 - reading.case_id\n      ---\n      duration_ms: 0.314208\n      type: 'test'\n      ...\n    # Subtest: reading.attempt_id\n    ok 3 - reading.attempt_id\n      ---\n      duration_ms: 0.572875\n      type: 'test'\n      ...\n    # Subtest: reading.step_id\n    ok 4 - reading.step_id\n      ---\n      duration_ms: 0.414\n      type: 'test'\n      ...\n    # Subtest: reading.code_sha\n    ok 5 - reading.code_sha\n      ---\n      duration_ms: 0.295208\n      type: 'test'\n      ...\n    # Subtest: reading.test_sha\n    ok 6 - reading.test_sha\n      ---\n      duration_ms: 0.262792\n      type: 'test'\n      ...\n    # Subtest: reading.assertion_id belongs to the case\n    ok 7 - reading.assertion_id belongs to the case\n      ---\n      duration_ms: 0.3115\n      type: 'test'\n      ...\n    # Subtest: reading.evidence_ids resolve to supplied evidence\n    ok 8 - reading.evidence_ids resolve to supplied evidence\n      ---\n      duration_ms: 0.287583\n      type: 'test'\n      ...\n    # Subtest: assertion reading rejects evidence captured for a step\n    ok 9 - assertion reading rejects evidence captured for a step\n      ---\n      duration_ms: 0.315042\n      type: 'test'\n      ...\n    # Subtest: reading rejects shape-valid evidence from another attempt\n    ok 10 - reading rejects shape-valid evidence from another attempt\n      ---\n      duration_ms: 0.321375\n      type: 'test'\n      ...\n    1..10\nok 6 - reading references resolve through run, case, attempt, and evidence\n  ---\n  duration_ms: 3.886333\n  type: 'test'\n  ...\n# Subtest: evidence validates only references and execution identity\n    # Subtest: evidence.run_id\n    ok 1 - evidence.run_id\n      ---\n      duration_ms: 0.303041\n      type: 'test'\n      ...\n    # Subtest: evidence.case_id\n    ok 2 - evidence.case_id\n      ---\n      duration_ms: 0.357292\n      type: 'test'\n      ...\n    # Subtest: evidence.attempt_id\n    ok 3 - evidence.attempt_id\n      ---\n      duration_ms: 0.262292\n      type: 'test'\n      ...\n    # Subtest: evidence.step_id\n    ok 4 - evidence.step_id\n      ---\n      duration_ms: 0.270625\n      type: 'test'\n      ...\n    # Subtest: evidence.code_sha\n    ok 5 - evidence.code_sha\n      ---\n      duration_ms: 0.24425\n      type: 'test'\n      ...\n    # Subtest: evidence.test_sha\n    ok 6 - evidence.test_sha\n      ---\n      duration_ms: 0.261625\n      type: 'test'\n      ...\n    # Subtest: evidence.environment_hash\n    ok 7 - evidence.environment_hash\n      ---\n      duration_ms: 0.248042\n      type: 'test'\n      ...\n    # Subtest: evidence.runtime_version\n    ok 8 - evidence.runtime_version\n      ---\n      duration_ms: 0.225167\n      type: 'test'\n      ...\n    # Subtest: evidence.kernel_version\n    ok 9 - evidence.kernel_version\n      ---\n      duration_ms: 0.2295\n      type: 'test'\n      ...\n    # Subtest: evidence.assertion_id belongs to the case\n    ok 10 - evidence.assertion_id belongs to the case\n      ---\n      duration_ms: 0.274958\n      type: 'test'\n      ...\n    1..10\nok 7 - evidence validates only references and execution identity\n  ---\n  duration_ms: 2.940083\n  type: 'test'\n  ...\n# Subtest: graph shape, duplicate ids, and unknown references fail closed\n    # Subtest: attempts must be an array\n    ok 1 - attempts must be an array\n      ---\n      duration_ms: 0.177209\n      type: 'test'\n      ...\n    # Subtest: readings must be an array\n    ok 2 - readings must be an array\n      ---\n      duration_ms: 0.117083\n      type: 'test'\n      ...\n    # Subtest: evidence must be an array\n    ok 3 - evidence must be an array\n      ---\n      duration_ms: 0.109916\n      type: 'test'\n      ...\n    # Subtest: case duplicate id is rejected deterministically\n    ok 4 - case duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.438625\n      type: 'test'\n      ...\n    # Subtest: attempt duplicate id is rejected deterministically\n    ok 5 - attempt duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.327542\n      type: 'test'\n      ...\n    # Subtest: reading duplicate id is rejected deterministically\n    ok 6 - reading duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.325375\n      type: 'test'\n      ...\n    # Subtest: evidence duplicate id is rejected deterministically\n    ok 7 - evidence duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.321916\n      type: 'test'\n      ...\n    # Subtest: unknown attempt kind returns only exact schema blockers\n    ok 8 - unknown attempt kind returns only exact schema blockers\n      ---\n      duration_ms: 0.304458\n      type: 'test'\n      ...\n    # Subtest: non-retry attempt rejects an unknown parent reference\n    ok 9 - non-retry attempt rejects an unknown parent reference\n      ---\n      duration_ms: 0.282666\n      type: 'test'\n      ...\n    1..9\nok 8 - graph shape, duplicate ids, and unknown references fail closed\n  ---\n  duration_ms: 2.657625\n  type: 'test'\n  ...\n# Subtest: retry validation distinguishes parent and retry semantics\n    # Subtest: accepts a retry with the same fingerprint\n    ok 1 - accepts a retry with the same fingerprint\n      ---\n      duration_ms: 0.186917\n      type: 'test'\n      ...\n    # Subtest: requires parent_attempt_id\n    ok 2 - requires parent_attempt_id\n      ---\n      duration_ms: 0.119333\n      type: 'test'\n      ...\n    # Subtest: requires the parent to exist in the supplied graph\n    ok 3 - requires the parent to exist in the supplied graph\n      ---\n      duration_ms: 0.32125\n      type: 'test'\n      ...\n    # Subtest: requires sequence to equal parent sequence plus one\n    ok 4 - requires sequence to equal parent sequence plus one\n      ---\n      duration_ms: 0.189417\n      type: 'test'\n      ...\n    # Subtest: rejects a parent from a different run\n    ok 5 - rejects a parent from a different run\n      ---\n      duration_ms: 0.089542\n      type: 'test'\n      ...\n    # Subtest: rejects a parent from a different case\n    ok 6 - rejects a parent from a different case\n      ---\n      duration_ms: 0.0815\n      type: 'test'\n      ...\n    # Subtest: requires retry kind and never misclassifies retest or regression\n    ok 7 - requires retry kind and never misclassifies retest or regression\n      ---\n      duration_ms: 0.081291\n      type: 'test'\n      ...\n    1..7\nok 9 - retry validation distinguishes parent and retry semantics\n  ---\n  duration_ms: 1.23975\n  type: 'test'\n  ...\n# Subtest: retry rejects every changed immutable fingerprint\n    # Subtest: run_id\n    ok 1 - run_id\n      ---\n      duration_ms: 0.088416\n      type: 'test'\n      ...\n    # Subtest: change_id\n    ok 2 - change_id\n      ---\n      duration_ms: 0.12675\n      type: 'test'\n      ...\n    # Subtest: case_id\n    ok 3 - case_id\n      ---\n      duration_ms: 0.070083\n      type: 'test'\n      ...\n    # Subtest: case_snapshot_hash\n    ok 4 - case_snapshot_hash\n      ---\n      duration_ms: 0.06725\n      type: 'test'\n      ...\n    # Subtest: runner\n    ok 5 - runner\n      ---\n      duration_ms: 0.073291\n      type: 'test'\n      ...\n    # Subtest: code_sha\n    ok 6 - code_sha\n      ---\n      duration_ms: 0.063917\n      type: 'test'\n      ...\n    # Subtest: test_sha\n    ok 7 - test_sha\n      ---\n      duration_ms: 0.062417\n      type: 'test'\n      ...\n    # Subtest: scenario_hash\n    ok 8 - scenario_hash\n      ---\n      duration_ms: 0.062834\n      type: 'test'\n      ...\n    # Subtest: environment_hash\n    ok 9 - environment_hash\n      ---\n      duration_ms: 0.061417\n      type: 'test'\n      ...\n    # Subtest: browser_project\n    ok 10 - browser_project\n      ---\n      duration_ms: 0.060583\n      type: 'test'\n      ...\n    # Subtest: test_data_snapshot\n    ok 11 - test_data_snapshot\n      ---\n      duration_ms: 0.062\n      type: 'test'\n      ...\n    # Subtest: runtime_version\n    ok 12 - runtime_version\n      ---\n      duration_ms: 0.059875\n      type: 'test'\n      ...\n    # Subtest: kernel_version\n    ok 13 - kernel_version\n      ---\n      duration_ms: 0.059042\n      type: 'test'\n      ...\n    1..13\nok 10 - retry rejects every changed immutable fingerprint\n  ---\n  duration_ms: 1.149708\n  type: 'test'\n  ...\n# Subtest: schema validation returns exact blockers before cross-reference checks\n    # Subtest: case-snapshot\n    ok 1 - case-snapshot\n      ---\n      duration_ms: 0.30125\n      type: 'test'\n      ...\n    # Subtest: verification-run\n    ok 2 - verification-run\n      ---\n      duration_ms: 0.232084\n      type: 'test'\n      ...\n    # Subtest: attempt\n    ok 3 - attempt\n      ---\n      duration_ms: 0.228875\n      type: 'test'\n      ...\n    # Subtest: reading\n    ok 4 - reading\n      ---\n      duration_ms: 0.233125\n      type: 'test'\n      ...\n    # Subtest: evidence\n    ok 5 - evidence\n      ---\n      duration_ms: 0.4085\n      type: 'test'\n      ...\n    1..5\nok 11 - schema validation returns exact blockers before cross-reference checks\n  ---\n  duration_ms: 1.546416\n  type: 'test'\n  ...\n# Subtest: cross-reference and retry validation never mutate caller input\n    # Subtest: graph input remains unchanged\n    ok 1 - graph input remains unchanged\n      ---\n      duration_ms: 0.370834\n      type: 'test'\n      ...\n    # Subtest: retry inputs remain unchanged\n    ok 2 - retry inputs remain unchanged\n      ---\n      duration_ms: 0.10125\n      type: 'test'\n      ...\n    1..2\nok 12 - cross-reference and retry validation never mutate caller input\n  ---\n  duration_ms: 0.547125\n  type: 'test'\n  ...\n# Subtest: blocker dedupe preserves distinct semantic payloads\nok 13 - blocker dedupe preserves distinct semantic payloads\n  ---\n  duration_ms: 0.098083\n  type: 'test'\n  ...\n# Subtest: registry compiles and validates every Verification Contract V2 entity\nok 14 - registry compiles and validates every Verification Contract V2 entity\n  ---\n  duration_ms: 1786.876792\n  type: 'test'\n  ...\n# Subtest: runtime status schema accepts the exact current managed doctor output\nok 15 - runtime status schema accepts the exact current managed doctor output\n  ---\n  duration_ms: 731.753125\n  type: 'test'\n  ...\n# Subtest: negative fixture corpus returns exact artifact and field blockers\nok 16 - negative fixture corpus returns exact artifact and field blockers\n  ---\n  duration_ms: 679.82775\n  type: 'test'\n  ...\n# Subtest: host and cross-host schemas reject the declared negative contracts\nok 17 - host and cross-host schemas reject the declared negative contracts\n  ---\n  duration_ms: 626.982291\n  type: 'test'\n  ...\n# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields\nok 18 - evidence and gate schemas directly enforce AC-31 and AC-35 fields\n  ---\n  duration_ms: 622.844875\n  type: 'test'\n  ...\n# Subtest: verification run schema requires immutable repair lineage fields\nok 19 - verification run schema requires immutable repair lineage fields\n  ---\n  duration_ms: 584.427083\n  type: 'test'\n  ...\n# Subtest: failure packet schema supports only the constrained unclassified open state\nok 20 - failure packet schema supports only the constrained unclassified open state\n  ---\n  duration_ms: 604.98275\n  type: 'test'\n  ...\n# Subtest: registry requires doctor-approved managed AJV and never mutates input\nok 21 - registry requires doctor-approved managed AJV and never mutates input\n  ---\n  duration_ms: 601.380458\n  type: 'test'\n  ...\n# Subtest: shape-valid unresolved references remain Task 004 responsibility\nok 22 - shape-valid unresolved references remain Task 004 responsibility\n  ---\n  duration_ms: 591.456875\n  type: 'test'\n  ...\n# Subtest: six fixed domains derive stable frozen case, domain, and release pass\nok 23 - six fixed domains derive stable frozen case, domain, and release pass\n  ---\n  duration_ms: 1778.269958\n  type: 'test'\n  ...\n# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed\nok 24 - missing cases, readings, domains, and light or manual-green inputs fail closed\n  ---\n  duration_ms: 2.109916\n  type: 'test'\n  ...\n# Subtest: only schema-valid, identity-bound readings can contribute to green\nok 25 - only schema-valid, identity-bound readings can contribute to green\n  ---\n  duration_ms: 0.410167\n  type: 'test'\n  ...\n# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green\nok 26 - missing, mismatched, or non-intact evidence cannot contribute to green\n  ---\n  duration_ms: 1.145792\n  type: 'test'\n  ...\n# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states\nok 27 - external terminal facts provide deterministic flaky and pass-after-fix states\n  ---\n  duration_ms: 1.504166\n  type: 'test'\n  ...\n# Subtest: a real failed reading is not overwritten by stale or canceled metadata\nok 28 - a real failed reading is not overwritten by stale or canceled metadata\n  ---\n  duration_ms: 0.704333\n  type: 'test'\n  ...\n# Subtest: not-applicable consumes an external validated decision binding only\nok 29 - not-applicable consumes an external validated decision binding only\n  ---\n  duration_ms: 1.121291\n  type: 'test'\n  ...\n# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources\nok 30 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources\n  ---\n  duration_ms: 2.736708\n  type: 'test'\n  ...\n# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it\nok 31 - DecisionEngine rejects a caller-authored aggregate instead of trusting it\n  ---\n  duration_ms: 0.427291\n  type: 'test'\n  ...\n# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates\nok 32 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates\n  ---\n  duration_ms: 4.049375\n  type: 'test'\n  ...\n# Subtest: current human approval creates one stable validator fact\nok 33 - current human approval creates one stable validator fact\n  ---\n  duration_ms: 1762.3915\n  type: 'test'\n  ...\n# Subtest: approved fact is consumed by six-domain aggregation\nok 34 - approved fact is consumed by six-domain aggregation\n  ---\n  duration_ms: 3.146042\n  type: 'test'\n  ...\n# Subtest: human identity, policy allowance, and approval freshness fail closed\nok 35 - human identity, policy allowance, and approval freshness fail closed\n  ---\n  duration_ms: 2.870833\n  type: 'test'\n  ...\n# Subtest: missing, late, mismatched, or broken evidence blocks approval\nok 36 - missing, late, mismatched, or broken evidence blocks approval\n  ---\n  duration_ms: 0.896417\n  type: 'test'\n  ...\n# Subtest: evidence must belong to an assertion and step owned by the domain\nok 37 - evidence must belong to an assertion and step owned by the domain\n  ---\n  duration_ms: 0.315\n  type: 'test'\n  ...\n# Subtest: fact identity changes when evidence content changes under the same id\nok 38 - fact identity changes when evidence content changes under the same id\n  ---\n  duration_ms: 0.555959\n  type: 'test'\n  ...\n# Subtest: policy timestamps require an explicit RFC3339 timezone\nok 39 - policy timestamps require an explicit RFC3339 timezone\n  ---\n  duration_ms: 0.267416\n  type: 'test'\n  ...\n# Subtest: validator snapshots trusted catalogs at construction time\nok 40 - validator snapshots trusted catalogs at construction time\n  ---\n  duration_ms: 0.280917\n  type: 'test'\n  ...\n# Subtest: forged or stale fact identity cannot be revalidated\nok 41 - forged or stale fact identity cannot be revalidated\n  ---\n  duration_ms: 0.984875\n  type: 'test'\n  ...\n# Subtest: deterministic assertion creates one evidence-bound reading per required domain\nok 42 - deterministic assertion creates one evidence-bound reading per required domain\n  ---\n  duration_ms: 1226.15275\n  type: 'test'\n  ...\n# Subtest: failed deterministic assertion remains a valid failed reading set\nok 43 - failed deterministic assertion remains a valid failed reading set\n  ---\n  duration_ms: 0.940834\n  type: 'test'\n  ...\n# Subtest: mixed assertion results preserve pass and fail readings under a failed case\nok 44 - mixed assertion results preserve pass and fail readings under a failed case\n  ---\n  duration_ms: 0.590833\n  type: 'test'\n  ...\n# Subtest: a passing case may belong to a failed multi-case run\nok 45 - a passing case may belong to a failed multi-case run\n  ---\n  duration_ms: 0.304542\n  type: 'test'\n  ...\n# Subtest: Midscene observation without an authoritative oracle stays blocked\nok 46 - Midscene observation without an authoritative oracle stays blocked\n  ---\n  duration_ms: 0.399791\n  type: 'test'\n  ...\n# Subtest: missing, stale, or broken evidence blocks an otherwise passing reading\nok 47 - missing, stale, or broken evidence blocks an otherwise passing reading\n  ---\n  duration_ms: 1.036167\n  type: 'test'\n  ...\n# Subtest: approved human signoff becomes an inspectable non-deterministic oracle\nok 48 - approved human signoff becomes an inspectable non-deterministic oracle\n  ---\n  duration_ms: 0.986583\n  type: 'test'\n  ...\n# Subtest: forged assertion status and malformed requests fail closed\nok 49 - forged assertion status and malformed requests fail closed\n  ---\n  duration_ms: 1.215791\n  type: 'test'\n  ...\n# Subtest: runner and terminal identity mismatches cannot create a passing reading\nok 50 - runner and terminal identity mismatches cannot create a passing reading\n  ---\n  duration_ms: 0.99225\n  type: 'test'\n  ...\n# Subtest: run-owned attempt fingerprints must match before reading creation\nok 51 - run-owned attempt fingerprints must match before reading creation\n  ---\n  duration_ms: 0.790708\n  type: 'test'\n  ...\n# Subtest: reading schema failures preserve their exact blocker and artifact\nok 52 - reading schema failures preserve their exact blocker and artifact\n  ---\n  duration_ms: 0.623584\n  type: 'test'\n  ...\n# Subtest: append writes one immutable raw record, content object, index, and cache metadata\nok 53 - append writes one immutable raw record, content object, index, and cache metadata\n  ---\n  duration_ms: 28.371\n  type: 'test'\n  ...\n# Subtest: persisted evidence and index pass the managed AJV schema registry\nok 54 - persisted evidence and index pass the managed AJV schema registry\n  ---\n  duration_ms: 1254.424416\n  type: 'test'\n  ...\n# Subtest: append does not mutate caller-owned evidence or content\nok 55 - append does not mutate caller-owned evidence or content\n  ---\n  duration_ms: 51.805875\n  type: 'test'\n  ...\n# Subtest: failed evidence remains after a later passing attempt and cache deletion\nok 56 - failed evidence remains after a later passing attempt and cache deletion\n  ---\n  duration_ms: 92.763208\n  type: 'test'\n  ...\n# Subtest: index bytes are deterministic across rebuild and ignore mtime changes\nok 57 - index bytes are deterministic across rebuild and ignore mtime changes\n  ---\n  duration_ms: 50.097542\n  type: 'test'\n  ...\n# Subtest: an exact duplicate append is idempotent and adds no raw record\nok 58 - an exact duplicate append is idempotent and adds no raw record\n  ---\n  duration_ms: 66.826541\n  type: 'test'\n  ...\n# Subtest: an idempotent append restores deleted derived and object files\nok 59 - an idempotent append restores deleted derived and object files\n  ---\n  duration_ms: 67.959541\n  type: 'test'\n  ...\n# Subtest: the same bytes under different attempts reuse the object but keep distinct records\nok 60 - the same bytes under different attempts reuse the object but keep distinct records\n  ---\n  duration_ms: 68.1715\n  type: 'test'\n  ...\n# Subtest: store rejects caller-supplied managed identity and object fields\nok 61 - store rejects caller-supplied managed identity and object fields\n  ---\n  duration_ms: 4.887833\n  type: 'test'\n  ...\n# Subtest: source files must resolve inside the approved source root\nok 62 - source files must resolve inside the approved source root\n  ---\n  duration_ms: 6.22775\n  type: 'test'\n  ...\n# Subtest: a raw JSONL symlink cannot redirect append outside the store\nok 63 - a raw JSONL symlink cannot redirect append outside the store\n  ---\n  duration_ms: 1.532875\n  type: 'test'\n  ...\n# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index\nok 64 - corrupt raw JSON blocks rebuild and preserves the last valid index\n  ---\n  duration_ms: 34.343042\n  type: 'test'\n  ...\n# Subtest: duplicate raw ids block rebuild and ID lookup\nok 65 - duplicate raw ids block rebuild and ID lookup\n  ---\n  duration_ms: 37.904834\n  type: 'test'\n  ...\n# Subtest: an existing content-addressed object with different bytes blocks append\nok 66 - an existing content-addressed object with different bytes blocks append\n  ---\n  duration_ms: 4.100667\n  type: 'test'\n  ...\n# Subtest: content object publication failure returns an exact blocker without throwing\nok 67 - content object publication failure returns an exact blocker without throwing\n  ---\n  duration_ms: 10.106875\n  type: 'test'\n  ...\n# Subtest: resolve refuses a content object replaced by a symlink\nok 68 - resolve refuses a content object replaced by a symlink\n  ---\n  duration_ms: 47.144792\n  type: 'test'\n  ...\n# Subtest: lookup rejects a store root replaced by an external symlink\nok 69 - lookup rejects a store root replaced by an external symlink\n  ---\n  duration_ms: 52.687\n  type: 'test'\n  ...\n# Subtest: schema rejection blocks raw append and index publication\nok 70 - schema rejection blocks raw append and index publication\n  ---\n  duration_ms: 0.790083\n  type: 'test'\n  ...\n# Subtest: store root must remain inside the approved change root\nok 71 - store root must remain inside the approved change root\n  ---\n  duration_ms: 4.130417\n  type: 'test'\n  ...\n# Subtest: a symlinked change root cannot redirect the complete store\nok 72 - a symlinked change root cannot redirect the complete store\n  ---\n  duration_ms: 0.414667\n  type: 'test'\n  ...\n# Subtest: cache publication failure restores the previous index and preserves raw truth\nok 73 - cache publication failure restores the previous index and preserves raw truth\n  ---\n  duration_ms: 81.995792\n  type: 'test'\n  ...\n# Subtest: raw writer completes short writes instead of committing a partial line\nok 74 - raw writer completes short writes instead of committing a partial line\n  ---\n  duration_ms: 0.192541\n  type: 'test'\n  ...\n# Subtest: an occupied raw lock fails closed without creating a raw claim\nok 75 - an occupied raw lock fails closed without creating a raw claim\n  ---\n  duration_ms: 18.361792\n  type: 'test'\n  ...\n# Subtest: lookup requires a valid summary index and never scans raw as fallback\nok 76 - lookup requires a valid summary index and never scans raw as fallback\n  ---\n  duration_ms: 56.084541\n  type: 'test'\n  ...\n# Subtest: non-JSON evidence candidates return a blocker instead of throwing\nok 77 - non-JSON evidence candidates return a blocker instead of throwing\n  ---\n  duration_ms: 6.578667\n  type: 'test'\n  ...\n# Subtest: public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API\nok 78 - public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API\n  ---\n  duration_ms: 1205.847\n  type: 'test'\n  ...\n# Subtest: valid intact and fresh evidence returns facts only and uses the injected collaborators\nok 79 - valid intact and fresh evidence returns facts only and uses the injected collaborators\n  ---\n  duration_ms: 69.759791\n  type: 'test'\n  ...\n# Subtest: missing evidence file reports a broken-evidence fact instead of a verdict\nok 80 - missing evidence file reports a broken-evidence fact instead of a verdict\n  ---\n  duration_ms: 62.748\n  type: 'test'\n  ...\n# Subtest: tampered evidence bytes block integrity when hash no longer matches\nok 81 - tampered evidence bytes block integrity when hash no longer matches\n  ---\n  duration_ms: 58.964917\n  type: 'test'\n  ...\n# Subtest: size mismatch blocks integrity even when the file still exists\nok 82 - size mismatch blocks integrity even when the file still exists\n  ---\n  duration_ms: 42.115959\n  type: 'test'\n  ...\n# Subtest: an unrecognized producer remains blocked even when bytes are intact\nok 83 - an unrecognized producer remains blocked even when bytes are intact\n  ---\n  duration_ms: 47.212083\n  type: 'test'\n  ...\n# Subtest: record mismatch blocks when the graph evidence no longer matches the stored record\nok 84 - record mismatch blocks when the graph evidence no longer matches the stored record\n  ---\n  duration_ms: 42.6485\n  type: 'test'\n  ...\n# Subtest: binding mismatch is surfaced from the injected cross-reference validator\nok 85 - binding mismatch is surfaced from the injected cross-reference validator\n  ---\n  duration_ms: 49.118792\n  type: 'test'\n  ...\n# Subtest: empty evidence blocks green-driving facts before any downstream reading verdict exists\nok 86 - empty evidence blocks green-driving facts before any downstream reading verdict exists\n  ---\n  duration_ms: 51.742375\n  type: 'test'\n  ...\n# Subtest: stale current fingerprints block freshness with SHA-based comparison instead of mtime\nok 87 - stale current fingerprints block freshness with SHA-based comparison instead of mtime\n  ---\n  duration_ms: 44.829875\n  type: 'test'\n  ...\n# Subtest: changed case_snapshot_hash blocks the complete execution fingerprint\nok 88 - changed case_snapshot_hash blocks the complete execution fingerprint\n  ---\n  duration_ms: 49.161667\n  type: 'test'\n  ...\n# Subtest: changed code_sha blocks the complete execution fingerprint\nok 89 - changed code_sha blocks the complete execution fingerprint\n  ---\n  duration_ms: 41.994625\n  type: 'test'\n  ...\n# Subtest: changed test_sha blocks the complete execution fingerprint\nok 90 - changed test_sha blocks the complete execution fingerprint\n  ---\n  duration_ms: 49.741791\n  type: 'test'\n  ...\n# Subtest: changed environment_hash blocks the complete execution fingerprint\nok 91 - changed environment_hash blocks the complete execution fingerprint\n  ---\n  duration_ms: 46.207375\n  type: 'test'\n  ...\n# Subtest: changed runtime_version blocks the complete execution fingerprint\nok 92 - changed runtime_version blocks the complete execution fingerprint\n  ---\n  duration_ms: 43.892417\n  type: 'test'\n  ...\n# Subtest: changed kernel_version blocks the complete execution fingerprint\nok 93 - changed kernel_version blocks the complete execution fingerprint\n  ---\n  duration_ms: 51.177334\n  type: 'test'\n  ...\n# Subtest: missing current fingerprints return blockers and facts without throwing\nok 94 - missing current fingerprints return blockers and facts without throwing\n  ---\n  duration_ms: 54.340917\n  type: 'test'\n  ...\n# Subtest: missing object and missing store record preserve distinct blocker identities\nok 95 - missing object and missing store record preserve distinct blocker identities\n  ---\n  duration_ms: 29.20375\n  type: 'test'\n  ...\n# Subtest: stored identity mismatch remains distinct from graph record mismatch\nok 96 - stored identity mismatch remains distinct from graph record mismatch\n  ---\n  duration_ms: 31.471833\n  type: 'test'\n  ...\n# Subtest: mtime changes alone are ignored when bytes and fingerprints still match\nok 97 - mtime changes alone are ignored when bytes and fingerprints still match\n  ---\n  duration_ms: 29.659542\n  type: 'test'\n  ...\n# Subtest: unsafe symlink evidence paths are blocked before bytes are trusted\nok 98 - unsafe symlink evidence paths are blocked before bytes are trusted\n  ---\n  duration_ms: 27.362833\n  type: 'test'\n  ...\n# Subtest: an unsafe object read cannot emit positive existence or match facts\nok 99 - an unsafe object read cannot emit positive existence or match facts\n  ---\n  duration_ms: 28.987083\n  type: 'test'\n  ...\n# Subtest: an object ancestor swapped after resolve cannot produce trusted facts\nok 100 - an object ancestor swapped after resolve cannot produce trusted facts\n  ---\n  duration_ms: 32.097\n  type: 'test'\n  ...\n# Subtest: integrity checks never mutate caller graph, evidence, or fingerprint input\nok 101 - integrity checks never mutate caller graph, evidence, or fingerprint input\n  ---\n  duration_ms: 26.488084\n  type: 'test'\n  ...\n# Subtest: hostile proxy input fails closed without escaping or reaching collaborators\nok 102 - hostile proxy input fails closed without escaping or reaching collaborators\n  ---\n  duration_ms: 26.706\n  type: 'test'\n  ...\n# Subtest: hostile cross-reference result fails closed without escaping\nok 103 - hostile cross-reference result fails closed without escaping\n  ---\n  duration_ms: 31.641125\n  type: 'test'\n  ...\n# Subtest: inconsistent cross-reference result {\"ok\":false,\"blockers\":[]} fails closed\nok 104 - inconsistent cross-reference result {\"ok\":false,\"blockers\":[]} fails closed\n  ---\n  duration_ms: 33.238167\n  type: 'test'\n  ...\n# Subtest: inconsistent cross-reference result {\"ok\":true,\"blockers\":[{\"id\":\"verification-contract:cross-reference-invalid\",\"related_entity_type\":\"evidence\",\"related_entity_id\":\"untrusted-evidence\"}]} fails closed\nok 105 - inconsistent cross-reference result {\"ok\":true,\"blockers\":[{\"id\":\"verification-contract:cross-reference-invalid\",\"related_entity_type\":\"evidence\",\"related_entity_id\":\"untrusted-evidence\"}]} fails closed\n  ---\n  duration_ms: 32.592709\n  type: 'test'\n  ...\n# Subtest: matching run and case fingerprints produce a fresh case fact\nok 106 - matching run and case fingerprints produce a fresh case fact\n  ---\n  duration_ms: 1.525083\n  type: 'test'\n  ...\n# Subtest: changed case_snapshot_hash makes the concrete case stale\nok 107 - changed case_snapshot_hash makes the concrete case stale\n  ---\n  duration_ms: 0.384375\n  type: 'test'\n  ...\n# Subtest: changed code_sha makes the concrete case stale\nok 108 - changed code_sha makes the concrete case stale\n  ---\n  duration_ms: 0.260041\n  type: 'test'\n  ...\n# Subtest: changed test_sha makes the concrete case stale\nok 109 - changed test_sha makes the concrete case stale\n  ---\n  duration_ms: 0.222209\n  type: 'test'\n  ...\n# Subtest: changed environment_hash makes the concrete case stale\nok 110 - changed environment_hash makes the concrete case stale\n  ---\n  duration_ms: 0.302\n  type: 'test'\n  ...\n# Subtest: changed runtime_version makes the concrete case stale\nok 111 - changed runtime_version makes the concrete case stale\n  ---\n  duration_ms: 0.308125\n  type: 'test'\n  ...\n# Subtest: changed kernel_version makes the concrete case stale\nok 112 - changed kernel_version makes the concrete case stale\n  ---\n  duration_ms: 0.207375\n  type: 'test'\n  ...\n# Subtest: changed browser_project makes the concrete case stale\nok 113 - changed browser_project makes the concrete case stale\n  ---\n  duration_ms: 0.1515\n  type: 'test'\n  ...\n# Subtest: changed test_data_snapshot makes the concrete case stale\nok 114 - changed test_data_snapshot makes the concrete case stale\n  ---\n  duration_ms: 0.439125\n  type: 'test'\n  ...\n# Subtest: missing current case fingerprint is unknown and blocks freshness\nok 115 - missing current case fingerprint is unknown and blocks freshness\n  ---\n  duration_ms: 0.441375\n  type: 'test'\n  ...\n# Subtest: mtime-only input cannot produce fresh\nok 116 - mtime-only input cannot produce fresh\n  ---\n  duration_ms: 0.253875\n  type: 'test'\n  ...\n# Subtest: latest attempt is selected independently for every approved case\nok 117 - latest attempt is selected independently for every approved case\n  ---\n  duration_ms: 0.233541\n  type: 'test'\n  ...\n# Subtest: snapshot artifact and run hash mismatch blocks every case\nok 118 - snapshot artifact and run hash mismatch blocks every case\n  ---\n  duration_ms: 0.147917\n  type: 'test'\n  ...\n# Subtest: tied latest attempts are ambiguous instead of selected by id\nok 119 - tied latest attempts are ambiguous instead of selected by id\n  ---\n  duration_ms: 0.229\n  type: 'test'\n  ...\n# Subtest: an empty approved snapshot cannot produce a fresh summary\nok 120 - an empty approved snapshot cannot produce a fresh summary\n  ---\n  duration_ms: 0.133583\n  type: 'test'\n  ...\n# Subtest: shared evidence freshness fails closed when source fingerprints are missing\nok 121 - shared evidence freshness fails closed when source fingerprints are missing\n  ---\n  duration_ms: 0.244875\n  type: 'test'\n  ...\n# Subtest: attempts from another run or change cannot become the latest case source\nok 122 - attempts from another run or change cannot become the latest case source\n  ---\n  duration_ms: 0.7275\n  type: 'test'\n  ...\n# Subtest: missing run fingerprints cannot be supplied implicitly by an attempt\nok 123 - missing run fingerprints cannot be supplied implicitly by an attempt\n  ---\n  duration_ms: 0.240541\n  type: 'test'\n  ...\n# Subtest: missing run and attempt identities cannot compare as equal\nok 124 - missing run and attempt identities cannot compare as equal\n  ---\n  duration_ms: 0.227542\n  type: 'test'\n  ...\n# Subtest: a selected attempt without a stable id blocks the case\nok 125 - a selected attempt without a stable id blocks the case\n  ---\n  duration_ms: 0.180292\n  type: 'test'\n  ...\n# Subtest: string or non-positive attempt sequences fail closed\nok 126 - string or non-positive attempt sequences fail closed\n  ---\n  duration_ms: 0.502375\n  type: 'test'\n  ...\n# Subtest: evaluation never mutates caller-owned artifacts\nok 127 - evaluation never mutates caller-owned artifacts\n  ---\n  duration_ms: 0.21075\n  type: 'test'\n  ...\n# Subtest: hostile request values fail closed without throwing\nok 128 - hostile request values fail closed without throwing\n  ---\n  duration_ms: 0.250083\n  type: 'test'\n  ...\n# Subtest: kernel package exposes one versioned public entry and schema-only subpath\nok 129 - kernel package exposes one versioned public entry and schema-only subpath\n  ---\n  duration_ms: 0.970667\n  type: 'test'\n  ...\n# Subtest: public entry exposes immutable metadata and explicit service contracts\nok 130 - public entry exposes immutable metadata and explicit service contracts\n  ---\n  duration_ms: 25.024625\n  type: 'test'\n  ...\n# Subtest: service creation requires every adapter and never falls back\nok 131 - service creation requires every adapter and never falls back\n  ---\n  duration_ms: 0.317666\n  type: 'test'\n  ...\n# Subtest: kernel source contains no host runtime dependency\nok 132 - kernel source contains no host runtime dependency\n  ---\n  duration_ms: 23.854167\n  type: 'test'\n  ...\n# Subtest: routes the exact approved CASE-03 assertion set to its dedicated runner\nok 133 - routes the exact approved CASE-03 assertion set to its dedicated runner\n  ---\n  duration_ms: 51.363375\n  type: 'test'\n  ...\n# Subtest: keeps the complete smoke suite as the default path\nok 134 - keeps the complete smoke suite as the default path\n  ---\n  duration_ms: 249.310666\n  type: 'test'\n  ...\n# Subtest: does not route reordered assertion identities\nok 135 - does not route reordered assertion identities\n  ---\n  duration_ms: 213.140875\n  type: 'test'\n  ...\n# Subtest: does not route single assertion identities\nok 136 - does not route single assertion identities\n  ---\n  duration_ms: 225.324958\n  type: 'test'\n  ...\n# Subtest: does not route partial assertion identities\nok 137 - does not route partial assertion identities\n  ---\n  duration_ms: 176.530084\n  type: 'test'\n  ...\n# Subtest: does not route extra assertion identities\nok 138 - does not route extra assertion identities\n  ---\n  duration_ms: 154.455166\n  type: 'test'\n  ...\n# Subtest: does not route duplicate assertion identities\nok 139 - does not route duplicate assertion identities\n  ---\n  duration_ms: 147.7355\n  type: 'test'\n  ...\n# Subtest: propagates a dedicated CASE-03 runner failure without fallback\nok 140 - propagates a dedicated CASE-03 runner failure without fallback\n  ---\n  duration_ms: 43.307208\n  type: 'test'\n  ...\n# Subtest: public factory returns concrete deterministic case ids and reasons\nok 141 - public factory returns concrete deterministic case ids and reasons\n  ---\n  duration_ms: 9.640459\n  type: 'test'\n  ...\n# Subtest: CodeGraph can map an otherwise unmapped changed file to exact cases\nok 142 - CodeGraph can map an otherwise unmapped changed file to exact cases\n  ---\n  duration_ms: 0.42575\n  type: 'test'\n  ...\n# Subtest: unmapped production changes conservatively select every approved case\nok 143 - unmapped production changes conservatively select every approved case\n  ---\n  duration_ms: 0.347792\n  type: 'test'\n  ...\n# Subtest: CodeGraph cannot remove repaired or mandatory baseline cases\nok 144 - CodeGraph cannot remove repaired or mandatory baseline cases\n  ---\n  duration_ms: 0.3145\n  type: 'test'\n  ...\n# Subtest: unknown case references fail closed without silently shrinking scope\nok 145 - unknown case references fail closed without silently shrinking scope\n  ---\n  duration_ms: 0.382541\n  type: 'test'\n  ...\n# Subtest: malformed CodeGraph impact fails closed and selects all approved cases\nok 146 - malformed CodeGraph impact fails closed and selects all approved cases\n  ---\n  duration_ms: 0.38475\n  type: 'test'\n  ...\n# Subtest: CodeGraph affected files without an approved case mapping fail closed\nok 147 - CodeGraph affected files without an approved case mapping fail closed\n  ---\n  duration_ms: 0.236417\n  type: 'test'\n  ...\n# Subtest: cross-change or unbound CodeGraph evidence fails closed\nok 148 - cross-change or unbound CodeGraph evidence fails closed\n  ---\n  duration_ms: 0.355208\n  type: 'test'\n  ...\n# Subtest: missing freshness facts fail closed for the unaccounted approved case\nok 149 - missing freshness facts fail closed for the unaccounted approved case\n  ---\n  duration_ms: 0.40225\n  type: 'test'\n  ...\n# Subtest: duplicate catalog ids and hostile input are rejected without throwing\nok 150 - duplicate catalog ids and hostile input are rejected without throwing\n  ---\n  duration_ms: 0.467167\n  type: 'test'\n  ...\n# Subtest: incomplete six-domain assignments fail closed before scope selection\nok 151 - incomplete six-domain assignments fail closed before scope selection\n  ---\n  duration_ms: 0.250708\n  type: 'test'\n  ...\n# Subtest: missing or rejected case approval blocks and selects all catalog cases\nok 152 - missing or rejected case approval blocks and selects all catalog cases\n  ---\n  duration_ms: 0.255458\n  type: 'test'\n  ...\n# Subtest: planner requires an approval validator and never assumes approval\nok 153 - planner requires an approval validator and never assumes approval\n  ---\n  duration_ms: 0.194333\n  type: 'test'\n  ...\n# Subtest: planning never mutates caller-owned artifacts\nok 154 - planning never mutates caller-owned artifacts\n  ---\n  duration_ms: 0.226584\n  type: 'test'\n  ...\n# Subtest: CodeGraph evidence projects to a deterministic versioned impact report\nok 155 - CodeGraph evidence projects to a deterministic versioned impact report\n  ---\n  duration_ms: 8.515334\n  type: 'test'\n  ...\n# Subtest: blocked or malformed CodeGraph evidence cannot manufacture usable impact\nok 156 - blocked or malformed CodeGraph evidence cannot manufacture usable impact\n  ---\n  duration_ms: 0.107417\n  type: 'test'\n  ...\n1..156\n# tests 248\n# suites 0\n# pass 248\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 6905.120916\nspecnav codegraph impact report CLI fixture ok\nverification v2 case-level rerun CLI fixture ok\nTAP version 13\n# Subtest: approved command persists run, attempt, evidence, integrity and six-domain readings\nok 1 - approved command persists run, attempt, evidence, integrity and six-domain readings\n  ---\n  duration_ms: 1233.054125\n  type: 'test'\n  ...\n# Subtest: artifact pipeline derives both gates, one report model and three HTML pages\nok 2 - artifact pipeline derives both gates, one report model and three HTML pages\n  ---\n  duration_ms: 254.492125\n  type: 'test'\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1572.952333\nverification v2 CASE-03 evidence and freshness proof ok\nspecnav codex CASE-03 smoke ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-11T05:07:59.637Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260811050759-348801b49d969b5c",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-03"
+        ],
+        "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+        "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-11T05:07:59.616Z",
+        "started_at": "2026-08-11T05:07:59.635Z",
+        "completed_at": null,
+        "kind": "retest",
+        "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+        "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-11T05:07:59.637Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260811050759-348801b49d969b5c",
+        "run_id": "run-20260811050759-348801b49d969b5c",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-03",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "retest",
+        "sequence": 2,
+        "runner": "command",
+        "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+        "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+        "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-11T05:07:59.635Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-11T05:07:59.640Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-smoke.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:07:59.716Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.566Z",
+      "chunk": "# Subtest: fixture graph is shape-valid before Task 004 validation\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.566Z",
+      "chunk": "ok 1 - fixture graph is shape-valid before Task 004 validation\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "  ---\n  duration_ms: 1757.027959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "# Subtest: factory requires the Task 003 schema registry and exposes one validator API\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "    # Subtest: rejects missing schemaRegistry without fallback\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "    ok 1 - rejects missing schemaRegistry without fallback\n      ---\n      duration_ms: 0.34625\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "    # Subtest: returns cross-reference and retry validators\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.567Z",
+      "chunk": "    ok 2 - returns cross-reference and retry validators\n      ---\n      duration_ms: 0.088709\n      type: 'test'\n      ...\n    1..2\nok 2 - factory requires the Task 003 schema registry and exposes one validator API\n  ---\n  duration_ms: 0.634959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "# Subtest: accepts the complete graph without approval or evidence integrity checks\nok 3 - accepts the complete graph without approval or evidence integrity checks\n  ---\n  duration_ms: 1.708667\n  type: 'test'\n  ...\n# Subtest: binds active change, snapshot, run, case, and attempt identities\n    # Subtest: case-snapshot.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    ok 1 - case-snapshot.change_id matches activeChangeId\n      ---\n      duration_ms: 1.550667\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    # Subtest: test-case.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    ok 2 - test-case.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "      ---\n      duration_ms: 0.733916\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    # Subtest: verification-run.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    ok 3 - verification-run.change_id matches activeChangeId\n      ---\n      duration_ms: 0.744\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    # Subtest: attempt.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    ok 4 - attempt.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "      ---\n      duration_ms: 2.954459\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    # Subtest: reading.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.568Z",
+      "chunk": "    ok 5 - reading.change_id matches activeChangeId\n      ---\n      duration_ms: 0.561584\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.569Z",
+      "chunk": "    # Subtest: evidence.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.569Z",
+      "chunk": "    ok 6 - evidence.change_id matches activeChangeId\n"
+    },
+    {
+      "sequence": 27,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.569Z",
+      "chunk": "      ---\n      duration_ms: 0.323292\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 28,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.569Z",
+      "chunk": "    # Subtest: run.case_snapshot_id matches the supplied snapshot\n"
+    },
+    {
+      "sequence": 29,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.569Z",
+      "chunk": "    ok 7 - run.case_snapshot_id matches the supplied snapshot\n      ---\n      duration_ms: 0.351792\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 30,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "    # Subtest: run.case_snapshot_hash matches the supplied snapshot\n"
+    },
+    {
+      "sequence": 31,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "    ok 8 - run.case_snapshot_hash matches the supplied snapshot\n"
+    },
+    {
+      "sequence": 32,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "      ---\n      duration_ms: 0.46075\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 33,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "    # Subtest: attempt case exists in the case snapshot\n    ok 9 - attempt case exists in the case snapshot\n      ---\n      duration_ms: 0.624167\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 34,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "    # Subtest: attempt case exists in run.case_ids\n    ok 10 - attempt case exists in run.case_ids\n      ---\n      duration_ms: 0.336625\n      type: 'test'\n      ...\n    # Subtest: attempt.run_id matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 35,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.570Z",
+      "chunk": "    ok 11 - attempt.run_id matches run, snapshot, or case\n      ---\n      duration_ms: 0.29625\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 36,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    # Subtest: attempt.case_snapshot_hash matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 37,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    ok 12 - attempt.case_snapshot_hash matches run, snapshot, or case\n      ---\n      duration_ms: 0.28125\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 38,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    # Subtest: attempt.change_id matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 39,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    ok 13 - attempt.change_id matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 40,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "      ---\n      duration_ms: 0.270958\n      type: 'test'\n      ...\n    # Subtest: attempt.case_id matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 41,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    ok 14 - attempt.case_id matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 42,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "      ---\n      duration_ms: 0.267917\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 43,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    # Subtest: attempt.code_sha matches run, snapshot, or case\n"
+    },
+    {
+      "sequence": 44,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.571Z",
+      "chunk": "    ok 15 - attempt.code_sha matches run, snapshot, or case\n      ---\n      duration_ms: 0.2595\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 45,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.572Z",
+      "chunk": "    # Subtest: attempt.test_sha matches run, snapshot, or case\n    ok 16 - attempt.test_sha matches run, snapshot, or case\n      ---\n      duration_ms: 0.254875\n      type: 'test'\n      ...\n    # Subtest: attempt.environment_hash matches run, snapshot, or case\n    ok 17 - attempt.environment_hash matches run, snapshot, or case\n      ---\n      duration_ms: 0.24125\n      type: 'test'\n      ...\n    # Subtest: attempt.runtime_version matches run, snapshot, or case\n    ok 18 - attempt.runtime_version matches run, snapshot, or case\n      ---\n      duration_ms: 0.258167\n      type: 'test'\n      ...\n    # Subtest: attempt.kernel_version matches run, snapshot, or case\n    ok 19 - attempt.kernel_version matches run, snapshot, or case\n      ---\n      duration_ms: 0.296\n      type: 'test'\n      ...\n    # Subtest: attempt.runner matches run, snapshot, or case\n    ok 20 - attempt.runner matches run, snapshot, or case\n      ---\n      duration_ms: 0.239416\n      type: 'test'\n      ...\n    1..20\n"
+    },
+    {
+      "sequence": 46,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.572Z",
+      "chunk": "ok 4 - binds active change, snapshot, run, case, and attempt identities\n"
+    },
+    {
+      "sequence": 47,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.572Z",
+      "chunk": "  ---\n  duration_ms: 12.302\n  type: 'test'\n  ...\n# Subtest: case internals and browser execution identity are cross-referenced\n    # Subtest: browser attempt matches case runner browser_project\n    ok 1 - browser attempt matches case runner browser_project\n      ---\n      duration_ms: 0.397875\n      type: 'test'\n      ...\n    # Subtest: command runner uses deterministic none browser project\n    ok 2 - command runner uses deterministic none browser project\n      ---\n      duration_ms: 0.384833\n      type: 'test'\n      ...\n    # Subtest: duplicate case step ids are rejected deterministically\n    ok 3 - duplicate case step ids are rejected deterministically\n      ---\n      duration_ms: 0.7065\n      type: 'test'\n      ...\n    # Subtest: duplicate case assertion ids are rejected deterministically\n"
+    },
+    {
+      "sequence": 48,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.572Z",
+      "chunk": "    ok 4 - duplicate case assertion ids are rejected deterministically\n      ---\n      duration_ms: 0.617125\n      type: 'test'\n      ...\n    # Subtest: step assertion_ids resolve to case assertions\n    ok 5 - step assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.313459\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 49,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: facticity assertion_ids resolve to case assertions\n    ok 6 - facticity assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.285459\n      type: 'test'\n      ...\n    # Subtest: static assertion_ids resolve to case assertions\n"
+    },
+    {
+      "sequence": 50,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    ok 7 - static assertion_ids resolve to case assertions\n"
+    },
+    {
+      "sequence": 51,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "      ---\n      duration_ms: 0.260709\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 52,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: unit assertion_ids resolve to case assertions\n    ok 8 - unit assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.245833\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 53,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: redteam assertion_ids resolve to case assertions\n"
+    },
+    {
+      "sequence": 54,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    ok 9 - redteam assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.254\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 55,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: e2e assertion_ids resolve to case assertions\n    ok 10 - e2e assertion_ids resolve to case assertions\n      ---\n      duration_ms: 0.270958\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 56,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: sensory assertion_ids resolve to case assertions\n"
+    },
+    {
+      "sequence": 57,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    ok 11 - sensory assertion_ids resolve to case assertions\n"
+    },
+    {
+      "sequence": 58,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "      ---\n      duration_ms: 0.278458\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 59,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: reading assertion_id belongs to its selected step\n    ok 12 - reading assertion_id belongs to its selected step\n      ---\n      duration_ms: 0.410167\n      type: 'test'\n      ...\n    # Subtest: evidence assertion_id belongs to its selected step\n    ok 13 - evidence assertion_id belongs to its selected step\n      ---\n      duration_ms: 0.354708\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 60,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "    # Subtest: matching step and assertion ids pass together\n    ok 14 - matching step and assertion ids pass together\n"
+    },
+    {
+      "sequence": 61,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.573Z",
+      "chunk": "      ---\n      duration_ms: 0.306167\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 62,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.574Z",
+      "chunk": "    1..14\n"
+    },
+    {
+      "sequence": 63,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.574Z",
+      "chunk": "ok 5 - case internals and browser execution identity are cross-referenced\n  ---\n  duration_ms: 5.540417\n  type: 'test'\n  ...\n# Subtest: reading references resolve through run, case, attempt, and evidence\n    # Subtest: reading.run_id\n    ok 1 - reading.run_id\n      ---\n      duration_ms: 0.444833\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 64,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    # Subtest: reading.case_id\n"
+    },
+    {
+      "sequence": 65,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    ok 2 - reading.case_id\n      ---\n      duration_ms: 0.314208\n      type: 'test'\n      ...\n    # Subtest: reading.attempt_id\n    ok 3 - reading.attempt_id\n      ---\n      duration_ms: 0.572875\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 66,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    # Subtest: reading.step_id\n    ok 4 - reading.step_id\n      ---\n      duration_ms: 0.414\n      type: 'test'\n      ...\n    # Subtest: reading.code_sha\n    ok 5 - reading.code_sha\n      ---\n      duration_ms: 0.295208\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 67,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    # Subtest: reading.test_sha\n"
+    },
+    {
+      "sequence": 68,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    ok 6 - reading.test_sha\n"
+    },
+    {
+      "sequence": 69,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "      ---\n      duration_ms: 0.262792\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 70,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.576Z",
+      "chunk": "    # Subtest: reading.assertion_id belongs to the case\n    ok 7 - reading.assertion_id belongs to the case\n      ---\n      duration_ms: 0.3115\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 71,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "    # Subtest: reading.evidence_ids resolve to supplied evidence\n    ok 8 - reading.evidence_ids resolve to supplied evidence\n      ---\n      duration_ms: 0.287583\n      type: 'test'\n      ...\n    # Subtest: assertion reading rejects evidence captured for a step\n    ok 9 - assertion reading rejects evidence captured for a step\n      ---\n      duration_ms: 0.315042\n      type: 'test'\n      ...\n    # Subtest: reading rejects shape-valid evidence from another attempt\n    ok 10 - reading rejects shape-valid evidence from another attempt\n      ---\n      duration_ms: 0.321375\n      type: 'test'\n      ...\n    1..10\n"
+    },
+    {
+      "sequence": 72,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "ok 6 - reading references resolve through run, case, attempt, and evidence\n"
+    },
+    {
+      "sequence": 73,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "  ---\n  duration_ms: 3.886333\n  type: 'test'\n  ...\n# Subtest: evidence validates only references and execution identity\n    # Subtest: evidence.run_id\n    ok 1 - evidence.run_id\n      ---\n      duration_ms: 0.303041\n      type: 'test'\n      ...\n    # Subtest: evidence.case_id\n    ok 2 - evidence.case_id\n      ---\n      duration_ms: 0.357292\n      type: 'test'\n      ...\n    # Subtest: evidence.attempt_id\n"
+    },
+    {
+      "sequence": 74,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "    ok 3 - evidence.attempt_id\n      ---\n      duration_ms: 0.262292\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 75,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "    # Subtest: evidence.step_id\n    ok 4 - evidence.step_id\n      ---\n      duration_ms: 0.270625\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 76,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "    # Subtest: evidence.code_sha\n    ok 5 - evidence.code_sha\n      ---\n      duration_ms: 0.24425\n      type: 'test'\n      ...\n    # Subtest: evidence.test_sha\n    ok 6 - evidence.test_sha\n"
+    },
+    {
+      "sequence": 77,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "      ---\n      duration_ms: 0.261625\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 78,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.577Z",
+      "chunk": "    # Subtest: evidence.environment_hash\n    ok 7 - evidence.environment_hash\n      ---\n      duration_ms: 0.248042\n      type: 'test'\n      ...\n    # Subtest: evidence.runtime_version\n"
+    },
+    {
+      "sequence": 79,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.580Z",
+      "chunk": "    ok 8 - evidence.runtime_version\n      ---\n      duration_ms: 0.225167\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 80,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.580Z",
+      "chunk": "    # Subtest: evidence.kernel_version\n    ok 9 - evidence.kernel_version\n      ---\n      duration_ms: 0.2295\n      type: 'test'\n      ...\n    # Subtest: evidence.assertion_id belongs to the case\n    ok 10 - evidence.assertion_id belongs to the case\n"
+    },
+    {
+      "sequence": 81,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.580Z",
+      "chunk": "      ---\n      duration_ms: 0.274958\n      type: 'test'\n      ...\n    1..10\n"
+    },
+    {
+      "sequence": 82,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.580Z",
+      "chunk": "ok 7 - evidence validates only references and execution identity\n  ---\n  duration_ms: 2.940083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 83,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "# Subtest: graph shape, duplicate ids, and unknown references fail closed\n"
+    },
+    {
+      "sequence": 84,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "    # Subtest: attempts must be an array\n    ok 1 - attempts must be an array\n      ---\n      duration_ms: 0.177209\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 85,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "    # Subtest: readings must be an array\n"
+    },
+    {
+      "sequence": 86,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "    ok 2 - readings must be an array\n      ---\n      duration_ms: 0.117083\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 87,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "    # Subtest: evidence must be an array\n    ok 3 - evidence must be an array\n      ---\n      duration_ms: 0.109916\n      type: 'test'\n      ...\n    # Subtest: case duplicate id is rejected deterministically\n    ok 4 - case duplicate id is rejected deterministically\n"
+    },
+    {
+      "sequence": 88,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.581Z",
+      "chunk": "      ---\n      duration_ms: 0.438625\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 89,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    # Subtest: attempt duplicate id is rejected deterministically\n"
+    },
+    {
+      "sequence": 90,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    ok 5 - attempt duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.327542\n      type: 'test'\n      ...\n    # Subtest: reading duplicate id is rejected deterministically\n    ok 6 - reading duplicate id is rejected deterministically\n"
+    },
+    {
+      "sequence": 91,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "      ---\n      duration_ms: 0.325375\n      type: 'test'\n      ...\n    # Subtest: evidence duplicate id is rejected deterministically\n"
+    },
+    {
+      "sequence": 92,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    ok 7 - evidence duplicate id is rejected deterministically\n      ---\n      duration_ms: 0.321916\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 93,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    # Subtest: unknown attempt kind returns only exact schema blockers\n"
+    },
+    {
+      "sequence": 94,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    ok 8 - unknown attempt kind returns only exact schema blockers\n      ---\n      duration_ms: 0.304458\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 95,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    # Subtest: non-retry attempt rejects an unknown parent reference\n    ok 9 - non-retry attempt rejects an unknown parent reference\n      ---\n      duration_ms: 0.282666\n      type: 'test'\n      ...\n    1..9\nok 8 - graph shape, duplicate ids, and unknown references fail closed\n  ---\n  duration_ms: 2.657625\n  type: 'test'\n  ...\n# Subtest: retry validation distinguishes parent and retry semantics\n"
+    },
+    {
+      "sequence": 96,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.582Z",
+      "chunk": "    # Subtest: accepts a retry with the same fingerprint\n    ok 1 - accepts a retry with the same fingerprint\n"
+    },
+    {
+      "sequence": 97,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "      ---\n      duration_ms: 0.186917\n      type: 'test'\n      ...\n    # Subtest: requires parent_attempt_id\n    ok 2 - requires parent_attempt_id\n      ---\n      duration_ms: 0.119333\n      type: 'test'\n      ...\n    # Subtest: requires the parent to exist in the supplied graph\n    ok 3 - requires the parent to exist in the supplied graph\n      ---\n      duration_ms: 0.32125\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 98,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    # Subtest: requires sequence to equal parent sequence plus one\n    ok 4 - requires sequence to equal parent sequence plus one\n      ---\n      duration_ms: 0.189417\n      type: 'test'\n      ...\n    # Subtest: rejects a parent from a different run\n"
+    },
+    {
+      "sequence": 99,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    ok 5 - rejects a parent from a different run\n      ---\n      duration_ms: 0.089542\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 100,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    # Subtest: rejects a parent from a different case\n"
+    },
+    {
+      "sequence": 101,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    ok 6 - rejects a parent from a different case\n      ---\n      duration_ms: 0.0815\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 102,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    # Subtest: requires retry kind and never misclassifies retest or regression\n"
+    },
+    {
+      "sequence": 103,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    ok 7 - requires retry kind and never misclassifies retest or regression\n      ---\n      duration_ms: 0.081291\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 104,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    1..7\nok 9 - retry validation distinguishes parent and retry semantics\n"
+    },
+    {
+      "sequence": 105,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "  ---\n  duration_ms: 1.23975\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 106,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "# Subtest: retry rejects every changed immutable fingerprint\n    # Subtest: run_id\n    ok 1 - run_id\n      ---\n      duration_ms: 0.088416\n      type: 'test'\n      ...\n    # Subtest: change_id\n    ok 2 - change_id\n      ---\n      duration_ms: 0.12675\n      type: 'test'\n      ...\n    # Subtest: case_id\n    ok 3 - case_id\n      ---\n      duration_ms: 0.070083\n      type: 'test'\n      ...\n    # Subtest: case_snapshot_hash\n"
+    },
+    {
+      "sequence": 107,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    ok 4 - case_snapshot_hash\n      ---\n      duration_ms: 0.06725\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 108,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    # Subtest: runner\n    ok 5 - runner\n      ---\n      duration_ms: 0.073291\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 109,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    # Subtest: code_sha\n"
+    },
+    {
+      "sequence": 110,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "    ok 6 - code_sha\n"
+    },
+    {
+      "sequence": 111,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.583Z",
+      "chunk": "      ---\n      duration_ms: 0.063917\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 112,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: test_sha\n"
+    },
+    {
+      "sequence": 113,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 7 - test_sha\n      ---\n      duration_ms: 0.062417\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 114,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: scenario_hash\n"
+    },
+    {
+      "sequence": 115,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 8 - scenario_hash\n"
+    },
+    {
+      "sequence": 116,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.062834\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 117,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: environment_hash\n"
+    },
+    {
+      "sequence": 118,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 9 - environment_hash\n"
+    },
+    {
+      "sequence": 119,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.061417\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 120,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: browser_project\n"
+    },
+    {
+      "sequence": 121,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 10 - browser_project\n"
+    },
+    {
+      "sequence": 122,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.060583\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 123,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: test_data_snapshot\n    ok 11 - test_data_snapshot\n      ---\n      duration_ms: 0.062\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 124,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: runtime_version\n"
+    },
+    {
+      "sequence": 125,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 12 - runtime_version\n"
+    },
+    {
+      "sequence": 126,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.059875\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 127,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: kernel_version\n"
+    },
+    {
+      "sequence": 128,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 13 - kernel_version\n      ---\n      duration_ms: 0.059042\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 129,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    1..13\nok 10 - retry rejects every changed immutable fingerprint\n  ---\n  duration_ms: 1.149708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 130,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "# Subtest: schema validation returns exact blockers before cross-reference checks\n"
+    },
+    {
+      "sequence": 131,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: case-snapshot\n"
+    },
+    {
+      "sequence": 132,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 1 - case-snapshot\n"
+    },
+    {
+      "sequence": 133,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.30125\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 134,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: verification-run\n    ok 2 - verification-run\n      ---\n      duration_ms: 0.232084\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 135,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: attempt\n"
+    },
+    {
+      "sequence": 136,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    ok 3 - attempt\n"
+    },
+    {
+      "sequence": 137,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "      ---\n      duration_ms: 0.228875\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 138,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: reading\n    ok 4 - reading\n      ---\n      duration_ms: 0.233125\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 139,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    # Subtest: evidence\n    ok 5 - evidence\n      ---\n      duration_ms: 0.4085\n      type: 'test'\n      ...\n"
+    },
+    {
+      "sequence": 140,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "    1..5\n"
+    },
+    {
+      "sequence": 141,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.584Z",
+      "chunk": "ok 11 - schema validation returns exact blockers before cross-reference checks\n  ---\n  duration_ms: 1.546416\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 142,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.585Z",
+      "chunk": "# Subtest: cross-reference and retry validation never mutate caller input\n    # Subtest: graph input remains unchanged\n    ok 1 - graph input remains unchanged\n      ---\n      duration_ms: 0.370834\n      type: 'test'\n      ...\n    # Subtest: retry inputs remain unchanged\n    ok 2 - retry inputs remain unchanged\n      ---\n      duration_ms: 0.10125\n      type: 'test'\n      ...\n    1..2\n"
+    },
+    {
+      "sequence": 143,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:01.585Z",
+      "chunk": "ok 12 - cross-reference and retry validation never mutate caller input\n  ---\n  duration_ms: 0.547125\n  type: 'test'\n  ...\n# Subtest: blocker dedupe preserves distinct semantic payloads\nok 13 - blocker dedupe preserves distinct semantic payloads\n  ---\n  duration_ms: 0.098083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 144,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "# Subtest: registry compiles and validates every Verification Contract V2 entity\n"
+    },
+    {
+      "sequence": 145,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "ok 14 - registry compiles and validates every Verification Contract V2 entity\n  ---\n  duration_ms: 1786.876792\n  type: 'test'\n  ...\n# Subtest: runtime status schema accepts the exact current managed doctor output\n"
+    },
+    {
+      "sequence": 146,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "ok 15 - runtime status schema accepts the exact current managed doctor output\n  ---\n  duration_ms: 731.753125\n  type: 'test'\n  ...\n# Subtest: negative fixture corpus returns exact artifact and field blockers\n"
+    },
+    {
+      "sequence": 147,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "ok 16 - negative fixture corpus returns exact artifact and field blockers\n  ---\n  duration_ms: 679.82775\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 148,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "# Subtest: host and cross-host schemas reject the declared negative contracts\n"
+    },
+    {
+      "sequence": 149,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "ok 17 - host and cross-host schemas reject the declared negative contracts\n  ---\n  duration_ms: 626.982291\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 150,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.591Z",
+      "chunk": "# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields\n"
+    },
+    {
+      "sequence": 151,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "ok 18 - evidence and gate schemas directly enforce AC-31 and AC-35 fields\n  ---\n  duration_ms: 622.844875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 152,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "# Subtest: verification run schema requires immutable repair lineage fields\n"
+    },
+    {
+      "sequence": 153,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "ok 19 - verification run schema requires immutable repair lineage fields\n  ---\n  duration_ms: 584.427083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 154,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "# Subtest: failure packet schema supports only the constrained unclassified open state\n"
+    },
+    {
+      "sequence": 155,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "ok 20 - failure packet schema supports only the constrained unclassified open state\n  ---\n  duration_ms: 604.98275\n  type: 'test'\n  ...\n# Subtest: registry requires doctor-approved managed AJV and never mutates input\nok 21 - registry requires doctor-approved managed AJV and never mutates input\n  ---\n  duration_ms: 601.380458\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 156,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "# Subtest: shape-valid unresolved references remain Task 004 responsibility\nok 22 - shape-valid unresolved references remain Task 004 responsibility\n"
+    },
+    {
+      "sequence": 157,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.592Z",
+      "chunk": "  ---\n  duration_ms: 591.456875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 158,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.607Z",
+      "chunk": "# Subtest: six fixed domains derive stable frozen case, domain, and release pass\nok 23 - six fixed domains derive stable frozen case, domain, and release pass\n  ---\n  duration_ms: 1778.269958\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 159,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed\nok 24 - missing cases, readings, domains, and light or manual-green inputs fail closed\n  ---\n  duration_ms: 2.109916\n  type: 'test'\n  ...\n# Subtest: only schema-valid, identity-bound readings can contribute to green\nok 25 - only schema-valid, identity-bound readings can contribute to green\n  ---\n  duration_ms: 0.410167\n  type: 'test'\n  ...\n# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green\nok 26 - missing, mismatched, or non-intact evidence cannot contribute to green\n  ---\n  duration_ms: 1.145792\n  type: 'test'\n  ...\n# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states\nok 27 - external terminal facts provide deterministic flaky and pass-after-fix states\n"
+    },
+    {
+      "sequence": 160,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 1.504166\n  type: 'test'\n  ...\n# Subtest: a real failed reading is not overwritten by stale or canceled metadata\n"
+    },
+    {
+      "sequence": 161,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 28 - a real failed reading is not overwritten by stale or canceled metadata\n  ---\n  duration_ms: 0.704333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 162,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: not-applicable consumes an external validated decision binding only\n"
+    },
+    {
+      "sequence": 163,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 29 - not-applicable consumes an external validated decision binding only\n  ---\n  duration_ms: 1.121291\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 164,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources\n"
+    },
+    {
+      "sequence": 165,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 30 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources\n  ---\n  duration_ms: 2.736708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 166,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it\n"
+    },
+    {
+      "sequence": 167,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 31 - DecisionEngine rejects a caller-authored aggregate instead of trusting it\n"
+    },
+    {
+      "sequence": 168,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.427291\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 169,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates\nok 32 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates\n  ---\n  duration_ms: 4.049375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 170,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: current human approval creates one stable validator fact\nok 33 - current human approval creates one stable validator fact\n  ---\n  duration_ms: 1762.3915\n  type: 'test'\n  ...\n# Subtest: approved fact is consumed by six-domain aggregation\nok 34 - approved fact is consumed by six-domain aggregation\n  ---\n  duration_ms: 3.146042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 171,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: human identity, policy allowance, and approval freshness fail closed\nok 35 - human identity, policy allowance, and approval freshness fail closed\n"
+    },
+    {
+      "sequence": 172,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 2.870833\n  type: 'test'\n  ...\n# Subtest: missing, late, mismatched, or broken evidence blocks approval\n"
+    },
+    {
+      "sequence": 173,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 36 - missing, late, mismatched, or broken evidence blocks approval\n"
+    },
+    {
+      "sequence": 174,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.896417\n  type: 'test'\n  ...\n# Subtest: evidence must belong to an assertion and step owned by the domain\n"
+    },
+    {
+      "sequence": 175,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 37 - evidence must belong to an assertion and step owned by the domain\n"
+    },
+    {
+      "sequence": 176,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.315\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 177,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: fact identity changes when evidence content changes under the same id\n"
+    },
+    {
+      "sequence": 178,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 38 - fact identity changes when evidence content changes under the same id\n  ---\n  duration_ms: 0.555959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 179,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: policy timestamps require an explicit RFC3339 timezone\nok 39 - policy timestamps require an explicit RFC3339 timezone\n  ---\n  duration_ms: 0.267416\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 180,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: validator snapshots trusted catalogs at construction time\nok 40 - validator snapshots trusted catalogs at construction time\n  ---\n  duration_ms: 0.280917\n  type: 'test'\n  ...\n# Subtest: forged or stale fact identity cannot be revalidated\n"
+    },
+    {
+      "sequence": 181,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 41 - forged or stale fact identity cannot be revalidated\n  ---\n  duration_ms: 0.984875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 182,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: deterministic assertion creates one evidence-bound reading per required domain\n"
+    },
+    {
+      "sequence": 183,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 42 - deterministic assertion creates one evidence-bound reading per required domain\n  ---\n  duration_ms: 1226.15275\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 184,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: failed deterministic assertion remains a valid failed reading set\n"
+    },
+    {
+      "sequence": 185,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 43 - failed deterministic assertion remains a valid failed reading set\n"
+    },
+    {
+      "sequence": 186,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.940834\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 187,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: mixed assertion results preserve pass and fail readings under a failed case\n"
+    },
+    {
+      "sequence": 188,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 44 - mixed assertion results preserve pass and fail readings under a failed case\n  ---\n  duration_ms: 0.590833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 189,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: a passing case may belong to a failed multi-case run\n"
+    },
+    {
+      "sequence": 190,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 45 - a passing case may belong to a failed multi-case run\n"
+    },
+    {
+      "sequence": 191,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.304542\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 192,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: Midscene observation without an authoritative oracle stays blocked\n"
+    },
+    {
+      "sequence": 193,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 46 - Midscene observation without an authoritative oracle stays blocked\n  ---\n  duration_ms: 0.399791\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 194,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: missing, stale, or broken evidence blocks an otherwise passing reading\n"
+    },
+    {
+      "sequence": 195,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 47 - missing, stale, or broken evidence blocks an otherwise passing reading\n  ---\n  duration_ms: 1.036167\n  type: 'test'\n  ...\n# Subtest: approved human signoff becomes an inspectable non-deterministic oracle\n"
+    },
+    {
+      "sequence": 196,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 48 - approved human signoff becomes an inspectable non-deterministic oracle\n  ---\n  duration_ms: 0.986583\n  type: 'test'\n  ...\n# Subtest: forged assertion status and malformed requests fail closed\nok 49 - forged assertion status and malformed requests fail closed\n"
+    },
+    {
+      "sequence": 197,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 1.215791\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 198,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: runner and terminal identity mismatches cannot create a passing reading\nok 50 - runner and terminal identity mismatches cannot create a passing reading\n"
+    },
+    {
+      "sequence": 199,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.99225\n  type: 'test'\n  ...\n# Subtest: run-owned attempt fingerprints must match before reading creation\nok 51 - run-owned attempt fingerprints must match before reading creation\n  ---\n  duration_ms: 0.790708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 200,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: reading schema failures preserve their exact blocker and artifact\n"
+    },
+    {
+      "sequence": 201,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 52 - reading schema failures preserve their exact blocker and artifact\n"
+    },
+    {
+      "sequence": 202,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 0.623584\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 203,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: append writes one immutable raw record, content object, index, and cache metadata\nok 53 - append writes one immutable raw record, content object, index, and cache metadata\n  ---\n  duration_ms: 28.371\n  type: 'test'\n  ...\n# Subtest: persisted evidence and index pass the managed AJV schema registry\n"
+    },
+    {
+      "sequence": 204,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 54 - persisted evidence and index pass the managed AJV schema registry\n  ---\n  duration_ms: 1254.424416\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 205,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: append does not mutate caller-owned evidence or content\n"
+    },
+    {
+      "sequence": 206,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 55 - append does not mutate caller-owned evidence or content\n  ---\n  duration_ms: 51.805875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 207,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: failed evidence remains after a later passing attempt and cache deletion\n"
+    },
+    {
+      "sequence": 208,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 56 - failed evidence remains after a later passing attempt and cache deletion\n"
+    },
+    {
+      "sequence": 209,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 92.763208\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 210,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: index bytes are deterministic across rebuild and ignore mtime changes\n"
+    },
+    {
+      "sequence": 211,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 57 - index bytes are deterministic across rebuild and ignore mtime changes\n  ---\n  duration_ms: 50.097542\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 212,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: an exact duplicate append is idempotent and adds no raw record\n"
+    },
+    {
+      "sequence": 213,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 58 - an exact duplicate append is idempotent and adds no raw record\n"
+    },
+    {
+      "sequence": 214,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 66.826541\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 215,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: an idempotent append restores deleted derived and object files\n"
+    },
+    {
+      "sequence": 216,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 59 - an idempotent append restores deleted derived and object files\n  ---\n  duration_ms: 67.959541\n  type: 'test'\n  ...\n# Subtest: the same bytes under different attempts reuse the object but keep distinct records\nok 60 - the same bytes under different attempts reuse the object but keep distinct records\n"
+    },
+    {
+      "sequence": 217,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "  ---\n  duration_ms: 68.1715\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 218,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "# Subtest: store rejects caller-supplied managed identity and object fields\n"
+    },
+    {
+      "sequence": 219,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.608Z",
+      "chunk": "ok 61 - store rejects caller-supplied managed identity and object fields\n"
+    },
+    {
+      "sequence": 220,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 4.887833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 221,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: source files must resolve inside the approved source root\n"
+    },
+    {
+      "sequence": 222,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 62 - source files must resolve inside the approved source root\n  ---\n  duration_ms: 6.22775\n  type: 'test'\n  ...\n# Subtest: a raw JSONL symlink cannot redirect append outside the store\n"
+    },
+    {
+      "sequence": 223,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 63 - a raw JSONL symlink cannot redirect append outside the store\n  ---\n  duration_ms: 1.532875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 224,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index\n"
+    },
+    {
+      "sequence": 225,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 64 - corrupt raw JSON blocks rebuild and preserves the last valid index\n"
+    },
+    {
+      "sequence": 226,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 34.343042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 227,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: duplicate raw ids block rebuild and ID lookup\n"
+    },
+    {
+      "sequence": 228,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 65 - duplicate raw ids block rebuild and ID lookup\n  ---\n  duration_ms: 37.904834\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 229,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: an existing content-addressed object with different bytes blocks append\n"
+    },
+    {
+      "sequence": 230,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 66 - an existing content-addressed object with different bytes blocks append\n  ---\n  duration_ms: 4.100667\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 231,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: content object publication failure returns an exact blocker without throwing\n"
+    },
+    {
+      "sequence": 232,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 67 - content object publication failure returns an exact blocker without throwing\n"
+    },
+    {
+      "sequence": 233,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 10.106875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 234,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: resolve refuses a content object replaced by a symlink\n"
+    },
+    {
+      "sequence": 235,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 68 - resolve refuses a content object replaced by a symlink\n  ---\n  duration_ms: 47.144792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 236,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: lookup rejects a store root replaced by an external symlink\nok 69 - lookup rejects a store root replaced by an external symlink\n  ---\n  duration_ms: 52.687\n  type: 'test'\n  ...\n# Subtest: schema rejection blocks raw append and index publication\nok 70 - schema rejection blocks raw append and index publication\n"
+    },
+    {
+      "sequence": 237,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 0.790083\n  type: 'test'\n  ...\n# Subtest: store root must remain inside the approved change root\nok 71 - store root must remain inside the approved change root\n  ---\n  duration_ms: 4.130417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 238,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: a symlinked change root cannot redirect the complete store\nok 72 - a symlinked change root cannot redirect the complete store\n"
+    },
+    {
+      "sequence": 239,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 0.414667\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 240,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: cache publication failure restores the previous index and preserves raw truth\n"
+    },
+    {
+      "sequence": 241,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 73 - cache publication failure restores the previous index and preserves raw truth\n  ---\n  duration_ms: 81.995792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 242,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: raw writer completes short writes instead of committing a partial line\n"
+    },
+    {
+      "sequence": 243,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 74 - raw writer completes short writes instead of committing a partial line\n"
+    },
+    {
+      "sequence": 244,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "  ---\n  duration_ms: 0.192541\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 245,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "# Subtest: an occupied raw lock fails closed without creating a raw claim\nok 75 - an occupied raw lock fails closed without creating a raw claim\n  ---\n  duration_ms: 18.361792\n  type: 'test'\n  ...\n# Subtest: lookup requires a valid summary index and never scans raw as fallback\n"
+    },
+    {
+      "sequence": 246,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 76 - lookup requires a valid summary index and never scans raw as fallback\n  ---\n  duration_ms: 56.084541\n  type: 'test'\n  ...\n# Subtest: non-JSON evidence candidates return a blocker instead of throwing\n"
+    },
+    {
+      "sequence": 247,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.609Z",
+      "chunk": "ok 77 - non-JSON evidence candidates return a blocker instead of throwing\n  ---\n  duration_ms: 6.578667\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 248,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API\nok 78 - public factory exposes createEvidenceIntegrityChecker with an injected checkIntegrity API\n  ---\n  duration_ms: 1205.847\n  type: 'test'\n  ...\n# Subtest: valid intact and fresh evidence returns facts only and uses the injected collaborators\nok 79 - valid intact and fresh evidence returns facts only and uses the injected collaborators\n  ---\n  duration_ms: 69.759791\n  type: 'test'\n  ...\n# Subtest: missing evidence file reports a broken-evidence fact instead of a verdict\nok 80 - missing evidence file reports a broken-evidence fact instead of a verdict\n  ---\n  duration_ms: 62.748\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 249,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: tampered evidence bytes block integrity when hash no longer matches\nok 81 - tampered evidence bytes block integrity when hash no longer matches\n  ---\n  duration_ms: 58.964917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 250,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: size mismatch blocks integrity even when the file still exists\n"
+    },
+    {
+      "sequence": 251,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 82 - size mismatch blocks integrity even when the file still exists\n"
+    },
+    {
+      "sequence": 252,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 42.115959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 253,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: an unrecognized producer remains blocked even when bytes are intact\n"
+    },
+    {
+      "sequence": 254,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 83 - an unrecognized producer remains blocked even when bytes are intact\n  ---\n  duration_ms: 47.212083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 255,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: record mismatch blocks when the graph evidence no longer matches the stored record\n"
+    },
+    {
+      "sequence": 256,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 84 - record mismatch blocks when the graph evidence no longer matches the stored record\n"
+    },
+    {
+      "sequence": 257,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 42.6485\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 258,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: binding mismatch is surfaced from the injected cross-reference validator\n"
+    },
+    {
+      "sequence": 259,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 85 - binding mismatch is surfaced from the injected cross-reference validator\n  ---\n  duration_ms: 49.118792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 260,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: empty evidence blocks green-driving facts before any downstream reading verdict exists\n"
+    },
+    {
+      "sequence": 261,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 86 - empty evidence blocks green-driving facts before any downstream reading verdict exists\n"
+    },
+    {
+      "sequence": 262,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 51.742375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 263,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: stale current fingerprints block freshness with SHA-based comparison instead of mtime\n"
+    },
+    {
+      "sequence": 264,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 87 - stale current fingerprints block freshness with SHA-based comparison instead of mtime\n  ---\n  duration_ms: 44.829875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 265,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed case_snapshot_hash blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 266,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 88 - changed case_snapshot_hash blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 267,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 49.161667\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 268,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed code_sha blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 269,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 89 - changed code_sha blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 270,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 41.994625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 271,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed test_sha blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 272,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 90 - changed test_sha blocks the complete execution fingerprint\n  ---\n  duration_ms: 49.741791\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 273,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed environment_hash blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 274,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 91 - changed environment_hash blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 275,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 46.207375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 276,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed runtime_version blocks the complete execution fingerprint\n"
+    },
+    {
+      "sequence": 277,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 92 - changed runtime_version blocks the complete execution fingerprint\n  ---\n  duration_ms: 43.892417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 278,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed kernel_version blocks the complete execution fingerprint\nok 93 - changed kernel_version blocks the complete execution fingerprint\n  ---\n  duration_ms: 51.177334\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 279,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: missing current fingerprints return blockers and facts without throwing\n"
+    },
+    {
+      "sequence": 280,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 94 - missing current fingerprints return blockers and facts without throwing\n"
+    },
+    {
+      "sequence": 281,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 54.340917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 282,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: missing object and missing store record preserve distinct blocker identities\n"
+    },
+    {
+      "sequence": 283,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 95 - missing object and missing store record preserve distinct blocker identities\n"
+    },
+    {
+      "sequence": 284,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 29.20375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 285,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: stored identity mismatch remains distinct from graph record mismatch\n"
+    },
+    {
+      "sequence": 286,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 96 - stored identity mismatch remains distinct from graph record mismatch\n  ---\n  duration_ms: 31.471833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 287,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: mtime changes alone are ignored when bytes and fingerprints still match\n"
+    },
+    {
+      "sequence": 288,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 97 - mtime changes alone are ignored when bytes and fingerprints still match\n"
+    },
+    {
+      "sequence": 289,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 29.659542\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 290,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: unsafe symlink evidence paths are blocked before bytes are trusted\n"
+    },
+    {
+      "sequence": 291,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 98 - unsafe symlink evidence paths are blocked before bytes are trusted\n  ---\n  duration_ms: 27.362833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 292,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: an unsafe object read cannot emit positive existence or match facts\n"
+    },
+    {
+      "sequence": 293,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 99 - an unsafe object read cannot emit positive existence or match facts\n"
+    },
+    {
+      "sequence": 294,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 28.987083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 295,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: an object ancestor swapped after resolve cannot produce trusted facts\n"
+    },
+    {
+      "sequence": 296,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 100 - an object ancestor swapped after resolve cannot produce trusted facts\n  ---\n  duration_ms: 32.097\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 297,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: integrity checks never mutate caller graph, evidence, or fingerprint input\nok 101 - integrity checks never mutate caller graph, evidence, or fingerprint input\n  ---\n  duration_ms: 26.488084\n  type: 'test'\n  ...\n# Subtest: hostile proxy input fails closed without escaping or reaching collaborators\nok 102 - hostile proxy input fails closed without escaping or reaching collaborators\n  ---\n  duration_ms: 26.706\n  type: 'test'\n  ...\n# Subtest: hostile cross-reference result fails closed without escaping\n"
+    },
+    {
+      "sequence": 298,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 103 - hostile cross-reference result fails closed without escaping\n  ---\n  duration_ms: 31.641125\n  type: 'test'\n  ...\n# Subtest: inconsistent cross-reference result {\"ok\":false,\"blockers\":[]} fails closed\n"
+    },
+    {
+      "sequence": 299,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 104 - inconsistent cross-reference result {\"ok\":false,\"blockers\":[]} fails closed\n  ---\n  duration_ms: 33.238167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 300,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: inconsistent cross-reference result {\"ok\":true,\"blockers\":[{\"id\":\"verification-contract:cross-reference-invalid\",\"related_entity_type\":\"evidence\",\"related_entity_id\":\"untrusted-evidence\"}]} fails closed\n"
+    },
+    {
+      "sequence": 301,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 105 - inconsistent cross-reference result {\"ok\":true,\"blockers\":[{\"id\":\"verification-contract:cross-reference-invalid\",\"related_entity_type\":\"evidence\",\"related_entity_id\":\"untrusted-evidence\"}]} fails closed\n"
+    },
+    {
+      "sequence": 302,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 32.592709\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 303,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: matching run and case fingerprints produce a fresh case fact\n"
+    },
+    {
+      "sequence": 304,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 106 - matching run and case fingerprints produce a fresh case fact\n  ---\n  duration_ms: 1.525083\n  type: 'test'\n  ...\n# Subtest: changed case_snapshot_hash makes the concrete case stale\nok 107 - changed case_snapshot_hash makes the concrete case stale\n"
+    },
+    {
+      "sequence": 305,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 0.384375\n  type: 'test'\n  ...\n# Subtest: changed code_sha makes the concrete case stale\n"
+    },
+    {
+      "sequence": 306,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 108 - changed code_sha makes the concrete case stale\n  ---\n  duration_ms: 0.260041\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 307,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed test_sha makes the concrete case stale\n"
+    },
+    {
+      "sequence": 308,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 109 - changed test_sha makes the concrete case stale\n"
+    },
+    {
+      "sequence": 309,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "  ---\n  duration_ms: 0.222209\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 310,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "# Subtest: changed environment_hash makes the concrete case stale\n"
+    },
+    {
+      "sequence": 311,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.610Z",
+      "chunk": "ok 110 - changed environment_hash makes the concrete case stale\n  ---\n  duration_ms: 0.302\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 312,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: changed runtime_version makes the concrete case stale\nok 111 - changed runtime_version makes the concrete case stale\n  ---\n  duration_ms: 0.308125\n  type: 'test'\n  ...\n# Subtest: changed kernel_version makes the concrete case stale\nok 112 - changed kernel_version makes the concrete case stale\n  ---\n  duration_ms: 0.207375\n  type: 'test'\n  ...\n# Subtest: changed browser_project makes the concrete case stale\nok 113 - changed browser_project makes the concrete case stale\n  ---\n  duration_ms: 0.1515\n  type: 'test'\n  ...\n# Subtest: changed test_data_snapshot makes the concrete case stale\nok 114 - changed test_data_snapshot makes the concrete case stale\n"
+    },
+    {
+      "sequence": 313,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.439125\n  type: 'test'\n  ...\n# Subtest: missing current case fingerprint is unknown and blocks freshness\n"
+    },
+    {
+      "sequence": 314,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 115 - missing current case fingerprint is unknown and blocks freshness\n  ---\n  duration_ms: 0.441375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 315,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: mtime-only input cannot produce fresh\n"
+    },
+    {
+      "sequence": 316,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 116 - mtime-only input cannot produce fresh\n"
+    },
+    {
+      "sequence": 317,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.253875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 318,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: latest attempt is selected independently for every approved case\n"
+    },
+    {
+      "sequence": 319,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 117 - latest attempt is selected independently for every approved case\n  ---\n  duration_ms: 0.233541\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 320,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: snapshot artifact and run hash mismatch blocks every case\n"
+    },
+    {
+      "sequence": 321,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 118 - snapshot artifact and run hash mismatch blocks every case\n"
+    },
+    {
+      "sequence": 322,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.147917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 323,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: tied latest attempts are ambiguous instead of selected by id\n"
+    },
+    {
+      "sequence": 324,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 119 - tied latest attempts are ambiguous instead of selected by id\n  ---\n  duration_ms: 0.229\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 325,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: an empty approved snapshot cannot produce a fresh summary\n"
+    },
+    {
+      "sequence": 326,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 120 - an empty approved snapshot cannot produce a fresh summary\n"
+    },
+    {
+      "sequence": 327,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.133583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 328,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: shared evidence freshness fails closed when source fingerprints are missing\n"
+    },
+    {
+      "sequence": 329,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 121 - shared evidence freshness fails closed when source fingerprints are missing\n  ---\n  duration_ms: 0.244875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 330,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: attempts from another run or change cannot become the latest case source\nok 122 - attempts from another run or change cannot become the latest case source\n  ---\n  duration_ms: 0.7275\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 331,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: missing run fingerprints cannot be supplied implicitly by an attempt\nok 123 - missing run fingerprints cannot be supplied implicitly by an attempt\n"
+    },
+    {
+      "sequence": 332,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.240541\n  type: 'test'\n  ...\n# Subtest: missing run and attempt identities cannot compare as equal\n"
+    },
+    {
+      "sequence": 333,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 124 - missing run and attempt identities cannot compare as equal\n"
+    },
+    {
+      "sequence": 334,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.227542\n  type: 'test'\n  ...\n# Subtest: a selected attempt without a stable id blocks the case\n"
+    },
+    {
+      "sequence": 335,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 125 - a selected attempt without a stable id blocks the case\n  ---\n  duration_ms: 0.180292\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 336,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: string or non-positive attempt sequences fail closed\n"
+    },
+    {
+      "sequence": 337,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 126 - string or non-positive attempt sequences fail closed\n  ---\n  duration_ms: 0.502375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 338,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: evaluation never mutates caller-owned artifacts\n"
+    },
+    {
+      "sequence": 339,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 127 - evaluation never mutates caller-owned artifacts\n  ---\n  duration_ms: 0.21075\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 340,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: hostile request values fail closed without throwing\n"
+    },
+    {
+      "sequence": 341,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 128 - hostile request values fail closed without throwing\n"
+    },
+    {
+      "sequence": 342,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.250083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 343,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: kernel package exposes one versioned public entry and schema-only subpath\n"
+    },
+    {
+      "sequence": 344,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 129 - kernel package exposes one versioned public entry and schema-only subpath\n  ---\n  duration_ms: 0.970667\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 345,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: public entry exposes immutable metadata and explicit service contracts\n"
+    },
+    {
+      "sequence": 346,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 130 - public entry exposes immutable metadata and explicit service contracts\n  ---\n  duration_ms: 25.024625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 347,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: service creation requires every adapter and never falls back\n"
+    },
+    {
+      "sequence": 348,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 131 - service creation requires every adapter and never falls back\n  ---\n  duration_ms: 0.317666\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 349,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: kernel source contains no host runtime dependency\n"
+    },
+    {
+      "sequence": 350,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 132 - kernel source contains no host runtime dependency\n  ---\n  duration_ms: 23.854167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 351,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: routes the exact approved CASE-03 assertion set to its dedicated runner\nok 133 - routes the exact approved CASE-03 assertion set to its dedicated runner\n  ---\n  duration_ms: 51.363375\n  type: 'test'\n  ...\n# Subtest: keeps the complete smoke suite as the default path\nok 134 - keeps the complete smoke suite as the default path\n  ---\n  duration_ms: 249.310666\n  type: 'test'\n  ...\n# Subtest: does not route reordered assertion identities\n"
+    },
+    {
+      "sequence": 352,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 135 - does not route reordered assertion identities\n  ---\n  duration_ms: 213.140875\n  type: 'test'\n  ...\n# Subtest: does not route single assertion identities\n"
+    },
+    {
+      "sequence": 353,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 136 - does not route single assertion identities\n  ---\n  duration_ms: 225.324958\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 354,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: does not route partial assertion identities\nok 137 - does not route partial assertion identities\n"
+    },
+    {
+      "sequence": 355,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 176.530084\n  type: 'test'\n  ...\n# Subtest: does not route extra assertion identities\n"
+    },
+    {
+      "sequence": 356,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 138 - does not route extra assertion identities\n  ---\n  duration_ms: 154.455166\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 357,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: does not route duplicate assertion identities\n"
+    },
+    {
+      "sequence": 358,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 139 - does not route duplicate assertion identities\n  ---\n  duration_ms: 147.7355\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 359,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: propagates a dedicated CASE-03 runner failure without fallback\n"
+    },
+    {
+      "sequence": 360,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 140 - propagates a dedicated CASE-03 runner failure without fallback\n  ---\n  duration_ms: 43.307208\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 361,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: public factory returns concrete deterministic case ids and reasons\n"
+    },
+    {
+      "sequence": 362,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 141 - public factory returns concrete deterministic case ids and reasons\n  ---\n  duration_ms: 9.640459\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 363,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: CodeGraph can map an otherwise unmapped changed file to exact cases\n"
+    },
+    {
+      "sequence": 364,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 142 - CodeGraph can map an otherwise unmapped changed file to exact cases\n  ---\n  duration_ms: 0.42575\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 365,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: unmapped production changes conservatively select every approved case\n"
+    },
+    {
+      "sequence": 366,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 143 - unmapped production changes conservatively select every approved case\n  ---\n  duration_ms: 0.347792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 367,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: CodeGraph cannot remove repaired or mandatory baseline cases\n"
+    },
+    {
+      "sequence": 368,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 144 - CodeGraph cannot remove repaired or mandatory baseline cases\n  ---\n  duration_ms: 0.3145\n  type: 'test'\n  ...\n# Subtest: unknown case references fail closed without silently shrinking scope\n"
+    },
+    {
+      "sequence": 369,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 145 - unknown case references fail closed without silently shrinking scope\n  ---\n  duration_ms: 0.382541\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 370,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: malformed CodeGraph impact fails closed and selects all approved cases\n"
+    },
+    {
+      "sequence": 371,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 146 - malformed CodeGraph impact fails closed and selects all approved cases\n  ---\n  duration_ms: 0.38475\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 372,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: CodeGraph affected files without an approved case mapping fail closed\n"
+    },
+    {
+      "sequence": 373,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 147 - CodeGraph affected files without an approved case mapping fail closed\n  ---\n  duration_ms: 0.236417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 374,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: cross-change or unbound CodeGraph evidence fails closed\n"
+    },
+    {
+      "sequence": 375,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 148 - cross-change or unbound CodeGraph evidence fails closed\n  ---\n  duration_ms: 0.355208\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 376,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: missing freshness facts fail closed for the unaccounted approved case\n"
+    },
+    {
+      "sequence": 377,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 149 - missing freshness facts fail closed for the unaccounted approved case\n  ---\n  duration_ms: 0.40225\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 378,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: duplicate catalog ids and hostile input are rejected without throwing\nok 150 - duplicate catalog ids and hostile input are rejected without throwing\n"
+    },
+    {
+      "sequence": 379,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.467167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 380,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: incomplete six-domain assignments fail closed before scope selection\nok 151 - incomplete six-domain assignments fail closed before scope selection\n"
+    },
+    {
+      "sequence": 381,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.250708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 382,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: missing or rejected case approval blocks and selects all catalog cases\nok 152 - missing or rejected case approval blocks and selects all catalog cases\n"
+    },
+    {
+      "sequence": 383,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.255458\n  type: 'test'\n  ...\n# Subtest: planner requires an approval validator and never assumes approval\n"
+    },
+    {
+      "sequence": 384,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 153 - planner requires an approval validator and never assumes approval\n"
+    },
+    {
+      "sequence": 385,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "  ---\n  duration_ms: 0.194333\n  type: 'test'\n  ...\n# Subtest: planning never mutates caller-owned artifacts\n"
+    },
+    {
+      "sequence": 386,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 154 - planning never mutates caller-owned artifacts\n  ---\n  duration_ms: 0.226584\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 387,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: CodeGraph evidence projects to a deterministic versioned impact report\n"
+    },
+    {
+      "sequence": 388,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 155 - CodeGraph evidence projects to a deterministic versioned impact report\n  ---\n  duration_ms: 8.515334\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 389,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# Subtest: blocked or malformed CodeGraph evidence cannot manufacture usable impact\n"
+    },
+    {
+      "sequence": 390,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "ok 156 - blocked or malformed CodeGraph evidence cannot manufacture usable impact\n  ---\n  duration_ms: 0.107417\n  type: 'test'\n  ...\n1..156\n"
+    },
+    {
+      "sequence": 391,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# tests 248\n# suites 0\n"
+    },
+    {
+      "sequence": 392,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.611Z",
+      "chunk": "# pass 248\n# fail 0\n"
+    },
+    {
+      "sequence": 393,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.612Z",
+      "chunk": "# cancelled 0\n# skipped 0\n"
+    },
+    {
+      "sequence": 394,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.612Z",
+      "chunk": "# todo 0\n# duration_ms 6905.120916\n"
+    },
+    {
+      "sequence": 395,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:06.717Z",
+      "chunk": "specnav codegraph impact report CLI fixture ok\n"
+    },
+    {
+      "sequence": 396,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:09.015Z",
+      "chunk": "verification v2 case-level rerun CLI fixture ok\n"
+    },
+    {
+      "sequence": 397,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:09.082Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 398,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.383Z",
+      "chunk": "# Subtest: approved command persists run, attempt, evidence, integrity and six-domain readings\n"
+    },
+    {
+      "sequence": 399,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.384Z",
+      "chunk": "ok 1 - approved command persists run, attempt, evidence, integrity and six-domain readings\n"
+    },
+    {
+      "sequence": 400,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.384Z",
+      "chunk": "  ---\n  duration_ms: 1233.054125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 401,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.634Z",
+      "chunk": "# Subtest: artifact pipeline derives both gates, one report model and three HTML pages\n"
+    },
+    {
+      "sequence": 402,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.635Z",
+      "chunk": "ok 2 - artifact pipeline derives both gates, one report model and three HTML pages\n  ---\n  duration_ms: 254.492125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 403,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "1..2\n"
+    },
+    {
+      "sequence": 404,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "# tests 2\n# suites 0\n# pass 2\n"
+    },
+    {
+      "sequence": 405,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 406,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 407,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "# skipped 0\n# todo 0\n"
+    },
+    {
+      "sequence": 408,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.649Z",
+      "chunk": "# duration_ms 1572.952333\n"
+    },
+    {
+      "sequence": 409,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.660Z",
+      "chunk": "verification v2 CASE-03 evidence and freshness proof ok\n"
+    },
+    {
+      "sequence": 410,
+      "type": "command.stdout",
+      "at": "2026-08-11T05:08:10.663Z",
+      "chunk": "specnav codex CASE-03 smoke ok\n"
+    },
+    {
+      "sequence": 411,
+      "type": "command.terminal",
+      "at": "2026-08-11T05:08:10.698Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 412,
+      "type": "attempt.terminal",
+      "at": "2026-08-11T05:08:10.698Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260811050759-348801b49d969b5c",
+        "run_id": "run-20260811050759-348801b49d969b5c",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-03",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "retest",
+        "sequence": 2,
+        "runner": "command",
+        "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+        "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+        "scenario_hash": "8e7047dd6c7368108dae972adc41166db473f0883d2547239555e4710ee7f2f8",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "2ac84e36c32b1e62a5b419bd091780d43725b2def71a0f2b0c77291ab2ff45af",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-11T05:07:59.635Z",
+        "completed_at": "2026-08-11T05:08:10.698Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 413,
+      "type": "run.terminal",
+      "at": "2026-08-11T05:08:10.698Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260811050759-348801b49d969b5c",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-03"
+        ],
+        "code_sha": "29bd413f06b1989378cb5ae88fbcd101457c086b",
+        "test_sha": "2b538baa29378bb226eaab949ab6285059d4e083ff004a1e6bf3ef373b24cb9d",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-11T05:07:59.616Z",
+        "started_at": "2026-08-11T05:07:59.635Z",
+        "completed_at": "2026-08-11T05:08:10.698Z",
+        "kind": "retest",
+        "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+        "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
