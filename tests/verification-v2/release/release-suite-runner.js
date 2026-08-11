@@ -95,24 +95,32 @@ function launchShard(spawnFunction, command, index, onSpawnError) {
   let finish;
   let settled = false;
   const completion = new Promise((resolve) => {
-    finish = (result) => {
-      if (settled) return;
-      settled = true;
-      resolve({ child, index, ...result });
-    };
-    child.once('error', (error) => {
-      finish({
+    const onError = (error) => {
+      if (finish({
         code: null,
         signal: null,
         error: error instanceof Error ? error.message : String(error)
+      })) {
+        onSpawnError(error, index);
+      }
+    };
+    const onExit = (code, signal) => {
+      finish({
+        code,
+        signal,
+        error: null
       });
-      onSpawnError(error, index);
-    });
-    child.once('exit', (code, signal) => finish({
-      code,
-      signal,
-      error: null
-    }));
+    };
+    finish = (result) => {
+      if (settled) return false;
+      settled = true;
+      child.removeListener('error', onError);
+      child.removeListener('exit', onExit);
+      resolve({ child, index, ...result });
+      return true;
+    };
+    child.once('error', onError);
+    child.once('exit', onExit);
   });
   return {
     child,

@@ -161,6 +161,7 @@ test('test registration selects only the current deterministic shard', () => {
 
 test('release suite launches four shards with isolated shard identities', async () => {
   const invocations = [];
+  const children = [];
   const signalSource = new EventEmitter();
   const result = await runReleaseSuite({
     cwd: '/repo',
@@ -170,7 +171,9 @@ test('release suite launches four shards with isolated shard identities', async 
     signalSource,
     spawnFunction(command, args, options) {
       invocations.push({ command, args, options });
-      return fakeChild({ code: 0 });
+      const child = fakeChild({ code: 0 });
+      children.push(child);
+      return child;
     },
     stdio: 'pipe',
     testFile: '/repo/release-proof.test.js'
@@ -179,6 +182,10 @@ test('release suite launches four shards with isolated shard identities', async 
   assert.equal(result.ok, true);
   assert.equal(result.results.length, 4);
   assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+  for (const child of children) {
+    assert.equal(child.listenerCount('error'), 0);
+    assert.equal(child.listenerCount('exit'), 0);
+  }
   assert.deepEqual(
     invocations.map((entry) => entry.options.env[SHARD_INDEX_ENV]),
     ['0', '1', '2', '3']
@@ -244,6 +251,7 @@ test('a synchronous spawn failure stops launch and terminates active shards', as
 
 test('asynchronous spawn errors and child signals fail the suite', async () => {
   const kills = Array.from({ length: 4 }, () => []);
+  const children = [];
   let index = 0;
   const result = await runReleaseSuite({
     shardCount: 4,
@@ -254,16 +262,18 @@ test('asynchronous spawn errors and child signals fail the suite', async () => {
     spawnFunction() {
       const current = index;
       index += 1;
+      let child;
       if (current === 0) {
-        return fakeChild({ code: 0 }, kills[current]);
+        child = fakeChild({ code: 0 }, kills[current]);
+      } else if (current === 1) {
+        child = fakeChild({ error: new Error('async spawn error') });
+      } else if (current === 2) {
+        child = fakeChild({ code: null, signal: 'SIGABRT' });
+      } else {
+        child = fakeChild(null, kills[current]);
       }
-      if (current === 1) {
-        return fakeChild({ error: new Error('async spawn error') });
-      }
-      if (current === 2) {
-        return fakeChild({ code: null, signal: 'SIGABRT' });
-      }
-      return fakeChild(null, kills[current]);
+      children.push(child);
+      return child;
     },
     stdio: 'pipe'
   });
@@ -274,6 +284,10 @@ test('asynchronous spawn errors and child signals fail the suite', async () => {
   assert.equal(result.results[2].signal, 'SIGABRT');
   assert.deepEqual(kills[0], ['SIGTERM', 'SIGKILL']);
   assert.deepEqual(kills[3], ['SIGTERM', 'SIGKILL']);
+  for (const child of children) {
+    assert.equal(child.listenerCount('error'), 0);
+    assert.equal(child.listenerCount('exit'), 0);
+  }
 });
 
 test('parent termination is forwarded to every active shard', async () => {
