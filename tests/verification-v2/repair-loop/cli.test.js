@@ -302,6 +302,115 @@ function baseArgs(source, action) {
   ];
 }
 
+function addClassifiedSecondRoot(source, deps) {
+  const v2 = path.join(source.verificationRoot, 'v2');
+  const runsFile = path.join(v2, 'runs.json');
+  const failuresFile = path.join(v2, 'failures.json');
+  const runs = JSON.parse(fs.readFileSync(runsFile, 'utf8'));
+  const failures = JSON.parse(fs.readFileSync(failuresFile, 'utf8'));
+  const secondRun = {
+    ...runs[0],
+    id: 'run-second-root',
+    case_ids: ['CASE-02']
+  };
+  const secondFailure = {
+    ...source.failure,
+    id: 'failure-second-root',
+    run_id: secondRun.id,
+    case_id: 'CASE-02',
+    attempt_id: 'attempt-second-root'
+  };
+  writeJson(runsFile, [...runs, secondRun]);
+  writeJson(failuresFile, [...failures, secondFailure]);
+  fs.mkdirSync(path.join(
+    source.verificationRoot,
+    'runs',
+    secondRun.id
+  ), { recursive: true });
+  fs.writeFileSync(path.join(
+    source.verificationRoot,
+    'runs',
+    secondRun.id,
+    'failures.jsonl'
+  ), `${JSON.stringify(secondFailure)}\n`);
+
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  const effectiveFailure = {
+    ...secondFailure,
+    classification: 'test_defect',
+    status: 'repair_required',
+    next_action: 'repair_required',
+    owner: 'development'
+  };
+  const envelope = authority.seal('classification_result', {
+    ok: true,
+    status: 'classified',
+    packet: effectiveFailure,
+    signals: [],
+    blockers: []
+  }, {
+    failure_id: secondFailure.id,
+    change_id: secondFailure.change_id,
+    run_id: secondFailure.run_id,
+    case_id: secondFailure.case_id
+  });
+  writeJson(path.join(
+    source.verificationRoot,
+    'repairs',
+    secondFailure.id,
+    'classification-envelope.json'
+  ), envelope);
+  return {
+    authority,
+    envelope,
+    effectiveFailure,
+    failure: secondFailure,
+    run: secondRun
+  };
+}
+
+function addPassedRetry(source) {
+  const attemptsFile = path.join(
+    source.verificationRoot,
+    'v2',
+    'attempts.json'
+  );
+  const attempts = JSON.parse(fs.readFileSync(attemptsFile, 'utf8'));
+  const retry = {
+    ...attempts[0],
+    id: 'attempt-retry-root',
+    kind: 'retry',
+    sequence: 2,
+    parent_attempt_id: attempts[0].id,
+    status: 'passed',
+    started_at: '2026-08-06T09:00:01.000Z',
+    completed_at: '2026-08-06T09:00:02.000Z',
+    exit_status: 0
+  };
+  writeJson(attemptsFile, [...attempts, retry]);
+  const initialIntegrity = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'runs',
+    retry.run_id,
+    'attempts',
+    attempts[0].id,
+    'integrity.json'
+  ), 'utf8'));
+  writeJson(path.join(
+    source.verificationRoot,
+    'runs',
+    retry.run_id,
+    'attempts',
+    retry.id,
+    'integrity.json'
+  ), initialIntegrity);
+  return retry;
+}
+
 function rerunScope(source, reasons = ['repaired-case']) {
   return {
     ok: true,
@@ -486,6 +595,202 @@ test('repair CLI appends one deterministic proposal across repeated state evalua
   assert.equal(
     proposalEnvelope.bindings.previous_envelope_digest,
     null
+  );
+});
+
+test('repair CLI preserves classifications for two independent root failures', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const second = addClassifiedSecondRoot(source, deps);
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, true, JSON.stringify(state.blockers));
+  assert.equal(
+    state.blockers.some((entry) => (
+      entry.id
+        === 'verification-failure-state:classification-missing-or-invalid'
+    )),
+    false
+  );
+  const repairState = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'repair-state.json'
+  ), 'utf8'));
+  assert.equal(repairState.ok, true, JSON.stringify(repairState.blockers));
+  assert.equal(second.envelope.bindings.failure_id, second.failure.id);
+});
+
+test('repair CLI still blocks when another root classification is missing', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const second = addClassifiedSecondRoot(source, deps);
+  fs.rmSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    second.failure.id,
+    'classification-envelope.json'
+  ));
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, false);
+  assert.deepEqual(state.blockers.filter((entry) => (
+    entry.id
+      === 'verification-failure-state:classification-missing-or-invalid'
+  )), [{
+    id: 'verification-failure-state:classification-missing-or-invalid',
+    artifact: second.failure.id,
+    detail: null
+  }]);
+});
+
+test('repair CLI rejects an orphan classification envelope', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const legitimate = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'classification-envelope.json'
+  ), 'utf8'));
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  writeJson(path.join(
+    source.verificationRoot,
+    'repairs',
+    'failure-orphan',
+    'classification-envelope.json'
+  ), authority.seal(
+    'classification_result',
+    {
+      ...legitimate.payload,
+      packet: {
+        ...legitimate.payload.packet,
+        id: 'failure-orphan'
+      }
+    },
+    {
+      ...legitimate.bindings,
+      failure_id: 'failure-orphan'
+    }
+  ));
+
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, false);
+  assert.equal(
+    state.blockers.some((entry) => (
+      entry.id === 'verification-failure-state:classification-orphaned'
+    )),
+    true,
+    JSON.stringify(state.blockers)
+  );
+});
+
+test('repair CLI rejects non-directory entries in classification inventory', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  fs.writeFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    'unmanaged.json'
+  ), '{}\n');
+
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, false);
+  assert.deepEqual(state.blockers, [{
+    id: 'verification-repair:classification-inventory-invalid',
+    artifact: 'repairs/unmanaged.json',
+    detail: 'file'
+  }]);
+});
+
+test('transition apply retains every independent root in global failure state', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const second = addClassifiedSecondRoot(source, deps);
+  const rootCause = JSON.parse(fs.readFileSync(
+    source.rootCauseFile,
+    'utf8'
+  ));
+  writeJson(source.rootCauseFile, {
+    ...rootCause,
+    classification: 'environment_defect',
+    summary: 'The execution environment produced a transient failure.',
+    root_cause: 'A diagnostic retry is required without source changes.'
+  });
+  addPassedRetry(source);
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+
+  const firstEnvelope = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'classification-envelope.json'
+  ), 'utf8'));
+  assert.equal(firstEnvelope.payload.packet.status, 'retry_allowed');
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, true, JSON.stringify(state.blockers));
+  assert.equal(state.status, 'closure_ready');
+  assert.equal(state.transition_proposal.action, 'close_failure');
+  const applied = await run([
+    ...baseArgs(source, 'transition-apply'),
+    '--proposal-id',
+    state.transition_proposal.id,
+    '--idempotency-key',
+    'close-first-root'
+  ], deps);
+  assert.equal(applied.ok, true, JSON.stringify(applied.blockers));
+  assert.deepEqual(applied.open_failure_ids, [second.failure.id]);
+  const reduced = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failure-state.json'
+  ), 'utf8'));
+  assert.equal(reduced.ok, true, JSON.stringify(reduced.blockers));
+  assert.equal(
+    reduced.states.find((entry) => (
+      entry.failure_id === source.failure.id
+    )).logical_status,
+    'closed'
+  );
+  assert.equal(
+    reduced.states.find((entry) => (
+      entry.failure_id === second.failure.id
+    )).logical_status,
+    second.effectiveFailure.status
   );
 });
 

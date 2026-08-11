@@ -769,6 +769,43 @@ function classificationEnvelope(context, store, failureId) {
   );
 }
 
+function classificationEnvelopeInventory(context, root) {
+  const inventory = root.store.listDirectory('repairs');
+  if (!inventory.ok) {
+    const error = new Error(
+      'verification-repair:classification-inventory-read-failed'
+    );
+    error.blockers = inventory.blockers;
+    throw error;
+  }
+  const envelopes = [];
+  for (const entry of inventory.entries) {
+    if (
+      entry.type !== 'directory'
+      || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(entry.name)
+    ) {
+      const error = new Error(
+        'verification-repair:classification-inventory-invalid'
+      );
+      error.blockers = [blocker(
+        'verification-repair:classification-inventory-invalid',
+        path.posix.join('repairs', entry.name),
+        entry.type
+      )];
+      throw error;
+    }
+    const envelope = readOptionalJson(
+      root.store,
+      path.posix.join(
+        paths(context, entry.name).repairRoot,
+        'classification-envelope.json'
+      )
+    );
+    if (envelope) envelopes.push(envelope);
+  }
+  return envelopes;
+}
+
 function repairEnvelope(context, store, failureId) {
   const completed = readOptionalJson(
     store,
@@ -1001,6 +1038,30 @@ function evaluateState(
   });
 }
 
+function reduceGlobalFailureState(
+  context,
+  root,
+  authority,
+  proposals,
+  receipts
+) {
+  return kernel.createFailureStateReducer({
+    schemaRegistry: context.schemaRegistry,
+    trustVerifier: authority
+  }).reduce({
+    expected_change_id: context.changeId,
+    failures: root.failures,
+    raw_failures: root.rawFailures,
+    runs: root.runs,
+    classification_envelopes: classificationEnvelopeInventory(
+      context,
+      root
+    ),
+    transition_proposal_envelopes: proposals,
+    transition_receipt_envelopes: receipts
+  });
+}
+
 function reduceFailureState(
   context,
   root,
@@ -1033,34 +1094,25 @@ function reduceFailureState(
     root.store,
     failure.id
   );
-  if (
-    !authority.verify(classification).ok
-    || classification.kind !== 'classification_result'
-    || classification.bindings.failure_id !== failure.id
-  ) {
+  if (!authority.verify(classification).ok) {
     return {
       ok: false,
       states: [],
       effective_failures: [],
       open_failure_ids: [],
       blockers: [blocker(
-        'verification-repair:classification-envelope-invalid',
+        'verification-repair-loop:trusted-envelope-unverified',
         failure.id
       )]
     };
   }
-  return kernel.createFailureStateReducer({
-    schemaRegistry: context.schemaRegistry,
-    trustVerifier: authority
-  }).reduce({
-    expected_change_id: context.changeId,
-    failures: root.failures,
-    raw_failures: root.rawFailures,
-    runs: root.runs,
-    classification_envelopes: [classification],
-    transition_proposal_envelopes: proposals.value,
-    transition_receipt_envelopes: receipts.value
-  });
+  return reduceGlobalFailureState(
+    context,
+    root,
+    authority,
+    proposals.value,
+    receipts.value
+  );
 }
 
 function projectAppliedFailureState(state, failureState, failureId) {
@@ -2366,18 +2418,13 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         }
         receiptLog = appended.values;
       }
-      const failureState = kernel.createFailureStateReducer({
-        schemaRegistry: context.schemaRegistry,
-        trustVerifier: authority
-      }).reduce({
-        expected_change_id: context.changeId,
-        failures: root.failures,
-        raw_failures: root.rawFailures,
-        runs: root.runs,
-        classification_envelopes: [classification],
-        transition_proposal_envelopes: proposals.value,
-        transition_receipt_envelopes: receiptLog
-      });
+      const failureState = reduceGlobalFailureState(
+        context,
+        root,
+        authority,
+        proposals.value,
+        receiptLog
+      );
       if (!failureState.ok) {
         return {
           ...failureState,
