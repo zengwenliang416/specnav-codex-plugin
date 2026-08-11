@@ -13,6 +13,7 @@ const {
   SHARD_INDEX_ENV,
   createShardTest,
   parseShardConfig,
+  runManagedCommand,
   runReleaseSuite,
   shardAssignments,
   terminateProcessGroup
@@ -174,6 +175,7 @@ test('test registration selects only the current deterministic shard', () => {
 test('release suite launches four shards with isolated shard identities', async () => {
   const invocations = [];
   const children = [];
+  const registeredGroups = [];
   const signalSource = new EventEmitter();
   const result = await runReleaseSuite({
     cwd: '/repo',
@@ -181,9 +183,13 @@ test('release suite launches four shards with isolated shard identities', async 
     nodePath: '/node',
     shardCount: 4,
     signalSource,
+    registerProcessGroup(pid) {
+      registeredGroups.push(pid);
+    },
     spawnFunction(command, args, options) {
       invocations.push({ command, args, options });
       const child = fakeChild({ code: 0 });
+      child.pid = 1000 + children.length;
       children.push(child);
       return child;
     },
@@ -194,6 +200,7 @@ test('release suite launches four shards with isolated shard identities', async 
   assert.equal(result.ok, true);
   assert.equal(result.results.length, 4);
   assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+  assert.deepEqual(registeredGroups, [1000, 1001, 1002, 1003]);
   for (const child of children) {
     assert.equal(child.listenerCount('error'), 0);
     assert.equal(child.listenerCount('exit'), 0);
@@ -585,6 +592,75 @@ test('SIGKILL escalation cleans a worker after its coordinator exits', async (t)
   assert.equal(result.received_signal, 'SIGTERM');
   assert.equal(fs.readFileSync(markerFile, 'utf8'), 'ignored SIGTERM\n');
   assert.equal(processExists(ready.worker_pid), false);
+});
+
+test('managed owner kills a registered detached group after coordinator exit', async (t) => {
+  if (process.platform === 'win32') {
+    t.skip('real detached process-group probe is POSIX-only');
+    return;
+  }
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-managed-group-registry-')
+  );
+  const readyFile = path.join(root, 'ready.json');
+  const heartbeatFile = path.join(root, 'heartbeat.txt');
+  const workerSource = [
+    "'use strict';",
+    "const fs = require('node:fs');",
+    'const heartbeat = process.argv[1];',
+    "process.on('SIGTERM', () => {});",
+    "setInterval(() => fs.appendFileSync(heartbeat, 'x'), 25);"
+  ].join('\n');
+  const coordinatorSource = [
+    "'use strict';",
+    "const { spawn } = require('node:child_process');",
+    "const fs = require('node:fs');",
+    'const ready = process.argv[1];',
+    'const heartbeat = process.argv[2];',
+    `const worker = spawn(process.execPath, ['-e', ${JSON.stringify(
+      workerSource
+    )}, heartbeat], {`,
+    '  detached: true,',
+    "  stdio: 'ignore'",
+    '});',
+    'fs.writeSync(',
+    '  Number(process.env.SPECNAV_RELEASE_PROCESS_GROUP_FD),',
+    '  `${worker.pid}\\n`',
+    ');',
+    'fs.writeFileSync(ready, JSON.stringify({ worker_pid: worker.pid }));',
+    "process.on('SIGTERM', () => process.exit(0));",
+    'setInterval(() => {}, 1000);'
+  ].join('\n');
+  const signalSource = new EventEmitter();
+  const pending = runManagedCommand({
+    command: process.execPath,
+    args: ['-e', coordinatorSource, readyFile, heartbeatFile],
+    forceWaitMs: 100,
+    ownsNestedGroups: true,
+    signalSource,
+    terminationGraceMs: 50
+  });
+  let workerPid = null;
+  t.after(() => {
+    if (workerPid !== null) {
+      try {
+        process.kill(-workerPid, 'SIGKILL');
+      } catch {
+        // The worker process group is expected to have exited.
+      }
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(readyFile);
+  workerPid = JSON.parse(fs.readFileSync(readyFile, 'utf8')).worker_pid;
+  signalSource.emit('SIGTERM');
+  const result = await pending;
+  await waitForProcessExit(workerPid);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.received_signal, 'SIGTERM');
+  assert.equal(processExists(workerPid), false);
 });
 
 test('release shell forwards adapter termination to its active Node command', async (t) => {

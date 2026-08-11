@@ -2,6 +2,7 @@
 
 const { spawn, spawnSync } = require('node:child_process');
 const { EventEmitter } = require('node:events');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const DEFAULT_SHARD_COUNT = 4;
@@ -11,6 +12,7 @@ const DEFAULT_MANAGED_TERMINATION_GRACE_MS = 1000;
 const DEFAULT_MANAGED_FORCE_WAIT_MS = 1000;
 const SHARD_COUNT_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_COUNT';
 const SHARD_INDEX_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_INDEX';
+const PROCESS_GROUP_FD_ENV = 'SPECNAV_RELEASE_PROCESS_GROUP_FD';
 const FORWARDED_SIGNALS = Object.freeze(['SIGINT', 'SIGTERM', 'SIGHUP']);
 
 function integer(value, name, minimum) {
@@ -234,6 +236,22 @@ function processGroupExists(child, dependencies = {}) {
   }
 }
 
+function registerProcessGroup(
+  pid,
+  env = process.env,
+  dependencies = {}
+) {
+  const value = env[PROCESS_GROUP_FD_ENV];
+  if (value === undefined) return false;
+  const fd = integer(value, 'process-group-fd', 3);
+  if (!Number.isSafeInteger(pid) || pid <= 0) {
+    throw new Error('verification-release:shard-pid-invalid');
+  }
+  const write = dependencies.writeSync || fs.writeSync;
+  write(fd, `${pid}\n`);
+  return true;
+}
+
 async function runManagedCommand(options = {}) {
   if (typeof options.command !== 'string' || options.command.length === 0) {
     throw new Error('verification-release:managed-command-required');
@@ -247,11 +265,15 @@ async function runManagedCommand(options = {}) {
   const terminateProcess = options.terminateProcess || terminateProcessGroup;
   const groupExists = options.processGroupExists || processGroupExists;
   const terminationErrors = [];
+  const registeredGroupPids = new Set();
   const handlers = new Map();
   let execution = null;
+  let groupStream = null;
+  let groupBuffer = '';
   let receivedSignal = null;
   let shutdownStarted = false;
   let shutdownResolved = false;
+  let escalated = false;
   let escalationTimer = null;
   let forceTimer = null;
   let resolveShutdown;
@@ -263,6 +285,52 @@ async function runManagedCommand(options = {}) {
     shutdownResolved = true;
     resolveShutdown();
   };
+  const killRegisteredGroup = (pid, signal) => {
+    try {
+      if (terminateProcess({ pid }, signal) === false) {
+        terminationErrors.push({
+          index: `group-${pid}`,
+          signal,
+          error: 'verification-release:shard-kill-rejected'
+        });
+      }
+    } catch (error) {
+      terminationErrors.push({
+        index: `group-${pid}`,
+        signal,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  };
+  const trackRegisteredGroup = (value) => {
+    const pid = integer(value, 'registered-process-group', 1);
+    if (execution !== null && pid === execution.child.pid) return;
+    registeredGroupPids.add(pid);
+    if (shutdownStarted) {
+      killRegisteredGroup(
+        pid,
+        escalated || shutdownResolved ? 'SIGKILL' : receivedSignal
+      );
+    }
+  };
+  const onGroupData = (chunk) => {
+    groupBuffer += chunk.toString('utf8');
+    const lines = groupBuffer.split(/\r?\n/);
+    groupBuffer = lines.pop();
+    for (const line of lines) {
+      if (line.length === 0) continue;
+      try {
+        trackRegisteredGroup(line);
+      } catch (error) {
+        terminationErrors.push({
+          index: 'group-registry',
+          signal: 'SIGTERM',
+          error: error instanceof Error ? error.message : String(error)
+        });
+        beginShutdown('SIGTERM');
+      }
+    }
+  };
   const beginShutdown = (signal) => {
     if (shutdownStarted || execution === null) return;
     shutdownStarted = true;
@@ -273,7 +341,11 @@ async function runManagedCommand(options = {}) {
       terminateProcess,
       true
     );
+    for (const pid of registeredGroupPids) {
+      killRegisteredGroup(pid, signal);
+    }
     escalationTimer = setTimeout(() => {
+      escalated = true;
       killExecution(
         execution,
         'SIGKILL',
@@ -281,8 +353,14 @@ async function runManagedCommand(options = {}) {
         terminateProcess,
         true
       );
+      for (const pid of registeredGroupPids) {
+        killRegisteredGroup(pid, 'SIGKILL');
+      }
     }, terminationGraceMs);
     forceTimer = setTimeout(() => {
+      for (const pid of registeredGroupPids) {
+        killRegisteredGroup(pid, 'SIGKILL');
+      }
       forceSettle(execution);
       finishShutdown();
     }, terminationGraceMs + forceWaitMs);
@@ -298,14 +376,33 @@ async function runManagedCommand(options = {}) {
   }
 
   try {
+    const cwd = options.cwd || process.cwd();
+    const args = options.args || [];
+    const ownsNestedGroups = options.ownsNestedGroups === true || (
+      typeof args[0] === 'string'
+      && path.resolve(cwd, args[0]) === __filename
+      && args[1] !== '--managed-command'
+    );
+    const childEnv = {
+      ...(options.env || process.env)
+    };
+    if (ownsNestedGroups) {
+      childEnv[PROCESS_GROUP_FD_ENV] = '3';
+    } else {
+      delete childEnv[PROCESS_GROUP_FD_ENV];
+    }
     const command = {
       command: options.command,
-      args: options.args || [],
+      args,
       options: {
-        cwd: options.cwd || process.cwd(),
-        env: options.env || process.env,
+        cwd,
+        env: childEnv,
         detached: true,
-        stdio: options.stdio || 'inherit'
+        stdio: options.stdio || (
+          ownsNestedGroups
+            ? ['inherit', 'inherit', 'inherit', 'pipe']
+            : 'inherit'
+        )
       }
     };
     execution = launchShard(
@@ -314,17 +411,32 @@ async function runManagedCommand(options = {}) {
       0,
       () => {}
     );
+    groupStream = ownsNestedGroups
+      ? execution.child.stdio?.[3] || null
+      : null;
+    if (groupStream !== null) groupStream.on('data', onGroupData);
     if (receivedSignal !== null) beginShutdown(receivedSignal);
     const result = await execution.completion;
+    if (groupBuffer.length > 0) {
+      trackRegisteredGroup(groupBuffer);
+      groupBuffer = '';
+    }
+    const registeredGroupAlive = () => (
+      [...registeredGroupPids].some((pid) => groupExists({ pid }))
+    );
     if (
       !shutdownStarted
-      && groupExists(execution.child)
+      && (
+        groupExists(execution.child)
+        || registeredGroupAlive()
+      )
     ) {
       beginShutdown('SIGTERM');
     }
     if (
       shutdownStarted
       && !groupExists(execution.child)
+      && !registeredGroupAlive()
     ) {
       finishShutdown();
     }
@@ -344,6 +456,7 @@ async function runManagedCommand(options = {}) {
   } finally {
     if (escalationTimer !== null) clearTimeout(escalationTimer);
     if (forceTimer !== null) clearTimeout(forceTimer);
+    if (groupStream !== null) groupStream.removeListener('data', onGroupData);
     for (const [signal, handler] of handlers) {
       signalSource.removeListener(signal, handler);
     }
@@ -367,6 +480,7 @@ async function runReleaseSuite(options = {}) {
     spawnFunction: options.spawnFunction || spawn,
     stdio: options.stdio || 'inherit',
     terminateProcess: options.terminateProcess || terminateProcessGroup,
+    registerProcessGroup: options.registerProcessGroup || registerProcessGroup,
     testFile: options.testFile || path.join(__dirname, 'release-proof.test.js')
   };
   const signalSource = options.signalSource || process;
@@ -434,7 +548,7 @@ async function runReleaseSuite(options = {}) {
     for (let index = 0; index < shardCount; index += 1) {
       const command = shardCommand(runtime, index);
       try {
-        executions.push(launchShard(
+        const execution = launchShard(
           runtime.spawnFunction,
           command,
           index,
@@ -444,7 +558,9 @@ async function runReleaseSuite(options = {}) {
             }
             beginShutdown('SIGTERM');
           }
-        ));
+        );
+        executions.push(execution);
+        runtime.registerProcessGroup(execution.child.pid, runtime.env);
       } catch (error) {
         launchError = error instanceof Error ? error.message : String(error);
         beginShutdown('SIGTERM');
@@ -519,11 +635,13 @@ module.exports = {
   DEFAULT_SHARD_COUNT,
   DEFAULT_TERMINATION_GRACE_MS,
   FORWARDED_SIGNALS,
+  PROCESS_GROUP_FD_ENV,
   SHARD_COUNT_ENV,
   SHARD_INDEX_ENV,
   createShardTest,
   parseShardConfig,
   processGroupExists,
+  registerProcessGroup,
   runManagedCommand,
   runReleaseSuite,
   shardAssignments,
