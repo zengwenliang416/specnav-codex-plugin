@@ -138,3 +138,89 @@ test('materializer fails closed when a task has no declared assertions', () => {
     fs.rmSync(current.projectRoot, { recursive: true, force: true });
   }
 });
+
+test('materializer skips repair loop event directories and counts standard tasks only', () => {
+  const current = fixture();
+  try {
+    const repairTaskDir = path.join(
+      current.changeDir,
+      'development',
+      'tasks',
+      '900-verification-repair-example'
+    );
+    writeJson(path.join(repairTaskDir, 'context.json'), {
+      schema: 'specnav.development.repair-task.v1',
+      id: '900-verification-repair-example',
+      change_id: 'example-change',
+      goal: 'Repair test_defect for CASE-03.'
+    });
+
+    const result = materialize({
+      projectRoot: current.projectRoot,
+      changeId: 'example-change',
+      write: true
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.task_count, 1);
+    assert.deepEqual(
+      result.written.map((entry) => entry.task_id),
+      ['001-example']
+    );
+    assert.equal(
+      fs.existsSync(path.join(repairTaskDir, 'acceptance.json')),
+      false
+    );
+  } finally {
+    fs.rmSync(current.projectRoot, { recursive: true, force: true });
+  }
+});
+
+test('materializer fails closed for unknown context schemas', () => {
+  const current = fixture();
+  try {
+    const contextFile = path.join(current.taskDir, 'context.json');
+    const context = JSON.parse(fs.readFileSync(contextFile, 'utf8'));
+    context.schema = 'specnav.development.unknown-task.v1';
+    writeJson(contextFile, context);
+
+    assert.throws(
+      () => materialize({
+        projectRoot: current.projectRoot,
+        changeId: 'example-change',
+        write: false
+      }),
+      /task-acceptance:invalid-context-schema:001-example/
+    );
+  } finally {
+    fs.rmSync(current.projectRoot, { recursive: true, force: true });
+  }
+});
+
+test('materializer fails closed for invalid standard task ids', () => {
+  const current = fixture();
+  try {
+    const invalidTaskDir = path.join(
+      current.changeDir,
+      'development',
+      'tasks',
+      'invalid-task'
+    );
+    writeJson(path.join(invalidTaskDir, 'context.json'), {
+      task_id: 'invalid-task',
+      goal: 'This must not be treated as a standard task.',
+      acceptance_assertions: ['AC-01']
+    });
+
+    assert.throws(
+      () => materialize({
+        projectRoot: current.projectRoot,
+        changeId: 'example-change',
+        write: false
+      }),
+      /task-acceptance:invalid-task-id:invalid-task/
+    );
+  } finally {
+    fs.rmSync(current.projectRoot, { recursive: true, force: true });
+  }
+});

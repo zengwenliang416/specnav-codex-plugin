@@ -10,7 +10,8 @@ const test = require('node:test');
 const {
   run,
   validateRepairDiff,
-  repairCompletionFingerprints
+  repairCompletionFingerprints,
+  projectAppliedFailureState
 } = require('../../../plugins/specnav-verification/scripts/verification-v2-repair-loop');
 const {
   createTrustedFactAuthority
@@ -329,6 +330,72 @@ function rerunScope(source, reasons = ['repaired-case']) {
     blocker_ids: []
   };
 }
+
+test('repair state projects an applied close receipt as closed', () => {
+  const failureId = 'failure-cli';
+  const state = {
+    ok: true,
+    status: 'closure_ready',
+    label: 'pass_after_fix',
+    history: [],
+    transition_proposal: {
+      action: 'close_failure'
+    },
+    blockers: []
+  };
+  const projected = projectAppliedFailureState(state, {
+    ok: true,
+    states: [{
+      failure_id: failureId,
+      logical_status: 'closed',
+      transition_receipt_id: 'transition-application-cli'
+    }],
+    effective_failures: [{
+      id: failureId,
+      status: 'closed'
+    }],
+    open_failure_ids: [],
+    blockers: []
+  }, failureId);
+
+  assert.equal(projected.ok, true);
+  assert.equal(projected.status, 'closed');
+  assert.equal(projected.label, 'pass_after_fix');
+  assert.equal(projected.transition_proposal, null);
+  assert.equal(
+    projected.transition_receipt_id,
+    'transition-application-cli'
+  );
+});
+
+test('repair state fails closed when a closed projection remains open', () => {
+  const failureId = 'failure-cli';
+  const projected = projectAppliedFailureState({
+    ok: true,
+    status: 'closure_ready',
+    blockers: []
+  }, {
+    ok: true,
+    states: [{
+      failure_id: failureId,
+      logical_status: 'closed',
+      transition_receipt_id: 'transition-application-cli'
+    }],
+    effective_failures: [{
+      id: failureId,
+      status: 'closed'
+    }],
+    open_failure_ids: [failureId],
+    blockers: []
+  }, failureId);
+
+  assert.equal(projected.ok, false);
+  assert.equal(projected.status, 'blocked');
+  assert.deepEqual(
+    projected.blockers.map((entry) => entry.id),
+    ['verification-repair:closed-state-inconsistent']
+  );
+});
 
 test('repair CLI replays classification and repair request without overwriting task review files', async () => {
   const source = projectFixture();

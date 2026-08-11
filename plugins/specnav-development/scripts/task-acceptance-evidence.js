@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const TASK_ID_PATTERN = /^\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const REPAIR_TASK_SCHEMA = 'specnav.development.repair-task.v1';
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -188,19 +189,44 @@ function materialize(options = {}) {
     'development',
     'validation-log.jsonl'
   ));
-  const taskIds = fs.readdirSync(tasksDir)
+  const taskEntries = fs.readdirSync(tasksDir)
     .filter((entry) => {
       const taskDir = path.join(tasksDir, entry);
       return fs.statSync(taskDir).isDirectory();
     })
     .sort();
-  const written = [];
-  const existing = [];
-  for (const taskId of taskIds) {
+  const tasks = [];
+  for (const taskId of taskEntries) {
+    const taskDir = path.join(tasksDir, taskId);
+    const context = readJson(path.join(taskDir, 'context.json'));
+    if (
+      context
+      && typeof context === 'object'
+      && !Array.isArray(context)
+      && context.schema === REPAIR_TASK_SCHEMA
+    ) {
+      continue;
+    }
+    if (
+      !context
+      || typeof context !== 'object'
+      || Array.isArray(context)
+      || Object.prototype.hasOwnProperty.call(context, 'schema')
+    ) {
+      throw new Error(`task-acceptance:invalid-context-schema:${taskId}`);
+    }
     if (!TASK_ID_PATTERN.test(taskId)) {
       throw new Error(`task-acceptance:invalid-task-id:${taskId}`);
     }
-    const taskDir = path.join(tasksDir, taskId);
+    if (context.task_id !== taskId) {
+      throw new Error(`task-acceptance:context-task-mismatch:${taskId}`);
+    }
+    tasks.push({ taskId, taskDir, context });
+  }
+  const written = [];
+  const existing = [];
+  for (const task of tasks) {
+    const { taskId, taskDir, context } = task;
     const file = path.join(taskDir, 'acceptance.json');
     if (fs.existsSync(file)) {
       const current = readJson(file);
@@ -219,10 +245,6 @@ function materialize(options = {}) {
         existing.push(path.relative(projectRoot, file).split(path.sep).join('/'));
         continue;
       }
-    }
-    const context = readJson(path.join(taskDir, 'context.json'));
-    if (context.task_id !== taskId) {
-      throw new Error(`task-acceptance:context-task-mismatch:${taskId}`);
     }
     const value = buildTaskAcceptance({
       changeDir,
@@ -244,7 +266,7 @@ function materialize(options = {}) {
     ok: true,
     status: options.write === true ? 'materialized' : 'planned',
     change_id: changeId,
-    task_count: taskIds.length,
+    task_count: tasks.length,
     written,
     existing,
     fallback_used: false

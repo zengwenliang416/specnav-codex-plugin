@@ -1001,6 +1001,126 @@ function evaluateState(
   });
 }
 
+function reduceFailureState(
+  context,
+  root,
+  failure,
+  authority,
+  authorityLog
+) {
+  const proposals = authorityLog.validate(
+    root.files.transitionProposals,
+    'transition_proposal'
+  );
+  const receipts = authorityLog.validate(
+    root.files.transitionReceipts,
+    'transition_application'
+  );
+  if (!proposals.ok || !receipts.ok) {
+    return {
+      ok: false,
+      states: [],
+      effective_failures: [],
+      open_failure_ids: [],
+      blockers: [
+        ...(proposals.blockers || []),
+        ...(receipts.blockers || [])
+      ]
+    };
+  }
+  const classification = classificationEnvelope(
+    context,
+    root.store,
+    failure.id
+  );
+  if (
+    !authority.verify(classification).ok
+    || classification.kind !== 'classification_result'
+    || classification.bindings.failure_id !== failure.id
+  ) {
+    return {
+      ok: false,
+      states: [],
+      effective_failures: [],
+      open_failure_ids: [],
+      blockers: [blocker(
+        'verification-repair:classification-envelope-invalid',
+        failure.id
+      )]
+    };
+  }
+  return kernel.createFailureStateReducer({
+    schemaRegistry: context.schemaRegistry,
+    trustVerifier: authority
+  }).reduce({
+    expected_change_id: context.changeId,
+    failures: root.failures,
+    raw_failures: root.rawFailures,
+    runs: root.runs,
+    classification_envelopes: [classification],
+    transition_proposal_envelopes: proposals.value,
+    transition_receipt_envelopes: receipts.value
+  });
+}
+
+function projectAppliedFailureState(state, failureState, failureId) {
+  if (!failureState?.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: failureState?.blockers || [blocker(
+        'verification-repair:failure-state-invalid',
+        failureId
+      )]
+    };
+  }
+  const matches = failureState.states.filter((entry) => (
+    entry.failure_id === failureId
+  ));
+  const effective = failureState.effective_failures.filter((entry) => (
+    entry.id === failureId
+  ));
+  if (matches.length !== 1 || effective.length !== 1) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: [blocker(
+        'verification-repair:failure-state-projection-missing',
+        failureId
+      )]
+    };
+  }
+  const projected = matches[0];
+  if (projected.logical_status !== 'closed') return state;
+  if (
+    effective[0].status !== 'closed'
+    || failureState.open_failure_ids.includes(failureId)
+    || typeof projected.transition_receipt_id !== 'string'
+    || projected.transition_receipt_id.length === 0
+  ) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: [blocker(
+        'verification-repair:closed-state-inconsistent',
+        failureId
+      )]
+    };
+  }
+  return {
+    ...state,
+    ok: true,
+    status: 'closed',
+    label: 'pass_after_fix',
+    transition_proposal: null,
+    transition_receipt_id: projected.transition_receipt_id,
+    blockers: []
+  };
+}
+
 function rootCauseReview(context, changeStore, value, failure) {
   const relative = resolveChangeFile(
     context,
@@ -2266,6 +2386,22 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         };
       }
       writeJson(store, 'v2/failure-state.json', failureState);
+      const projectedState = projectAppliedFailureState(
+        state,
+        failureState,
+        failure.id
+      );
+      if (!projectedState.ok) {
+        return {
+          ...projectedState,
+          fallback_used: false
+        };
+      }
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-state.json'),
+        projectedState
+      );
       return {
         ok: true,
         status: 'transition_applied',
@@ -2279,8 +2415,31 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       };
     }
 
+    const failureState = reduceFailureState(
+      context,
+      root,
+      failure,
+      authority,
+      authorityLog
+    );
+    const projectedState = projectAppliedFailureState(
+      state,
+      failureState,
+      failure.id
+    );
+    if (!projectedState.ok) {
+      return {
+        ...projectedState,
+        fallback_used: false
+      };
+    }
+    writeJson(
+      store,
+      relativeRepairPath(failure.id, 'repair-state.json'),
+      projectedState
+    );
     return {
-      ...state,
+      ...projectedState,
       failure_id: failure.id,
       fallback_used: false
     };
@@ -2321,6 +2480,8 @@ module.exports = {
   attemptFingerprint,
   evaluateState,
   fingerprintDrift,
+  projectAppliedFailureState,
+  reduceFailureState,
   repairLineageDrift,
   run,
   scopeProjection,
