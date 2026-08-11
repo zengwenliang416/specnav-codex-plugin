@@ -232,6 +232,79 @@ test('refresh-current-head reruns stale receipts and is idempotent per HEAD task
   }
 });
 
+test('refresh-current-head supports bounded batches without reporting false completion', () => {
+  const current = fixture();
+  try {
+    const first = refreshCurrentHead(current.project, {
+      change: CHANGE,
+      maxCommands: 1
+    });
+    assert.equal(first.ok, false);
+    assert.deepEqual(first.blockers, [
+      'evidence-runner:refresh-incomplete'
+    ]);
+    assert.equal(first.replayed, 1);
+    assert.equal(first.skipped_idempotent, 0);
+    assert.equal(first.pending_before, 3);
+    assert.equal(first.remaining, 2);
+    assert.equal(first.batch_limited, true);
+    assert.equal(first.failed, 0);
+    assert.equal(
+      fs.readFileSync(current.executionLog, 'utf8'),
+      'first\n'
+    );
+
+    const second = refreshCurrentHead(current.project, {
+      change: CHANGE,
+      maxCommands: 2
+    });
+    assert.equal(second.ok, true);
+    assert.deepEqual(second.blockers, []);
+    assert.equal(second.replayed, 2);
+    assert.equal(second.skipped_idempotent, 1);
+    assert.equal(second.pending_before, 2);
+    assert.equal(second.remaining, 0);
+    assert.equal(second.batch_limited, true);
+    assert.equal(
+      fs.readFileSync(current.executionLog, 'utf8'),
+      'first\nsecond\nthird\n'
+    );
+
+    const complete = refreshCurrentHead(current.project, {
+      change: CHANGE,
+      maxCommands: 1
+    });
+    assert.equal(complete.ok, true);
+    assert.equal(complete.replayed, 0);
+    assert.equal(complete.skipped_idempotent, 3);
+    assert.equal(complete.pending_before, 0);
+    assert.equal(complete.remaining, 0);
+  } finally {
+    cleanup(current);
+  }
+});
+
+test('refresh-current-head rejects invalid bounded batch sizes before execution', () => {
+  const current = fixture();
+  try {
+    for (const maxCommands of [0, -1, 1.5, Number.NaN]) {
+      const result = refreshCurrentHead(current.project, {
+        change: CHANGE,
+        maxCommands
+      });
+      assert.equal(result.ok, false);
+      assert.deepEqual(result.blockers, [
+        'evidence-runner:invalid-max-commands'
+      ]);
+      assert.deepEqual(result.results, []);
+    }
+    assert.equal(fs.existsSync(current.executionLog), false);
+    assert.equal(readReceipts(current.validationLog).length, 0);
+  } finally {
+    cleanup(current);
+  }
+});
+
 test('refresh-current-head reruns when signed evidence content was changed', () => {
   const current = fixture();
   try {

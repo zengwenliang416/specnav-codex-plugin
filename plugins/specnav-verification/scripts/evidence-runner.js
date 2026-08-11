@@ -653,6 +653,7 @@ function nextEvidenceSequence(evidenceDir) {
 
 function refreshCurrentHead(projectRoot, options = {}) {
   const change = options.change;
+  const maxCommands = options.maxCommands;
   if (
     typeof change !== 'string'
     || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(change)
@@ -662,6 +663,20 @@ function refreshCurrentHead(projectRoot, options = {}) {
       mode: REFRESH_CURRENT_HEAD_MODE,
       change: null,
       blockers: ['evidence-runner:change-required'],
+      results: [],
+      fallback_used: false
+    };
+  }
+  if (
+    maxCommands !== null
+    && maxCommands !== undefined
+    && (!Number.isSafeInteger(maxCommands) || maxCommands < 1)
+  ) {
+    return {
+      ok: false,
+      mode: REFRESH_CURRENT_HEAD_MODE,
+      change,
+      blockers: ['evidence-runner:invalid-max-commands'],
       results: [],
       fallback_used: false
     };
@@ -719,9 +734,8 @@ function refreshCurrentHead(projectRoot, options = {}) {
       'evidence-runner:evidence-directory-unsafe'
     );
 
-    const results = [];
+    const pending = [];
     let skippedIdempotent = 0;
-    let sequence = nextEvidenceSequence(evidenceDir);
     for (const task of tasks) {
       for (const command of task.commands) {
         const key = currentHeadKey({
@@ -734,7 +748,16 @@ function refreshCurrentHead(projectRoot, options = {}) {
           skippedIdempotent += 1;
           continue;
         }
+        pending.push({ task, command, key });
+      }
+    }
 
+    const selected = maxCommands === null || maxCommands === undefined
+      ? pending
+      : pending.slice(0, maxCommands);
+    const results = [];
+    let sequence = nextEvidenceSequence(evidenceDir);
+    for (const { task, command, key } of selected) {
         const run = lib.runCommand(command, {
           cwd: projectRoot,
           timeoutMs: options.timeoutMs || DEFAULT_TIMEOUT_MS
@@ -784,23 +807,27 @@ function refreshCurrentHead(projectRoot, options = {}) {
         }
         executedKeys.add(key);
         results.push(receipt);
-      }
     }
 
     const failed = results.filter((item) => !item.ok);
+    const remaining = pending.length - selected.length;
+    const blockers = [];
+    if (failed.length) blockers.push('validation-log:executed-evidence-failed');
+    if (remaining > 0) blockers.push('evidence-runner:refresh-incomplete');
     return {
-      ok: failed.length === 0,
+      ok: blockers.length === 0,
       mode: REFRESH_CURRENT_HEAD_MODE,
       change,
       reviewed_git_head: reviewedGit.head,
       reviewed_git_tree: reviewedGit.tree,
       task_count: tasks.length,
-      blockers: failed.length
-        ? ['validation-log:executed-evidence-failed']
-        : [],
+      blockers,
       replayed: results.length,
       skipped_idempotent: skippedIdempotent,
       failed: failed.length,
+      pending_before: pending.length,
+      remaining,
+      batch_limited: maxCommands !== null && maxCommands !== undefined,
       results,
       fallback_used: false
     };
@@ -1000,6 +1027,9 @@ function main() {
     mode,
     change,
     timeoutMs: Number(argValue(args, '--timeout-ms', DEFAULT_TIMEOUT_MS)),
+    maxCommands: args.includes('--max-commands')
+      ? Number(argValue(args, '--max-commands', Number.NaN))
+      : null,
     targetEvidenceLog: argValue(args, '--target-evidence-log', null),
     supersedingEvidenceLog: argValue(
       args,
