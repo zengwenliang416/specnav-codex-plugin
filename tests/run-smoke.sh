@@ -5,6 +5,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$ROOT/tests/verification-v2/command-result-protocol.sh"
 trap 'status=$?; specnav_verification_emit_assertions "$status"; exit "$status"' EXIT
 
+CASE_03_ASSERTION_IDS="CASE-03-A01,CASE-03-A02,CASE-03-A03"
+if [[ "${SPECNAV_VERIFICATION_ASSERTION_IDS:-}" == "$CASE_03_ASSERTION_IDS" ]]; then
+  bash "$ROOT/tests/run-verification-v2-case-03.sh"
+  echo "specnav codex CASE-03 smoke ok"
+  exit 0
+fi
+
 bash "$ROOT/tests/run-codex-marketplace-fixtures.sh"
 bash "$ROOT/tests/run-codex-plugin-fixtures.sh"
 bash "$ROOT/tests/run-codex-skill-fixtures.sh"
