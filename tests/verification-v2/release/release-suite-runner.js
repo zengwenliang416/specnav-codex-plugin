@@ -245,7 +245,8 @@ async function runReleaseSuite(options = {}) {
         execution,
         signal,
         terminationErrors,
-        runtime.terminateProcess
+        runtime.terminateProcess,
+        true
       );
     }
     escalationTimer = setTimeout(() => {

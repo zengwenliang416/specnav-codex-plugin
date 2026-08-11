@@ -4,6 +4,7 @@ set -euo pipefail
 active_pid=""
 pending_signal=""
 finishing=0
+launching=0
 
 signal_status() {
   case "$1" in
@@ -17,6 +18,9 @@ signal_status() {
 forward_signal() {
   local signal="$1"
   pending_signal="$signal"
+  if [[ "$launching" -eq 1 ]]; then
+    return
+  fi
   if [[ -n "$active_pid" ]] && kill -0 "$active_pid" 2>/dev/null; then
     kill "-$signal" "$active_pid" 2>/dev/null || true
     return
@@ -28,8 +32,13 @@ run_managed() {
   if [[ -n "$pending_signal" ]] && [[ "$finishing" -ne 1 ]]; then
     return "$(signal_status "$pending_signal")"
   fi
+  launching=1
   "$@" &
   active_pid=$!
+  launching=0
+  if [[ -n "$pending_signal" ]] && kill -0 "$active_pid" 2>/dev/null; then
+    kill "-$pending_signal" "$active_pid" 2>/dev/null || true
+  fi
   local command_status=0
   while true; do
     if wait "$active_pid"; then

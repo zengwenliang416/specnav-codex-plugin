@@ -232,6 +232,9 @@ test('asynchronous spawn errors and child signals fail the suite', async () => {
     spawnFunction() {
       const current = index;
       index += 1;
+      if (current === 0) {
+        return fakeChild({ code: 0 }, kills[current]);
+      }
       if (current === 1) {
         return fakeChild({ error: new Error('async spawn error') });
       }
@@ -651,4 +654,9 @@ test('release shell dynamically includes support tests and excludes the sharded 
   assert.doesNotMatch(source, /\bdirname\b/);
   assert.match(source, /node\(\) \{\s*run_managed "\$NODE_BIN"/);
   assert.match(source, /finishing=1/);
+  assert.match(source, /launching=1[\s\S]*active_pid=\$![\s\S]*launching=0/);
+  assert.match(
+    source,
+    /if \[\[ "\$launching" -eq 1 \]\]; then\s*return/
+  );
 });
