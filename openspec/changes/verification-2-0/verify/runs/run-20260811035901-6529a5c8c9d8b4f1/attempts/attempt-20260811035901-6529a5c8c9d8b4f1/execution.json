@@ -1,0 +1,346 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260811035901-6529a5c8c9d8b4f1",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-01"
+    ],
+    "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+    "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-11T03:59:01.560Z",
+    "started_at": "2026-08-11T03:59:01.606Z",
+    "completed_at": "2026-08-11T03:59:08.557Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+    "parent_run_id": "run-20260811035724-cea3ea7ce75abfab",
+    "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab",
+    "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+    "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-01",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+    "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+    "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-11T03:59:01.606Z",
+    "completed_at": "2026-08-11T03:59:08.557Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260811035901-6529a5c8c9d8b4f1",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-01"
+      ],
+      "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+      "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-11T03:59:01.560Z",
+      "started_at": "2026-08-11T03:59:01.606Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_run_id": "run-20260811035724-cea3ea7ce75abfab",
+      "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab",
+      "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260811035901-6529a5c8c9d8b4f1",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-01"
+      ],
+      "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+      "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-11T03:59:01.560Z",
+      "started_at": "2026-08-11T03:59:01.606Z",
+      "completed_at": "2026-08-11T03:59:08.557Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+      "parent_run_id": "run-20260811035724-cea3ea7ce75abfab",
+      "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab",
+      "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+      "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-01",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+      "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+      "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-11T03:59:01.606Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+      "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-01",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+      "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+      "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-11T03:59:01.606Z",
+      "completed_at": "2026-08-11T03:59:08.557Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+      "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-01",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+      "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+      "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-11T03:59:01.606Z",
+      "completed_at": "2026-08-11T03:59:08.557Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "verification v2 case approval cli ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-11T03:59:01.609Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260811035901-6529a5c8c9d8b4f1",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-01"
+        ],
+        "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+        "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-11T03:59:01.560Z",
+        "started_at": "2026-08-11T03:59:01.606Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_run_id": "run-20260811035724-cea3ea7ce75abfab",
+        "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab",
+        "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-11T03:59:01.609Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+        "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-01",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+        "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+        "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-11T03:59:01.606Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-11T03:59:01.612Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-case-approval.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 300000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-11T03:59:08.517Z",
+      "chunk": "verification v2 case approval cli ok\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.terminal",
+      "at": "2026-08-11T03:59:08.557Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 6,
+      "type": "attempt.terminal",
+      "at": "2026-08-11T03:59:08.557Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260811035901-6529a5c8c9d8b4f1",
+        "run_id": "run-20260811035901-6529a5c8c9d8b4f1",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-01",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+        "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+        "scenario_hash": "90b804d98791b7c93952da373453480cf21a40e4be231462994a341d6007b32f",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "2166ed9c39fb5016172a7b74d85ef6962631d8b463c9299c6b72d1efbe9b06b0",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-11T03:59:01.606Z",
+        "completed_at": "2026-08-11T03:59:08.557Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 7,
+      "type": "run.terminal",
+      "at": "2026-08-11T03:59:08.557Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260811035901-6529a5c8c9d8b4f1",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-01"
+        ],
+        "code_sha": "118108cc037020fda16878b2a92c4eb907b207fe",
+        "test_sha": "b72a6f75e9a4cb4706935d60812a0375db5542d37898726875a4a4cf7f762f1b",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-11T03:59:01.560Z",
+        "started_at": "2026-08-11T03:59:01.606Z",
+        "completed_at": "2026-08-11T03:59:08.557Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260811034955-8ce30ac9436b696c",
+        "parent_run_id": "run-20260811035724-cea3ea7ce75abfab",
+        "parent_attempt_id": "attempt-20260811035724-cea3ea7ce75abfab",
+        "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
