@@ -1,0 +1,51 @@
+{
+  "schema": "specnav.verification.failure-packet.v1",
+  "change_id": "verification-2-0",
+  "run_id": "run-20260811034955-8ce30ac9436b696c",
+  "case_id": "CASE-03",
+  "attempt_id": "attempt-20260811034955-8ce30ac9436b696c",
+  "reading_ids": [
+    "reading-0e404b102a5916205683cb73e573f5e856923773c9e0a3f078d6d52c8766f5ab",
+    "reading-0f88e658b84c3a4fea3714f6e51ebe618153727479ed822d454eeebefdffc894",
+    "reading-2c6b848bdadcbb32825f94b6fef1a895913a58efd7caaff4e6154ad2cb0b0cef",
+    "reading-2fa217f94350a609a389b60ea98de950c3fb1e4954987ee4f00838457f534215",
+    "reading-32603d407579c64d8d389b3f1108c02166366c90929628d9ce61a261e7bc5633",
+    "reading-38b0631cfe101fc06cfc7aa8a0553fe975ff5e82575abfee020987239595546f",
+    "reading-536cf610e31a879d0f94a1664be092574c3bd7940818f13c29d0917b35b18350",
+    "reading-59f5992fb015d35f826ab1b2e72f3d805a0c3c385ffe36022c991a67c61a37fb",
+    "reading-6e8d079a41f621fa6a881fc6b6d7f489bcc917fa6a0681fe81efc37858b8c307",
+    "reading-7a5b899d59a71a2c53f2a5cb9c2d42e8ae30c3d840136d6efc9dcae2ab905aa7",
+    "reading-864cdb5a85b62c9ec4a75a1b4108654479745c9a0f201b8cb56d54b89802ca64",
+    "reading-9d9d6283e3a1ffc75aa7e849c6b6284145c98b55e4174a0abb70b048cf7fadc8",
+    "reading-c7ff76230bc64dc427981c06a98dd36bba6b395098cfc74230123612370f1ec5",
+    "reading-c8f319faeec63711b07d14257fafd2400161dc659a61f006e5fdbd641a302ffd",
+    "reading-d1e583850b02f61176cf7a1d72e7fa3d3bc2ae9f71f445c737e932625ff66e4f",
+    "reading-d54146407f80e65c19191a864f5a371b1125c5592a95c423e72a47c6d5ea4d40",
+    "reading-d92f9a2ccd5cd09df3b16437be4aabbcede6284872ae7bf697750b383d8feb8e",
+    "reading-e3bc7086b35dc3469741a56b9a8c4cd383e3c961b1d5eddfec343306553b6407"
+  ],
+  "evidence_ids": [
+    "evidence-09c430468a63401ac499f1ae962434a1bd1c2defe86feaa2adbfb789a5eb0615",
+    "evidence-96965d65901ad6db13c628127bf13e17671361ffd343b7f7bd266ef5e89b463d",
+    "evidence-a9f40334561afd67b9890fde8fd027803c96146282b7f006a8f4eac1d7c17a97",
+    "evidence-b301ba7a4f8eb90e2049496e2ba13f8e42044d5dbbb6cba5979d28337ea869fa",
+    "evidence-dc30793edfc774fdcea2b8ce5889aa693a3725f3a8adfb12bb12bee472f3a73e",
+    "evidence-defaaeaf259c336df6079fed81457d745f441c163bec86735a392900d69cb846",
+    "evidence-f2d925709cf3393a11a906def2754e7bf3d7285751e59bdee1bffc222295a7d6",
+    "evidence-f6459fd79401479002a4398919a8a5c0107b621f9f69f7bb652f86c55b783eb8"
+  ],
+  "classification": "test_defect",
+  "status": "repair_required",
+  "next_action": "repair_required",
+  "summary": "The CASE-03 routing regression test fails only inside the formal runner because its simulated child smoke process inherits the real outer assertion-protocol owner identity.",
+  "root_cause": "The routing-test harness copies SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID and SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED from process.env. Its simulated run-smoke child then correctly declines ownership of the temporary assertion result file, while the isolated test expects that child to become the owner.",
+  "failed_assertion_ids": [
+    "CASE-03-A01",
+    "CASE-03-A02",
+    "CASE-03-A03"
+  ],
+  "owner": "development",
+  "created_at": "2026-08-11T03:50:03.421Z",
+  "frozen_at": "2026-08-11T03:50:03.421Z",
+  "id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a"
+}
