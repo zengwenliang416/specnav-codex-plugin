@@ -5,6 +5,8 @@ const { EventEmitter } = require('node:events');
 const path = require('node:path');
 
 const DEFAULT_SHARD_COUNT = 4;
+const DEFAULT_TERMINATION_GRACE_MS = 5000;
+const DEFAULT_FORCE_WAIT_MS = 5000;
 const SHARD_COUNT_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_COUNT';
 const SHARD_INDEX_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_INDEX';
 const FORWARDED_SIGNALS = Object.freeze(['SIGINT', 'SIGTERM', 'SIGHUP']);
@@ -84,15 +86,15 @@ function shardCommand(options, index) {
 }
 
 function launchShard(spawnFunction, command, index) {
-  let child;
+  const child = spawnFunction(
+    command.command,
+    command.args,
+    command.options
+  );
+  let finish;
+  let settled = false;
   const completion = new Promise((resolve) => {
-    let settled = false;
-    child = spawnFunction(
-      command.command,
-      command.args,
-      command.options
-    );
-    const finish = (result) => {
+    finish = (result) => {
       if (settled) return;
       settled = true;
       resolve({ child, index, ...result });
@@ -100,7 +102,7 @@ function launchShard(spawnFunction, command, index) {
     child.once('error', (error) => finish({
       code: null,
       signal: null,
-      error
+      error: error instanceof Error ? error.message : String(error)
     }));
     child.once('exit', (code, signal) => finish({
       code,
@@ -108,13 +110,64 @@ function launchShard(spawnFunction, command, index) {
       error: null
     }));
   });
-  return { child, completion };
+  return {
+    child,
+    completion,
+    finish,
+    index,
+    get settled() {
+      return settled;
+    }
+  };
+}
+
+function killExecution(execution, signal, errors) {
+  if (execution.settled) return;
+  try {
+    if (
+      typeof execution.child.kill !== 'function'
+      || execution.child.kill(signal) === false
+    ) {
+      errors.push({
+        index: execution.index,
+        signal,
+        error: 'verification-release:shard-kill-rejected'
+      });
+    }
+  } catch (error) {
+    errors.push({
+      index: execution.index,
+      signal,
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+}
+
+function forceSettle(execution) {
+  if (execution.settled) return;
+  if (typeof execution.child.unref === 'function') {
+    try {
+      execution.child.unref();
+    } catch {
+      // Completion still fails closed even if the child cannot be unrefed.
+    }
+  }
+  execution.finish({
+    code: null,
+    signal: null,
+    error: 'verification-release:shard-termination-timeout'
+  });
 }
 
 async function runReleaseSuite(options = {}) {
   const cwd = options.cwd || path.resolve(__dirname, '../../..');
-  const shardCount = options.shardCount || DEFAULT_SHARD_COUNT;
+  const shardCount = options.shardCount ?? DEFAULT_SHARD_COUNT;
+  const terminationGraceMs = options.terminationGraceMs
+    ?? DEFAULT_TERMINATION_GRACE_MS;
+  const forceWaitMs = options.forceWaitMs ?? DEFAULT_FORCE_WAIT_MS;
   integer(shardCount, 'shard-count', 1);
+  integer(terminationGraceMs, 'termination-grace-ms', 0);
+  integer(forceWaitMs, 'force-wait-ms', 0);
   const runtime = {
     cwd,
     env: options.env || process.env,
@@ -135,46 +188,76 @@ async function runReleaseSuite(options = {}) {
     throw new Error('verification-release:signal-source-invalid');
   }
 
-  const children = [];
+  const executions = [];
   let receivedSignal = null;
+  let launchError = null;
+  let shutdownStarted = false;
+  let escalationTimer = null;
+  let forceTimer = null;
+  const terminationErrors = [];
   const handlers = new Map();
+  const beginShutdown = (signal) => {
+    if (shutdownStarted) return;
+    shutdownStarted = true;
+    for (const execution of executions) {
+      killExecution(execution, signal, terminationErrors);
+    }
+    escalationTimer = setTimeout(() => {
+      for (const execution of executions) {
+        killExecution(execution, 'SIGKILL', terminationErrors);
+      }
+    }, terminationGraceMs);
+    forceTimer = setTimeout(() => {
+      for (const execution of executions) forceSettle(execution);
+    }, terminationGraceMs + forceWaitMs);
+  };
   for (const signal of FORWARDED_SIGNALS) {
     const handler = () => {
       if (receivedSignal !== null) return;
       receivedSignal = signal;
-      for (const child of children) {
-        if (child && typeof child.kill === 'function') child.kill(signal);
-      }
+      beginShutdown(signal);
     };
     handlers.set(signal, handler);
     signalSource.once(signal, handler);
   }
 
   try {
-    const executions = [];
     for (let index = 0; index < shardCount; index += 1) {
       const command = shardCommand(runtime, index);
-      const execution = launchShard(
-        runtime.spawnFunction,
-        command,
-        index
-      );
-      children[index] = execution.child;
-      executions.push(execution.completion);
+      try {
+        executions.push(launchShard(
+          runtime.spawnFunction,
+          command,
+          index
+        ));
+      } catch (error) {
+        launchError = error instanceof Error ? error.message : String(error);
+        beginShutdown('SIGTERM');
+        break;
+      }
     }
-    const results = await Promise.all(executions);
+    const results = await Promise.all(
+      executions.map((execution) => execution.completion)
+    );
     const failures = results.filter((result) => (
       result.error !== null
       || result.signal !== null
       || result.code !== 0
     ));
     return {
-      ok: failures.length === 0 && receivedSignal === null,
+      ok: failures.length === 0
+        && receivedSignal === null
+        && launchError === null
+        && terminationErrors.length === 0,
       shard_count: shardCount,
       results: results.map(({ child, ...result }) => result),
-      received_signal: receivedSignal
+      received_signal: receivedSignal,
+      launch_error: launchError,
+      termination_errors: terminationErrors
     };
   } finally {
+    if (escalationTimer !== null) clearTimeout(escalationTimer);
+    if (forceTimer !== null) clearTimeout(forceTimer);
     for (const [signal, handler] of handlers) {
       signalSource.removeListener(signal, handler);
     }
@@ -198,7 +281,9 @@ if (require.main === module) {
 }
 
 module.exports = {
+  DEFAULT_FORCE_WAIT_MS,
   DEFAULT_SHARD_COUNT,
+  DEFAULT_TERMINATION_GRACE_MS,
   FORWARDED_SIGNALS,
   SHARD_COUNT_ENV,
   SHARD_INDEX_ENV,

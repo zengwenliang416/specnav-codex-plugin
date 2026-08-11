@@ -2,6 +2,8 @@
 
 const assert = require('node:assert/strict');
 const { EventEmitter } = require('node:events');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
@@ -13,10 +15,20 @@ const {
   shardAssignments
 } = require('./release-suite-runner');
 
-function fakeChild(result, kills = []) {
+const RELEASE_RUNNER = path.resolve(
+  __dirname,
+  '../../run-verification-v2-release.sh'
+);
+
+function fakeChild(result, kills = [], options = {}) {
   const child = new EventEmitter();
+  child.unref = () => {
+    if (options.unrefs) options.unrefs.push(true);
+  };
   child.kill = (signal) => {
     kills.push(signal);
+    if (options.killError) throw options.killError;
+    if (options.killResult === false) return false;
     queueMicrotask(() => child.emit('exit', null, signal));
     return true;
   };
@@ -79,12 +91,13 @@ test('test registration selects only the current deterministic shard', () => {
 
 test('release suite launches four shards with isolated shard identities', async () => {
   const invocations = [];
+  const signalSource = new EventEmitter();
   const result = await runReleaseSuite({
     cwd: '/repo',
     env: { BASE: 'kept' },
     nodePath: '/node',
     shardCount: 4,
-    signalSource: new EventEmitter(),
+    signalSource,
     spawnFunction(command, args, options) {
       invocations.push({ command, args, options });
       return fakeChild({ code: 0 });
@@ -95,6 +108,7 @@ test('release suite launches four shards with isolated shard identities', async 
 
   assert.equal(result.ok, true);
   assert.equal(result.results.length, 4);
+  assert.equal(signalSource.listenerCount('SIGTERM'), 0);
   assert.deepEqual(
     invocations.map((entry) => entry.options.env[SHARD_INDEX_ENV]),
     ['0', '1', '2', '3']
@@ -130,6 +144,51 @@ test('a failed shard fails the suite without hiding successful shards', async ()
   );
 });
 
+test('a synchronous spawn failure stops launch and terminates active shards', async () => {
+  const kills = [];
+  let calls = 0;
+  const result = await runReleaseSuite({
+    shardCount: 4,
+    signalSource: new EventEmitter(),
+    spawnFunction() {
+      calls += 1;
+      if (calls === 2) throw new Error('spawn denied');
+      return fakeChild(null, kills);
+    },
+    stdio: 'pipe'
+  });
+
+  assert.equal(calls, 2);
+  assert.equal(result.ok, false);
+  assert.equal(result.launch_error, 'spawn denied');
+  assert.deepEqual(kills, ['SIGTERM']);
+  assert.equal(result.results.length, 1);
+});
+
+test('asynchronous spawn errors and child signals fail the suite', async () => {
+  let index = 0;
+  const result = await runReleaseSuite({
+    shardCount: 4,
+    signalSource: new EventEmitter(),
+    spawnFunction() {
+      const current = index;
+      index += 1;
+      if (current === 1) {
+        return fakeChild({ error: new Error('async spawn error') });
+      }
+      if (current === 2) {
+        return fakeChild({ code: null, signal: 'SIGABRT' });
+      }
+      return fakeChild({ code: 0 });
+    },
+    stdio: 'pipe'
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.results[1].error, 'async spawn error');
+  assert.equal(result.results[2].signal, 'SIGABRT');
+});
+
 test('parent termination is forwarded to every active shard', async () => {
   const signalSource = new EventEmitter();
   const kills = Array.from({ length: 4 }, () => []);
@@ -137,6 +196,8 @@ test('parent termination is forwarded to every active shard', async () => {
   const pending = runReleaseSuite({
     shardCount: 4,
     signalSource,
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
     spawnFunction() {
       const current = index;
       index += 1;
@@ -160,4 +221,48 @@ test('parent termination is forwarded to every active shard', async () => {
     result.results.map((entry) => entry.signal),
     ['SIGTERM', 'SIGTERM', 'SIGTERM', 'SIGTERM']
   );
+  assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+});
+
+test('ignored termination is escalated and forcibly settled', async () => {
+  const signalSource = new EventEmitter();
+  const kills = [];
+  const unrefs = [];
+  const pending = runReleaseSuite({
+    shardCount: 1,
+    signalSource,
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
+    spawnFunction() {
+      return fakeChild(null, kills, {
+        killResult: false,
+        unrefs
+      });
+    },
+    stdio: 'pipe'
+  });
+
+  queueMicrotask(() => signalSource.emit('SIGTERM'));
+  const result = await pending;
+
+  assert.equal(result.ok, false);
+  assert.equal(result.received_signal, 'SIGTERM');
+  assert.deepEqual(kills, ['SIGTERM', 'SIGKILL']);
+  assert.deepEqual(unrefs, [true]);
+  assert.equal(
+    result.results[0].error,
+    'verification-release:shard-termination-timeout'
+  );
+  assert.equal(result.termination_errors.length, 2);
+  assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+});
+
+test('release shell dynamically includes support tests and excludes the sharded file', () => {
+  const source = fs.readFileSync(RELEASE_RUNNER, 'utf8');
+  assert.match(
+    source,
+    /for test_file in tests\/verification-v2\/release\/\*\.test\.js/
+  );
+  assert.match(source, /release-proof\.test\.js/);
+  assert.match(source, /support_tests\+=/);
 });
