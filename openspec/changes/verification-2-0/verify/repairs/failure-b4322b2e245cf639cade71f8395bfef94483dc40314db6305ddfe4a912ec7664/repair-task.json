@@ -1,0 +1,130 @@
+{
+  "schema": "specnav.development.repair-task.v1",
+  "id": "900-verification-repair-d34004a474ec5d04",
+  "change_id": "verification-2-0",
+  "goal": "Repair test_defect for CASE-08.",
+  "classification": "test_defect",
+  "owner": "development",
+  "status": "requested",
+  "requested_at": "2026-08-11T08:30:43.601Z",
+  "packet_path": "development/tasks/900-verification-repair-d34004a474ec5d04",
+  "scope": {
+    "owner": "development",
+    "source": "approved-development-scope-lock",
+    "allowed_files": [
+      "tests/run-verification-v2-release.sh",
+      "tests/verification-v2/release/release-proof.test.js",
+      "tests/verification-v2/release/release-suite-runner.js",
+      "tests/verification-v2/release/release-suite-runner.test.js"
+    ],
+    "denied_files": [
+      "openspec/changes/archive/**"
+    ],
+    "requires_review_on": [
+      "tests/run-verification-v2-release.sh",
+      "tests/verification-v2/release/release-proof.test.js",
+      "tests/verification-v2/release/release-suite-runner.js",
+      "tests/verification-v2/release/release-suite-runner.test.js"
+    ],
+    "allowed_operations": {
+      "create": true,
+      "modify": true,
+      "delete": false,
+      "rename": false
+    },
+    "digest": "822d120339fd2f83e7c32da7e9a8b59684a25f24a11d9a675e6c437bcebf5a17"
+  },
+  "packet_artifacts": [
+    "brief.md",
+    "context.json",
+    "report.md",
+    "spec-review.md",
+    "quality-review.md"
+  ],
+  "required_reviews": [
+    "spec-review",
+    "quality-review"
+  ],
+  "ownership": {
+    "evidence": "verification",
+    "closure": "verification",
+    "repair": "development",
+    "reviews": "development",
+    "transitions": "core",
+    "break_loop": "core"
+  },
+  "frozen_failure": {
+    "failure_packet_id": "failure-b4322b2e245cf639cade71f8395bfef94483dc40314db6305ddfe4a912ec7664",
+    "failure_packet_digest": "0fa3708f418af259ff7fb5e84aa64ecbf4e32db38661ef0758eed8c0e62eee3a",
+    "run_id": "run-20260811075800-6f92ef4bc4b2d5b9",
+    "case_id": "CASE-08",
+    "attempt_id": "attempt-20260811075800-6f92ef4bc4b2d5b9",
+    "evidence_ids": [
+      "evidence-32bf4c8019c0216283cac494d126ce14951fa7eb3c706ed8815fff38e9348396",
+      "evidence-77242f187bc768c936d5e909c4b8a1e3dc6377429d8ab2e6f34ae889e413fec3",
+      "evidence-80f3fbc7030bd966e5b5747297737836c482c62c06f080d6bc79e39f0ff01ea5",
+      "evidence-d3d2e1ed0ea25483875a567f4d46d81aacec6b9005466e9ec27c7e6e4abb5a4f",
+      "evidence-dc27d3a858e3f072eab223efddd126f9af53ca2525f3e2a0a1b31bb6b2c0b32a",
+      "evidence-ed47cfd07b8f6368033d93a63b651ec9b582cc822c432f97a69d7dea3aac62ff",
+      "evidence-f683f3868f3bcafa44bb65aa5c4365295e54517d053614718165aad99a9a6a95"
+    ],
+    "evidence_content": [
+      {
+        "id": "evidence-32bf4c8019c0216283cac494d126ce14951fa7eb3c706ed8815fff38e9348396",
+        "digest": "450f5129550aafe43362bbd075e4840cdcdef687fb9878d5d2a5804a7377ddef"
+      },
+      {
+        "id": "evidence-77242f187bc768c936d5e909c4b8a1e3dc6377429d8ab2e6f34ae889e413fec3",
+        "digest": "4f4878999f55932befaf4c8885e6167d82180f6803ecebc73393f1c15a14d0f7"
+      },
+      {
+        "id": "evidence-80f3fbc7030bd966e5b5747297737836c482c62c06f080d6bc79e39f0ff01ea5",
+        "digest": "bbb97e4c0f2f66638004fa5813b312e06cfbe034be74df205fb2b59413c85351"
+      },
+      {
+        "id": "evidence-d3d2e1ed0ea25483875a567f4d46d81aacec6b9005466e9ec27c7e6e4abb5a4f",
+        "digest": "a90173f5926a3eddbd21de829b72be4a2c53952ea0732f634130d752c8aa781e"
+      },
+      {
+        "id": "evidence-dc27d3a858e3f072eab223efddd126f9af53ca2525f3e2a0a1b31bb6b2c0b32a",
+        "digest": "6599d96cc1f3e69ccece67293279cd0575359af5980e26029e382f6a1fb09b5e"
+      },
+      {
+        "id": "evidence-ed47cfd07b8f6368033d93a63b651ec9b582cc822c432f97a69d7dea3aac62ff",
+        "digest": "74a0dec70847906c7a5ceb624204b300bf0c6ba6053d5f58889ddc19b4d0d925"
+      },
+      {
+        "id": "evidence-f683f3868f3bcafa44bb65aa5c4365295e54517d053614718165aad99a9a6a95",
+        "digest": "3cfa34e485e4ea4a09bd2569184c508765b22b02f2c56e452c93c2b345bde8cb"
+      }
+    ],
+    "reading_ids": [
+      "reading-031fce3020493bc108d79e0a3c4d8a42f3ca39ef8aba67959bcff673fc8176a3",
+      "reading-1d664b15722a5fc66bca58adce1bb08f4f9756f5337f58e7f1aaafc077168b94",
+      "reading-2eef07028b04ec260c1e25c136e5101963597045913602c104e9309fff2d1ab8",
+      "reading-4184d200971a29e3597a6a6f776357fd67d4fe290a5221acc5a5dc2e1b2494a8",
+      "reading-42bc0192aa4b7e9a0ace724147fc4d486faeb06c5e4254e7ad89189cdc4f5a49",
+      "reading-7191848b086fccdb685c76148b4bffa0383aa1c272d73486621f9b1e2ce615a3",
+      "reading-8742cc887dd01b0a76212b45945cfac0cf9cdae9624c1d396d3e644ac334e4cc",
+      "reading-9168414f513779d0cc6bc38e388d4e4f9d2be6dc28a170fd1c783000cb867ea5",
+      "reading-9461876b65c93be1604e2ca30bf3719255ca447b2968bddfda84b55521c01d85",
+      "reading-a069bed41c7125d588b3004cb3a29bac96c31c5d3186c3b3703102dd07b4f349",
+      "reading-acf0012ced06402f553250541fb559cd77389642761dc41c0739d1685b9a77f1",
+      "reading-ae3116043c5e96c89043d8b1f203a4b8965e4ccf809a5b1aeee6569a3c9275c4",
+      "reading-b70ef9fb3aae35b744fdf25e8cc964d7cd87d6688afe4fc3f8aa9631d9947762",
+      "reading-be6a89b0f227167261aa65bd13a7bde58d399ab364481bdac32bf9e42f2afcb4",
+      "reading-c32a69bd737bee1e82a60f6b49f56bd42eb5ba5f803ba1833536d08986bc0d2b",
+      "reading-d79d5af23a8554ee22713ac681c71dec1ad2b431a2c784530cf915854231e147",
+      "reading-da25dd2e35680c097f1f14d8c2a99dc24946859cd3ba2a0bc9ffa44026a196ce",
+      "reading-e7ce8e276e9a3f3d4a400c42daf28a28beaeeddaff79805398e51a6f2ecb2fd4"
+    ],
+    "failed_assertion_ids": [
+      "CASE-08-A01",
+      "CASE-08-A02",
+      "CASE-08-A03"
+    ],
+    "summary": "CASE-08 completed all 54 release and archive assertions successfully, but the serial release-proof test process exceeded the approved 900-second runner timeout and was terminated with SIGTERM.",
+    "root_cause": "The release-proof suite places 43 synchronous top-level tests in one Node test file, so Node cannot distribute those tests across worker processes. The resulting serial critical path takes longer than the approved CASE-08 timeout even though every underlying assertion passes; this is a test-runner organization defect rather than a product implementation failure.",
+    "frozen_at": "2026-08-11T08:17:11.060Z"
+  }
+}

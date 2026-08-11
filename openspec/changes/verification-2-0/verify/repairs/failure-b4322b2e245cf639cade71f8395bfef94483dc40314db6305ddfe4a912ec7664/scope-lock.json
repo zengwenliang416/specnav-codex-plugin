@@ -1,0 +1,23 @@
+{
+  "allowed_files": [
+    "tests/run-verification-v2-release.sh",
+    "tests/verification-v2/release/release-proof.test.js",
+    "tests/verification-v2/release/release-suite-runner.js",
+    "tests/verification-v2/release/release-suite-runner.test.js"
+  ],
+  "denied_files": [
+    "openspec/changes/archive/**"
+  ],
+  "requires_review_on": [
+    "tests/run-verification-v2-release.sh",
+    "tests/verification-v2/release/release-proof.test.js",
+    "tests/verification-v2/release/release-suite-runner.js",
+    "tests/verification-v2/release/release-suite-runner.test.js"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "specnav.verification.trusted-fact-envelope.v1",
+  "id": "trusted-fact-9db789ca4e77af463778bf0c67bbaf289f150e590ffb737526bae2075023a7d0",
+  "kind": "classification_result",
+  "producer": "specnav-failure-classifier",
+  "payload": {
+    "ok": true,
+    "status": "classified",
+    "packet": {
+      "schema": "specnav.verification.failure-packet.v1",
+      "change_id": "verification-2-0",
+      "run_id": "run-20260811075800-6f92ef4bc4b2d5b9",
+      "case_id": "CASE-08",
+      "attempt_id": "attempt-20260811075800-6f92ef4bc4b2d5b9",
+      "reading_ids": [
+        "reading-031fce3020493bc108d79e0a3c4d8a42f3ca39ef8aba67959bcff673fc8176a3",
+        "reading-1d664b15722a5fc66bca58adce1bb08f4f9756f5337f58e7f1aaafc077168b94",
+        "reading-2eef07028b04ec260c1e25c136e5101963597045913602c104e9309fff2d1ab8",
+        "reading-4184d200971a29e3597a6a6f776357fd67d4fe290a5221acc5a5dc2e1b2494a8",
+        "reading-42bc0192aa4b7e9a0ace724147fc4d486faeb06c5e4254e7ad89189cdc4f5a49",
+        "reading-7191848b086fccdb685c76148b4bffa0383aa1c272d73486621f9b1e2ce615a3",
+        "reading-8742cc887dd01b0a76212b45945cfac0cf9cdae9624c1d396d3e644ac334e4cc",
+        "reading-9168414f513779d0cc6bc38e388d4e4f9d2be6dc28a170fd1c783000cb867ea5",
+        "reading-9461876b65c93be1604e2ca30bf3719255ca447b2968bddfda84b55521c01d85",
+        "reading-a069bed41c7125d588b3004cb3a29bac96c31c5d3186c3b3703102dd07b4f349",
+        "reading-acf0012ced06402f553250541fb559cd77389642761dc41c0739d1685b9a77f1",
+        "reading-ae3116043c5e96c89043d8b1f203a4b8965e4ccf809a5b1aeee6569a3c9275c4",
+        "reading-b70ef9fb3aae35b744fdf25e8cc964d7cd87d6688afe4fc3f8aa9631d9947762",
+        "reading-be6a89b0f227167261aa65bd13a7bde58d399ab364481bdac32bf9e42f2afcb4",
+        "reading-c32a69bd737bee1e82a60f6b49f56bd42eb5ba5f803ba1833536d08986bc0d2b",
+        "reading-d79d5af23a8554ee22713ac681c71dec1ad2b431a2c784530cf915854231e147",
+        "reading-da25dd2e35680c097f1f14d8c2a99dc24946859cd3ba2a0bc9ffa44026a196ce",
+        "reading-e7ce8e276e9a3f3d4a400c42daf28a28beaeeddaff79805398e51a6f2ecb2fd4"
+      ],
+      "evidence_ids": [
+        "evidence-32bf4c8019c0216283cac494d126ce14951fa7eb3c706ed8815fff38e9348396",
+        "evidence-77242f187bc768c936d5e909c4b8a1e3dc6377429d8ab2e6f34ae889e413fec3",
+        "evidence-80f3fbc7030bd966e5b5747297737836c482c62c06f080d6bc79e39f0ff01ea5",
+        "evidence-d3d2e1ed0ea25483875a567f4d46d81aacec6b9005466e9ec27c7e6e4abb5a4f",
+        "evidence-dc27d3a858e3f072eab223efddd126f9af53ca2525f3e2a0a1b31bb6b2c0b32a",
+        "evidence-ed47cfd07b8f6368033d93a63b651ec9b582cc822c432f97a69d7dea3aac62ff",
+        "evidence-f683f3868f3bcafa44bb65aa5c4365295e54517d053614718165aad99a9a6a95"
+      ],
+      "classification": "test_defect",
+      "status": "repair_required",
+      "next_action": "repair_required",
+      "summary": "CASE-08 completed all 54 release and archive assertions successfully, but the serial release-proof test process exceeded the approved 900-second runner timeout and was terminated with SIGTERM.",
+      "root_cause": "The release-proof suite places 43 synchronous top-level tests in one Node test file, so Node cannot distribute those tests across worker processes. The resulting serial critical path takes longer than the approved CASE-08 timeout even though every underlying assertion passes; this is a test-runner organization defect rather than a product implementation failure.",
+      "failed_assertion_ids": [
+        "CASE-08-A01",
+        "CASE-08-A02",
+        "CASE-08-A03"
+      ],
+      "owner": "development",
+      "created_at": "2026-08-11T08:17:11.060Z",
+      "frozen_at": "2026-08-11T08:17:11.060Z",
+      "id": "failure-b4322b2e245cf639cade71f8395bfef94483dc40314db6305ddfe4a912ec7664"
+    },
+    "signals": [],
+    "blockers": []
+  },
+  "payload_digest": "18591a4a10dfeab9eda75c0d42f54247ad98a76a81960d6decf16deeb5703f36",
+  "issued_at": "2026-08-11T08:29:25.288Z",
+  "bindings": {
+    "failure_id": "failure-b4322b2e245cf639cade71f8395bfef94483dc40314db6305ddfe4a912ec7664",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260811075800-6f92ef4bc4b2d5b9",
+    "case_id": "CASE-08"
+  },
+  "claims": [
+    "failure-classification:verified"
+  ],
+  "signature_algorithm": "hmac-sha256",
+  "signature": "bce4fb39804528920447c8df65c545dabb1bb72111cdc37d9449fa0caaf98461"
+}

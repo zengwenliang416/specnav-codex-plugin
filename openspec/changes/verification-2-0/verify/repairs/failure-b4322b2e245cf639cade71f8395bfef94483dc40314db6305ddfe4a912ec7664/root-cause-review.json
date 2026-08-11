@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.verification.root-cause-review.v1",
+  "id": "root-cause-review-case-08-release-suite-timeout",
+  "failure_id": "failure-b4322b2e245cf639cade71f8395bfef94483dc40314db6305ddfe4a912ec7664",
+  "root_failure_digest": "aaef405a82c41a576f3310a60d5426e8aaa8c418c675495b67cc055712ce4822",
+  "change_id": "verification-2-0",
+  "run_id": "run-20260811075800-6f92ef4bc4b2d5b9",
+  "case_id": "CASE-08",
+  "attempt_id": "attempt-20260811075800-6f92ef4bc4b2d5b9",
+  "classification": "test_defect",
+  "summary": "CASE-08 completed all 54 release and archive assertions successfully, but the serial release-proof test process exceeded the approved 900-second runner timeout and was terminated with SIGTERM.",
+  "root_cause": "The release-proof suite places 43 synchronous top-level tests in one Node test file, so Node cannot distribute those tests across worker processes. The resulting serial critical path takes longer than the approved CASE-08 timeout even though every underlying assertion passes; this is a test-runner organization defect rather than a product implementation failure.",
+  "failed_assertion_ids": [
+    "CASE-08-A01",
+    "CASE-08-A02",
+    "CASE-08-A03"
+  ],
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "decision": "approved",
+  "reviewed_at": "2026-08-11T08:27:26Z"
+}
