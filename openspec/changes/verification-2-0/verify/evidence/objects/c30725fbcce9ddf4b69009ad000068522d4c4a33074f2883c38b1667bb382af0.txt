@@ -1,0 +1,496 @@
+status=passed
+exit_status=0
+--- stdout ---
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 1.341875
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.599084
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.21525
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.201833
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.233792
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 439.936125
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects the wrong repository before writes
+ok 7 - Claude synchronizer rejects the wrong repository before writes
+  ---
+  duration_ms: 137.6195
+  type: 'test'
+  ...
+# Subtest: Claude synchronization preserves unrelated dirty files
+ok 8 - Claude synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 1170.677667
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer refuses owned-path conflicts and dirty overrides
+ok 9 - Claude synchronizer refuses owned-path conflicts and dirty overrides
+  ---
+  duration_ms: 148.115333
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects ancestor symlink escapes
+ok 10 - Claude synchronizer rejects ancestor symlink escapes
+  ---
+  duration_ms: 141.985208
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer leaves no partial writes when staging fails
+ok 11 - Claude synchronizer leaves no partial writes when staging fails
+  ---
+  duration_ms: 776.332459
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer commits one validated tree with host provenance
+ok 12 - Claude synchronizer commits one validated tree with host provenance
+  ---
+  duration_ms: 672.141417
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 13 - Claude host code remains invocation-only
+  ---
+  duration_ms: 0.244125
+  type: 'test'
+  ...
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 14 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 1.038542
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 15 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.43425
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 16 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.204417
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 17 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.363
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 18 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 1.676292
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 19 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.55225
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 20 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.498208
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+ok 21 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 619.030291
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 22 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 1139.562125
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 23 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 108.764208
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+ok 24 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 843.134917
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 25 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 83.202
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 26 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 653.7165
+  type: 'test'
+  ...
+# Subtest: Codex describes the full Verification 2.0 contract from one Kernel
+ok 27 - Codex describes the full Verification 2.0 contract from one Kernel
+  ---
+  duration_ms: 6.791625
+  type: 'test'
+  ...
+# Subtest: Codex invokes the shared command surface and preserves blockers
+ok 28 - Codex invokes the shared command surface and preserves blockers
+  ---
+  duration_ms: 0.582667
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks simplified, fallback, and manual-green requests
+ok 29 - Codex adapter blocks simplified, fallback, and manual-green requests
+  ---
+  duration_ms: 0.147125
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for runtime mutation
+ok 30 - Codex adapter requires explicit approval for runtime mutation
+  ---
+  duration_ms: 0.18925
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for migration writes
+ok 31 - Codex adapter requires explicit approval for migration writes
+  ---
+  duration_ms: 0.096
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for Core repair transitions
+ok 32 - Codex adapter requires explicit approval for Core repair transitions
+  ---
+  duration_ms: 13.225
+  type: 'test'
+  ...
+# Subtest: Codex adapter exposes and blocks downstream fallback signals
+ok 33 - Codex adapter exposes and blocks downstream fallback signals
+  ---
+  duration_ms: 0.65725
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks a source that does not attest no fallback
+ok 34 - Codex adapter blocks a source that does not attest no fallback
+  ---
+  duration_ms: 0.108542
+  type: 'test'
+  ...
+# Subtest: Codex adapter fails closed for unsupported actions and invalid results
+ok 35 - Codex adapter fails closed for unsupported actions and invalid results
+  ---
+  duration_ms: 1.417875
+  type: 'test'
+  ...
+# Subtest: Codex source contains invocation only, not verdict implementation
+ok 36 - Codex source contains invocation only, not verdict implementation
+  ---
+  duration_ms: 0.969667
+  type: 'test'
+  ...
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+ok 37 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 776.474292
+  type: 'test'
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 38 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 478.807375
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+ok 39 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 461.394542
+  type: 'test'
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 40 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 290.720375
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 41 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 267.753334
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 42 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 156.047125
+  type: 'test'
+  ...
+# Subtest: fixture manifest entries cannot traverse outside the fixture root
+ok 43 - fixture manifest entries cannot traverse outside the fixture root
+  ---
+  duration_ms: 86.192208
+  type: 'test'
+  ...
+# Subtest: fixture manifest entries cannot follow symlinks
+ok 44 - fixture manifest entries cannot follow symlinks
+  ---
+  duration_ms: 94.31275
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 45 - generated report model drift is release blocking
+  ---
+  duration_ms: 258.376459
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 46 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 292.898958
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 47 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.201125
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 48 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.113125
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+ok 49 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 191.328917
+  type: 'test'
+  ...
+# Subtest: manifest cannot omit required host-owned files or hide rogue files
+ok 50 - manifest cannot omit required host-owned files or hide rogue files
+  ---
+  duration_ms: 295.040583
+  type: 'test'
+  ...
+# Subtest: host-owned wrapper bytes must match synchronized provenance
+ok 51 - host-owned wrapper bytes must match synchronized provenance
+  ---
+  duration_ms: 256.839334
+  type: 'test'
+  ...
+# Subtest: updated manifest hash cannot hide transformed skill tampering
+ok 52 - updated manifest hash cannot hide transformed skill tampering
+  ---
+  duration_ms: 275.180834
+  type: 'test'
+  ...
+# Subtest: updated manifest hash cannot hide generated host-file tampering
+ok 53 - updated manifest hash cannot hide generated host-file tampering
+  ---
+  duration_ms: 250.355583
+  type: 'test'
+  ...
+# Subtest: updated tree digest cannot hide exact canonical file tampering
+ok 54 - updated tree digest cannot hide exact canonical file tampering
+  ---
+  duration_ms: 258.000834
+  type: 'test'
+  ...
+# Subtest: missing manifest returns a stable drift blocker
+ok 55 - missing manifest returns a stable drift blocker
+  ---
+  duration_ms: 144.589375
+  type: 'test'
+  ...
+# Subtest: host manifests must bind to a clean locked source commit
+ok 56 - host manifests must bind to a clean locked source commit
+  ---
+  duration_ms: 217.464166
+  type: 'test'
+  ...
+# Subtest: candidate JavaScript is treated as data and never executed
+ok 57 - candidate JavaScript is treated as data and never executed
+  ---
+  duration_ms: 153.39625
+  type: 'test'
+  ...
+# Subtest: CI pins both downstream host repositories to immutable commits
+ok 58 - CI pins both downstream host repositories to immutable commits
+  ---
+  duration_ms: 0.939542
+  type: 'test'
+  ...
+# Subtest: packaged host provenance resolves without the source repository
+ok 59 - packaged host provenance resolves without the source repository
+  ---
+  duration_ms: 616.943625
+  type: 'test'
+  ...
+# Subtest: host authority validates clean repositories and fails closed on Git state
+ok 60 - host authority validates clean repositories and fails closed on Git state
+  ---
+  duration_ms: 4612.921875
+  type: 'test'
+  ...
+# Subtest: host authority detects manifest, source, tree, skill, and wrapper drift
+    # Subtest: verification-drift:manifest-contract-mismatch:claude-code
+    ok 1 - verification-drift:manifest-contract-mismatch:claude-code
+      ---
+      duration_ms: 2224.089625
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-source-commit-mismatch:codefree-o
+    ok 2 - verification-drift:manifest-source-commit-mismatch:codefree-o
+      ---
+      duration_ms: 2295.002625
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-exact-file-provenance-mismatch:claude-code
+    ok 3 - verification-drift:manifest-exact-file-provenance-mismatch:claude-code
+      ---
+      duration_ms: 2174.177041
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o
+    ok 4 - verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o
+      ---
+      duration_ms: 2114.290458
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-host-file-provenance-mismatch:claude-code
+    ok 5 - verification-drift:manifest-host-file-provenance-mismatch:claude-code
+      ---
+      duration_ms: 2180.771167
+      type: 'test'
+      ...
+    1..5
+ok 61 - host authority detects manifest, source, tree, skill, and wrapper drift
+  ---
+  duration_ms: 10989.192083
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync preserves unrelated dirty files
+ok 62 - claude-code Operations proof sync preserves unrelated dirty files
+  ---
+  duration_ms: 376.289833
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync blocks owned conflicts
+ok 63 - claude-code Operations proof sync blocks owned conflicts
+  ---
+  duration_ms: 155.038625
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync installs newly owned files
+ok 64 - claude-code Operations proof sync installs newly owned files
+  ---
+  duration_ms: 331.175959
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync preserves unrelated dirty files
+ok 65 - codefree-o Operations proof sync preserves unrelated dirty files
+  ---
+  duration_ms: 303.023333
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync blocks owned conflicts
+ok 66 - codefree-o Operations proof sync blocks owned conflicts
+  ---
+  duration_ms: 160.729959
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync installs newly owned files
+ok 67 - codefree-o Operations proof sync installs newly owned files
+  ---
+  duration_ms: 331.601375
+  type: 'test'
+  ...
+# Subtest: real downstream Operations proof bytes match one committed source
+ok 68 - real downstream Operations proof bytes match one committed source
+  ---
+  duration_ms: 298.37775
+  type: 'test'
+  ...
+# Subtest: synchronized plugins authority returns the declared digest
+ok 69 - synchronized plugins authority returns the declared digest
+  ---
+  duration_ms: 8.62925
+  type: 'test'
+  ...
+# Subtest: synchronized modules authority returns the declared digest
+ok 70 - synchronized modules authority returns the declared digest
+  ---
+  duration_ms: 17.132416
+  type: 'test'
+  ...
+# Subtest: missing runner authority blocks
+ok 71 - missing runner authority blocks
+  ---
+  duration_ms: 1.95075
+  type: 'test'
+  ...
+# Subtest: ambiguous synchronized runner authority blocks
+ok 72 - ambiguous synchronized runner authority blocks
+  ---
+  duration_ms: 12.052083
+  type: 'test'
+  ...
+# Subtest: canonical and synchronized runner authority cannot coexist
+ok 73 - canonical and synchronized runner authority cannot coexist
+  ---
+  duration_ms: 4.166084
+  type: 'test'
+  ...
+# Subtest: tampered synchronized manifest blocks
+ok 74 - tampered synchronized manifest blocks
+  ---
+  duration_ms: 3.044875
+  type: 'test'
+  ...
+# Subtest: tampered synchronized proof file blocks
+ok 75 - tampered synchronized proof file blocks
+  ---
+  duration_ms: 4.258459
+  type: 'test'
+  ...
+1..75
+# tests 80
+# suites 0
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16391.833875
+
+--- stderr ---
