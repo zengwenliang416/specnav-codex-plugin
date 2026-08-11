@@ -56,10 +56,12 @@ function listFiles(root) {
 function transformSkill(source, host) {
   if (host === 'claude-code') {
     return source
+      .replace(/when a Codex user/g, 'when a Claude Code user')
       .replace(
         /as the Codex entrypoint/g,
         'as the Claude Code entrypoint'
       )
+      .replace(/Codex adapter contract/g, 'Claude Code adapter contract')
       .replace(
         /owning Codex plugin resolver/g,
         'owning Claude Code plugin resolver'
@@ -81,6 +83,7 @@ function transformSkill(source, host) {
     return source
       .replace(/when a Codex user/g, 'when a CodeFree-O user')
       .replace(/as the Codex entrypoint/g, 'as the CodeFree-O entrypoint')
+      .replace(/Codex adapter contract/g, 'CodeFree-O adapter contract')
       .replace(
         /owning Codex plugin resolver/g,
         'owning CodeFree-O module resolver'
@@ -146,7 +149,8 @@ function stageManifest(host) {
       'specnav-html-report'
     ],
     contracts: {
-      verification: 'scripts/verify-domains.js',
+      verification: 'scripts/verification-v2-run.js',
+      verification_v1_legacy: 'scripts/verify-domains.js',
       [adapter.key]: adapter.path,
       kernel: 'kernel/index.js'
     },

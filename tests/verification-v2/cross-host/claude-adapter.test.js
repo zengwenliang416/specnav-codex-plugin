@@ -341,6 +341,37 @@ test('Claude Code repository consumes the synchronized canonical Kernel', () => 
   }
 });
 
+test('Claude synchronized entry surfaces use Verification 2.0 and Claude resolver semantics', () => {
+  const stage = JSON.parse(fs.readFileSync(
+    path.join(CLAUDE_PLUGIN, 'specnav-stage.json'),
+    'utf8'
+  ));
+  assert.equal(
+    stage.contracts.verification,
+    'scripts/verification-v2-run.js'
+  );
+  assert.equal(
+    stage.contracts.verification_v1_legacy,
+    'scripts/verify-domains.js'
+  );
+
+  const skill = fs.readFileSync(
+    path.join(CLAUDE_PLUGIN, 'skills/specnav-verification/SKILL.md'),
+    'utf8'
+  );
+  assert.match(skill, /Claude Code user/);
+  assert.match(skill, /Claude Code adapter contract/);
+  assert.doesNotMatch(skill, /Codex user/);
+  assert.doesNotMatch(skill, /Codex adapter contract/);
+
+  const command = fs.readFileSync(
+    path.join(CLAUDE_PLUGIN, 'commands/specnav-verification.md'),
+    'utf8'
+  );
+  assert.match(command, /specnav_plugin_root\(\)/);
+  assert.match(command, /SPECNAV_PLUGIN_NAME=specnav-core/);
+});
+
 test('Claude synchronizer rejects the wrong repository before writes', (t) => {
   const root = fs.mkdtempSync(
     path.join(os.tmpdir(), 'specnav-wrong-sync-')

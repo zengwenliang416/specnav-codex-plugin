@@ -361,6 +361,34 @@ test('CodeFree-O repository consumes the canonical Verification Kernel', () => {
   );
 });
 
+test('CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording', () => {
+  const pluginRoot = path.join(
+    CODEFREE_ROOT,
+    'modules/specnav-verification'
+  );
+  const stage = JSON.parse(fs.readFileSync(
+    path.join(pluginRoot, 'specnav-stage.json'),
+    'utf8'
+  ));
+  assert.equal(
+    stage.contracts.verification,
+    'scripts/verification-v2-run.js'
+  );
+  assert.equal(
+    stage.contracts.verification_v1_legacy,
+    'scripts/verify-domains.js'
+  );
+
+  const skill = fs.readFileSync(
+    path.join(pluginRoot, 'skills/specnav-verification/SKILL.md'),
+    'utf8'
+  );
+  assert.match(skill, /CodeFree-O user/);
+  assert.match(skill, /CodeFree-O adapter contract/);
+  assert.doesNotMatch(skill, /Codex user/);
+  assert.doesNotMatch(skill, /Codex adapter contract/);
+});
+
 test('CodeFree-O synchronization preserves unrelated dirty files', (t) => {
   const root = createCodeFreeTarget(t);
   fs.writeFileSync(path.join(root, 'README.md'), 'local README edit\n');
