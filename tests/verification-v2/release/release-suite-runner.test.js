@@ -708,8 +708,8 @@ test('managed owner kills a registered detached group after coordinator exit', a
     '  Number(process.env.SPECNAV_RELEASE_PROCESS_GROUP_FD),',
     '  `${worker.pid}\\n`',
     ');',
-    'fs.writeFileSync(ready, JSON.stringify({ worker_pid: worker.pid }));',
     "process.on('SIGTERM', () => process.exit(0));",
+    'fs.writeFileSync(ready, JSON.stringify({ worker_pid: worker.pid }));',
     'setInterval(() => {}, 1000);'
   ].join('\n');
   const signalSource = new EventEmitter();
