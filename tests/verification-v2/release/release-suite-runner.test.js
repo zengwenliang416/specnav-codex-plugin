@@ -6,6 +6,7 @@ const { EventEmitter } = require('node:events');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { PassThrough } = require('node:stream');
 const test = require('node:test');
 
 const {
@@ -592,6 +593,86 @@ test('SIGKILL escalation cleans a worker after its coordinator exits', async (t)
   assert.equal(result.received_signal, 'SIGTERM');
   assert.equal(fs.readFileSync(markerFile, 'utf8'), 'ignored SIGTERM\n');
   assert.equal(processExists(ready.worker_pid), false);
+});
+
+test('managed owner drains registry data delivered after coordinator exit', async () => {
+  const child = new EventEmitter();
+  child.pid = 33001;
+  child.stdio = [null, null, null, new PassThrough()];
+  child.unref = () => {};
+  const alive = new Set([44001]);
+  const kills = [];
+  const result = await runManagedCommand({
+    command: '/fake/coordinator',
+    forceWaitMs: 5,
+    ownsNestedGroups: true,
+    processGroupExists(target) {
+      return alive.has(target.pid);
+    },
+    signalSource: new EventEmitter(),
+    spawnFunction() {
+      queueMicrotask(() => child.emit('exit', 1, null));
+      setTimeout(() => child.stdio[3].end('44001\n'), 5);
+      return child;
+    },
+    terminationGraceMs: 5,
+    terminateProcess(target, signal) {
+      kills.push({ pid: target.pid, signal });
+      if (signal === 'SIGKILL') alive.delete(target.pid);
+      return true;
+    }
+  });
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(
+    kills.filter((entry) => entry.pid === 44001),
+    [
+      { pid: 44001, signal: 'SIGTERM' },
+      { pid: 44001, signal: 'SIGKILL' },
+      { pid: 44001, signal: 'SIGKILL' }
+    ]
+  );
+});
+
+test('managed owner sends TERM to a process group registered during shutdown', async () => {
+  const child = new EventEmitter();
+  child.pid = 33002;
+  child.stdio = [null, null, null, new PassThrough()];
+  child.unref = () => {};
+  const signalSource = new EventEmitter();
+  const alive = new Set([44002]);
+  const kills = [];
+  const pending = runManagedCommand({
+    command: '/fake/coordinator',
+    forceWaitMs: 10,
+    ownsNestedGroups: true,
+    processGroupExists(target) {
+      return alive.has(target.pid);
+    },
+    signalSource,
+    spawnFunction() {
+      setTimeout(() => child.stdio[3].end('44002\n'), 5);
+      return child;
+    },
+    terminationGraceMs: 5,
+    terminateProcess(target, signal) {
+      kills.push({ pid: target.pid, signal });
+      if (signal === 'SIGKILL') alive.delete(target.pid);
+      return true;
+    }
+  });
+
+  queueMicrotask(() => signalSource.emit('SIGTERM'));
+  const result = await pending;
+  const registeredSignals = kills
+    .filter((entry) => entry.pid === 44002)
+    .map((entry) => entry.signal);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.received_signal, 'SIGTERM');
+  assert.equal(registeredSignals[0], 'SIGTERM');
+  assert.ok(registeredSignals.includes('SIGKILL'));
+  assert.equal(registeredSignals.includes(null), false);
 });
 
 test('managed owner kills a registered detached group after coordinator exit', async (t) => {

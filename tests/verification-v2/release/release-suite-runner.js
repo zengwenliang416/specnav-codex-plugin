@@ -270,7 +270,11 @@ async function runManagedCommand(options = {}) {
   let execution = null;
   let groupStream = null;
   let groupBuffer = '';
+  let groupStreamEnded = true;
+  let resolveGroupStream;
+  let groupStreamCompletion = Promise.resolve();
   let receivedSignal = null;
+  let shutdownSignal = null;
   let shutdownStarted = false;
   let shutdownResolved = false;
   let escalated = false;
@@ -309,9 +313,27 @@ async function runManagedCommand(options = {}) {
     if (shutdownStarted) {
       killRegisteredGroup(
         pid,
-        escalated || shutdownResolved ? 'SIGKILL' : receivedSignal
+        escalated || shutdownResolved ? 'SIGKILL' : shutdownSignal
       );
     }
+  };
+  const finishGroupStream = () => {
+    if (groupStreamEnded) return;
+    groupStreamEnded = true;
+    if (groupBuffer.length > 0) {
+      try {
+        trackRegisteredGroup(groupBuffer);
+      } catch (error) {
+        terminationErrors.push({
+          index: 'group-registry',
+          signal: shutdownSignal || 'SIGTERM',
+          error: error instanceof Error ? error.message : String(error)
+        });
+        beginShutdown('SIGTERM');
+      }
+      groupBuffer = '';
+    }
+    resolveGroupStream();
   };
   const onGroupData = (chunk) => {
     groupBuffer += chunk.toString('utf8');
@@ -331,9 +353,19 @@ async function runManagedCommand(options = {}) {
       }
     }
   };
+  const onGroupError = (error) => {
+    terminationErrors.push({
+      index: 'group-registry',
+      signal: shutdownSignal || 'SIGTERM',
+      error: error instanceof Error ? error.message : String(error)
+    });
+    beginShutdown('SIGTERM');
+    finishGroupStream();
+  };
   const beginShutdown = (signal) => {
     if (shutdownStarted || execution === null) return;
     shutdownStarted = true;
+    shutdownSignal = signal;
     killExecution(
       execution,
       signal,
@@ -414,12 +446,22 @@ async function runManagedCommand(options = {}) {
     groupStream = ownsNestedGroups
       ? execution.child.stdio?.[3] || null
       : null;
-    if (groupStream !== null) groupStream.on('data', onGroupData);
+    if (groupStream !== null) {
+      groupStreamEnded = false;
+      groupStreamCompletion = new Promise((resolve) => {
+        resolveGroupStream = resolve;
+      });
+      groupStream.on('data', onGroupData);
+      groupStream.once('error', onGroupError);
+      groupStream.once('end', finishGroupStream);
+      groupStream.once('close', finishGroupStream);
+    }
     if (receivedSignal !== null) beginShutdown(receivedSignal);
     const result = await execution.completion;
-    if (groupBuffer.length > 0) {
-      trackRegisteredGroup(groupBuffer);
-      groupBuffer = '';
+    if (
+      result.error !== 'verification-release:shard-termination-timeout'
+    ) {
+      await groupStreamCompletion;
     }
     const registeredGroupAlive = () => (
       [...registeredGroupPids].some((pid) => groupExists({ pid }))
@@ -456,7 +498,12 @@ async function runManagedCommand(options = {}) {
   } finally {
     if (escalationTimer !== null) clearTimeout(escalationTimer);
     if (forceTimer !== null) clearTimeout(forceTimer);
-    if (groupStream !== null) groupStream.removeListener('data', onGroupData);
+    if (groupStream !== null) {
+      groupStream.removeListener('data', onGroupData);
+      groupStream.removeListener('error', onGroupError);
+      groupStream.removeListener('end', finishGroupStream);
+      groupStream.removeListener('close', finishGroupStream);
+    }
     for (const [signal, handler] of handlers) {
       signalSource.removeListener(signal, handler);
     }
