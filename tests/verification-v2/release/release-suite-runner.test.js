@@ -23,6 +23,18 @@ const RELEASE_RUNNER = path.resolve(
   '../../run-verification-v2-release.sh'
 );
 
+function writeNodeProxy(file, commandLines) {
+  fs.writeFileSync(file, [
+    '#!/bin/bash',
+    'if [[ "${1:-}" == *"/release-suite-runner.js" ]] \\',
+    '  && [[ "${2:-}" == "--managed-command" ]]; then',
+    '  exec "$SPECNAV_TEST_REAL_NODE" "$@"',
+    'fi',
+    ...commandLines,
+    ''
+  ].join('\n'), { mode: 0o755 });
+}
+
 function fakeChild(result, kills = [], options = {}) {
   const child = new EventEmitter();
   child.unref = () => {
@@ -225,6 +237,31 @@ test('a failed shard fails the suite without hiding successful shards', async ()
   );
 });
 
+test('a failed shard terminates a hanging sibling', async () => {
+  const kills = [[], []];
+  let index = 0;
+  const result = await runReleaseSuite({
+    shardCount: 2,
+    signalSource: new EventEmitter(),
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
+    terminateProcess: fakeTerminate,
+    spawnFunction() {
+      const current = index;
+      index += 1;
+      return current === 0
+        ? fakeChild({ code: 1 }, kills[current])
+        : fakeChild(null, kills[current]);
+    },
+    stdio: 'pipe'
+  });
+
+  assert.equal(result.ok, false);
+  assert.equal(result.launch_error, null);
+  assert.equal(result.results[0].code, 1);
+  assert.deepEqual(kills[1], ['SIGTERM', 'SIGKILL']);
+});
+
 test('a synchronous spawn failure stops launch and terminates active shards', async () => {
   const kills = [];
   let calls = 0;
@@ -330,6 +367,7 @@ test('ignored termination is escalated and forcibly settled', async () => {
   const signalSource = new EventEmitter();
   const kills = [];
   const unrefs = [];
+  let child;
   const pending = runReleaseSuite({
     shardCount: 1,
     signalSource,
@@ -337,10 +375,11 @@ test('ignored termination is escalated and forcibly settled', async () => {
     forceWaitMs: 5,
     terminateProcess: fakeTerminate,
     spawnFunction() {
-      return fakeChild(null, kills, {
+      child = fakeChild(null, kills, {
         killResult: false,
         unrefs
       });
+      return child;
     },
     stdio: 'pipe'
   });
@@ -358,6 +397,11 @@ test('ignored termination is escalated and forcibly settled', async () => {
   );
   assert.equal(result.termination_errors.length, 2);
   assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+  assert.equal(child.listenerCount('error'), 1);
+  assert.doesNotThrow(() => child.emit('error', new Error('late error')));
+  child.emit('close');
+  assert.equal(child.listenerCount('error'), 0);
+  assert.equal(child.listenerCount('close'), 0);
 });
 
 test('process-group termination reaches a real test worker descendant', async (t) => {
@@ -550,19 +594,18 @@ test('release shell forwards adapter termination to its active Node command', as
   const nodeFile = path.join(root, 'node');
   const pidFile = path.join(root, 'node.pid');
   const markerFile = path.join(root, 'node-signal.txt');
-  fs.writeFileSync(nodeFile, [
-    '#!/usr/bin/env bash',
+  writeNodeProxy(nodeFile, [
     'if [[ "${1:-}" == "--check" ]]; then exit 0; fi',
     'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
-    'while true; do sleep 1; done',
-    ''
-  ].join('\n'), { mode: 0o755 });
+    'while true; do sleep 1; done'
+  ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
     cwd: path.resolve(__dirname, '../../..'),
     env: {
       ...process.env,
       PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_REAL_NODE: process.execPath,
       SPECNAV_TEST_CHILD_PID_FILE: pidFile,
       SPECNAV_TEST_SIGNAL_FILE: markerFile
     },
@@ -600,17 +643,16 @@ test('release shell terminates during managed Python preflight without continuin
     'while true; do sleep 1; done',
     ''
   ].join('\n'), { mode: 0o755 });
-  fs.writeFileSync(nodeFile, [
-    '#!/usr/bin/env bash',
+  writeNodeProxy(nodeFile, [
     'printf "continued\\n" > "$SPECNAV_TEST_CONTINUED_FILE"',
-    'exit 0',
-    ''
-  ].join('\n'), { mode: 0o755 });
+    'exit 0'
+  ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
     cwd: path.resolve(__dirname, '../../..'),
     env: {
       ...process.env,
       PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_REAL_NODE: process.execPath,
       SPECNAV_TEST_CHILD_PID_FILE: pidFile,
       SPECNAV_TEST_SIGNAL_FILE: markerFile,
       SPECNAV_TEST_CONTINUED_FILE: continuedFile
@@ -634,6 +676,109 @@ test('release shell terminates during managed Python preflight without continuin
   assert.equal(fs.existsSync(continuedFile), false);
 });
 
+test('release shell escalates a stubborn managed command to SIGKILL', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-stubborn-command-')
+  );
+  const pythonFile = path.join(root, 'python3');
+  const nodeFile = path.join(root, 'node');
+  const pidFile = path.join(root, 'python.pid');
+  fs.writeFileSync(pythonFile, [
+    '#!/bin/bash',
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
+    "trap '' TERM",
+    'while true; do /bin/sleep 1; done',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  writeNodeProxy(nodeFile, ['exit 0']);
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_REAL_NODE: process.execPath,
+      SPECNAV_TEST_CHILD_PID_FILE: pidFile
+    },
+    stdio: 'ignore'
+  });
+  let childPid = null;
+  t.after(() => {
+    if (childPid !== null && processExists(childPid)) {
+      try {
+        process.kill(childPid, 'SIGKILL');
+      } catch {
+        // The managed process is expected to have exited.
+      }
+    }
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(pidFile);
+  childPid = Number(fs.readFileSync(pidFile, 'utf8').trim());
+  shell.kill('SIGTERM');
+  await waitForExit(shell);
+  await waitForProcessExit(childPid);
+  assert.equal(processExists(childPid), false);
+});
+
+test('release shell kills a stubborn descendant after its coordinator exits', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-shell-process-group-')
+  );
+  const nodeFile = path.join(root, 'node');
+  const coordinatorFile = path.join(root, 'coordinator.pid');
+  const workerFile = path.join(root, 'worker.pid');
+  writeNodeProxy(nodeFile, [
+    'if [[ "${1:-}" != "--check" ]]; then exit 0; fi',
+    "/bin/bash -c 'trap \"\" TERM; while true; do /bin/sleep 1; done' &",
+    'worker_pid=$!',
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_COORDINATOR_PID_FILE"',
+    'printf "%s\\n" "$worker_pid" > "$SPECNAV_TEST_WORKER_PID_FILE"',
+    "trap 'exit 143' TERM",
+    'while true; do /bin/sleep 1; done'
+  ]);
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_REAL_NODE: process.execPath,
+      SPECNAV_TEST_COORDINATOR_PID_FILE: coordinatorFile,
+      SPECNAV_TEST_WORKER_PID_FILE: workerFile
+    },
+    stdio: 'ignore'
+  });
+  let workerPid = null;
+  t.after(() => {
+    if (workerPid !== null && processExists(workerPid)) {
+      try {
+        process.kill(workerPid, 'SIGKILL');
+      } catch {
+        // The worker is expected to have exited.
+      }
+    }
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(coordinatorFile);
+  await waitForFile(workerFile);
+  workerPid = Number(fs.readFileSync(workerFile, 'utf8').trim());
+  shell.kill('SIGTERM');
+  await waitForExit(shell);
+  await waitForProcessExit(workerPid);
+  assert.equal(processExists(workerPid), false);
+});
+
 test('release shell manages assertion emission after a failed command', async (t) => {
   const root = fs.mkdtempSync(
     path.join(os.tmpdir(), 'specnav-release-assertion-signal-')
@@ -642,19 +787,18 @@ test('release shell manages assertion emission after a failed command', async (t
   const pidFile = path.join(root, 'emitter.pid');
   const markerFile = path.join(root, 'emitter-signal.txt');
   const resultFile = path.join(root, 'assertion-results.jsonl');
-  fs.writeFileSync(nodeFile, [
-    '#!/usr/bin/env bash',
+  writeNodeProxy(nodeFile, [
     'if [[ "${1:-}" == "--check" ]]; then exit 1; fi',
     'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
-    'while true; do sleep 1; done',
-    ''
-  ].join('\n'), { mode: 0o755 });
+    'while true; do sleep 1; done'
+  ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
     cwd: path.resolve(__dirname, '../../..'),
     env: {
       ...process.env,
       PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_REAL_NODE: process.execPath,
       SPECNAV_TEST_CHILD_PID_FILE: pidFile,
       SPECNAV_TEST_SIGNAL_FILE: markerFile,
       SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED: '0',
@@ -736,6 +880,7 @@ test('release shell dynamically includes support tests and excludes the sharded 
   assert.match(source, /exit "\$\(signal_status "\$signal"\)"/);
   assert.doesNotMatch(source, /\bdirname\b/);
   assert.match(source, /node\(\) \{\s*run_managed "\$NODE_BIN"/);
+  assert.match(source, /--managed-command -- "\$@"/);
   assert.match(source, /finishing=1/);
   assert.match(source, /launching=1[\s\S]*active_pid=\$![\s\S]*launching=0/);
   assert.match(

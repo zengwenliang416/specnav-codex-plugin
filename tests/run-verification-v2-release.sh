@@ -33,7 +33,9 @@ run_managed() {
     return "$(signal_status "$pending_signal")"
   fi
   launching=1
-  "$@" <&0 &
+  "$NODE_BIN" \
+    "$ROOT/tests/verification-v2/release/release-suite-runner.js" \
+    --managed-command -- "$@" <&0 &
   active_pid=$!
   launching=0
   if [[ -n "$pending_signal" ]] && kill -0 "$active_pid" 2>/dev/null; then

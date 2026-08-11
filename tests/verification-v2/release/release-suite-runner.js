@@ -7,6 +7,8 @@ const path = require('node:path');
 const DEFAULT_SHARD_COUNT = 4;
 const DEFAULT_TERMINATION_GRACE_MS = 5000;
 const DEFAULT_FORCE_WAIT_MS = 5000;
+const DEFAULT_MANAGED_TERMINATION_GRACE_MS = 1000;
+const DEFAULT_MANAGED_FORCE_WAIT_MS = 1000;
 const SHARD_COUNT_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_COUNT';
 const SHARD_INDEX_ENV = 'SPECNAV_RELEASE_PROOF_SHARD_INDEX';
 const FORWARDED_SIGNALS = Object.freeze(['SIGINT', 'SIGTERM', 'SIGHUP']);
@@ -86,7 +88,7 @@ function shardCommand(options, index) {
   };
 }
 
-function launchShard(spawnFunction, command, index, onSpawnError) {
+function launchShard(spawnFunction, command, index, onTerminalFailure) {
   const child = spawnFunction(
     command.command,
     command.args,
@@ -96,26 +98,40 @@ function launchShard(spawnFunction, command, index, onSpawnError) {
   let settled = false;
   const completion = new Promise((resolve) => {
     const onError = (error) => {
-      if (finish({
+      const result = {
         code: null,
         signal: null,
         error: error instanceof Error ? error.message : String(error)
-      })) {
-        onSpawnError(error, index);
-      }
+      };
+      if (finish(result)) onTerminalFailure(result, index);
     };
     const onExit = (code, signal) => {
-      finish({
+      const result = {
         code,
         signal,
         error: null
-      });
+      };
+      if (
+        finish(result)
+        && (code !== 0 || signal !== null)
+      ) {
+        onTerminalFailure(result, index);
+      }
     };
-    finish = (result) => {
+    finish = (result, options = {}) => {
       if (settled) return false;
       settled = true;
       child.removeListener('error', onError);
       child.removeListener('exit', onExit);
+      if (options.orphaned === true) {
+        const onOrphanError = () => {};
+        const onOrphanClose = () => {
+          child.removeListener('error', onOrphanError);
+          child.removeListener('close', onOrphanClose);
+        };
+        child.on('error', onOrphanError);
+        child.once('close', onOrphanClose);
+      }
       resolve({ child, index, ...result });
       return true;
     };
@@ -200,7 +216,138 @@ function forceSettle(execution) {
     code: null,
     signal: null,
     error: 'verification-release:shard-termination-timeout'
+  }, {
+    orphaned: true
   });
+}
+
+function processGroupExists(child, dependencies = {}) {
+  if (!Number.isSafeInteger(child?.pid) || child.pid <= 0) return false;
+  if (process.platform === 'win32') return false;
+  const kill = dependencies.killProcess || process.kill;
+  try {
+    kill(-child.pid, 0);
+    return true;
+  } catch (error) {
+    if (error?.code === 'ESRCH') return false;
+    throw error;
+  }
+}
+
+async function runManagedCommand(options = {}) {
+  if (typeof options.command !== 'string' || options.command.length === 0) {
+    throw new Error('verification-release:managed-command-required');
+  }
+  const terminationGraceMs = options.terminationGraceMs
+    ?? DEFAULT_MANAGED_TERMINATION_GRACE_MS;
+  const forceWaitMs = options.forceWaitMs ?? DEFAULT_MANAGED_FORCE_WAIT_MS;
+  integer(terminationGraceMs, 'termination-grace-ms', 0);
+  integer(forceWaitMs, 'force-wait-ms', 0);
+  const signalSource = options.signalSource || process;
+  const terminateProcess = options.terminateProcess || terminateProcessGroup;
+  const groupExists = options.processGroupExists || processGroupExists;
+  const terminationErrors = [];
+  const handlers = new Map();
+  let execution = null;
+  let receivedSignal = null;
+  let shutdownStarted = false;
+  let shutdownResolved = false;
+  let escalationTimer = null;
+  let forceTimer = null;
+  let resolveShutdown;
+  const shutdownCompletion = new Promise((resolve) => {
+    resolveShutdown = resolve;
+  });
+  const finishShutdown = () => {
+    if (shutdownResolved) return;
+    shutdownResolved = true;
+    resolveShutdown();
+  };
+  const beginShutdown = (signal) => {
+    if (shutdownStarted || execution === null) return;
+    shutdownStarted = true;
+    killExecution(
+      execution,
+      signal,
+      terminationErrors,
+      terminateProcess,
+      true
+    );
+    escalationTimer = setTimeout(() => {
+      killExecution(
+        execution,
+        'SIGKILL',
+        terminationErrors,
+        terminateProcess,
+        true
+      );
+    }, terminationGraceMs);
+    forceTimer = setTimeout(() => {
+      forceSettle(execution);
+      finishShutdown();
+    }, terminationGraceMs + forceWaitMs);
+  };
+  for (const signal of FORWARDED_SIGNALS) {
+    const handler = () => {
+      if (receivedSignal !== null) return;
+      receivedSignal = signal;
+      beginShutdown(signal);
+    };
+    handlers.set(signal, handler);
+    signalSource.once(signal, handler);
+  }
+
+  try {
+    const command = {
+      command: options.command,
+      args: options.args || [],
+      options: {
+        cwd: options.cwd || process.cwd(),
+        env: options.env || process.env,
+        detached: true,
+        stdio: options.stdio || 'inherit'
+      }
+    };
+    execution = launchShard(
+      options.spawnFunction || spawn,
+      command,
+      0,
+      () => {}
+    );
+    if (receivedSignal !== null) beginShutdown(receivedSignal);
+    const result = await execution.completion;
+    if (
+      !shutdownStarted
+      && groupExists(execution.child)
+    ) {
+      beginShutdown('SIGTERM');
+    }
+    if (
+      shutdownStarted
+      && !groupExists(execution.child)
+    ) {
+      finishShutdown();
+    }
+    if (shutdownStarted) await shutdownCompletion;
+    return {
+      ok: result.code === 0
+        && result.signal === null
+        && result.error === null
+        && receivedSignal === null
+        && terminationErrors.length === 0,
+      code: result.code,
+      signal: result.signal,
+      error: result.error,
+      received_signal: receivedSignal,
+      termination_errors: terminationErrors
+    };
+  } finally {
+    if (escalationTimer !== null) clearTimeout(escalationTimer);
+    if (forceTimer !== null) clearTimeout(forceTimer);
+    for (const [signal, handler] of handlers) {
+      signalSource.removeListener(signal, handler);
+    }
+  }
 }
 
 async function runReleaseSuite(options = {}) {
@@ -291,11 +438,9 @@ async function runReleaseSuite(options = {}) {
           runtime.spawnFunction,
           command,
           index,
-          (error) => {
-            if (launchError === null) {
-              launchError = error instanceof Error
-                ? error.message
-                : String(error);
+          (result) => {
+            if (result.error !== null && launchError === null) {
+              launchError = result.error;
             }
             beginShutdown('SIGTERM');
           }
@@ -335,7 +480,23 @@ async function runReleaseSuite(options = {}) {
   }
 }
 
-async function main() {
+async function main(args = process.argv.slice(2)) {
+  if (args[0] === '--managed-command') {
+    if (args[1] !== '--' || typeof args[2] !== 'string') {
+      throw new Error('verification-release:managed-command-required');
+    }
+    const result = await runManagedCommand({
+      command: args[2],
+      args: args.slice(3)
+    });
+    const signal = result.received_signal || result.signal;
+    if (signal !== null) {
+      process.kill(process.pid, signal);
+      return;
+    }
+    process.exitCode = result.ok ? 0 : (result.code || 1);
+    return;
+  }
   const result = await runReleaseSuite();
   if (result.received_signal !== null) {
     process.kill(process.pid, result.received_signal);
@@ -353,6 +514,8 @@ if (require.main === module) {
 
 module.exports = {
   DEFAULT_FORCE_WAIT_MS,
+  DEFAULT_MANAGED_FORCE_WAIT_MS,
+  DEFAULT_MANAGED_TERMINATION_GRACE_MS,
   DEFAULT_SHARD_COUNT,
   DEFAULT_TERMINATION_GRACE_MS,
   FORWARDED_SIGNALS,
@@ -360,6 +523,8 @@ module.exports = {
   SHARD_INDEX_ENV,
   createShardTest,
   parseShardConfig,
+  processGroupExists,
+  runManagedCommand,
   runReleaseSuite,
   shardAssignments,
   shardCommand,
