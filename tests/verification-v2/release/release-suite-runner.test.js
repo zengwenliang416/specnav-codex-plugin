@@ -643,6 +643,8 @@ test('release shell manages assertion emission after a failed command', async (t
       PATH: `${root}:${process.env.PATH}`,
       SPECNAV_TEST_CHILD_PID_FILE: pidFile,
       SPECNAV_TEST_SIGNAL_FILE: markerFile,
+      SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED: '0',
+      SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID: '',
       SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE: resultFile,
       SPECNAV_VERIFICATION_ASSERTION_IDS: 'CASE-08-A01,CASE-08-A02,CASE-08-A03'
     },
@@ -669,25 +671,13 @@ test('release shell emits failed assertions when Python is unavailable', async (
     path.join(os.tmpdir(), 'specnav-release-python-missing-')
   );
   const nodeFile = path.join(root, 'node');
-  const markerFile = path.join(root, 'emitter-called.txt');
   const resultFile = path.join(root, 'assertion-results.jsonl');
-  fs.writeFileSync(nodeFile, [
-    '#!/bin/bash',
-    'printf "%s\\n" "$SPECNAV_VERIFICATION_COMMAND_STATUS" > "$SPECNAV_TEST_EMITTER_FILE"',
-    'printf "%s\\n" \\',
-    '  \'{"assertion_id":"CASE-08-A01","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
-    '  \'{"assertion_id":"CASE-08-A02","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
-    '  \'{"assertion_id":"CASE-08-A03","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
-    '  > "$SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"',
-    'exit 0',
-    ''
-  ].join('\n'), { mode: 0o755 });
+  fs.symlinkSync(process.execPath, nodeFile);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
     cwd: path.resolve(__dirname, '../../..'),
     env: {
       ...process.env,
       PATH: root,
-      SPECNAV_TEST_EMITTER_FILE: markerFile,
       SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED: '0',
       SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID: '',
       SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE: resultFile,
@@ -706,9 +696,7 @@ test('release shell emits failed assertions when Python is unavailable', async (
 
   await waitForExit(shell);
   assert.notEqual(shell.exitCode, 0);
-  await waitForFile(markerFile);
   await waitForFile(resultFile);
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), '1\n');
   const records = fs.readFileSync(resultFile, 'utf8')
     .trim()
     .split('\n')
