@@ -1,0 +1,133 @@
+{
+  "schema": "specnav.development.repair-task.v1",
+  "id": "900-verification-repair-ed7ee0d1df9182a4",
+  "change_id": "verification-2-0",
+  "goal": "Repair test_defect for CASE-03.",
+  "classification": "test_defect",
+  "owner": "development",
+  "status": "requested",
+  "requested_at": "2026-08-11T03:16:32.788Z",
+  "packet_path": "development/tasks/900-verification-repair-ed7ee0d1df9182a4",
+  "scope": {
+    "owner": "development",
+    "source": "approved-development-scope-lock",
+    "allowed_files": [
+      "tests/run-smoke.sh",
+      "tests/run-verification-v2-case-03.sh",
+      "tests/verification-v2/production/case-03-smoke-routing.test.js"
+    ],
+    "denied_files": [
+      "openspec/changes/archive/**"
+    ],
+    "requires_review_on": [
+      "tests/run-smoke.sh",
+      "tests/run-verification-v2-case-03.sh",
+      "tests/verification-v2/production/case-03-smoke-routing.test.js"
+    ],
+    "allowed_operations": {
+      "create": true,
+      "modify": true,
+      "delete": false,
+      "rename": false
+    },
+    "digest": "308f1718dbd08b4afe24477209d8e626b035b24ec461c9ac6d13aaf05fe5313b"
+  },
+  "packet_artifacts": [
+    "brief.md",
+    "context.json",
+    "report.md",
+    "spec-review.md",
+    "quality-review.md"
+  ],
+  "required_reviews": [
+    "spec-review",
+    "quality-review"
+  ],
+  "ownership": {
+    "evidence": "verification",
+    "closure": "verification",
+    "repair": "development",
+    "reviews": "development",
+    "transitions": "core",
+    "break_loop": "core"
+  },
+  "frozen_failure": {
+    "failure_packet_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf",
+    "failure_packet_digest": "23ce3d49e38c386d92afe567afd1a0424f025ed43bc8a087656e49d7354540d1",
+    "run_id": "run-20260811022747-a6f726be7a86df82",
+    "case_id": "CASE-03",
+    "attempt_id": "attempt-20260811022747-a6f726be7a86df82",
+    "evidence_ids": [
+      "evidence-149fbad9bf55627733a829a00974ee34b5d8955dbda9286833ba2d129f669556",
+      "evidence-2abfd8abbdddfd7c1b730fbddab4d4c5fc021bbe0cea953ffb2ffec24fd427fa",
+      "evidence-65ccb2c793b3fe8db80d5fe7ad2c2f660a3126b19c9b0e353e7477abd1f61db6",
+      "evidence-6ba40f1533a7c0366ad0794fd4537c2e39fb2e0e0db01bb9824fddab13d81e1a",
+      "evidence-76cd03edd27d64f4d251a817eb6d596891c60941653967b2630413dc1789706f",
+      "evidence-892e45990a10fd1cdb14be56335e60da74b91270e4387881ca6284522007e1bc",
+      "evidence-92c03ab4dc952ced92b651d8132fa4df26a80f5fcfe00ffc64deb8a24e827a92",
+      "evidence-c634904707a1a1269f2f7f12250458b38dcb28faa535912eb53e3c98ec1c2bfa"
+    ],
+    "evidence_content": [
+      {
+        "id": "evidence-149fbad9bf55627733a829a00974ee34b5d8955dbda9286833ba2d129f669556",
+        "digest": "4288af95e42b9f9de7cc9642e1290f92b168064f2e9623315039d7c035a479aa"
+      },
+      {
+        "id": "evidence-2abfd8abbdddfd7c1b730fbddab4d4c5fc021bbe0cea953ffb2ffec24fd427fa",
+        "digest": "ef4a1cf3ec74fce01b8d33688a76de086d760165da32403131edc4d530f5a68c"
+      },
+      {
+        "id": "evidence-65ccb2c793b3fe8db80d5fe7ad2c2f660a3126b19c9b0e353e7477abd1f61db6",
+        "digest": "4ec755bce451b59d52b70c79e5bdd8570b8623358c148c3311545984f387f2ce"
+      },
+      {
+        "id": "evidence-6ba40f1533a7c0366ad0794fd4537c2e39fb2e0e0db01bb9824fddab13d81e1a",
+        "digest": "9b07c2c236736bf19b7607286c73f4efff89cc9ab304b17a75d8925d20ec0ed4"
+      },
+      {
+        "id": "evidence-76cd03edd27d64f4d251a817eb6d596891c60941653967b2630413dc1789706f",
+        "digest": "83f98f02f3b467055528dc36ec5db6cfdc344051e54f8890a25a062500d14472"
+      },
+      {
+        "id": "evidence-892e45990a10fd1cdb14be56335e60da74b91270e4387881ca6284522007e1bc",
+        "digest": "a3ee73ec8078bf9b9fa0a3fbb2976e60db1343d99b1444e8a72be67683c70524"
+      },
+      {
+        "id": "evidence-92c03ab4dc952ced92b651d8132fa4df26a80f5fcfe00ffc64deb8a24e827a92",
+        "digest": "2f0873f2ad28da2bf7f98a04dc29fa6b5dd51f02c160b23ecf503766993ca98c"
+      },
+      {
+        "id": "evidence-c634904707a1a1269f2f7f12250458b38dcb28faa535912eb53e3c98ec1c2bfa",
+        "digest": "675e9a5868edfae0afa981ba8de2b2a30ec47f748dccb39ed0b92b6cca3e8321"
+      }
+    ],
+    "reading_ids": [
+      "reading-03237ff850f688ae0305753be91c5307f7bbae3b2278861a7f3ec7dea4e329f0",
+      "reading-04b856b0dec22da6197c2d5efb049a57e055d7d824681345523adff99e64b621",
+      "reading-0672bfbfebf5f5ae0137d9f7708da0b582b0c81e600daacdb25a403cfef52b09",
+      "reading-0e9911f0f526e845df7d11aead368ba0928a1d2cc1e9ca57181f42e6916045a1",
+      "reading-623bbe93dc427e3850f23fbc86f1d622ce9b1b0a378ed4815195a89ce2e2670e",
+      "reading-8922e5b2cd19c7702c5c73b39390ab43d4465f0eac706ab460e6114a422358c9",
+      "reading-938487c1a92447e9a5c9aa401d76f6d3264743203ed15591fefd419c4a62d3ff",
+      "reading-9862a015a11d4b0e2ec945a854689ccef8c3407c15e5396692692265135fbfc5",
+      "reading-a6df47b289f14aae0528d053222dfea9ea583a314eda28bb4b803b6b7348ade4",
+      "reading-b9253cd1fc4296b8735ae0620b8e1069c290925e9ff0093401ba8f942fee3f4f",
+      "reading-ba0f453a6751faf6565435c5afd8ebdf2de6f2ce805c95078fb6c92d0cc50263",
+      "reading-c46fe73c3fbeda92b36d7b92ff54f89e0183c8866088f7e4182de6a79922af69",
+      "reading-cc3100d3c1c7d4ad4ec9f56812102fb3645121e051479f2c0140e9f59e190f0d",
+      "reading-ce5efe8e9f33972db1043cf56d5636942722f534957adaf9efe8931741455267",
+      "reading-db75db94ee1365818498a6b60f73546e81389c54a5cd25adf656bba54b1f0b6d",
+      "reading-dca6f5864de71ea596ca5edf9a113e82acf2db5f1c31b5af2d19de52f43d1afe",
+      "reading-e3e28da7c0cc8188c608b05c90db9f189c0d87da6a9fed9727abde8e02724643",
+      "reading-e94de7bda0c5e4e87cfd21854763f4a99dbb0ee65cd60fd668902a5b9d6fea3e"
+    ],
+    "failed_assertion_ids": [
+      "CASE-03-A01",
+      "CASE-03-A02",
+      "CASE-03-A03"
+    ],
+    "summary": "CASE-03 completed the internal release and archive proof suite, but the outer smoke harness exceeded its approved 900-second runner timeout and was terminated with SIGTERM.",
+    "root_cause": "CASE-03 invokes the full repository smoke harness. Its combined scope and serial duration exceed the approved runner timeout even though the internal release and archive suite reached 54 passing tests, so the failure belongs to the test harness rather than the product implementation.",
+    "frozen_at": "2026-08-11T02:43:40.336Z"
+  }
+}

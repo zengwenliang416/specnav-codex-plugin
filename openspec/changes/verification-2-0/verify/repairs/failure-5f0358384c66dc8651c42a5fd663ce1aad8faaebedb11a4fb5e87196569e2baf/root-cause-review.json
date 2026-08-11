@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.verification.root-cause-review.v1",
+  "id": "root-cause-review-case-03-runner-timeout",
+  "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf",
+  "root_failure_digest": "899daa50ef11a9a79ae0197e7c7c97e8cc9cc09627a7166146c912ac4fd69dd1",
+  "change_id": "verification-2-0",
+  "run_id": "run-20260811022747-a6f726be7a86df82",
+  "case_id": "CASE-03",
+  "attempt_id": "attempt-20260811022747-a6f726be7a86df82",
+  "classification": "test_defect",
+  "summary": "CASE-03 completed the internal release and archive proof suite, but the outer smoke harness exceeded its approved 900-second runner timeout and was terminated with SIGTERM.",
+  "root_cause": "CASE-03 invokes the full repository smoke harness. Its combined scope and serial duration exceed the approved runner timeout even though the internal release and archive suite reached 54 passing tests, so the failure belongs to the test harness rather than the product implementation.",
+  "failed_assertion_ids": [
+    "CASE-03-A01",
+    "CASE-03-A02",
+    "CASE-03-A03"
+  ],
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "decision": "approved",
+  "reviewed_at": "2026-08-11T03:08:09Z"
+}

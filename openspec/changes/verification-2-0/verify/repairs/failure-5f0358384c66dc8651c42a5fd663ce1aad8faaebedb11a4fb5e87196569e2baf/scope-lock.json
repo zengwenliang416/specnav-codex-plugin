@@ -1,0 +1,21 @@
+{
+  "allowed_files": [
+    "tests/run-smoke.sh",
+    "tests/run-verification-v2-case-03.sh",
+    "tests/verification-v2/production/case-03-smoke-routing.test.js"
+  ],
+  "denied_files": [
+    "openspec/changes/archive/**"
+  ],
+  "requires_review_on": [
+    "tests/run-smoke.sh",
+    "tests/run-verification-v2-case-03.sh",
+    "tests/verification-v2/production/case-03-smoke-routing.test.js"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  }
+}
