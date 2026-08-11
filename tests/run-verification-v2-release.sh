@@ -72,7 +72,6 @@ elif [[ "$script_dir" != /* ]]; then
 fi
 ROOT="$(cd "$script_dir/.." && pwd -P)"
 NODE_BIN="$(command -v node)"
-PYTHON_BIN="$(command -v python3)"
 
 node() {
   run_managed "$NODE_BIN" "$@"
@@ -100,6 +99,8 @@ finish() {
 }
 
 trap 'finish "$?"' EXIT
+
+PYTHON_BIN="$(command -v python3)"
 
 cd "$ROOT"
 run_managed "$PYTHON_BIN" -c 'import ast, pathlib; ast.parse(pathlib.Path("plugins/specnav-operations/scripts/safe-filesystem.py").read_text())'

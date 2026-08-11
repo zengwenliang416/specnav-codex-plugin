@@ -2,7 +2,7 @@
 
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
-const { EventEmitter, once } = require('node:events');
+const { EventEmitter } = require('node:events');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -59,15 +59,17 @@ async function waitForFile(file, timeoutMs = 5000) {
 
 async function waitForExit(child, timeoutMs = 5000) {
   if (child.exitCode !== null || child.signalCode !== null) return;
-  await Promise.race([
-    once(child, 'exit'),
-    new Promise((_, reject) => {
-      setTimeout(
-        () => reject(new Error('timed out waiting for process exit')),
-        timeoutMs
-      );
-    })
-  ]);
+  await new Promise((resolve, reject) => {
+    const onExit = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+    const timer = setTimeout(() => {
+      child.removeListener('exit', onExit);
+      reject(new Error('timed out waiting for process exit'));
+    }, timeoutMs);
+    child.once('exit', onExit);
+  });
 }
 
 function processExists(pid) {
@@ -109,6 +111,26 @@ test('shard configuration is explicit and fails closed', () => {
     }),
     /shard-index-out-of-range/
   );
+});
+
+test('waitForExit removes exit listeners after success and timeout', async () => {
+  const exitedChild = new EventEmitter();
+  exitedChild.exitCode = null;
+  exitedChild.signalCode = null;
+  const exited = waitForExit(exitedChild, 1000);
+  assert.equal(exitedChild.listenerCount('exit'), 1);
+  exitedChild.emit('exit', 0, null);
+  await exited;
+  assert.equal(exitedChild.listenerCount('exit'), 0);
+
+  const timedOutChild = new EventEmitter();
+  timedOutChild.exitCode = null;
+  timedOutChild.signalCode = null;
+  await assert.rejects(
+    waitForExit(timedOutChild, 5),
+    /timed out waiting for process exit/
+  );
+  assert.equal(timedOutChild.listenerCount('exit'), 0);
 });
 
 test('43 release tests are assigned exactly once across four shards', () => {
@@ -640,6 +662,65 @@ test('release shell manages assertion emission after a failed command', async (t
   await waitForExit(shell);
   await waitForFile(markerFile);
   assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+});
+
+test('release shell emits failed assertions when Python is unavailable', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-python-missing-')
+  );
+  const nodeFile = path.join(root, 'node');
+  const markerFile = path.join(root, 'emitter-called.txt');
+  const resultFile = path.join(root, 'assertion-results.jsonl');
+  fs.writeFileSync(nodeFile, [
+    '#!/bin/bash',
+    'printf "%s\\n" "$SPECNAV_VERIFICATION_COMMAND_STATUS" > "$SPECNAV_TEST_EMITTER_FILE"',
+    'printf "%s\\n" \\',
+    '  \'{"assertion_id":"CASE-08-A01","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
+    '  \'{"assertion_id":"CASE-08-A02","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
+    '  \'{"assertion_id":"CASE-08-A03","method":"equal","expected":true,"actual":false,"status":"failed"}\' \\',
+    '  > "$SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"',
+    'exit 0',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: root,
+      SPECNAV_TEST_EMITTER_FILE: markerFile,
+      SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED: '0',
+      SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID: '',
+      SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE: resultFile,
+      SPECNAV_VERIFICATION_ASSERTION_IDS: 'CASE-08-A01,CASE-08-A02,CASE-08-A03'
+    },
+    stdio: 'ignore'
+  });
+  t.after(() => {
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForExit(shell);
+  assert.notEqual(shell.exitCode, 0);
+  await waitForFile(markerFile);
+  await waitForFile(resultFile);
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), '1\n');
+  const records = fs.readFileSync(resultFile, 'utf8')
+    .trim()
+    .split('\n')
+    .map((line) => JSON.parse(line));
+  assert.deepEqual(
+    records.map((record) => [record.assertion_id, record.status]),
+    [
+      ['CASE-08-A01', 'failed'],
+      ['CASE-08-A02', 'failed'],
+      ['CASE-08-A03', 'failed']
+    ]
+  );
 });
 
 test('release shell dynamically includes support tests and excludes the sharded file', () => {
