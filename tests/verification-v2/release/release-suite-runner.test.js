@@ -595,6 +595,50 @@ test('release shell terminates during managed Python preflight without continuin
   assert.equal(fs.existsSync(continuedFile), false);
 });
 
+test('release shell manages assertion emission after a failed command', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-assertion-signal-')
+  );
+  const nodeFile = path.join(root, 'node');
+  const pidFile = path.join(root, 'emitter.pid');
+  const markerFile = path.join(root, 'emitter-signal.txt');
+  const resultFile = path.join(root, 'assertion-results.jsonl');
+  fs.writeFileSync(nodeFile, [
+    '#!/usr/bin/env bash',
+    'if [[ "${1:-}" == "--check" ]]; then exit 1; fi',
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
+    "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'while true; do sleep 1; done',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_CHILD_PID_FILE: pidFile,
+      SPECNAV_TEST_SIGNAL_FILE: markerFile,
+      SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE: resultFile,
+      SPECNAV_VERIFICATION_ASSERTION_IDS: 'CASE-08-A01,CASE-08-A02,CASE-08-A03'
+    },
+    stdio: 'ignore'
+  });
+  t.after(() => {
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(pidFile);
+  shell.kill('SIGTERM');
+  await waitForExit(shell);
+  await waitForFile(markerFile);
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+});
+
 test('release shell dynamically includes support tests and excludes the sharded file', () => {
   const source = fs.readFileSync(RELEASE_RUNNER, 'utf8');
   assert.match(
@@ -604,4 +648,7 @@ test('release shell dynamically includes support tests and excludes the sharded 
   assert.match(source, /release-proof\.test\.js/);
   assert.match(source, /support_tests\+=/);
   assert.match(source, /exit "\$\(signal_status "\$signal"\)"/);
+  assert.doesNotMatch(source, /\bdirname\b/);
+  assert.match(source, /node\(\) \{\s*run_managed "\$NODE_BIN"/);
+  assert.match(source, /finishing=1/);
 });
