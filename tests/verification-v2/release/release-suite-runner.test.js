@@ -62,13 +62,47 @@ function fakeTerminate(child, signal) {
   return child.kill(signal);
 }
 
-async function waitForFile(file, timeoutMs = 5000) {
+async function waitForFileValue(file, reader, timeoutMs = 5000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    if (fs.existsSync(file)) return;
+    if (fs.existsSync(file)) {
+      try {
+        const value = reader(fs.readFileSync(file, 'utf8'));
+        if (value !== undefined) return value;
+      } catch {
+        // The writer may still be completing the file.
+      }
+    }
     await new Promise((resolve) => setTimeout(resolve, 20));
   }
-  throw new Error(`timed out waiting for ${file}`);
+  throw new Error(`timed out waiting for complete ${file}`);
+}
+
+function waitForText(file, expected, timeoutMs = 5000) {
+  return waitForFileValue(
+    file,
+    (value) => value === expected ? value : undefined,
+    timeoutMs
+  );
+}
+
+function waitForInteger(file, timeoutMs = 5000) {
+  return waitForFileValue(file, (value) => {
+    const trimmed = value.trim();
+    return /^\d+$/.test(trimmed) ? Number(trimmed) : undefined;
+  }, timeoutMs);
+}
+
+function waitForJson(file, timeoutMs = 5000) {
+  return waitForFileValue(file, (value) => JSON.parse(value), timeoutMs);
+}
+
+function waitForJsonLines(file, count, timeoutMs = 5000) {
+  return waitForFileValue(file, (value) => {
+    const lines = value.trim().split('\n').filter(Boolean);
+    if (lines.length !== count) return undefined;
+    return lines.map((line) => JSON.parse(line));
+  }, timeoutMs);
 }
 
 async function waitForExit(child, timeoutMs = 5000) {
@@ -480,11 +514,10 @@ test('process-group termination reaches a real test worker descendant', async (t
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(readyFile);
+  await waitForJson(readyFile);
   terminateProcessGroup(parent, 'SIGTERM');
   await waitForExit(parent);
-  await waitForFile(markerFile);
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'SIGTERM\n');
+  await waitForText(markerFile, 'SIGTERM\n');
 });
 
 test('SIGKILL escalation cleans a worker after its coordinator exits', async (t) => {
@@ -582,16 +615,14 @@ test('SIGKILL escalation cleans a worker after its coordinator exits', async (t)
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(readyFile);
-  const ready = JSON.parse(fs.readFileSync(readyFile, 'utf8'));
+  const ready = await waitForJson(readyFile);
   signalSource.emit('SIGTERM');
   const result = await pending;
-  await waitForFile(markerFile);
+  await waitForText(markerFile, 'ignored SIGTERM\n');
   await waitForProcessExit(ready.worker_pid);
 
   assert.equal(result.ok, false);
   assert.equal(result.received_signal, 'SIGTERM');
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'ignored SIGTERM\n');
   assert.equal(processExists(ready.worker_pid), false);
 });
 
@@ -733,8 +764,7 @@ test('managed owner kills a registered detached group after coordinator exit', a
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(readyFile);
-  workerPid = JSON.parse(fs.readFileSync(readyFile, 'utf8')).worker_pid;
+  workerPid = (await waitForJson(readyFile)).worker_pid;
   signalSource.emit('SIGTERM');
   const result = await pending;
   await waitForProcessExit(workerPid);
@@ -777,11 +807,10 @@ test('release shell forwards adapter termination to its active Node command', as
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(pidFile);
+  await waitForInteger(pidFile);
   shell.kill('SIGTERM');
   await waitForExit(shell);
-  await waitForFile(markerFile);
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+  await waitForText(markerFile, 'TERM\n');
 });
 
 test('release shell terminates during managed Python preflight without continuing', async (t) => {
@@ -825,11 +854,10 @@ test('release shell terminates during managed Python preflight without continuin
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(pidFile);
+  await waitForInteger(pidFile);
   shell.kill('SIGTERM');
   await waitForExit(shell);
-  await waitForFile(markerFile);
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+  await waitForText(markerFile, 'TERM\n');
   assert.equal(fs.existsSync(continuedFile), false);
 });
 
@@ -875,10 +903,9 @@ test('release shell escalates a stubborn managed command to SIGKILL', async (t) 
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(pidFile);
-  childPid = Number(fs.readFileSync(pidFile, 'utf8').trim());
+  childPid = await waitForInteger(pidFile);
   shell.kill('SIGTERM');
-  await waitForExit(shell);
+  await waitForExit(shell, 8000);
   await waitForProcessExit(childPid);
   assert.equal(processExists(childPid), false);
 });
@@ -927,11 +954,10 @@ test('release shell kills a stubborn descendant after its coordinator exits', as
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(coordinatorFile);
-  await waitForFile(workerFile);
-  workerPid = Number(fs.readFileSync(workerFile, 'utf8').trim());
+  await waitForInteger(coordinatorFile);
+  workerPid = await waitForInteger(workerFile);
   shell.kill('SIGTERM');
-  await waitForExit(shell);
+  await waitForExit(shell, 8000);
   await waitForProcessExit(workerPid);
   assert.equal(processExists(workerPid), false);
 });
@@ -974,11 +1000,10 @@ test('release shell manages assertion emission after a failed command', async (t
     fs.rmSync(root, { recursive: true, force: true });
   });
 
-  await waitForFile(pidFile);
+  await waitForInteger(pidFile);
   shell.kill('SIGTERM');
   await waitForExit(shell);
-  await waitForFile(markerFile);
-  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+  await waitForText(markerFile, 'TERM\n');
 });
 
 test('release shell emits failed assertions when Python is unavailable', async (t) => {
@@ -1011,11 +1036,7 @@ test('release shell emits failed assertions when Python is unavailable', async (
 
   await waitForExit(shell);
   assert.notEqual(shell.exitCode, 0);
-  await waitForFile(resultFile);
-  const records = fs.readFileSync(resultFile, 'utf8')
-    .trim()
-    .split('\n')
-    .map((line) => JSON.parse(line));
+  const records = await waitForJsonLines(resultFile, 3);
   assert.deepEqual(
     records.map((record) => [record.assertion_id, record.status]),
     [
