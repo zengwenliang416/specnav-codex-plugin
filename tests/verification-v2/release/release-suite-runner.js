@@ -86,7 +86,7 @@ function shardCommand(options, index) {
   };
 }
 
-function launchShard(spawnFunction, command, index) {
+function launchShard(spawnFunction, command, index, onSpawnError) {
   const child = spawnFunction(
     command.command,
     command.args,
@@ -100,11 +100,14 @@ function launchShard(spawnFunction, command, index) {
       settled = true;
       resolve({ child, index, ...result });
     };
-    child.once('error', (error) => finish({
-      code: null,
-      signal: null,
-      error: error instanceof Error ? error.message : String(error)
-    }));
+    child.once('error', (error) => {
+      finish({
+        code: null,
+        signal: null,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      onSpawnError(error, index);
+    });
     child.once('exit', (code, signal) => finish({
       code,
       signal,
@@ -143,12 +146,22 @@ function terminateProcessGroup(child, signal, dependencies = {}) {
     return true;
   }
   const kill = dependencies.killProcess || process.kill;
-  kill(-child.pid, signal);
+  try {
+    kill(-child.pid, signal);
+  } catch (error) {
+    if (error?.code !== 'ESRCH') throw error;
+  }
   return true;
 }
 
-function killExecution(execution, signal, errors, terminateProcess) {
-  if (execution.settled) return;
+function killExecution(
+  execution,
+  signal,
+  errors,
+  terminateProcess,
+  includeSettled = false
+) {
+  if (execution.settled && !includeSettled) return;
   try {
     if (terminateProcess(execution.child, signal) === false) {
       errors.push({
@@ -218,6 +231,10 @@ async function runReleaseSuite(options = {}) {
   let shutdownStarted = false;
   let escalationTimer = null;
   let forceTimer = null;
+  let resolveShutdown;
+  const shutdownCompletion = new Promise((resolve) => {
+    resolveShutdown = resolve;
+  });
   const terminationErrors = [];
   const handlers = new Map();
   const beginShutdown = (signal) => {
@@ -237,12 +254,14 @@ async function runReleaseSuite(options = {}) {
           execution,
           'SIGKILL',
           terminationErrors,
-          runtime.terminateProcess
+          runtime.terminateProcess,
+          true
         );
       }
     }, terminationGraceMs);
     forceTimer = setTimeout(() => {
       for (const execution of executions) forceSettle(execution);
+      resolveShutdown();
     }, terminationGraceMs + forceWaitMs);
   };
   for (const signal of FORWARDED_SIGNALS) {
@@ -262,7 +281,15 @@ async function runReleaseSuite(options = {}) {
         executions.push(launchShard(
           runtime.spawnFunction,
           command,
-          index
+          index,
+          (error) => {
+            if (launchError === null) {
+              launchError = error instanceof Error
+                ? error.message
+                : String(error);
+            }
+            beginShutdown('SIGTERM');
+          }
         ));
       } catch (error) {
         launchError = error instanceof Error ? error.message : String(error);
@@ -273,6 +300,7 @@ async function runReleaseSuite(options = {}) {
     const results = await Promise.all(
       executions.map((execution) => execution.completion)
     );
+    if (shutdownStarted) await shutdownCompletion;
     const failures = results.filter((result) => (
       result.error !== null
       || result.signal !== null

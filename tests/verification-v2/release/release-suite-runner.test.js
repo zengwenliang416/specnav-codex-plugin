@@ -70,6 +70,25 @@ async function waitForExit(child, timeoutMs = 5000) {
   ]);
 }
 
+function processExists(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    if (error.code === 'ESRCH') return false;
+    throw error;
+  }
+}
+
+async function waitForProcessExit(pid, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (!processExists(pid)) return;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`timed out waiting for process ${pid} to exit`);
+}
+
 test('shard configuration is explicit and fails closed', () => {
   assert.equal(parseShardConfig({}), null);
   assert.deepEqual(parseShardConfig({
@@ -159,6 +178,8 @@ test('a failed shard fails the suite without hiding successful shards', async ()
   const result = await runReleaseSuite({
     shardCount: 4,
     signalSource: new EventEmitter(),
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
     terminateProcess: fakeTerminate,
     spawnFunction() {
       const current = index;
@@ -181,6 +202,8 @@ test('a synchronous spawn failure stops launch and terminates active shards', as
   const result = await runReleaseSuite({
     shardCount: 4,
     signalSource: new EventEmitter(),
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
     terminateProcess: fakeTerminate,
     spawnFunction() {
       calls += 1;
@@ -193,15 +216,19 @@ test('a synchronous spawn failure stops launch and terminates active shards', as
   assert.equal(calls, 2);
   assert.equal(result.ok, false);
   assert.equal(result.launch_error, 'spawn denied');
-  assert.deepEqual(kills, ['SIGTERM']);
+  assert.deepEqual(kills, ['SIGTERM', 'SIGKILL']);
   assert.equal(result.results.length, 1);
 });
 
 test('asynchronous spawn errors and child signals fail the suite', async () => {
+  const kills = Array.from({ length: 4 }, () => []);
   let index = 0;
   const result = await runReleaseSuite({
     shardCount: 4,
     signalSource: new EventEmitter(),
+    terminationGraceMs: 5,
+    forceWaitMs: 5,
+    terminateProcess: fakeTerminate,
     spawnFunction() {
       const current = index;
       index += 1;
@@ -211,14 +238,17 @@ test('asynchronous spawn errors and child signals fail the suite', async () => {
       if (current === 2) {
         return fakeChild({ code: null, signal: 'SIGABRT' });
       }
-      return fakeChild({ code: 0 });
+      return fakeChild(null, kills[current]);
     },
     stdio: 'pipe'
   });
 
   assert.equal(result.ok, false);
+  assert.equal(result.launch_error, 'async spawn error');
   assert.equal(result.results[1].error, 'async spawn error');
   assert.equal(result.results[2].signal, 'SIGABRT');
+  assert.deepEqual(kills[0], ['SIGTERM', 'SIGKILL']);
+  assert.deepEqual(kills[3], ['SIGTERM', 'SIGKILL']);
 });
 
 test('parent termination is forwarded to every active shard', async () => {
@@ -245,10 +275,10 @@ test('parent termination is forwarded to every active shard', async () => {
   assert.equal(result.ok, false);
   assert.equal(result.received_signal, 'SIGTERM');
   assert.deepEqual(kills, [
-    ['SIGTERM'],
-    ['SIGTERM'],
-    ['SIGTERM'],
-    ['SIGTERM']
+    ['SIGTERM', 'SIGKILL'],
+    ['SIGTERM', 'SIGKILL'],
+    ['SIGTERM', 'SIGKILL'],
+    ['SIGTERM', 'SIGKILL']
   ]);
   assert.deepEqual(
     result.results.map((entry) => entry.signal),
@@ -366,6 +396,114 @@ test('process-group termination reaches a real test worker descendant', async (t
   assert.equal(fs.readFileSync(markerFile, 'utf8'), 'SIGTERM\n');
 });
 
+test('SIGKILL escalation cleans a worker after its coordinator exits', async (t) => {
+  if (process.platform === 'win32') {
+    const calls = [];
+    const signalSource = new EventEmitter();
+    const child = fakeChild(null);
+    child.pid = 4321;
+    const pending = runReleaseSuite({
+      shardCount: 1,
+      signalSource,
+      terminationGraceMs: 5,
+      forceWaitMs: 5,
+      spawnFunction() {
+        queueMicrotask(() => child.emit('exit', null, 'SIGTERM'));
+        return child;
+      },
+      terminateProcess(target, signal) {
+        calls.push({ pid: target.pid, signal });
+        return true;
+      },
+      stdio: 'pipe'
+    });
+    queueMicrotask(() => signalSource.emit('SIGTERM'));
+    await pending;
+    assert.deepEqual(calls, [
+      { pid: 4321, signal: 'SIGTERM' },
+      { pid: 4321, signal: 'SIGKILL' }
+    ]);
+    return;
+  }
+
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-stubborn-worker-')
+  );
+  const readyFile = path.join(root, 'ready.json');
+  const markerFile = path.join(root, 'worker-ignored-term.txt');
+  const workerSource = [
+    "'use strict';",
+    "const fs = require('node:fs');",
+    'const marker = process.argv[1];',
+    "process.on('SIGTERM', () => {",
+    "  fs.writeFileSync(marker, 'ignored SIGTERM\\n');",
+    '});',
+    "if (process.send) process.send('ready');",
+    'setInterval(() => {}, 1000);'
+  ].join('\n');
+  const parentSource = [
+    "'use strict';",
+    "const { spawn } = require('node:child_process');",
+    "const fs = require('node:fs');",
+    'const ready = process.argv[1];',
+    'const marker = process.argv[2];',
+    `const worker = spawn(process.execPath, ['-e', ${JSON.stringify(
+      workerSource
+    )}, marker], {`,
+    "  stdio: ['ignore', 'ignore', 'ignore', 'ipc']",
+    '});',
+    "worker.once('message', () => {",
+    '  fs.writeFileSync(ready, JSON.stringify({',
+    '    parent_pid: process.pid,',
+    '    worker_pid: worker.pid',
+    '  }));',
+    '});',
+    'setInterval(() => {}, 1000);'
+  ].join('\n');
+  let parent;
+  const signalSource = new EventEmitter();
+  const pending = runReleaseSuite({
+    shardCount: 1,
+    signalSource,
+    terminationGraceMs: 50,
+    forceWaitMs: 50,
+    spawnFunction() {
+      parent = spawn(
+        process.execPath,
+        ['-e', parentSource, readyFile, markerFile],
+        {
+          detached: true,
+          stdio: 'ignore'
+        }
+      );
+      return parent;
+    },
+    stdio: 'pipe'
+  });
+  t.after(() => {
+    if (parent) {
+      try {
+        process.kill(-parent.pid, 'SIGKILL');
+      } catch {
+        // The process group is expected to have exited.
+      }
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(readyFile);
+  const ready = JSON.parse(fs.readFileSync(readyFile, 'utf8'));
+  signalSource.emit('SIGTERM');
+  const result = await pending;
+  await waitForFile(markerFile);
+  await waitForProcessExit(ready.worker_pid);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.received_signal, 'SIGTERM');
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'ignored SIGTERM\n');
+  assert.equal(processExists(ready.worker_pid), false);
+});
+
 test('release shell forwards adapter termination to its active Node command', async (t) => {
   const root = fs.mkdtempSync(
     path.join(os.tmpdir(), 'specnav-release-shell-signal-')
@@ -407,6 +545,56 @@ test('release shell forwards adapter termination to its active Node command', as
   assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
 });
 
+test('release shell terminates during managed Python preflight without continuing', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-preflight-signal-')
+  );
+  const pythonFile = path.join(root, 'python3');
+  const nodeFile = path.join(root, 'node');
+  const pidFile = path.join(root, 'python.pid');
+  const markerFile = path.join(root, 'python-signal.txt');
+  const continuedFile = path.join(root, 'node-ran.txt');
+  fs.writeFileSync(pythonFile, [
+    '#!/usr/bin/env bash',
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
+    "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'while true; do sleep 1; done',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  fs.writeFileSync(nodeFile, [
+    '#!/usr/bin/env bash',
+    'printf "continued\\n" > "$SPECNAV_TEST_CONTINUED_FILE"',
+    'exit 0',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_CHILD_PID_FILE: pidFile,
+      SPECNAV_TEST_SIGNAL_FILE: markerFile,
+      SPECNAV_TEST_CONTINUED_FILE: continuedFile
+    },
+    stdio: 'ignore'
+  });
+  t.after(() => {
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(pidFile);
+  shell.kill('SIGTERM');
+  await waitForExit(shell);
+  await waitForFile(markerFile);
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
+  assert.equal(fs.existsSync(continuedFile), false);
+});
+
 test('release shell dynamically includes support tests and excludes the sharded file', () => {
   const source = fs.readFileSync(RELEASE_RUNNER, 'utf8');
   assert.match(
@@ -415,4 +603,5 @@ test('release shell dynamically includes support tests and excludes the sharded 
   );
   assert.match(source, /release-proof\.test\.js/);
   assert.match(source, /support_tests\+=/);
+  assert.match(source, /exit "\$\(signal_status "\$signal"\)"/);
 });
