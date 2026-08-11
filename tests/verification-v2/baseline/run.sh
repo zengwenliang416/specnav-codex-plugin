@@ -11,6 +11,7 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 SPECNAV_FIXTURE_LIBRARY_ONLY=1 source "$ROOT/tests/run-verification-plugin-fixtures.sh"
 ROOT="$BASELINE_ROOT"
 VERIFY="$ROOT/plugins/specnav-verification"
+DEVELOPMENT="$ROOT/plugins/specnav-development"
 
 sha256_file() {
   shasum -a 256 "$1" | awk '{print $1}'
@@ -31,54 +32,6 @@ enrich_clean_control() {
   local test_sha
 
   mkdir -p "$development_evidence" "$evidence_dir" "$verify/e2e/screenshots"
-  cat >"$change_dir/acceptance.json" <<'JSON'
-{
-  "schema_version": 2,
-  "change_id": "add-dashboard",
-  "assertions": [
-    {
-      "id": "AC-DASHBOARD-01",
-      "statement": "Dashboard summary handles populated, loading, empty, and error states.",
-      "verify_via": "e2e",
-      "status": "passing",
-      "evidence_ref": "verify/user-test-cases.json#utc-dashboard-summary"
-    }
-  ]
-}
-JSON
-
-  printf 'npm test passed for dashboard summary fixture\n' \
-    >"$development_evidence/001-dashboard-summary.log"
-  cat >"$task_dir/acceptance.json" <<'JSON'
-{
-  "schema": "specnav.task-acceptance-evidence.v1",
-  "generated_by": "specnav-development/task-acceptance-evidence",
-  "task_id": "001-dashboard-summary",
-  "recorded_at": "2026-07-03T00:00:00.000Z",
-  "status": "approved",
-  "assertions": [
-    {
-      "id": "AC-DASHBOARD-01",
-      "parent_id": "AC-DASHBOARD-01",
-      "status": "passing",
-      "direct_evidence": [
-        "development/tasks/001-dashboard-summary/report.md",
-        "development/tasks/001-dashboard-summary/spec-review.md",
-        "development/tasks/001-dashboard-summary/quality-review.md",
-        "development/evidence/001-dashboard-summary.log"
-      ],
-      "reused_evidence": [],
-      "claim": "Dashboard summary handles populated, loading, empty, and error states."
-    }
-  ],
-  "fallback_used": false
-}
-JSON
-
-  cat >>"$task_dir/spec-review.md" <<'MD'
-## Acceptance Assertions Verified
-- AC-DASHBOARD-01
-MD
 
   jq '.cases[0].step_ids = ["step-open-dashboard", "step-wait-for-summary"]' \
     "$verify/user-test-cases.json" >"$TMP_DIR/control-cases.json"
@@ -263,7 +216,6 @@ assert_clean_control "$BASE"
 
 MISSING_ACCEPTANCE="$TMP_DIR/missing-acceptance"
 cp -R "$BASE" "$MISSING_ACCEPTANCE"
-rm "$MISSING_ACCEPTANCE/openspec/changes/add-dashboard/acceptance.json"
 record_fake_green "missing-acceptance-contract" "$MISSING_ACCEPTANCE"
 
 EMPTY_EVIDENCE="$TMP_DIR/empty-evidence"

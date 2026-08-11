@@ -1,0 +1,26 @@
+# command: bash tests/run-operations-plugin-fixtures.sh
+# exit_status: 1
+# duration_ms: 14197
+
+## stdout
+(empty)
+
+## stderr
+/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/populate-project.js:574
+    throw new Error(JSON.stringify(hostAuthority.blockers));
+    ^
+
+Error: [{"id":"verification-drift:manifest-exact-file-provenance-mismatch:claude-code","artifact":"host:claude-code","detail":null},{"id":"verification-drift:manifest-exact-file-provenance-mismatch:codefree-o","artifact":"host:codefree-o","detail":null}]
+    at populateProject (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/populate-project.js:574:11)
+    at Object.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/release/populate-project.js:988:3)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.19.0
+

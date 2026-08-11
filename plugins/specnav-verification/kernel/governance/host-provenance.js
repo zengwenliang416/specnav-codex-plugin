@@ -15,6 +15,7 @@ const SHARED_SCRIPTS = Object.freeze([
   'host-verification-adapter.js',
   'rerun-scope.js',
   'scenario-registry-loader.js',
+  'validation-receipt-authority.js',
   'verification-migrate.js',
   'verification-runtime.js',
   'verification-v2-repair-loop.js',

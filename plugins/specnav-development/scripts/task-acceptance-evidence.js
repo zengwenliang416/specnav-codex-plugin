@@ -207,8 +207,11 @@ function isLifecyclePath(relativePath, changeId) {
   const normalized = normalizeRelative(relativePath);
   const changePrefix = `openspec/changes/${changeId}/`;
   return (
+    normalized.startsWith('openspec/.specnav/')
+    ||
     ['development/', 'verify/', 'codegraph/', 'operations/']
       .some((directory) => normalized.startsWith(`${changePrefix}${directory}`))
+    || normalized.startsWith(`${changePrefix}verify-report.`)
     || normalized === `openspec/changes/${changeId}/tasks.md`
   );
 }

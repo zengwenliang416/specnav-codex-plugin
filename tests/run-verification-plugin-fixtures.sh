@@ -3,10 +3,50 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VERIFY="$ROOT/plugins/specnav-verification"
+DEVELOPMENT="$ROOT/plugins/specnav-development"
 if [[ "${SPECNAV_FIXTURE_LIBRARY_ONLY:-0}" != "1" ]]; then
   TMP_DIR="$(mktemp -d)"
   trap 'rm -rf "$TMP_DIR"' EXIT
 fi
+
+write_runtime_status() {
+  local project="$1"
+  local change_dir="$project/openspec/changes/add-dashboard"
+  local status_file="$change_dir/verify/v2/runtime-status.json"
+  local runtime_version
+
+  runtime_version="$(
+    jq -er '.runtime_version' \
+      "$VERIFY/assets/runtime/verification-runtime-lock.json"
+  )"
+  mkdir -p "$(dirname "$status_file")"
+  PROJECT_DIR="$project" node \
+    "$VERIFY/scripts/verification-runtime.js" doctor \
+    --version "$runtime_version" \
+    --project "$project" \
+    --json >"$status_file"
+}
+
+materialize_development_evidence() {
+  local project="$1"
+  local refresh_output="$TMP_DIR/development-refresh.json"
+  local acceptance_output="$TMP_DIR/development-acceptance.json"
+
+  PROJECT_DIR="$project" node \
+    "$VERIFY/scripts/evidence-runner.js" refresh-current-head \
+    --change add-dashboard \
+    --json >"$refresh_output"
+  jq -e '.ok == true and .failed == 0 and .replayed == 1' \
+    "$refresh_output" >/dev/null
+
+  PROJECT_DIR="$project" node \
+    "$DEVELOPMENT/scripts/task-acceptance-evidence.js" write \
+    --project "$project" \
+    --change add-dashboard \
+    --force >"$acceptance_output"
+  jq -e '.ok == true and .task_count == 1' \
+    "$acceptance_output" >/dev/null
+}
 
 run_json() {
   local project="$1"
@@ -42,6 +82,7 @@ write_base_project() {
   local proto="$change_dir/prototype"
 
   mkdir -p \
+    "$project/src/dashboard" \
     "$project/openspec/.specnav" \
     "$project/openspec/specs/ui-design" \
     "$project/openspec/specs/system-architecture" \
@@ -133,6 +174,21 @@ MD
 # Acceptance
 - Dashboard renders loading, empty, and error states.
 MD
+  cat >"$change_dir/acceptance.json" <<'JSON'
+{
+  "schema_version": 2,
+  "change_id": "add-dashboard",
+  "assertions": [
+    {
+      "id": "AC-DASHBOARD-01",
+      "statement": "Dashboard summary handles populated, loading, empty, and error states.",
+      "verify_via": "e2e",
+      "status": "passing",
+      "evidence_ref": "verify/user-test-cases.json#utc-dashboard-summary"
+    }
+  ]
+}
+JSON
   cat >"$change_dir/spec-map.json" <<'JSON'
 {
   "touched_specs": ["ui-design", "system-architecture"],
@@ -337,7 +393,7 @@ JSON
 JSON
   cat >"$change_dir/tasks.md" <<'MD'
 # Development Tasks
-- [x] user can view dashboard summary with loading empty and error states
+- [x] 1.1 User can view dashboard summary with loading, empty, and error states.
 MD
   cat >"$dev/before-dev-check.json" <<'JSON'
 {"schema_version":1,"active_change":"add-dashboard","status":"passed","ok":true}
@@ -364,7 +420,20 @@ JSON
 {"schema_version":1,"budgets":[{"task":"001-dashboard-summary","max_files":2}]}
 JSON
   cat >"$dev/task-graph.json" <<'JSON'
-{"schema_version":1,"nodes":["001-dashboard-summary"],"edges":[]}
+{
+  "schema_version": 1,
+  "nodes": [
+    {
+      "id": "001-dashboard-summary",
+      "task_items": ["1.1"],
+      "group": 1,
+      "goal": "Implement dashboard summary.",
+      "acceptance": ["AC-DASHBOARD-01"],
+      "packet": "development/tasks/001-dashboard-summary"
+    }
+  ],
+  "edges": []
+}
 JSON
   cat >"$dev/code-owner-map.json" <<'JSON'
 {"schema_version":1,"owners":[{"path":"src/dashboard/**","owner":"dashboard"}]}
@@ -373,7 +442,7 @@ JSON
 {"schema_version":1,"components":["DashboardView"]}
 JSON
   cat >"$dev/task-context.jsonl" <<'JSONL'
-{"task":"001-dashboard-summary","status":"ready"}
+{"task_id":"001-dashboard-summary","task_items":["1.1"],"status":"complete","source":"development/tasks/001-dashboard-summary/context.json","dependencies":[],"acceptance":["AC-DASHBOARD-01"]}
 JSONL
   cat >"$dev/task-ledger.jsonl" <<'JSONL'
 {"task":"001-dashboard-summary","status":"spec_review_passed"}
@@ -383,10 +452,7 @@ JSONL
   cat >"$dev/drift-check.jsonl" <<'JSONL'
 {"task":"001-dashboard-summary","blocking":false}
 JSONL
-  cat >"$dev/validation-log.jsonl" <<'JSONL'
-{"task":"001-dashboard-summary","command":"npm test","status":"passed","ok":true}
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log"}
-JSONL
+  : >"$dev/validation-log.jsonl"
   cat >"$dev/migrations/manifest.json" <<'JSON'
 {
   "schema_version": 1,
@@ -449,6 +515,7 @@ MD
   cat >"$task/context.json" <<'JSON'
 {
   "task_id": "001-dashboard-summary",
+  "task_items": ["1.1"],
   "goal": "Implement dashboard summary",
   "stop_condition": "complete",
   "must_read": [
@@ -466,6 +533,9 @@ MD
     "openspec/changes/add-dashboard/prototype/artifact/index.html"
   ],
   "allowed_files": ["src/dashboard/DashboardView.tsx"],
+  "test_paths": ["npm test"],
+  "dependencies": [],
+  "acceptance_assertions": ["AC-DASHBOARD-01"],
   "non_goals": ["export"],
   "expected_evidence": ["test output"],
   "unsafe_assumptions": []
@@ -504,6 +574,8 @@ No misunderstood requirements were found.
 Browser-level state coverage remains for verification.
 ## Required Fixes
 No required fixes remain.
+## Acceptance Assertions Verified
+- AC-DASHBOARD-01
 MD
   cat >"$task/quality-review.md" <<'MD'
 # Quality Review
@@ -523,6 +595,8 @@ Good.
 Low.
 ## Required Fixes
 No required fixes remain.
+## Acceptance Assertions Verified
+- AC-DASHBOARD-01
 MD
   cat >"$dev/handoff-to-verify.md" <<'MD'
 # Handoff
@@ -548,11 +622,28 @@ Backend field naming remains a verification watch item.
 All six domains.
 MD
 
+  cat >"$project/package.json" <<'JSON'
+{
+  "name": "specnav-dashboard-fixture",
+  "private": true,
+  "scripts": {
+    "test": "node -e \"process.exit(0)\""
+  }
+}
+JSON
+  cat >"$project/src/dashboard/DashboardView.tsx" <<'TSX'
+export function DashboardView() {
+  return null;
+}
+TSX
+  write_runtime_status "$project"
+
   git -C "$project" init -q
   git -C "$project" config user.name "SpecNav Fixture"
   git -C "$project" config user.email "specnav-fixture@example.invalid"
   git -C "$project" add .
   git -C "$project" commit -qm "test: establish development baseline"
+  materialize_development_evidence "$project"
 }
 
 write_verify_artifacts() {

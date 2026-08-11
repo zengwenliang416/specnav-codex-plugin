@@ -1,0 +1,85 @@
+# command: node --test tests/verification-v2/evaluation/reading-model.test.js
+# exit_status: 0
+# duration_ms: 1263
+
+## stdout
+TAP version 13
+# Subtest: deterministic assertion creates one evidence-bound reading per required domain
+ok 1 - deterministic assertion creates one evidence-bound reading per required domain
+  ---
+  duration_ms: 1133.217583
+  type: 'test'
+  ...
+# Subtest: failed deterministic assertion remains a valid failed reading set
+ok 2 - failed deterministic assertion remains a valid failed reading set
+  ---
+  duration_ms: 0.890667
+  type: 'test'
+  ...
+# Subtest: mixed assertion results preserve pass and fail readings under a failed case
+ok 3 - mixed assertion results preserve pass and fail readings under a failed case
+  ---
+  duration_ms: 0.556917
+  type: 'test'
+  ...
+# Subtest: a passing case may belong to a failed multi-case run
+ok 4 - a passing case may belong to a failed multi-case run
+  ---
+  duration_ms: 0.288875
+  type: 'test'
+  ...
+# Subtest: Midscene observation without an authoritative oracle stays blocked
+ok 5 - Midscene observation without an authoritative oracle stays blocked
+  ---
+  duration_ms: 0.396041
+  type: 'test'
+  ...
+# Subtest: missing, stale, or broken evidence blocks an otherwise passing reading
+ok 6 - missing, stale, or broken evidence blocks an otherwise passing reading
+  ---
+  duration_ms: 0.937416
+  type: 'test'
+  ...
+# Subtest: approved human signoff becomes an inspectable non-deterministic oracle
+ok 7 - approved human signoff becomes an inspectable non-deterministic oracle
+  ---
+  duration_ms: 0.513208
+  type: 'test'
+  ...
+# Subtest: forged assertion status and malformed requests fail closed
+ok 8 - forged assertion status and malformed requests fail closed
+  ---
+  duration_ms: 0.376
+  type: 'test'
+  ...
+# Subtest: runner and terminal identity mismatches cannot create a passing reading
+ok 9 - runner and terminal identity mismatches cannot create a passing reading
+  ---
+  duration_ms: 0.572083
+  type: 'test'
+  ...
+# Subtest: run-owned attempt fingerprints must match before reading creation
+ok 10 - run-owned attempt fingerprints must match before reading creation
+  ---
+  duration_ms: 0.675875
+  type: 'test'
+  ...
+# Subtest: reading schema failures preserve their exact blocker and artifact
+ok 11 - reading schema failures preserve their exact blocker and artifact
+  ---
+  duration_ms: 0.533417
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1224.757417
+
+
+## stderr
+(empty)

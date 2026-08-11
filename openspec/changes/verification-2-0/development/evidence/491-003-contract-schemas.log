@@ -1,0 +1,518 @@
+# command: node plugins/specnav-verification/kernel/contracts/validate-fixtures.js
+# exit_status: 0
+# duration_ms: 1136
+
+## stdout
+{
+  "ok": true,
+  "blockers": [],
+  "runtime_version": "2.0.0-alpha.2",
+  "positive": [
+    {
+      "entity_type": "test-case",
+      "file": "positive/test-case.json",
+      "ok": true
+    },
+    {
+      "entity_type": "case-approval",
+      "file": "positive/case-approval.json",
+      "ok": true
+    },
+    {
+      "entity_type": "case-snapshot",
+      "file": "positive/case-snapshot.json",
+      "ok": true
+    },
+    {
+      "entity_type": "verification-run",
+      "file": "positive/verification-run.json",
+      "ok": true
+    },
+    {
+      "entity_type": "attempt",
+      "file": "positive/attempt.json",
+      "ok": true
+    },
+    {
+      "entity_type": "reading",
+      "file": "positive/reading.json",
+      "ok": true
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-baseline.json",
+      "ok": true
+    },
+    {
+      "entity_type": "evidence-index",
+      "file": "positive/evidence-index.json",
+      "ok": true
+    },
+    {
+      "entity_type": "failure-packet",
+      "file": "positive/failure-packet.json",
+      "ok": true
+    },
+    {
+      "entity_type": "repair-link",
+      "file": "positive/repair-link.json",
+      "ok": true
+    },
+    {
+      "entity_type": "repair-baseline",
+      "file": "positive/repair-baseline.json",
+      "ok": true
+    },
+    {
+      "entity_type": "repair-lineage-recovery",
+      "file": "positive/repair-lineage-recovery.json",
+      "ok": true
+    },
+    {
+      "entity_type": "repair-lineage-recovery-review",
+      "file": "positive/repair-lineage-recovery-review.json",
+      "ok": true
+    },
+    {
+      "entity_type": "repair-review",
+      "file": "positive/repair-review.json",
+      "ok": true
+    },
+    {
+      "entity_type": "root-cause-review",
+      "file": "positive/root-cause-review.json",
+      "ok": true
+    },
+    {
+      "entity_type": "authority-chain-anchor",
+      "file": "positive/authority-chain-anchor.json",
+      "ok": true
+    },
+    {
+      "entity_type": "trusted-fact-envelope",
+      "file": "positive/trusted-fact-envelope.json",
+      "ok": true
+    },
+    {
+      "entity_type": "transition-proposal",
+      "file": "positive/transition-proposal.json",
+      "ok": true
+    },
+    {
+      "entity_type": "transition-application",
+      "file": "positive/transition-application.json",
+      "ok": true
+    },
+    {
+      "entity_type": "runtime-status",
+      "file": "positive/runtime-status.json",
+      "ok": true
+    },
+    {
+      "entity_type": "report-model",
+      "file": "positive/report-model.json",
+      "ok": true
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-baseline.json",
+      "ok": true
+    },
+    {
+      "entity_type": "migration-receipt",
+      "file": "positive/migration-receipt.json",
+      "ok": true
+    },
+    {
+      "entity_type": "cross-host-lock",
+      "file": "positive/cross-host-lock.json",
+      "ok": true
+    },
+    {
+      "entity_type": "host-execution",
+      "file": "positive/host-execution.json",
+      "ok": true
+    },
+    {
+      "entity_type": "host-install-receipt",
+      "file": "positive/host-install-receipt.json",
+      "ok": true
+    },
+    {
+      "entity_type": "host-installation-index",
+      "file": "positive/host-installation-index.json",
+      "ok": true
+    },
+    {
+      "entity_type": "host-proof-pointer",
+      "file": "positive/host-proof-pointer.json",
+      "ok": true
+    },
+    {
+      "entity_type": "cross-host-release-result",
+      "file": "positive/cross-host-release-result.json",
+      "ok": true
+    }
+  ],
+  "negative": [
+    {
+      "entity_type": "test-case",
+      "file": "negative/test-case-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "case-approval",
+      "file": "negative/case-approval-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "case-snapshot",
+      "file": "negative/case-snapshot-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "verification-run",
+      "file": "negative/verification-run-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "attempt",
+      "file": "negative/attempt-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "reading",
+      "file": "negative/reading-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence-index",
+      "file": "negative/evidence-index-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "failure-packet",
+      "file": "negative/failure-packet-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "repair-link",
+      "file": "negative/repair-link-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "repair-review",
+      "file": "negative/repair-review-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "root-cause-review",
+      "file": "negative/root-cause-review-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "authority-chain-anchor",
+      "file": "negative/authority-chain-anchor-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "trusted-fact-envelope",
+      "file": "negative/trusted-fact-envelope-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "transition-proposal",
+      "file": "negative/transition-proposal-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "transition-application",
+      "file": "negative/transition-application-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "runtime-status",
+      "file": "negative/runtime-status-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "report-model",
+      "file": "negative/report-model-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "migration-receipt",
+      "file": "negative/migration-receipt-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "cross-host-lock",
+      "file": "negative/cross-host-lock-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "host-execution",
+      "file": "negative/host-execution-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "host-install-receipt",
+      "file": "negative/host-install-receipt-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "host-installation-index",
+      "file": "negative/host-installation-index-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "host-proof-pointer",
+      "file": "negative/host-proof-pointer-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "cross-host-release-result",
+      "file": "negative/cross-host-release-result-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-id.json",
+      "ok": true,
+      "expected_field": "/id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-kind.json",
+      "ok": true,
+      "expected_field": "/kind"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-path.json",
+      "ok": true,
+      "expected_field": "/path"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-sha256.json",
+      "ok": true,
+      "expected_field": "/sha256"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-size.json",
+      "ok": true,
+      "expected_field": "/size"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-producer.json",
+      "ok": true,
+      "expected_field": "/producer"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-captured-at.json",
+      "ok": true,
+      "expected_field": "/captured_at"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-change-id.json",
+      "ok": true,
+      "expected_field": "/change_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-run-id.json",
+      "ok": true,
+      "expected_field": "/run_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-case-id.json",
+      "ok": true,
+      "expected_field": "/case_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-attempt-id.json",
+      "ok": true,
+      "expected_field": "/attempt_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-step-id.json",
+      "ok": true,
+      "expected_field": "/step_id"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-code-sha.json",
+      "ok": true,
+      "expected_field": "/code_sha"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-test-sha.json",
+      "ok": true,
+      "expected_field": "/test_sha"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-environment-hash.json",
+      "ok": true,
+      "expected_field": "/environment_hash"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-runtime-version.json",
+      "ok": true,
+      "expected_field": "/runtime_version"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-kernel-version.json",
+      "ok": true,
+      "expected_field": "/kernel_version"
+    },
+    {
+      "entity_type": "evidence",
+      "file": "ac31/evidence-missing-redaction.json",
+      "ok": true,
+      "expected_field": "/redaction"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-schema.json",
+      "ok": true,
+      "expected_field": "/schema"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-id.json",
+      "ok": true,
+      "expected_field": "/id"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-change-id.json",
+      "ok": true,
+      "expected_field": "/change_id"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-stage.json",
+      "ok": true,
+      "expected_field": "/stage"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-decision.json",
+      "ok": true,
+      "expected_field": "/decision"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-source-case-ids.json",
+      "ok": true,
+      "expected_field": "/source_case_ids"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-source-reading-ids.json",
+      "ok": true,
+      "expected_field": "/source_reading_ids"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-evidence-index-version.json",
+      "ok": true,
+      "expected_field": "/evidence_index_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-runtime-version.json",
+      "ok": true,
+      "expected_field": "/runtime_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-kernel-version.json",
+      "ok": true,
+      "expected_field": "/kernel_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-freshness.json",
+      "ok": true,
+      "expected_field": "/freshness"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-integrity-status.json",
+      "ok": true,
+      "expected_field": "/integrity_status"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-policy-version.json",
+      "ok": true,
+      "expected_field": "/policy_version"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-blockers.json",
+      "ok": true,
+      "expected_field": "/blockers"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-warnings.json",
+      "ok": true,
+      "expected_field": "/warnings"
+    },
+    {
+      "entity_type": "gate-decision",
+      "file": "ac35/gate-missing-decided-at.json",
+      "ok": true,
+      "expected_field": "/decided_at"
+    }
+  ],
+  "fallback_used": false
+}
+
+
+## stderr
+(empty)

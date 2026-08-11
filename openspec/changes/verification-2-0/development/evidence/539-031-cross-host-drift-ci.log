@@ -1,0 +1,726 @@
+# command: bash tests/run-verification-v2-cross-host.sh
+# exit_status: 1
+# duration_ms: 19320
+
+## stdout
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 1.059
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.51825
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.204583
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.18475
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.233375
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+not ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 47.5645
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/claude-adapter.test.js:305:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '8e8aa5a3a57903c3058e70a6994eeecbaa38628c9313ea9f69019f6ef73ef5c5'
+    - '33d0ffdff231b98149f563668488969414dcee1736b87b94cab7898eae206ac9'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '33d0ffdff231b98149f563668488969414dcee1736b87b94cab7898eae206ac9'
+  actual: '8e8aa5a3a57903c3058e70a6994eeecbaa38628c9313ea9f69019f6ef73ef5c5'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/claude-adapter.test.js:322:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Claude synchronized entry surfaces use Verification 2.0 and Claude resolver semantics
+ok 7 - Claude synchronized entry surfaces use Verification 2.0 and Claude resolver semantics
+  ---
+  duration_ms: 1.010416
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects the wrong repository before writes
+ok 8 - Claude synchronizer rejects the wrong repository before writes
+  ---
+  duration_ms: 88.328542
+  type: 'test'
+  ...
+# Subtest: Claude synchronization preserves unrelated dirty files
+ok 9 - Claude synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 903.643875
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer refuses owned-path conflicts and dirty overrides
+ok 10 - Claude synchronizer refuses owned-path conflicts and dirty overrides
+  ---
+  duration_ms: 178.882083
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects ancestor symlink escapes
+ok 11 - Claude synchronizer rejects ancestor symlink escapes
+  ---
+  duration_ms: 107.39525
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer leaves no partial writes when staging fails
+ok 12 - Claude synchronizer leaves no partial writes when staging fails
+  ---
+  duration_ms: 820.827292
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer commits one validated tree with host provenance
+ok 13 - Claude synchronizer commits one validated tree with host provenance
+  ---
+  duration_ms: 995.021958
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 14 - Claude host code remains invocation-only
+  ---
+  duration_ms: 0.228209
+  type: 'test'
+  ...
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 15 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 0.991417
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 16 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.425583
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 17 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.195708
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 18 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.305333
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 19 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.170583
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 20 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.226209
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 21 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.194125
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+not ok 22 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 76.54275
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:319:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    scripts/evidence-runner.js
+    + actual - expected
+    
+    + '956c4e039a6015ce8bd663416c3a48cc60f88f739409195265d1c34cf2f6c078'
+    - 'be6c800141511b4fdab2ae51aafc4780a91034035dc7bae447d2f0c62ed35c08'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'be6c800141511b4fdab2ae51aafc4780a91034035dc7bae447d2f0c62ed35c08'
+  actual: '956c4e039a6015ce8bd663416c3a48cc60f88f739409195265d1c34cf2f6c078'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:345:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+ok 23 - CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+  ---
+  duration_ms: 0.783833
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 24 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 955.716417
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 25 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 140.285292
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+ok 26 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 912.86225
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 27 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 100.975834
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 28 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 964.517459
+  type: 'test'
+  ...
+# Subtest: Codex describes the full Verification 2.0 contract from one Kernel
+ok 29 - Codex describes the full Verification 2.0 contract from one Kernel
+  ---
+  duration_ms: 1.044
+  type: 'test'
+  ...
+# Subtest: Codex invokes the shared command surface and preserves blockers
+ok 30 - Codex invokes the shared command surface and preserves blockers
+  ---
+  duration_ms: 0.523625
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks simplified, fallback, and manual-green requests
+ok 31 - Codex adapter blocks simplified, fallback, and manual-green requests
+  ---
+  duration_ms: 0.142625
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for runtime mutation
+ok 32 - Codex adapter requires explicit approval for runtime mutation
+  ---
+  duration_ms: 0.178542
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for migration writes
+ok 33 - Codex adapter requires explicit approval for migration writes
+  ---
+  duration_ms: 0.091208
+  type: 'test'
+  ...
+# Subtest: Codex adapter requires explicit approval for Core repair transitions
+ok 34 - Codex adapter requires explicit approval for Core repair transitions
+  ---
+  duration_ms: 0.111459
+  type: 'test'
+  ...
+# Subtest: Codex adapter exposes and blocks downstream fallback signals
+ok 35 - Codex adapter exposes and blocks downstream fallback signals
+  ---
+  duration_ms: 0.159458
+  type: 'test'
+  ...
+# Subtest: Codex adapter blocks a source that does not attest no fallback
+ok 36 - Codex adapter blocks a source that does not attest no fallback
+  ---
+  duration_ms: 0.07475
+  type: 'test'
+  ...
+# Subtest: Codex adapter fails closed for unsupported actions and invalid results
+ok 37 - Codex adapter fails closed for unsupported actions and invalid results
+  ---
+  duration_ms: 0.357208
+  type: 'test'
+  ...
+# Subtest: Codex source contains invocation only, not verdict implementation
+ok 38 - Codex source contains invocation only, not verdict implementation
+  ---
+  duration_ms: 0.496625
+  type: 'test'
+  ...
+# Subtest: Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+not ok 39 - Codex, Claude Code, and CodeFree-O match one compatibility snapshot
+  ---
+  duration_ms: 527.646541
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:97:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:claude-code",
+        "artifact": "host:claude-code",
+        "detail": null
+      },
+      {
+        "id": "verification-drift:manifest-exact-file-provenance-mismatch:codefree-o",
+        "artifact": "host:codefree-o",
+        "detail": null
+      }
+    ]
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:133:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: kernel identity drift returns a stable release blocker
+ok 40 - kernel identity drift returns a stable release blocker
+  ---
+  duration_ms: 288.121917
+  type: 'test'
+  ...
+# Subtest: unversioned Kernel source drift cannot bypass compatibility CI
+ok 41 - unversioned Kernel source drift cannot bypass compatibility CI
+  ---
+  duration_ms: 393.421125
+  type: 'test'
+  ...
+# Subtest: schema checksum drift identifies the affected schema
+ok 42 - schema checksum drift identifies the affected schema
+  ---
+  duration_ms: 338.640583
+  type: 'test'
+  ...
+# Subtest: blocker registry drift cannot be hidden by a matching version
+ok 43 - blocker registry drift cannot be hidden by a matching version
+  ---
+  duration_ms: 281.243209
+  type: 'test'
+  ...
+# Subtest: normalized fixture drift is release blocking
+ok 44 - normalized fixture drift is release blocking
+  ---
+  duration_ms: 110.585333
+  type: 'test'
+  ...
+# Subtest: fixture manifest entries cannot traverse outside the fixture root
+ok 45 - fixture manifest entries cannot traverse outside the fixture root
+  ---
+  duration_ms: 82.205333
+  type: 'test'
+  ...
+# Subtest: fixture manifest entries cannot follow symlinks
+ok 46 - fixture manifest entries cannot follow symlinks
+  ---
+  duration_ms: 93.927916
+  type: 'test'
+  ...
+# Subtest: generated report model drift is release blocking
+ok 47 - generated report model drift is release blocking
+  ---
+  duration_ms: 444.194167
+  type: 'test'
+  ...
+# Subtest: host-owned code cannot bypass or duplicate Kernel boundaries
+ok 48 - host-owned code cannot bypass or duplicate Kernel boundaries
+  ---
+  duration_ms: 319.054916
+  type: 'test'
+  ...
+# Subtest: missing host input fails closed without fallback
+ok 49 - missing host input fails closed without fallback
+  ---
+  duration_ms: 0.832833
+  type: 'test'
+  ...
+# Subtest: omitted roots return stable input blockers
+ok 50 - omitted roots return stable input blockers
+  ---
+  duration_ms: 0.170459
+  type: 'test'
+  ...
+# Subtest: manifest paths cannot escape the synchronized plugin root
+ok 51 - manifest paths cannot escape the synchronized plugin root
+  ---
+  duration_ms: 232.320417
+  type: 'test'
+  ...
+# Subtest: manifest cannot omit required host-owned files or hide rogue files
+not ok 52 - manifest cannot omit required host-owned files or hide rogue files
+  ---
+  duration_ms: 380.417875
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:355:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:drifted',
+        'verification-drift:manifest-file-set-mismatch:drifted',
+        'verification-drift:manifest-host-files-mismatch:drifted'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-file-set-mismatch:drifted'
+    1: 'verification-drift:manifest-host-files-mismatch:drifted'
+  actual:
+    0: 'verification-drift:manifest-exact-file-provenance-mismatch:drifted'
+    1: 'verification-drift:manifest-file-set-mismatch:drifted'
+    2: 'verification-drift:manifest-host-files-mismatch:drifted'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:381:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: host-owned wrapper bytes must match synchronized provenance
+not ok 53 - host-owned wrapper bytes must match synchronized provenance
+  ---
+  duration_ms: 349.593667
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:387:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:drifted',
+        'verification-drift:manifest-host-file-digest-mismatch:drifted'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-host-file-digest-mismatch:drifted'
+  actual:
+    0: 'verification-drift:manifest-exact-file-provenance-mismatch:drifted'
+    1: 'verification-drift:manifest-host-file-digest-mismatch:drifted'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:407:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: updated manifest hash cannot hide transformed skill tampering
+not ok 54 - updated manifest hash cannot hide transformed skill tampering
+  ---
+  duration_ms: 324.822
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:412:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:claude-code',
+        'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+  actual:
+    0: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+    1: 'verification-drift:manifest-transformed-file-provenance-mismatch:claude-code'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:433:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: updated manifest hash cannot hide generated host-file tampering
+not ok 55 - updated manifest hash cannot hide generated host-file tampering
+  ---
+  duration_ms: 270.841333
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:438:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'verification-drift:manifest-exact-file-provenance-mismatch:claude-code',
+        'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+  actual:
+    0: 'verification-drift:manifest-exact-file-provenance-mismatch:claude-code'
+    1: 'verification-drift:manifest-host-file-provenance-mismatch:claude-code'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:459:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: updated tree digest cannot hide exact canonical file tampering
+ok 56 - updated tree digest cannot hide exact canonical file tampering
+  ---
+  duration_ms: 252.890792
+  type: 'test'
+  ...
+# Subtest: missing manifest returns a stable drift blocker
+ok 57 - missing manifest returns a stable drift blocker
+  ---
+  duration_ms: 154.505
+  type: 'test'
+  ...
+# Subtest: host manifests must bind to a clean locked source commit
+not ok 58 - host manifests must bind to a clean locked source commit
+  ---
+  duration_ms: 212.453042
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:508:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'manifest-exact-file-provenance-mismatch',
+        'manifest-source-commit-mismatch',
+        'manifest-source-dirty'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'manifest-source-commit-mismatch'
+    1: 'manifest-source-dirty'
+  actual:
+    0: 'manifest-exact-file-provenance-mismatch'
+    1: 'manifest-source-commit-mismatch'
+    2: 'manifest-source-dirty'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/drift-detector.test.js:530:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: candidate JavaScript is treated as data and never executed
+ok 59 - candidate JavaScript is treated as data and never executed
+  ---
+  duration_ms: 179.069792
+  type: 'test'
+  ...
+# Subtest: CI pins both downstream host repositories to immutable commits
+ok 60 - CI pins both downstream host repositories to immutable commits
+  ---
+  duration_ms: 0.686459
+  type: 'test'
+  ...
+# Subtest: packaged host provenance resolves without the source repository
+ok 61 - packaged host provenance resolves without the source repository
+  ---
+  duration_ms: 448.731208
+  type: 'test'
+  ...
+# Subtest: host authority validates clean repositories and fails closed on Git state
+ok 62 - host authority validates clean repositories and fails closed on Git state
+  ---
+  duration_ms: 5096.005833
+  type: 'test'
+  ...
+# Subtest: host authority detects manifest, source, tree, skill, and wrapper drift
+    # Subtest: verification-drift:manifest-contract-mismatch:claude-code
+    ok 1 - verification-drift:manifest-contract-mismatch:claude-code
+      ---
+      duration_ms: 2663.559708
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-source-commit-mismatch:codefree-o
+    ok 2 - verification-drift:manifest-source-commit-mismatch:codefree-o
+      ---
+      duration_ms: 2710.82575
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-exact-file-provenance-mismatch:claude-code
+    ok 3 - verification-drift:manifest-exact-file-provenance-mismatch:claude-code
+      ---
+      duration_ms: 2626.359708
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o
+    ok 4 - verification-drift:manifest-transformed-file-provenance-mismatch:codefree-o
+      ---
+      duration_ms: 2827.659333
+      type: 'test'
+      ...
+    # Subtest: verification-drift:manifest-host-file-provenance-mismatch:claude-code
+    ok 5 - verification-drift:manifest-host-file-provenance-mismatch:claude-code
+      ---
+      duration_ms: 2758.044541
+      type: 'test'
+      ...
+    1..5
+ok 63 - host authority detects manifest, source, tree, skill, and wrapper drift
+  ---
+  duration_ms: 13587.338792
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync preserves unrelated dirty files
+ok 64 - claude-code Operations proof sync preserves unrelated dirty files
+  ---
+  duration_ms: 286.998125
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync blocks owned conflicts
+ok 65 - claude-code Operations proof sync blocks owned conflicts
+  ---
+  duration_ms: 122.257959
+  type: 'test'
+  ...
+# Subtest: claude-code Operations proof sync installs newly owned files
+ok 66 - claude-code Operations proof sync installs newly owned files
+  ---
+  duration_ms: 307.438709
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync preserves unrelated dirty files
+ok 67 - codefree-o Operations proof sync preserves unrelated dirty files
+  ---
+  duration_ms: 264.660709
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync blocks owned conflicts
+ok 68 - codefree-o Operations proof sync blocks owned conflicts
+  ---
+  duration_ms: 182.541125
+  type: 'test'
+  ...
+# Subtest: codefree-o Operations proof sync installs newly owned files
+ok 69 - codefree-o Operations proof sync installs newly owned files
+  ---
+  duration_ms: 310.598791
+  type: 'test'
+  ...
+# Subtest: real downstream Operations proof bytes match one committed source
+ok 70 - real downstream Operations proof bytes match one committed source
+  ---
+  duration_ms: 300.777041
+  type: 'test'
+  ...
+# Subtest: synchronized plugins authority returns the declared digest
+ok 71 - synchronized plugins authority returns the declared digest
+  ---
+  duration_ms: 8.881083
+  type: 'test'
+  ...
+# Subtest: synchronized modules authority returns the declared digest
+ok 72 - synchronized modules authority returns the declared digest
+  ---
+  duration_ms: 6.074625
+  type: 'test'
+  ...
+# Subtest: missing runner authority blocks
+ok 73 - missing runner authority blocks
+  ---
+  duration_ms: 0.935833
+  type: 'test'
+  ...
+# Subtest: ambiguous synchronized runner authority blocks
+ok 74 - ambiguous synchronized runner authority blocks
+  ---
+  duration_ms: 7.151416
+  type: 'test'
+  ...
+# Subtest: canonical and synchronized runner authority cannot coexist
+ok 75 - canonical and synchronized runner authority cannot coexist
+  ---
+  duration_ms: 5.226333
+  type: 'test'
+  ...
+# Subtest: tampered synchronized manifest blocks
+ok 76 - tampered synchronized manifest blocks
+  ---
+  duration_ms: 4.112084
+  type: 'test'
+  ...
+# Subtest: tampered synchronized proof file blocks
+ok 77 - tampered synchronized proof file blocks
+  ---
+  duration_ms: 4.65975
+  type: 'test'
+  ...
+1..77
+# tests 82
+# suites 0
+# pass 74
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19274.509917
+
+
+## stderr
+(empty)

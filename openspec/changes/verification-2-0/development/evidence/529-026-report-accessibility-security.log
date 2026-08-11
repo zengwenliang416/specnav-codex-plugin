@@ -1,0 +1,52 @@
+# command: bash tests/run-verification-v2-report-browser.sh
+# exit_status: 0
+# duration_ms: 7234
+
+## stdout
+TAP version 13
+# Subtest: all report pages are responsive, keyboard operable, semantic, and printable
+ok 1 - all report pages are responsive, keyboard operable, semantic, and printable
+  ---
+  duration_ms: 4082.787583
+  type: 'test'
+  ...
+# Subtest: Chromium blocks an injected script while the approved catalog script still runs
+ok 2 - Chromium blocks an injected script while the approved catalog script still runs
+  ---
+  duration_ms: 1241.963458
+  type: 'test'
+  ...
+# {"artifact_directory":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260811T213936Z-11799","manifest":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260811T213936Z-11799/manifest.json","manifest_sha256":"c9396cdaf3a0535029fbf502d14e91df895c77235f33c42d05332bcf8bc8a1ca","artifact_count":12}
+# Subtest: real paginated PDFs preserve exact green and blocked report facts
+ok 3 - real paginated PDFs preserve exact green and blocked report facts
+  ---
+  duration_ms: 1692.949166
+  type: 'test'
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 4 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 3469.898375
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 5 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 3469.857
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7115.521958
+verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/development/evidence/026-report-artifacts/20260811T213936Z-11799
+verification v2 report browser and print ok
+
+
+## stderr
+(empty)

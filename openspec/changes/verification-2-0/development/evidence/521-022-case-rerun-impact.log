@@ -1,0 +1,115 @@
+# command: node --test tests/verification-v2/rerun/*.test.js
+# exit_status: 0
+# duration_ms: 123
+
+## stdout
+TAP version 13
+# Subtest: public factory returns concrete deterministic case ids and reasons
+ok 1 - public factory returns concrete deterministic case ids and reasons
+  ---
+  duration_ms: 9.481667
+  type: 'test'
+  ...
+# Subtest: CodeGraph can map an otherwise unmapped changed file to exact cases
+ok 2 - CodeGraph can map an otherwise unmapped changed file to exact cases
+  ---
+  duration_ms: 0.580541
+  type: 'test'
+  ...
+# Subtest: unmapped production changes conservatively select every approved case
+ok 3 - unmapped production changes conservatively select every approved case
+  ---
+  duration_ms: 0.356
+  type: 'test'
+  ...
+# Subtest: CodeGraph cannot remove repaired or mandatory baseline cases
+ok 4 - CodeGraph cannot remove repaired or mandatory baseline cases
+  ---
+  duration_ms: 0.310959
+  type: 'test'
+  ...
+# Subtest: unknown case references fail closed without silently shrinking scope
+ok 5 - unknown case references fail closed without silently shrinking scope
+  ---
+  duration_ms: 0.369125
+  type: 'test'
+  ...
+# Subtest: malformed CodeGraph impact fails closed and selects all approved cases
+ok 6 - malformed CodeGraph impact fails closed and selects all approved cases
+  ---
+  duration_ms: 0.370583
+  type: 'test'
+  ...
+# Subtest: CodeGraph affected files without an approved case mapping fail closed
+ok 7 - CodeGraph affected files without an approved case mapping fail closed
+  ---
+  duration_ms: 0.174042
+  type: 'test'
+  ...
+# Subtest: cross-change or unbound CodeGraph evidence fails closed
+ok 8 - cross-change or unbound CodeGraph evidence fails closed
+  ---
+  duration_ms: 0.2785
+  type: 'test'
+  ...
+# Subtest: missing freshness facts fail closed for the unaccounted approved case
+ok 9 - missing freshness facts fail closed for the unaccounted approved case
+  ---
+  duration_ms: 0.3635
+  type: 'test'
+  ...
+# Subtest: duplicate catalog ids and hostile input are rejected without throwing
+ok 10 - duplicate catalog ids and hostile input are rejected without throwing
+  ---
+  duration_ms: 0.431792
+  type: 'test'
+  ...
+# Subtest: incomplete six-domain assignments fail closed before scope selection
+ok 11 - incomplete six-domain assignments fail closed before scope selection
+  ---
+  duration_ms: 0.233584
+  type: 'test'
+  ...
+# Subtest: missing or rejected case approval blocks and selects all catalog cases
+ok 12 - missing or rejected case approval blocks and selects all catalog cases
+  ---
+  duration_ms: 0.190875
+  type: 'test'
+  ...
+# Subtest: planner requires an approval validator and never assumes approval
+ok 13 - planner requires an approval validator and never assumes approval
+  ---
+  duration_ms: 0.185125
+  type: 'test'
+  ...
+# Subtest: planning never mutates caller-owned artifacts
+ok 14 - planning never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.19225
+  type: 'test'
+  ...
+# Subtest: CodeGraph evidence projects to a deterministic versioned impact report
+ok 15 - CodeGraph evidence projects to a deterministic versioned impact report
+  ---
+  duration_ms: 11.357958
+  type: 'test'
+  ...
+# Subtest: blocked or malformed CodeGraph evidence cannot manufacture usable impact
+ok 16 - blocked or malformed CodeGraph evidence cannot manufacture usable impact
+  ---
+  duration_ms: 0.1135
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 84.25325
+
+
+## stderr
+(empty)

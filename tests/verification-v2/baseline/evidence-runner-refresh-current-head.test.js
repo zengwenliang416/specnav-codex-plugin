@@ -15,7 +15,9 @@ const RUNNER = path.join(
 process.env.SPECNAV_CORE_ROOT = path.join(ROOT, 'plugins/specnav-core');
 
 const {
+  ADJUDICATE_CURRENT_HEAD_MODE,
   REFRESH_CURRENT_HEAD_MODE,
+  adjudicateCurrentHead: adjudicateCurrentHeadRaw,
   refreshCurrentHead: refreshCurrentHeadRaw,
   runEvidence
 } = require(RUNNER);
@@ -34,6 +36,13 @@ const RECEIPT_AUTHORITY = createValidationReceiptAuthority({
 
 function refreshCurrentHead(projectRoot, options) {
   return refreshCurrentHeadRaw(projectRoot, {
+    ...options,
+    receiptAuthority: RECEIPT_AUTHORITY
+  });
+}
+
+function adjudicateCurrentHead(projectRoot, options) {
+  return adjudicateCurrentHeadRaw(projectRoot, {
     ...options,
     receiptAuthority: RECEIPT_AUTHORITY
   });
@@ -349,6 +358,26 @@ test('refresh-current-head reruns a failed current HEAD receipt until a signed p
     assert.equal(second.replayed, 1);
     assert.equal(second.skipped_idempotent, 2);
     assert.equal(second.results[0].status, 'pass');
+
+    const adjudication = adjudicateCurrentHead(current.project, {
+      change: CHANGE
+    });
+    assert.equal(adjudication.ok, true);
+    assert.equal(
+      adjudication.mode,
+      ADJUDICATE_CURRENT_HEAD_MODE
+    );
+    assert.equal(adjudication.adjudicated, 1);
+    assert.equal(
+      adjudication.results[0].target_evidence_log,
+      first.results.find((entry) => entry.task === '002-declared')
+        .evidence_log
+    );
+    assert.equal(
+      adjudication.results[0].superseding_evidence_log,
+      second.results[0].evidence_log
+    );
+    assert.equal(adjudication.results[0].fallback_used, false);
 
     const third = refreshCurrentHead(current.project, { change: CHANGE });
     assert.equal(third.ok, true);

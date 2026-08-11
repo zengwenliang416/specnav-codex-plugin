@@ -1,0 +1,1103 @@
+# command: bash tests/run-verification-plugin-fixtures.sh
+# exit_status: 1
+# duration_ms: 1396
+
+## stdout
+(empty)
+
+## stderr
+expected status 0, got 2 for validate in /var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project
+{
+  "ok": false,
+  "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+  "active_change": "add-dashboard",
+  "change_resolution": {
+    "source": "active-change-file",
+    "candidates": [
+      "add-dashboard"
+    ],
+    "blockers": []
+  },
+  "change_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard",
+  "verify_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard/verify",
+  "blockers": [
+    "development-blocked",
+    "development:task-acceptance:receipt-authority-unavailable:validation-receipt-authority:runtime-status-invalid:ENOENT: no such file or directory, lstat '/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard/verify/v2/runtime-status.json'",
+    "development:task-item-ownership:checklist-id-missing:line-2",
+    "development:task-item-ownership:invalid-graph-node",
+    "development:task-item-ownership:formal-task-missing-from-graph:001-dashboard-summary",
+    "development:task-item-ownership:formal-task-missing-context-row:001-dashboard-summary",
+    "development:missing-task-artifact:acceptance.json",
+    "development:invalid-task-context:task_items"
+  ],
+  "warnings": [
+    "development:codegraph:not-indexed",
+    "codegraph:not-indexed"
+  ],
+  "codegraph": {
+    "ok": true,
+    "status": {
+      "schema": "specnav.codegraph.status.v1",
+      "ok": true,
+      "generated_at": "2026-08-11T21:36:03.023Z",
+      "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+      "active_change": "add-dashboard",
+      "policy": {
+        "enabled": true,
+        "profile": "bootstrap",
+        "mode": "observe",
+        "stage": "verification",
+        "required_for_stage": false,
+        "disabled_reason": null
+      },
+      "execution_surface": "cli",
+      "decision": {
+        "stage": "verification",
+        "result": "warn",
+        "reason": "CodeGraph policy has advisory warnings for verification."
+      },
+      "cli": {
+        "available": true,
+        "version": "1.3.1",
+        "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+        "unsupported": false,
+        "error": null
+      },
+      "mcp": {
+        "configured": true,
+        "visible_in_current_session": false,
+        "restart_required": true,
+        "config_files": [
+          "/Users/wenliang_zeng/.claude.json",
+          "/Users/wenliang_zeng/.codex/config.toml"
+        ]
+      },
+      "index": {
+        "initialized": false,
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+        "indexPath": null,
+        "lastIndexed": null,
+        "fileCount": 0,
+        "nodeCount": 0,
+        "edgeCount": 0,
+        "pendingChanges": {
+          "added": 0,
+          "modified": 0,
+          "removed": 0
+        },
+        "reindexRecommended": false,
+        "worktreeMismatch": null
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "raw_codegraph_status": {
+        "initialized": false,
+        "version": "1.3.1",
+        "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+        "indexPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/.codegraph",
+        "lastIndexed": null
+      }
+    },
+    "evidence_index": {
+      "schema": "specnav.codegraph.evidence_index.v1",
+      "generated_at": "2026-08-11T21:36:03.023Z",
+      "active_change": "add-dashboard",
+      "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+      "by_claim": {},
+      "by_stage": {},
+      "blockers": [],
+      "raw_exists": false,
+      "record_count": 0
+    },
+    "claims_report": {
+      "schema": "specnav.codegraph.claims_report.v1",
+      "generated_at": "2026-08-11T21:36:03.024Z",
+      "active_change": "add-dashboard",
+      "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+      "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+      "claims_count": 0,
+      "verified_claims": [],
+      "unverified_claims": [],
+      "blockers": [],
+      "warnings": []
+    },
+    "drift": {
+      "schema": "specnav.codegraph.drift.v1",
+      "active_change": "add-dashboard",
+      "drift": [],
+      "blockers": []
+    },
+    "decision": {
+      "schema": "specnav.codegraph.decision.v1",
+      "stage": "verification",
+      "profile": "bootstrap",
+      "effective_mode": "observe",
+      "required_for_stage": false,
+      "execution_surface": "cli",
+      "result": "warn",
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ],
+      "explanation": "CodeGraph policy has advisory warnings for verification."
+    },
+    "guard_report": {
+      "schema": "specnav.codegraph.guard_report.v1",
+      "generated_at": "2026-08-11T21:36:03.024Z",
+      "active_change": "add-dashboard",
+      "stage": "verification",
+      "ok": true,
+      "status": {
+        "policy": {
+          "enabled": true,
+          "profile": "bootstrap",
+          "mode": "observe",
+          "stage": "verification",
+          "required_for_stage": false,
+          "disabled_reason": null
+        },
+        "execution_surface": "cli",
+        "cli": {
+          "available": true,
+          "version": "1.3.1",
+          "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+          "unsupported": false,
+          "error": null
+        },
+        "mcp": {
+          "configured": true,
+          "visible_in_current_session": false,
+          "restart_required": true,
+          "config_files": [
+            "/Users/wenliang_zeng/.claude.json",
+            "/Users/wenliang_zeng/.codex/config.toml"
+          ]
+        },
+        "index": {
+          "initialized": false,
+          "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+          "indexPath": null,
+          "lastIndexed": null,
+          "fileCount": 0,
+          "nodeCount": 0,
+          "edgeCount": 0,
+          "pendingChanges": {
+            "added": 0,
+            "modified": 0,
+            "removed": 0
+          },
+          "reindexRecommended": false,
+          "worktreeMismatch": null
+        }
+      },
+      "decision": {
+        "schema": "specnav.codegraph.decision.v1",
+        "stage": "verification",
+        "profile": "bootstrap",
+        "effective_mode": "observe",
+        "required_for_stage": false,
+        "execution_surface": "cli",
+        "result": "warn",
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ],
+        "explanation": "CodeGraph policy has advisory warnings for verification."
+      },
+      "evidence_index": {
+        "schema": "specnav.codegraph.evidence_index.v1",
+        "generated_at": "2026-08-11T21:36:03.023Z",
+        "active_change": "add-dashboard",
+        "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+        "by_claim": {},
+        "by_stage": {},
+        "blockers": [],
+        "raw_exists": false,
+        "record_count": 0
+      },
+      "claims_report": {
+        "schema": "specnav.codegraph.claims_report.v1",
+        "generated_at": "2026-08-11T21:36:03.024Z",
+        "active_change": "add-dashboard",
+        "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+        "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+        "claims_count": 0,
+        "verified_claims": [],
+        "unverified_claims": [],
+        "blockers": [],
+        "warnings": []
+      },
+      "drift": {
+        "schema": "specnav.codegraph.drift.v1",
+        "active_change": "add-dashboard",
+        "drift": [],
+        "blockers": []
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ]
+    },
+    "artifacts": {
+      "status": "openspec/changes/add-dashboard/codegraph/status.json",
+      "decision": "openspec/changes/add-dashboard/codegraph/decision.json",
+      "guard_report": "openspec/changes/add-dashboard/codegraph/guard-report.json",
+      "evidence_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+      "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+      "claims_map": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+      "claims_report": "openspec/changes/add-dashboard/codegraph/claims-report.json",
+      "drift_report": "openspec/changes/add-dashboard/codegraph/drift-report.json",
+      "impact_report": "openspec/changes/add-dashboard/codegraph/impact-report.json"
+    },
+    "blockers": [],
+    "warnings": [
+      "codegraph:not-indexed"
+    ]
+  },
+  "development": {
+    "ok": false,
+    "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+    "mode": "handoff",
+    "active_change": "add-dashboard",
+    "change_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard",
+    "development_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard/development",
+    "blockers": [
+      "task-acceptance:receipt-authority-unavailable:validation-receipt-authority:runtime-status-invalid:ENOENT: no such file or directory, lstat '/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard/verify/v2/runtime-status.json'",
+      "task-item-ownership:checklist-id-missing:line-2",
+      "task-item-ownership:invalid-graph-node",
+      "task-item-ownership:formal-task-missing-from-graph:001-dashboard-summary",
+      "task-item-ownership:formal-task-missing-context-row:001-dashboard-summary",
+      "missing-task-artifact:acceptance.json",
+      "invalid-task-context:task_items"
+    ],
+    "warnings": [
+      "codegraph:not-indexed"
+    ],
+    "loops": [],
+    "codegraph": {
+      "ok": true,
+      "status": {
+        "schema": "specnav.codegraph.status.v1",
+        "ok": true,
+        "generated_at": "2026-08-11T21:36:02.858Z",
+        "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+        "active_change": "add-dashboard",
+        "policy": {
+          "enabled": true,
+          "profile": "bootstrap",
+          "mode": "observe",
+          "stage": "development",
+          "required_for_stage": false,
+          "disabled_reason": null
+        },
+        "execution_surface": "cli",
+        "decision": {
+          "stage": "development",
+          "result": "warn",
+          "reason": "CodeGraph policy has advisory warnings for development."
+        },
+        "cli": {
+          "available": true,
+          "version": "1.3.1",
+          "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+          "unsupported": false,
+          "error": null
+        },
+        "mcp": {
+          "configured": true,
+          "visible_in_current_session": false,
+          "restart_required": true,
+          "config_files": [
+            "/Users/wenliang_zeng/.claude.json",
+            "/Users/wenliang_zeng/.codex/config.toml"
+          ]
+        },
+        "index": {
+          "initialized": false,
+          "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+          "indexPath": null,
+          "lastIndexed": null,
+          "fileCount": 0,
+          "nodeCount": 0,
+          "edgeCount": 0,
+          "pendingChanges": {
+            "added": 0,
+            "modified": 0,
+            "removed": 0
+          },
+          "reindexRecommended": false,
+          "worktreeMismatch": null
+        },
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ],
+        "raw_codegraph_status": {
+          "initialized": false,
+          "version": "1.3.1",
+          "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+          "indexPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/.codegraph",
+          "lastIndexed": null
+        }
+      },
+      "evidence_index": {
+        "schema": "specnav.codegraph.evidence_index.v1",
+        "generated_at": "2026-08-11T21:36:02.858Z",
+        "active_change": "add-dashboard",
+        "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+        "by_claim": {},
+        "by_stage": {},
+        "blockers": [],
+        "raw_exists": false,
+        "record_count": 0
+      },
+      "claims_report": {
+        "schema": "specnav.codegraph.claims_report.v1",
+        "generated_at": "2026-08-11T21:36:02.859Z",
+        "active_change": "add-dashboard",
+        "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+        "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+        "claims_count": 0,
+        "verified_claims": [],
+        "unverified_claims": [],
+        "blockers": [],
+        "warnings": []
+      },
+      "drift": {
+        "schema": "specnav.codegraph.drift.v1",
+        "active_change": "add-dashboard",
+        "drift": [],
+        "blockers": []
+      },
+      "decision": {
+        "schema": "specnav.codegraph.decision.v1",
+        "stage": "development",
+        "profile": "bootstrap",
+        "effective_mode": "observe",
+        "required_for_stage": false,
+        "execution_surface": "cli",
+        "result": "warn",
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ],
+        "explanation": "CodeGraph policy has advisory warnings for development."
+      },
+      "guard_report": {
+        "schema": "specnav.codegraph.guard_report.v1",
+        "generated_at": "2026-08-11T21:36:02.859Z",
+        "active_change": "add-dashboard",
+        "stage": "development",
+        "ok": true,
+        "status": {
+          "policy": {
+            "enabled": true,
+            "profile": "bootstrap",
+            "mode": "observe",
+            "stage": "development",
+            "required_for_stage": false,
+            "disabled_reason": null
+          },
+          "execution_surface": "cli",
+          "cli": {
+            "available": true,
+            "version": "1.3.1",
+            "path": "/Users/wenliang_zeng/.local/bin/codegraph",
+            "unsupported": false,
+            "error": null
+          },
+          "mcp": {
+            "configured": true,
+            "visible_in_current_session": false,
+            "restart_required": true,
+            "config_files": [
+              "/Users/wenliang_zeng/.claude.json",
+              "/Users/wenliang_zeng/.codex/config.toml"
+            ]
+          },
+          "index": {
+            "initialized": false,
+            "projectPath": "/private/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+            "indexPath": null,
+            "lastIndexed": null,
+            "fileCount": 0,
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "pendingChanges": {
+              "added": 0,
+              "modified": 0,
+              "removed": 0
+            },
+            "reindexRecommended": false,
+            "worktreeMismatch": null
+          }
+        },
+        "decision": {
+          "schema": "specnav.codegraph.decision.v1",
+          "stage": "development",
+          "profile": "bootstrap",
+          "effective_mode": "observe",
+          "required_for_stage": false,
+          "execution_surface": "cli",
+          "result": "warn",
+          "blockers": [],
+          "warnings": [
+            "codegraph:not-indexed"
+          ],
+          "explanation": "CodeGraph policy has advisory warnings for development."
+        },
+        "evidence_index": {
+          "schema": "specnav.codegraph.evidence_index.v1",
+          "generated_at": "2026-08-11T21:36:02.858Z",
+          "active_change": "add-dashboard",
+          "source_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+          "by_claim": {},
+          "by_stage": {},
+          "blockers": [],
+          "raw_exists": false,
+          "record_count": 0
+        },
+        "claims_report": {
+          "schema": "specnav.codegraph.claims_report.v1",
+          "generated_at": "2026-08-11T21:36:02.859Z",
+          "active_change": "add-dashboard",
+          "claims_file": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+          "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+          "claims_count": 0,
+          "verified_claims": [],
+          "unverified_claims": [],
+          "blockers": [],
+          "warnings": []
+        },
+        "drift": {
+          "schema": "specnav.codegraph.drift.v1",
+          "active_change": "add-dashboard",
+          "drift": [],
+          "blockers": []
+        },
+        "blockers": [],
+        "warnings": [
+          "codegraph:not-indexed"
+        ]
+      },
+      "artifacts": {
+        "status": "openspec/changes/add-dashboard/codegraph/status.json",
+        "decision": "openspec/changes/add-dashboard/codegraph/decision.json",
+        "guard_report": "openspec/changes/add-dashboard/codegraph/guard-report.json",
+        "evidence_raw": "openspec/changes/add-dashboard/codegraph/evidence.jsonl",
+        "evidence_index": "openspec/changes/add-dashboard/codegraph/evidence-index.json",
+        "claims_map": "openspec/changes/add-dashboard/codegraph/claims-map.json",
+        "claims_report": "openspec/changes/add-dashboard/codegraph/claims-report.json",
+        "drift_report": "openspec/changes/add-dashboard/codegraph/drift-report.json",
+        "impact_report": "openspec/changes/add-dashboard/codegraph/impact-report.json"
+      },
+      "blockers": [],
+      "warnings": [
+        "codegraph:not-indexed"
+      ]
+    },
+    "prototype": {
+      "ok": true,
+      "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+      "active_change": "add-dashboard",
+      "prototype_dir": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project/openspec/changes/add-dashboard/prototype",
+      "blockers": [],
+      "requirements": {
+        "ok": true,
+        "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+        "active_change": "add-dashboard",
+        "lane": "standard",
+        "foundation_required": true,
+        "blockers": [],
+        "foundation": {
+          "ok": true,
+          "project_root": "/var/folders/1v/8sfc4rjx1834mzlqzxqr8lr40000gn/T/tmp.wkwJj9S1wR/verify-project",
+          "blockers": [],
+          "specs": [
+            {
+              "id": "ui-design",
+              "path": "openspec/specs/ui-design/design.md",
+              "ok": true,
+              "blockers": [],
+              "missing_sections": [],
+              "missing_frontmatter_keys": []
+            },
+            {
+              "id": "system-architecture",
+              "path": "openspec/specs/system-architecture/design.md",
+              "ok": true,
+              "blockers": [],
+              "missing_sections": [],
+              "missing_frontmatter_keys": []
+            },
+            {
+              "id": "frontend-backend-data-flow",
+              "path": "openspec/specs/frontend-backend-data-flow/design.md",
+              "ok": true,
+              "blockers": [],
+              "missing_sections": [],
+              "missing_frontmatter_keys": []
+            },
+            {
+              "id": "component-architecture",
+              "path": "openspec/specs/component-architecture/design.md",
+              "ok": true,
+              "blockers": [],
+              "missing_sections": [],
+              "missing_frontmatter_keys": []
+            }
+          ]
+        },
+        "annotation_policy": {
+          "present": false,
+          "ok": true,
+          "enforcement": null,
+          "anchor_pattern": "@ai-anchor",
+          "path": "openspec/specs/ai-annotation-policy/design.md",
+          "missing_sections": [],
+          "blockers": []
+        },
+        "artifacts": [
+          {
+            "name": "requirements.md",
+            "path": "openspec/changes/add-dashboard/requirements.md",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "acceptance.md",
+            "path": "openspec/changes/add-dashboard/acceptance.md",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "spec-map.json",
+            "path": "openspec/changes/add-dashboard/spec-map.json",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "component-impact-map.json",
+            "path": "openspec/changes/add-dashboard/component-impact-map.json",
+            "ok": true,
+            "blockers": []
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "name": "question.md",
+          "path": "openspec/changes/add-dashboard/prototype/question.md",
+          "ok": true,
+          "blockers": []
+        },
+        {
+          "name": "prototype-manifest.json",
+          "path": "openspec/changes/add-dashboard/prototype/prototype-manifest.json",
+          "ok": true,
+          "blockers": [],
+          "prototype_type": "ui-html",
+          "entry": "artifact/index.html"
+        },
+        {
+          "name": "artifact/index.html",
+          "path": "openspec/changes/add-dashboard/prototype/artifact/index.html",
+          "ok": true,
+          "blockers": [],
+          "expected_kind": "file"
+        },
+        {
+          "name": "screen-map.json",
+          "path": "openspec/changes/add-dashboard/prototype/screen-map.json",
+          "ok": true,
+          "blockers": []
+        },
+        {
+          "name": "visual-inventory.json",
+          "path": "openspec/changes/add-dashboard/prototype/visual-inventory.json",
+          "ok": true,
+          "blockers": []
+        },
+        {
+          "name": "handoff.md",
+          "path": "openspec/changes/add-dashboard/prototype/handoff.md",
+          "ok": true,
+          "blockers": []
+        },
+        {
+          "name": "verifier-report.json",
+          "path": "openspec/changes/add-dashboard/prototype/verifier-report.json",
+          "ok": true,
+          "blockers": [],
+          "status": "green",
+          "checked_entry": "artifact/index.html"
+        },
+        {
+          "name": "decision.json",
+          "path": "openspec/changes/add-dashboard/prototype/decision.json",
+          "ok": true,
+          "blockers": [],
+          "status": "approved"
+        }
+      ],
+      "manifest": {
+        "schema": "specnav.prototype.manifest.v1",
+        "version": "1.0.0",
+        "type": "ui-html",
+        "entry": "artifact/index.html"
+      },
+      "verifier": {
+        "schema": "specnav.prototype.verifier.v1",
+        "status": "green"
+      },
+      "decision": {
+        "status": "approved",
+        "prototype_type": "ui-html"
+      }
+    },
+    "artifacts": [
+      {
+        "name": "upstream-contracts",
+        "path": "openspec/changes/add-dashboard/upstream-contracts",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "prototype-approval-binding",
+        "path": "openspec/changes/add-dashboard/prototype-approval-binding",
+        "ok": true,
+        "blockers": [],
+        "approved_source": "openspec/changes/add-dashboard/prototype/artifact/index.html",
+        "approved_variant": "balanced",
+        "prototype_type": "ui-html"
+      },
+      {
+        "name": "scope.json",
+        "path": "openspec/changes/add-dashboard/scope.json",
+        "ok": true,
+        "blockers": [],
+        "allowed_roots": 2,
+        "prototype_sources": 1
+      },
+      {
+        "name": "tasks.md",
+        "path": "openspec/changes/add-dashboard/tasks.md",
+        "ok": true,
+        "blockers": [],
+        "bullet_count": 1,
+        "checkbox_count": 1,
+        "completed_count": 1,
+        "incomplete_count": 0,
+        "section_count": 1
+      },
+      {
+        "name": "git-baseline",
+        "path": "openspec/changes/add-dashboard/git-baseline",
+        "ok": true,
+        "blockers": [],
+        "head": "4981746e79fe27d80f42f0589272b4f8d9525ee8",
+        "tasks_path": "openspec/changes/add-dashboard/tasks.md",
+        "baseline_task_count": 1,
+        "current_task_count": 1,
+        "approved_removal_count": 0,
+        "approval_file": null
+      },
+      {
+        "name": "before-dev-check.json",
+        "path": "openspec/changes/add-dashboard/development/before-dev-check.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "basis.md",
+        "path": "openspec/changes/add-dashboard/development/basis.md",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "prototype-promotion-map.json",
+        "path": "openspec/changes/add-dashboard/development/prototype-promotion-map.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "complexity-budget.json",
+        "path": "openspec/changes/add-dashboard/development/complexity-budget.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "task-graph.json",
+        "path": "openspec/changes/add-dashboard/development/task-graph.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "code-owner-map.json",
+        "path": "openspec/changes/add-dashboard/development/code-owner-map.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "extraction-map.json",
+        "path": "openspec/changes/add-dashboard/development/extraction-map.json",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "task-item-ownership",
+        "path": "openspec/changes/add-dashboard/development/task-item-ownership",
+        "ok": false,
+        "blockers": [
+          "task-item-ownership:checklist-id-missing:line-2",
+          "task-item-ownership:invalid-graph-node",
+          "task-item-ownership:formal-task-missing-from-graph:001-dashboard-summary",
+          "task-item-ownership:formal-task-missing-context-row:001-dashboard-summary"
+        ],
+        "checkbox_count": 0,
+        "formal_task_count": 1,
+        "owned_item_count": 0,
+        "context_row_count": 0
+      },
+      {
+        "name": "task-context.jsonl",
+        "path": "openspec/changes/add-dashboard/development/task-context.jsonl",
+        "ok": true,
+        "blockers": [],
+        "entries": 1
+      },
+      {
+        "name": "migrations/manifest.json",
+        "path": "openspec/changes/add-dashboard/development/migrations/manifest.json",
+        "ok": true,
+        "blockers": [],
+        "required": false,
+        "sql_intent_sources": []
+      },
+      {
+        "name": "migrations/README.md",
+        "path": "openspec/changes/add-dashboard/development/migrations/README.md",
+        "ok": true,
+        "blockers": []
+      },
+      {
+        "name": "task-ledger.jsonl",
+        "path": "openspec/changes/add-dashboard/development/task-ledger.jsonl",
+        "ok": true,
+        "blockers": [],
+        "entries": 3
+      },
+      {
+        "name": "drift-check.jsonl",
+        "path": "openspec/changes/add-dashboard/development/drift-check.jsonl",
+        "ok": true,
+        "blockers": [],
+        "entries": 1
+      },
+      {
+        "name": "validation-log.jsonl",
+        "path": "openspec/changes/add-dashboard/development/validation-log.jsonl",
+        "ok": true,
+        "blockers": [],
+        "entries": 2,
+        "executed_entries": 1,
+        "executed_pass": true,
+        "adjudicated_failures": 0,
+        "superseded_passes": 0,
+        "corrected_adjudications": 0,
+        "attestation": "system-executed"
+      },
+      {
+        "name": "handoff-to-verify.md",
+        "path": "openspec/changes/add-dashboard/development/handoff-to-verify.md",
+        "ok": true,
+        "blockers": []
+      }
+    ],
+    "tasks": [
+      {
+        "task_id": "001-dashboard-summary",
+        "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary",
+        "ok": false,
+        "blockers": [
+          "missing-task-artifact:acceptance.json",
+          "invalid-task-context:task_items"
+        ],
+        "artifacts": [
+          {
+            "name": "acceptance.json",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json",
+            "ok": false,
+            "blockers": [
+              "missing-task-artifact:acceptance.json"
+            ],
+            "assertion_ids": []
+          },
+          {
+            "name": "brief.md",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/brief.md",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "context.json",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/context.json",
+            "ok": false,
+            "blockers": [
+              "invalid-task-context:task_items"
+            ]
+          },
+          {
+            "name": "report.md",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/report.md",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "spec-review.md",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md",
+            "ok": true,
+            "blockers": []
+          },
+          {
+            "name": "quality-review.md",
+            "path": "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/quality-review.md",
+            "ok": true,
+            "blockers": []
+          }
+        ]
+      }
+    ],
+    "repair_incidents": []
+  },
+  "artifacts": [
+    {
+      "name": "plan.md",
+      "path": "openspec/changes/add-dashboard/verify/plan.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "plan.json",
+      "path": "openspec/changes/add-dashboard/verify/plan.json",
+      "ok": true,
+      "blockers": [],
+      "required_domains": [
+        "facticity",
+        "static",
+        "unit",
+        "redteam",
+        "e2e",
+        "sensory"
+      ]
+    },
+    {
+      "name": "evidence-index.jsonl",
+      "path": "openspec/changes/add-dashboard/verify/evidence-index.jsonl",
+      "ok": true,
+      "blockers": [],
+      "entries": 3
+    },
+    {
+      "name": "traceability-matrix.json",
+      "path": "openspec/changes/add-dashboard/verify/traceability-matrix.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "diff-traceability",
+      "path": "openspec/changes/add-dashboard/verify/diff-traceability",
+      "ok": true,
+      "blockers": [],
+      "changed_files": 1,
+      "traced_files": 1
+    },
+    {
+      "name": "user-test-cases.md",
+      "path": "openspec/changes/add-dashboard/verify/user-test-cases.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "user-test-cases.json",
+      "path": "openspec/changes/add-dashboard/verify/user-test-cases.json",
+      "ok": true,
+      "blockers": [],
+      "case_ids": [
+        "utc-dashboard-summary"
+      ]
+    },
+    {
+      "name": "user-test-case-signoff.json",
+      "path": "openspec/changes/add-dashboard/verify/user-test-case-signoff.json",
+      "ok": true,
+      "blockers": [],
+      "approved_case_ids": [
+        "utc-dashboard-summary"
+      ]
+    },
+    {
+      "name": "domain-case-matrix.json",
+      "path": "openspec/changes/add-dashboard/verify/domain-case-matrix.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "runtime-evidence.json",
+      "path": "openspec/changes/add-dashboard/verify/runtime-evidence.json",
+      "ok": true,
+      "blockers": [],
+      "required_surfaces": [
+        "runtime",
+        "browser"
+      ],
+      "surfaces": [
+        "runtime",
+        "browser"
+      ]
+    },
+    {
+      "name": "blocker-classification.jsonl",
+      "path": "openspec/changes/add-dashboard/verify/blocker-classification.jsonl",
+      "ok": true,
+      "blockers": [],
+      "entries": 0
+    },
+    {
+      "name": "receipt.md",
+      "path": "openspec/changes/add-dashboard/verify/receipt.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "receipt.json",
+      "path": "openspec/changes/add-dashboard/verify/receipt.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "behavior-evals/scenarios.json",
+      "path": "openspec/changes/add-dashboard/verify/behavior-evals/scenarios.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "behavior-evals/report.json",
+      "path": "openspec/changes/add-dashboard/verify/behavior-evals/report.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "behavior-evals/transcripts",
+      "path": "openspec/changes/add-dashboard/verify/behavior-evals/transcripts",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "behavior-evals/report.md",
+      "path": "openspec/changes/add-dashboard/verify/behavior-evals/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "facticity/report.md",
+      "path": "openspec/changes/add-dashboard/verify/facticity/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "facticity/report.json",
+      "path": "openspec/changes/add-dashboard/verify/facticity/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "static/report.md",
+      "path": "openspec/changes/add-dashboard/verify/static/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "static/report.json",
+      "path": "openspec/changes/add-dashboard/verify/static/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "unit/report.md",
+      "path": "openspec/changes/add-dashboard/verify/unit/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "unit/report.json",
+      "path": "openspec/changes/add-dashboard/verify/unit/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "redteam/report.md",
+      "path": "openspec/changes/add-dashboard/verify/redteam/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "redteam/report.json",
+      "path": "openspec/changes/add-dashboard/verify/redteam/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "e2e/report.md",
+      "path": "openspec/changes/add-dashboard/verify/e2e/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "e2e/report.json",
+      "path": "openspec/changes/add-dashboard/verify/e2e/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "sensory/report.md",
+      "path": "openspec/changes/add-dashboard/verify/sensory/report.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "sensory/report.json",
+      "path": "openspec/changes/add-dashboard/verify/sensory/report.json",
+      "ok": true,
+      "blockers": [],
+      "verdict": "green"
+    },
+    {
+      "name": "unit/test-quality-rubric.json",
+      "path": "openspec/changes/add-dashboard/verify/unit/test-quality-rubric.json",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "sensory/reviewer-independence.md",
+      "path": "openspec/changes/add-dashboard/verify/sensory/reviewer-independence.md",
+      "ok": true,
+      "blockers": []
+    },
+    {
+      "name": "root-cause-checks.jsonl",
+      "path": "openspec/changes/add-dashboard/verify/root-cause-checks.jsonl",
+      "ok": true,
+      "blockers": []
+    }
+  ],
+  "fallback_used": false
+}
+

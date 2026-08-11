@@ -18,6 +18,8 @@ const {
 
 const RUNNER_ID = 'specnav-evidence-runner';
 const REFRESH_CURRENT_HEAD_MODE = 'refresh-current-head';
+const ADJUDICATE_CURRENT_HEAD_MODE = 'adjudicate-current-head';
+const DEFAULT_TIMEOUT_MS = 900000;
 const REPAIR_TASK_SCHEMA = 'specnav.development.repair-task.v1';
 const TASK_ID_PATTERN = /^\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEAD_TAIL_CHARS = 2000;
@@ -206,8 +208,11 @@ function isLifecyclePath(relativePath, change) {
   const normalized = normalizeRelative(relativePath);
   const changePrefix = `openspec/changes/${change}/`;
   return (
+    normalized.startsWith('openspec/.specnav/')
+    ||
     ['development/', 'verify/', 'codegraph/', 'operations/']
       .some((directory) => normalized.startsWith(`${changePrefix}${directory}`))
+    || normalized.startsWith(`${changePrefix}verify-report.`)
     || normalized === `openspec/changes/${change}/tasks.md`
   );
 }
@@ -375,6 +380,210 @@ function receiptId(reviewedGit, task, command, assertionIds, evidenceLog) {
   return `receipt-${digest}`;
 }
 
+function sameAssertionIds(left, right) {
+  return Array.isArray(left)
+    && Array.isArray(right)
+    && JSON.stringify(left) === JSON.stringify(right);
+}
+
+function trustedReceiptRecord(
+  record,
+  changeDir,
+  receiptAuthority
+) {
+  const entry = record.entry;
+  const evidenceBinding = evidenceFileBinding(changeDir, entry.evidence_log);
+  if (
+    !receiptAuthority.verify(entry)
+    || evidenceBinding === null
+    || entry.evidence_log_sha256 !== evidenceBinding.sha256
+    || entry.evidence_log_size !== evidenceBinding.size
+  ) {
+    return null;
+  }
+  return {
+    ...record,
+    entry
+  };
+}
+
+function adjudicateCurrentHead(projectRoot, options = {}) {
+  const changeState = lib.activeChangeState(
+    projectRoot,
+    options.change !== undefined ? { change: options.change } : {}
+  );
+  const change = changeState.change;
+  if (!change) {
+    return {
+      ok: false,
+      mode: ADJUDICATE_CURRENT_HEAD_MODE,
+      change: null,
+      blockers: changeState.blockers.length
+        ? changeState.blockers
+        : ['active-change'],
+      adjudicated: 0,
+      results: [],
+      fallback_used: false
+    };
+  }
+
+  try {
+    const changeDir = lib.changeDir(projectRoot, change);
+    const logFile = path.join(
+      changeDir,
+      'development',
+      'validation-log.jsonl'
+    );
+    assertSafeExistingDirectoryTree(
+      projectRoot,
+      changeDir,
+      'evidence-runner:change-directory-unsafe'
+    );
+    if (!fs.existsSync(logFile) || !fs.statSync(logFile).isFile()) {
+      throw new Error(
+        'evidence-runner:missing-development-artifact:validation-log.jsonl'
+      );
+    }
+    assertNoDirtyImplementation(projectRoot, change);
+    const reviewedGit = reviewedGitSnapshot(projectRoot);
+    const receiptAuthority = options.receiptAuthority
+      || resolveManagedValidationReceiptAuthority({
+        projectRoot,
+        changeDir
+      });
+    const parsed = parseLog(logFile);
+    const trusted = parsed
+      .map((record, index) => trustedReceiptRecord(
+        { ...record, index },
+        changeDir,
+        receiptAuthority
+      ))
+      .filter(Boolean);
+    const adjudicatedTargets = new Set(
+      parsed
+        .map(({ entry }) => entry)
+        .filter((entry) => (
+          entry.schema === 'specnav.validationAdjudication.v1'
+          && String(entry.status || '').toLowerCase() === 'overturned'
+          && typeof entry.target_evidence_log === 'string'
+        ))
+        .map((entry) => entry.target_evidence_log)
+    );
+    const currentPasses = trusted.filter(({ entry }) => (
+      entry.status === 'pass'
+      && entry.ok === true
+      && entry.exit_status === 0
+      && entry.reviewed_git_head === reviewedGit.head
+      && entry.reviewed_git_tree === reviewedGit.tree
+    ));
+    const failures = trusted.filter(({ entry }) => (
+      (
+        entry.status !== 'pass'
+        || entry.ok !== true
+        || entry.exit_status !== 0
+      )
+      && !adjudicatedTargets.has(entry.evidence_log)
+    ));
+    const explicitTarget = options.targetEvidenceLog || null;
+    const explicitSuccessor = options.supersedingEvidenceLog || null;
+    const allowTaskLevel = options.allowTaskLevel === true;
+    if (
+      allowTaskLevel
+      && (
+        options.classification !== 'test_defect'
+        || typeof options.approvalRef !== 'string'
+        || options.approvalRef.trim() === ''
+        || typeof options.reason !== 'string'
+        || options.reason.trim() === ''
+      )
+    ) {
+      throw new Error(
+        'evidence-runner:task-level-adjudication-approval-required'
+      );
+    }
+
+    const results = [];
+    for (const failure of failures) {
+      if (
+        explicitTarget
+        && failure.entry.evidence_log !== explicitTarget
+      ) {
+        continue;
+      }
+      const candidates = currentPasses.filter((pass) => (
+        pass.index > failure.index
+        && pass.entry.task === failure.entry.task
+        && sameAssertionIds(
+          pass.entry.assertion_ids,
+          failure.entry.assertion_ids
+        )
+        && (
+          allowTaskLevel
+          || pass.entry.command === failure.entry.command
+        )
+        && (
+          !explicitSuccessor
+          || pass.entry.evidence_log === explicitSuccessor
+        )
+      ));
+      const successor = candidates.at(-1);
+      if (!successor) continue;
+      const adjudication = {
+        schema: 'specnav.validationAdjudication.v1',
+        task: failure.entry.task,
+        status: 'overturned',
+        target_evidence_log: failure.entry.evidence_log,
+        superseding_evidence_log: successor.entry.evidence_log,
+        reason: allowTaskLevel
+          ? options.reason.trim()
+          : 'A later current-HEAD system-executed PASS for the same task, command, and assertion set supersedes this preserved failed attempt.',
+        classification: allowTaskLevel
+          ? options.classification
+          : 'retest_pass',
+        approval_ref: allowTaskLevel
+          ? options.approvalRef.trim()
+          : null,
+        recorded_at: new Date().toISOString(),
+        reviewed_git_head: reviewedGit.head,
+        reviewed_git_tree: reviewedGit.tree,
+        fallback_used: false
+      };
+      appendReceipt(logFile, adjudication);
+      adjudicatedTargets.add(failure.entry.evidence_log);
+      results.push(adjudication);
+    }
+
+    if (explicitTarget && results.length === 0) {
+      throw new Error(
+        'evidence-runner:adjudication-successor-not-found'
+      );
+    }
+    return {
+      ok: true,
+      mode: ADJUDICATE_CURRENT_HEAD_MODE,
+      change,
+      reviewed_git_head: reviewedGit.head,
+      reviewed_git_tree: reviewedGit.tree,
+      adjudicated: results.length,
+      results,
+      blockers: [],
+      fallback_used: false
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      mode: ADJUDICATE_CURRENT_HEAD_MODE,
+      change,
+      adjudicated: 0,
+      results: [],
+      blockers: [
+        error instanceof Error ? error.message : String(error)
+      ],
+      fallback_used: false
+    };
+  }
+}
+
 function writeEvidenceLog(options) {
   const {
     evidenceDir,
@@ -528,7 +737,7 @@ function refreshCurrentHead(projectRoot, options = {}) {
 
         const run = lib.runCommand(command, {
           cwd: projectRoot,
-          timeoutMs: options.timeoutMs || 300000
+          timeoutMs: options.timeoutMs || DEFAULT_TIMEOUT_MS
         });
         const evidence = writeEvidenceLog({
           evidenceDir,
@@ -692,7 +901,7 @@ function replayValidationLog(projectRoot, options = {}) {
 
     const run = lib.runCommand(entry.command, {
       cwd: projectRoot,
-      timeoutMs: options.timeoutMs || 300000
+      timeoutMs: options.timeoutMs || DEFAULT_TIMEOUT_MS
     });
     const slug = taskSlug(entry, sequence - 1);
     const logName = `${String(sequence).padStart(3, '0')}-${slug}.log`;
@@ -764,7 +973,13 @@ function replayValidationLog(projectRoot, options = {}) {
 }
 
 function runEvidence(projectRoot, options = {}) {
-  if (options.mode !== REFRESH_CURRENT_HEAD_MODE) {
+  if (options.mode === REFRESH_CURRENT_HEAD_MODE) {
+    return refreshCurrentHead(projectRoot, options);
+  }
+  if (options.mode === ADJUDICATE_CURRENT_HEAD_MODE) {
+    return adjudicateCurrentHead(projectRoot, options);
+  }
+  {
     return {
       ok: false,
       mode: options.mode || null,
@@ -774,7 +989,6 @@ function runEvidence(projectRoot, options = {}) {
       fallback_used: false
     };
   }
-  return refreshCurrentHead(projectRoot, options);
 }
 
 function main() {
@@ -785,7 +999,17 @@ function main() {
   const result = runEvidence(root, {
     mode,
     change,
-    timeoutMs: Number(argValue(args, '--timeout-ms', 300000))
+    timeoutMs: Number(argValue(args, '--timeout-ms', DEFAULT_TIMEOUT_MS)),
+    targetEvidenceLog: argValue(args, '--target-evidence-log', null),
+    supersedingEvidenceLog: argValue(
+      args,
+      '--superseding-evidence-log',
+      null
+    ),
+    classification: argValue(args, '--classification', null),
+    approvalRef: argValue(args, '--approval-ref', null),
+    reason: argValue(args, '--reason', null),
+    allowTaskLevel: args.includes('--allow-task-level')
   });
   if (args.includes('--json')) {
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
@@ -799,8 +1023,10 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  ADJUDICATE_CURRENT_HEAD_MODE,
   REFRESH_CURRENT_HEAD_MODE,
   RUNNER_ID,
+  adjudicateCurrentHead,
   nextEvidenceSequence,
   refreshCurrentHead,
   replayValidationLog,

@@ -1,0 +1,368 @@
+# command: bash tests/run-verification-v2-repair-loop.sh
+# exit_status: 0
+# duration_ms: 6882
+
+## stdout
+TAP version 13
+# Subtest: registry compiles and validates every Verification Contract V2 entity
+ok 1 - registry compiles and validates every Verification Contract V2 entity
+  ---
+  duration_ms: 2187.09075
+  type: 'test'
+  ...
+# Subtest: runtime status schema accepts the exact current managed doctor output
+ok 2 - runtime status schema accepts the exact current managed doctor output
+  ---
+  duration_ms: 607.068667
+  type: 'test'
+  ...
+# Subtest: negative fixture corpus returns exact artifact and field blockers
+ok 3 - negative fixture corpus returns exact artifact and field blockers
+  ---
+  duration_ms: 600.353666
+  type: 'test'
+  ...
+# Subtest: host and cross-host schemas reject the declared negative contracts
+ok 4 - host and cross-host schemas reject the declared negative contracts
+  ---
+  duration_ms: 567.247792
+  type: 'test'
+  ...
+# Subtest: evidence and gate schemas directly enforce AC-31 and AC-35 fields
+ok 5 - evidence and gate schemas directly enforce AC-31 and AC-35 fields
+  ---
+  duration_ms: 542.513459
+  type: 'test'
+  ...
+# Subtest: verification run schema requires immutable repair lineage fields
+ok 6 - verification run schema requires immutable repair lineage fields
+  ---
+  duration_ms: 545.864334
+  type: 'test'
+  ...
+# Subtest: failure packet schema supports only the constrained unclassified open state
+ok 7 - failure packet schema supports only the constrained unclassified open state
+  ---
+  duration_ms: 556.2355
+  type: 'test'
+  ...
+# Subtest: registry requires doctor-approved managed AJV and never mutates input
+ok 8 - registry requires doctor-approved managed AJV and never mutates input
+  ---
+  duration_ms: 592.576667
+  type: 'test'
+  ...
+# Subtest: shape-valid unresolved references remain Task 004 responsibility
+ok 9 - shape-valid unresolved references remain Task 004 responsibility
+  ---
+  duration_ms: 544.652792
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 10 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.982958
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 11 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 37.727667
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 12 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.876667
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 13 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 39.358958
+  type: 'test'
+  ...
+# Subtest: trusted fact authority seals and verifies exact Kernel-owned payload bytes
+ok 14 - trusted fact authority seals and verifies exact Kernel-owned payload bytes
+  ---
+  duration_ms: 2120.9635
+  type: 'test'
+  ...
+# Subtest: transition applier accepts only a signed proposal-log fact
+ok 15 - transition applier accepts only a signed proposal-log fact
+  ---
+  duration_ms: 11.401625
+  type: 'test'
+  ...
+# Subtest: transition applier rejects a signed replay whose action and target do not match the authorized proposal
+ok 16 - transition applier rejects a signed replay whose action and target do not match the authorized proposal
+  ---
+  duration_ms: 1.2985
+  type: 'test'
+  ...
+# Subtest: transition applier rejects a signed historical receipt bound to a foreign proposal
+ok 17 - transition applier rejects a signed historical receipt bound to a foreign proposal
+  ---
+  duration_ms: 2.951208
+  type: 'test'
+  ...
+# Subtest: transition applier rejects a signed receipt that breaks the from_status chain
+ok 18 - transition applier rejects a signed receipt that breaks the from_status chain
+  ---
+  duration_ms: 0.837
+  type: 'test'
+  ...
+# Subtest: failure state reducer keeps roots immutable and supersedes valid follow-up failures
+ok 19 - failure state reducer keeps roots immutable and supersedes valid follow-up failures
+  ---
+  duration_ms: 5.502417
+  type: 'test'
+  ...
+# Subtest: repair state projects an applied close receipt as closed
+ok 20 - repair state projects an applied close receipt as closed
+  ---
+  duration_ms: 0.71325
+  type: 'test'
+  ...
+# Subtest: repair state fails closed when a closed projection remains open
+ok 21 - repair state fails closed when a closed projection remains open
+  ---
+  duration_ms: 0.592708
+  type: 'test'
+  ...
+# Subtest: repair CLI replays classification and repair request without overwriting task review files
+ok 22 - repair CLI replays classification and repair request without overwriting task review files
+  ---
+  duration_ms: 2242.968917
+  type: 'test'
+  ...
+# Subtest: repair CLI appends one deterministic proposal across repeated state evaluation
+ok 23 - repair CLI appends one deterministic proposal across repeated state evaluation
+  ---
+  duration_ms: 86.021959
+  type: 'test'
+  ...
+# Subtest: repair CLI preserves classifications for two independent root failures
+ok 24 - repair CLI preserves classifications for two independent root failures
+  ---
+  duration_ms: 58.826708
+  type: 'test'
+  ...
+# Subtest: repair CLI still blocks when another root classification is missing
+ok 25 - repair CLI still blocks when another root classification is missing
+  ---
+  duration_ms: 55.197583
+  type: 'test'
+  ...
+# Subtest: repair CLI rejects an orphan classification envelope
+ok 26 - repair CLI rejects an orphan classification envelope
+  ---
+  duration_ms: 49.745042
+  type: 'test'
+  ...
+# Subtest: repair CLI rejects non-directory entries in classification inventory
+ok 27 - repair CLI rejects non-directory entries in classification inventory
+  ---
+  duration_ms: 44.878459
+  type: 'test'
+  ...
+# Subtest: transition apply retains every independent root in global failure state
+ok 28 - transition apply retains every independent root in global failure state
+  ---
+  duration_ms: 103.854666
+  type: 'test'
+  ...
+# Subtest: repair CLI starts from a clean baseline and completes only after scoped changes
+ok 29 - repair CLI starts from a clean baseline and completes only after scoped changes
+  ---
+  duration_ms: 124.262666
+  type: 'test'
+  ...
+# Subtest: repair CLI blocks start when the original failure fingerprint drifted
+ok 30 - repair CLI blocks start when the original failure fingerprint drifted
+  ---
+  duration_ms: 72.673625
+  type: 'test'
+  ...
+# Subtest: repair CLI blocks replayed repair envelopes with replaced lineage
+ok 31 - repair CLI blocks replayed repair envelopes with replaced lineage
+  ---
+  duration_ms: 79.89275
+  type: 'test'
+  ...
+# Subtest: repair CLI preserves invalid lineage and creates an approved recovery fact
+ok 32 - repair CLI preserves invalid lineage and creates an approved recovery fact
+  ---
+  duration_ms: 98.221625
+  type: 'test'
+  ...
+# Subtest: rerun planning migrates the legacy envelope and appends refreshed authority
+ok 33 - rerun planning migrates the legacy envelope and appends refreshed authority
+  ---
+  duration_ms: 35.764042
+  type: 'test'
+  ...
+# Subtest: repair request replay rejects a link that replaced failure identity
+ok 34 - repair request replay rejects a link that replaced failure identity
+  ---
+  duration_ms: 70.305458
+  type: 'test'
+  ...
+# Subtest: repair diff accepts lifecycle artifacts but rejects scope escape
+ok 35 - repair diff accepts lifecycle artifacts but rejects scope escape
+  ---
+  duration_ms: 305.670542
+  type: 'test'
+  ...
+# Subtest: repair completion fingerprints allow only the named review receipts
+ok 36 - repair completion fingerprints allow only the named review receipts
+  ---
+  duration_ms: 332.821042
+  type: 'test'
+  ...
+# Subtest: missing classification is an explicit blocker and remains open
+ok 37 - missing classification is an explicit blocker and remains open
+  ---
+  duration_ms: 2103.4995
+  type: 'test'
+  ...
+# Subtest: valid follow-up runs are checked even when they produce no failure packet
+ok 38 - valid follow-up runs are checked even when they produce no failure packet
+  ---
+  duration_ms: 3.732
+  type: 'test'
+  ...
+# Subtest: foreign failure and broken parent lineage block follow-up runs
+ok 39 - foreign failure and broken parent lineage block follow-up runs
+  ---
+  duration_ms: 1.575084
+  type: 'test'
+  ...
+# Subtest: raw failures from another change cannot enter the reducer
+ok 40 - raw failures from another change cannot enter the reducer
+  ---
+  duration_ms: 0.369708
+  type: 'test'
+  ...
+# Subtest: preserves first failure repair retest and regression as immutable history
+ok 41 - preserves first failure repair retest and regression as immutable history
+  ---
+  duration_ms: 2194.028667
+  type: 'test'
+  ...
+# Subtest: accepts explicit audited recovery for invalid repair lineage
+ok 42 - accepts explicit audited recovery for invalid repair lineage
+  ---
+  duration_ms: 1.749333
+  type: 'test'
+  ...
+# Subtest: blocks recovery when protected identity drift was not exactly approved
+ok 43 - blocks recovery when protected identity drift was not exactly approved
+  ---
+  duration_ms: 1.47225
+  type: 'test'
+  ...
+# Subtest: labels an unchanged-fingerprint retry pass as flaky
+ok 44 - labels an unchanged-fingerprint retry pass as flaky
+  ---
+  duration_ms: 1.76925
+  type: 'test'
+  ...
+# Subtest: selects initial and latest attempts deterministically from shuffled same-second history
+ok 45 - selects initial and latest attempts deterministically from shuffled same-second history
+  ---
+  duration_ms: 1.321334
+  type: 'test'
+  ...
+# Subtest: allows parallel regression branches with the same sequence and chooses each case deterministically
+ok 46 - allows parallel regression branches with the same sequence and chooses each case deterministically
+  ---
+  duration_ms: 1.689
+  type: 'test'
+  ...
+# Subtest: rejects retry when any immutable retry fingerprint changes
+ok 47 - rejects retry when any immutable retry fingerprint changes
+  ---
+  duration_ms: 0.821291
+  type: 'test'
+  ...
+# Subtest: product and test defects cannot use retry to bypass reviewed repair
+ok 48 - product and test defects cannot use retry to bypass reviewed repair
+  ---
+  duration_ms: 0.53125
+  type: 'test'
+  ...
+# Subtest: completed repair proposes retest and passed retest requires exact regression scope
+ok 49 - completed repair proposes retest and passed retest requires exact regression scope
+  ---
+  duration_ms: 2.118916
+  type: 'test'
+  ...
+# Subtest: retains pre-repair retest history but only evaluates retests started after the reviewed repair
+ok 50 - retains pre-repair retest history but only evaluates retests started after the reviewed repair
+  ---
+  duration_ms: 1.197125
+  type: 'test'
+  ...
+# Subtest: failed blocked stale or tampered required regression proposes reopen
+ok 51 - failed blocked stale or tampered required regression proposes reopen
+  ---
+  duration_ms: 7.050417
+  type: 'test'
+  ...
+# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases
+ok 52 - closure fails closed when rerun plan omits repaired impacted or baseline cases
+  ---
+  duration_ms: 2.541875
+  type: 'test'
+  ...
+# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance
+ok 53 - routes only a trusted classifier no-progress signal to Core break-loop governance
+  ---
+  duration_ms: 0.82125
+  type: 'test'
+  ...
+# Subtest: rejects caller-authored lifecycle fields fallback and manual green
+ok 54 - rejects caller-authored lifecycle fields fallback and manual green
+  ---
+  duration_ms: 1.241084
+  type: 'test'
+  ...
+# Subtest: rejects duplicate overwritten out-of-order and cross-failure history
+ok 55 - rejects duplicate overwritten out-of-order and cross-failure history
+  ---
+  duration_ms: 1.546625
+  type: 'test'
+  ...
+# Subtest: rejects forged repair rerun and attempt-fact envelopes
+ok 56 - rejects forged repair rerun and attempt-fact envelopes
+  ---
+  duration_ms: 2.914916
+  type: 'test'
+  ...
+# Subtest: rejects foreign run or change attempts and unplanned regression cases
+ok 57 - rejects foreign run or change attempts and unplanned regression cases
+  ---
+  duration_ms: 2.724958
+  type: 'test'
+  ...
+# Subtest: requires the exact Task 022 repaired impacted and baseline case set
+ok 58 - requires the exact Task 022 repaired impacted and baseline case set
+  ---
+  duration_ms: 1.260792
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 58
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6828.698667
+verification v2 repair loop ok
+
+
+## stderr
+(empty)

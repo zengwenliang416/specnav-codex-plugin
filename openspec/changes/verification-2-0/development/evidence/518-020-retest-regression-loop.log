@@ -1,0 +1,127 @@
+# command: node --test tests/verification-v2/repair-loop/state-machine.test.js
+# exit_status: 0
+# duration_ms: 1390
+
+## stdout
+TAP version 13
+# Subtest: preserves first failure repair retest and regression as immutable history
+ok 1 - preserves first failure repair retest and regression as immutable history
+  ---
+  duration_ms: 1237.836292
+  type: 'test'
+  ...
+# Subtest: accepts explicit audited recovery for invalid repair lineage
+ok 2 - accepts explicit audited recovery for invalid repair lineage
+  ---
+  duration_ms: 4.412625
+  type: 'test'
+  ...
+# Subtest: blocks recovery when protected identity drift was not exactly approved
+ok 3 - blocks recovery when protected identity drift was not exactly approved
+  ---
+  duration_ms: 1.517416
+  type: 'test'
+  ...
+# Subtest: labels an unchanged-fingerprint retry pass as flaky
+ok 4 - labels an unchanged-fingerprint retry pass as flaky
+  ---
+  duration_ms: 2.404583
+  type: 'test'
+  ...
+# Subtest: selects initial and latest attempts deterministically from shuffled same-second history
+ok 5 - selects initial and latest attempts deterministically from shuffled same-second history
+  ---
+  duration_ms: 1.51525
+  type: 'test'
+  ...
+# Subtest: allows parallel regression branches with the same sequence and chooses each case deterministically
+ok 6 - allows parallel regression branches with the same sequence and chooses each case deterministically
+  ---
+  duration_ms: 1.976708
+  type: 'test'
+  ...
+# Subtest: rejects retry when any immutable retry fingerprint changes
+ok 7 - rejects retry when any immutable retry fingerprint changes
+  ---
+  duration_ms: 0.937167
+  type: 'test'
+  ...
+# Subtest: product and test defects cannot use retry to bypass reviewed repair
+ok 8 - product and test defects cannot use retry to bypass reviewed repair
+  ---
+  duration_ms: 0.622542
+  type: 'test'
+  ...
+# Subtest: completed repair proposes retest and passed retest requires exact regression scope
+ok 9 - completed repair proposes retest and passed retest requires exact regression scope
+  ---
+  duration_ms: 2.22
+  type: 'test'
+  ...
+# Subtest: retains pre-repair retest history but only evaluates retests started after the reviewed repair
+ok 10 - retains pre-repair retest history but only evaluates retests started after the reviewed repair
+  ---
+  duration_ms: 1.355708
+  type: 'test'
+  ...
+# Subtest: failed blocked stale or tampered required regression proposes reopen
+ok 11 - failed blocked stale or tampered required regression proposes reopen
+  ---
+  duration_ms: 4.539709
+  type: 'test'
+  ...
+# Subtest: closure fails closed when rerun plan omits repaired impacted or baseline cases
+ok 12 - closure fails closed when rerun plan omits repaired impacted or baseline cases
+  ---
+  duration_ms: 2.460416
+  type: 'test'
+  ...
+# Subtest: routes only a trusted classifier no-progress signal to Core break-loop governance
+ok 13 - routes only a trusted classifier no-progress signal to Core break-loop governance
+  ---
+  duration_ms: 0.805791
+  type: 'test'
+  ...
+# Subtest: rejects caller-authored lifecycle fields fallback and manual green
+ok 14 - rejects caller-authored lifecycle fields fallback and manual green
+  ---
+  duration_ms: 1.468
+  type: 'test'
+  ...
+# Subtest: rejects duplicate overwritten out-of-order and cross-failure history
+ok 15 - rejects duplicate overwritten out-of-order and cross-failure history
+  ---
+  duration_ms: 1.587834
+  type: 'test'
+  ...
+# Subtest: rejects forged repair rerun and attempt-fact envelopes
+ok 16 - rejects forged repair rerun and attempt-fact envelopes
+  ---
+  duration_ms: 2.250208
+  type: 'test'
+  ...
+# Subtest: rejects foreign run or change attempts and unplanned regression cases
+ok 17 - rejects foreign run or change attempts and unplanned regression cases
+  ---
+  duration_ms: 2.7895
+  type: 'test'
+  ...
+# Subtest: requires the exact Task 022 repaired impacted and baseline case set
+ok 18 - requires the exact Task 022 repaired impacted and baseline case set
+  ---
+  duration_ms: 2.397334
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1352.406875
+
+
+## stderr
+(empty)

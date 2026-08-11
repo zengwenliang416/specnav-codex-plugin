@@ -1,0 +1,125 @@
+# command: bash tests/run-verification-v2-codefree-o-adapter.sh
+# exit_status: 1
+# duration_ms: 2130
+
+## stdout
+TAP version 13
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 1 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 0.934166
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 2 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.398625
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 3 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.187375
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 4 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.29325
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 5 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.16175
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 6 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.217083
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 7 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.192459
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+not ok 8 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 66.13
+  type: 'test'
+  location: '/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:319:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    scripts/evidence-runner.js
+    + actual - expected
+    
+    + '956c4e039a6015ce8bd663416c3a48cc60f88f739409195265d1c34cf2f6c078'
+    - 'be6c800141511b4fdab2ae51aafc4780a91034035dc7bae447d2f0c62ed35c08'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'be6c800141511b4fdab2ae51aafc4780a91034035dc7bae447d2f0c62ed35c08'
+  actual: '956c4e039a6015ce8bd663416c3a48cc60f88f739409195265d1c34cf2f6c078'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/tests/verification-v2/cross-host/codefree-o-adapter.test.js:345:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+ok 9 - CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+  ---
+  duration_ms: 0.804
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 10 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 589.079292
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 11 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 93.4
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+ok 12 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 638.843542
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 13 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 73.47925
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 14 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 531.305708
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2074.399541
+
+
+## stderr
+(empty)

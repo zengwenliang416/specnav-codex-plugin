@@ -1907,8 +1907,11 @@ function developmentLifecyclePath(relativePath, activeChange) {
   const normalized = String(relativePath).split(path.sep).join('/');
   const changePrefix = `openspec/changes/${activeChange}/`;
   return (
+    normalized.startsWith('openspec/.specnav/')
+    ||
     ['development/', 'verify/', 'codegraph/', 'operations/']
       .some((directory) => normalized.startsWith(`${changePrefix}${directory}`))
+    || normalized.startsWith(`${changePrefix}verify-report.`)
     || normalized === `openspec/changes/${activeChange}/tasks.md`
   );
 }

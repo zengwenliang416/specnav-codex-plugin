@@ -1,0 +1,540 @@
+# command: bash tests/run-verification-v2-release.sh
+# exit_status: 0
+# duration_ms: 223730
+
+## stdout
+TAP version 13
+# Subtest: production host artifact generator writes proof-consumable receipts
+ok 1 - production host artifact generator writes proof-consumable receipts
+  ---
+  duration_ms: 25479.268167
+  type: 'test'
+  ...
+# Subtest: remote or host command failure cannot publish official host artifacts
+ok 2 - remote or host command failure cannot publish official host artifacts
+  ---
+  duration_ms: 19093.502333
+  type: 'test'
+  ...
+# Subtest: a stale writer cannot replace a newer host proof pointer
+ok 3 - a stale writer cannot replace a newer host proof pointer
+  ---
+  duration_ms: 14537.121875
+  type: 'test'
+  ...
+# Subtest: runner source digest covers trusted execution dependencies
+ok 4 - runner source digest covers trusted execution dependencies
+  ---
+  duration_ms: 769.632583
+  type: 'test'
+  ...
+# Subtest: sandbox and environment identities ignore mkdtemp root names
+ok 5 - sandbox and environment identities ignore mkdtemp root names
+  ---
+  duration_ms: 7.775542
+  type: 'test'
+  ...
+# Subtest: host-smoke sandbox cannot stat the managed runtime authority key
+ok 6 - host-smoke sandbox cannot stat the managed runtime authority key
+  ---
+  duration_ms: 97.221541
+  type: 'test'
+  ...
+# Subtest: shard configuration is explicit and fails closed
+ok 7 - shard configuration is explicit and fails closed
+  ---
+  duration_ms: 3.25
+  type: 'test'
+  ...
+# Subtest: waitForExit removes exit listeners after success and timeout
+ok 8 - waitForExit removes exit listeners after success and timeout
+  ---
+  duration_ms: 5.66325
+  type: 'test'
+  ...
+# Subtest: 43 release tests are assigned exactly once across four shards
+ok 9 - 43 release tests are assigned exactly once across four shards
+  ---
+  duration_ms: 0.565291
+  type: 'test'
+  ...
+# Subtest: test registration selects only the current deterministic shard
+ok 10 - test registration selects only the current deterministic shard
+  ---
+  duration_ms: 0.26125
+  type: 'test'
+  ...
+# Subtest: release suite launches four shards with isolated shard identities
+ok 11 - release suite launches four shards with isolated shard identities
+  ---
+  duration_ms: 0.855084
+  type: 'test'
+  ...
+# Subtest: a failed shard fails the suite without hiding successful shards
+ok 12 - a failed shard fails the suite without hiding successful shards
+  ---
+  duration_ms: 11.63525
+  type: 'test'
+  ...
+# Subtest: a failed shard terminates a hanging sibling
+ok 13 - a failed shard terminates a hanging sibling
+  ---
+  duration_ms: 10.881416
+  type: 'test'
+  ...
+# Subtest: a synchronous spawn failure stops launch and terminates active shards
+ok 14 - a synchronous spawn failure stops launch and terminates active shards
+  ---
+  duration_ms: 10.721917
+  type: 'test'
+  ...
+# Subtest: asynchronous spawn errors and child signals fail the suite
+ok 15 - asynchronous spawn errors and child signals fail the suite
+  ---
+  duration_ms: 13.926042
+  type: 'test'
+  ...
+# Subtest: parent termination is forwarded to every active shard
+ok 16 - parent termination is forwarded to every active shard
+  ---
+  duration_ms: 10.94575
+  type: 'test'
+  ...
+# Subtest: ignored termination is escalated and forcibly settled
+ok 17 - ignored termination is escalated and forcibly settled
+  ---
+  duration_ms: 11.114709
+  type: 'test'
+  ...
+# Subtest: process-group termination reaches a real test worker descendant
+ok 18 - process-group termination reaches a real test worker descendant
+  ---
+  duration_ms: 68.4755
+  type: 'test'
+  ...
+# Subtest: SIGKILL escalation cleans a worker after its coordinator exits
+ok 19 - SIGKILL escalation cleans a worker after its coordinator exits
+  ---
+  duration_ms: 169.169583
+  type: 'test'
+  ...
+# Subtest: managed owner drains registry data delivered after coordinator exit
+ok 20 - managed owner drains registry data delivered after coordinator exit
+  ---
+  duration_ms: 17.173833
+  type: 'test'
+  ...
+# Subtest: managed owner sends TERM to a process group registered during shutdown
+ok 21 - managed owner sends TERM to a process group registered during shutdown
+  ---
+  duration_ms: 17.194625
+  type: 'test'
+  ...
+# Subtest: managed owner kills a registered detached group after coordinator exit
+ok 22 - managed owner kills a registered detached group after coordinator exit
+  ---
+  duration_ms: 48.438958
+  type: 'test'
+  ...
+# Subtest: release shell forwards adapter termination to its active Node command
+ok 23 - release shell forwards adapter termination to its active Node command
+  ---
+  duration_ms: 160.477542
+  type: 'test'
+  ...
+# Subtest: release shell terminates during managed Python preflight without continuing
+ok 24 - release shell terminates during managed Python preflight without continuing
+  ---
+  duration_ms: 49.948875
+  type: 'test'
+  ...
+# Subtest: release shell escalates a stubborn managed command to SIGKILL
+ok 25 - release shell escalates a stubborn managed command to SIGKILL
+  ---
+  duration_ms: 5050.183083
+  type: 'test'
+  ...
+# Subtest: release shell kills a stubborn descendant after its coordinator exits
+ok 26 - release shell kills a stubborn descendant after its coordinator exits
+  ---
+  duration_ms: 114.5335
+  type: 'test'
+  ...
+# Subtest: release shell manages assertion emission after a failed command
+ok 27 - release shell manages assertion emission after a failed command
+  ---
+  duration_ms: 155.059417
+  type: 'test'
+  ...
+# Subtest: release shell emits failed assertions when Python is unavailable
+ok 28 - release shell emits failed assertions when Python is unavailable
+  ---
+  duration_ms: 69.218667
+  type: 'test'
+  ...
+# Subtest: release shell dynamically includes support tests and excludes the sharded file
+ok 29 - release shell dynamically includes support tests and excludes the sharded file
+  ---
+  duration_ms: 0.364167
+  type: 'test'
+  ...
+# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes
+ok 30 - descriptor-relative read rejects an ancestor swap without reading external bytes
+  ---
+  duration_ms: 76.560083
+  type: 'test'
+  ...
+# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup
+ok 31 - descriptor-relative tree copy rejects a source swap and deletes the partial backup
+  ---
+  duration_ms: 54.637208
+  type: 'test'
+  ...
+# Subtest: archive lock acquisition has one atomic winner and owner-bound release
+ok 32 - archive lock acquisition has one atomic winner and owner-bound release
+  ---
+  duration_ms: 118.850042
+  type: 'test'
+  ...
+# Subtest: atomic write compare-and-swap rejects a stale expected value
+ok 33 - atomic write compare-and-swap rejects a stale expected value
+  ---
+  duration_ms: 40.880458
+  type: 'test'
+  ...
+# Subtest: safe filesystem ignores an environment-selected Python executable
+ok 34 - safe filesystem ignores an environment-selected Python executable
+  ---
+  duration_ms: 196.313958
+  type: 'test'
+  ...
+# Subtest: trusted runtime resolves versioned sibling plugins in an installed cache
+ok 35 - trusted runtime resolves versioned sibling plugins in an installed cache
+  ---
+  duration_ms: 9.005084
+  type: 'test'
+  ...
+# Subtest: trusted local source roots take precedence over an environment override
+ok 36 - trusted local source roots take precedence over an environment override
+  ---
+  duration_ms: 7.135583
+  type: 'test'
+  ...
+# Subtest: installed runtime rejects an explicit root outside the discovered marketplace
+ok 37 - installed runtime rejects an explicit root outside the discovered marketplace
+  ---
+  duration_ms: 5.801125
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 60079.763833
+TAP version 13
+TAP version 13
+TAP version 13
+TAP version 13
+# Subtest: missing or non-human case approval blocks release
+ok 1 - missing or non-human case approval blocks release
+  ---
+  duration_ms: 14236.79175
+  type: 'test'
+  ...
+# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates
+ok 2 - standard-lane missing-domain input cannot use self-consistent forged pass gates
+  ---
+  duration_ms: 10418.846167
+  type: 'test'
+  ...
+# Subtest: missing evidence index cannot reuse green gates and reports
+ok 3 - missing evidence index cannot reuse green gates and reports
+  ---
+  duration_ms: 10410.465875
+  type: 'test'
+  ...
+# Subtest: release proof uses the same governance-excluding code fingerprint as execution
+ok 4 - release proof uses the same governance-excluding code fingerprint as execution
+  ---
+  duration_ms: 461.542834
+  type: 'test'
+  ...
+# Subtest: placeholder clean-install claims fail closed
+ok 5 - placeholder clean-install claims fail closed
+  ---
+  duration_ms: 11445.043541
+  type: 'test'
+  ...
+# Subtest: managed fixture manifest is bound to the trusted local corpus
+ok 6 - managed fixture manifest is bound to the trusted local corpus
+  ---
+  duration_ms: 10727.959
+  type: 'test'
+  ...
+# Subtest: host proof pointer generation semantics fail closed
+ok 7 - host proof pointer generation semantics fail closed
+  ---
+  duration_ms: 21200.273875
+  type: 'test'
+  ...
+# Subtest: verification plugin root environment overrides cannot replace trusted code
+ok 8 - verification plugin root environment overrides cannot replace trusted code
+  ---
+  duration_ms: 10625.707958
+  type: 'test'
+  ...
+# Subtest: a symlinked change directory is rejected before any proof is written
+ok 9 - a symlinked change directory is rejected before any proof is written
+  ---
+  duration_ms: 299.50175
+  type: 'test'
+  ...
+# Subtest: a symlinked operations directory cannot receive a blocked proof write
+ok 10 - a symlinked operations directory cannot receive a blocked proof write
+  ---
+  duration_ms: 3268.071041
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 93348.322167
+# Subtest: no-failure release proof rejects a forged closed repair state
+ok 1 - no-failure release proof rejects a forged closed repair state
+  ---
+  duration_ms: 14135.224583
+  type: 'test'
+  ...
+# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate
+ok 2 - partial-domain and light-mode input cannot reuse a persisted green gate
+  ---
+  duration_ms: 3436.503125
+  type: 'test'
+  ...
+# Subtest: all three HTML projections are required but never used as verdict authority
+ok 3 - all three HTML projections are required but never used as verdict authority
+  ---
+  duration_ms: 10592.55675
+  type: 'test'
+  ...
+# Subtest: missing or tampered authority chain anchor blocks release proof
+ok 4 - missing or tampered authority chain anchor blocks release proof
+  ---
+  duration_ms: 22012.4185
+  type: 'test'
+  ...
+# Subtest: required migration accepts one successful schema-valid apply receipt
+ok 5 - required migration accepts one successful schema-valid apply receipt
+  ---
+  duration_ms: 10613.994125
+  type: 'test'
+  ...
+# Subtest: all host executions must use the same managed fixture snapshot
+ok 6 - all host executions must use the same managed fixture snapshot
+  ---
+  duration_ms: 10412.925666
+  type: 'test'
+  ...
+# Subtest: the current pointer cannot mix artifacts from different proof runs
+ok 7 - the current pointer cannot mix artifacts from different proof runs
+  ---
+  duration_ms: 10937.511708
+  type: 'test'
+  ...
+# Subtest: host proof pointer accepts a complete generation-two chain
+ok 8 - host proof pointer accepts a complete generation-two chain
+  ---
+  duration_ms: 0.466375
+  type: 'test'
+  ...
+# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity
+ok 9 - persisted gate edits cannot bypass Kernel-owned gate identity
+  ---
+  duration_ms: 10519.855834
+  type: 'test'
+  ...
+# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts
+ok 10 - duplicate compatibility hosts cannot masquerade as all three hosts
+  ---
+  duration_ms: 10078.329917
+  type: 'test'
+  ...
+# Subtest: writeArchiveGate does not follow symlinked operations or parent directories
+ok 11 - writeArchiveGate does not follow symlinked operations or parent directories
+  ---
+  duration_ms: 6701.126
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 109702.737125
+# Subtest: managed runtime signing key supplies the trusted fact authority by default
+ok 1 - managed runtime signing key supplies the trusted fact authority by default
+  ---
+  duration_ms: 14172.194708
+  type: 'test'
+  ...
+# Subtest: full lane uses the same complete six-domain release and archive proof
+ok 2 - full lane uses the same complete six-domain release and archive proof
+  ---
+  duration_ms: 10294.237125
+  type: 'test'
+  ...
+# Subtest: report render manifest is required and must bind the current report model
+ok 3 - report render manifest is required and must bind the current report model
+  ---
+  duration_ms: 10478.408917
+  type: 'test'
+  ...
+# Subtest: current code, test, and environment fingerprint drift blocks release proof
+ok 4 - current code, test, and environment fingerprint drift blocks release proof
+  ---
+  duration_ms: 32305.903167
+  type: 'test'
+  ...
+# Subtest: tampered clean-install receipt and a missing host fail closed
+ok 5 - tampered clean-install receipt and a missing host fail closed
+  ---
+  duration_ms: 8571.054625
+  type: 'test'
+  ...
+# Subtest: release proof reconstructs exact sandbox plans and rejects permission drift
+ok 6 - release proof reconstructs exact sandbox plans and rejects permission drift
+  ---
+  duration_ms: 50574.242417
+  type: 'test'
+  ...
+# Subtest: a rolled-back current pointer cannot disagree with its immutable copy
+ok 7 - a rolled-back current pointer cannot disagree with its immutable copy
+  ---
+  duration_ms: 11945.395125
+  type: 'test'
+  ...
+# Subtest: specnav core environment overrides cannot execute trusted entry imports
+ok 8 - specnav core environment overrides cannot execute trusted entry imports
+  ---
+  duration_ms: 79.110334
+  type: 'test'
+  ...
+# Subtest: explicit change ids cannot escape or bypass the active change registry
+ok 9 - explicit change ids cannot escape or bypass the active change registry
+  ---
+  duration_ms: 327.398292
+  type: 'test'
+  ...
+# Subtest: host receipts and compatibility cannot be replayed across gate inputs
+ok 10 - host receipts and compatibility cannot be replayed across gate inputs
+  ---
+  duration_ms: 9940.926333
+  type: 'test'
+  ...
+# Subtest: safe archive JSONL append is atomic and rejects a symlink target
+ok 11 - safe archive JSONL append is atomic and rejects a symlink target
+  ---
+  duration_ms: 399.586041
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 149346.45625
+# Subtest: complete Kernel-derived release and archive proof passes and writes digests
+ok 1 - complete Kernel-derived release and archive proof passes and writes digests
+  ---
+  duration_ms: 14190.67575
+  type: 'test'
+  ...
+# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority
+ok 2 - reviewer source hashes and approval time are revalidated by the Kernel authority
+  ---
+  duration_ms: 32211.23775
+  type: 'test'
+  ...
+# Subtest: stale evidence and open failures block both persisted pass decisions
+ok 3 - stale evidence and open failures block both persisted pass decisions
+  ---
+  duration_ms: 10602.989958
+  type: 'test'
+  ...
+# Subtest: missing canonical execution artifacts cannot reuse green gates and reports
+ok 4 - missing canonical execution artifacts cannot reuse green gates and reports
+  ---
+  duration_ms: 31960.211541
+  type: 'test'
+  ...
+# Subtest: required migration needs one successful schema-valid apply receipt
+ok 5 - required migration needs one successful schema-valid apply receipt
+  ---
+  duration_ms: 10273.374708
+  type: 'test'
+  ...
+# Subtest: cross-host compatibility blockers stop release and archive
+ok 6 - cross-host compatibility blockers stop release and archive
+  ---
+  duration_ms: 10155.457042
+  type: 'test'
+  ...
+# Subtest: a tampered host execution envelope cannot manufacture trusted facts
+ok 7 - a tampered host execution envelope cannot manufacture trusted facts
+  ---
+  duration_ms: 9677.684375
+  type: 'test'
+  ...
+# Subtest: host proof pointer rejects a forged predecessor digest
+ok 8 - host proof pointer rejects a forged predecessor digest
+  ---
+  duration_ms: 9842.236958
+  type: 'test'
+  ...
+# Subtest: report model must bind to the release gate, readings, evidence index, and versions
+ok 9 - report model must bind to the release gate, readings, evidence index, and versions
+  ---
+  duration_ms: 12103.4685
+  type: 'test'
+  ...
+# Subtest: duplicate host identities cannot satisfy the clean-install contract
+ok 10 - duplicate host identities cannot satisfy the clean-install contract
+  ---
+  duration_ms: 9783.40775
+  type: 'test'
+  ...
+# Subtest: writeArchiveGate does not persist a gate or log when validation fails
+ok 11 - writeArchiveGate does not persist a gate or log when validation fails
+  ---
+  duration_ms: 12181.832
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 163238.458459
+verification v2 release and archive proof ok
+
+
+## stderr
+(empty)

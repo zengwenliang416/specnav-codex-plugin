@@ -1,0 +1,169 @@
+# command: node --test tests/verification-v2/evidence/evidence-store.test.js
+# exit_status: 0
+# duration_ms: 1786
+
+## stdout
+TAP version 13
+# Subtest: append writes one immutable raw record, content object, index, and cache metadata
+ok 1 - append writes one immutable raw record, content object, index, and cache metadata
+  ---
+  duration_ms: 47.333792
+  type: 'test'
+  ...
+# Subtest: persisted evidence and index pass the managed AJV schema registry
+ok 2 - persisted evidence and index pass the managed AJV schema registry
+  ---
+  duration_ms: 1062.499792
+  type: 'test'
+  ...
+# Subtest: append does not mutate caller-owned evidence or content
+ok 3 - append does not mutate caller-owned evidence or content
+  ---
+  duration_ms: 26.7455
+  type: 'test'
+  ...
+# Subtest: failed evidence remains after a later passing attempt and cache deletion
+ok 4 - failed evidence remains after a later passing attempt and cache deletion
+  ---
+  duration_ms: 72.026291
+  type: 'test'
+  ...
+# Subtest: index bytes are deterministic across rebuild and ignore mtime changes
+ok 5 - index bytes are deterministic across rebuild and ignore mtime changes
+  ---
+  duration_ms: 38.067333
+  type: 'test'
+  ...
+# Subtest: an exact duplicate append is idempotent and adds no raw record
+ok 6 - an exact duplicate append is idempotent and adds no raw record
+  ---
+  duration_ms: 40.987625
+  type: 'test'
+  ...
+# Subtest: an idempotent append restores deleted derived and object files
+ok 7 - an idempotent append restores deleted derived and object files
+  ---
+  duration_ms: 47.858083
+  type: 'test'
+  ...
+# Subtest: the same bytes under different attempts reuse the object but keep distinct records
+ok 8 - the same bytes under different attempts reuse the object but keep distinct records
+  ---
+  duration_ms: 46.226167
+  type: 'test'
+  ...
+# Subtest: store rejects caller-supplied managed identity and object fields
+ok 9 - store rejects caller-supplied managed identity and object fields
+  ---
+  duration_ms: 0.97975
+  type: 'test'
+  ...
+# Subtest: source files must resolve inside the approved source root
+ok 10 - source files must resolve inside the approved source root
+  ---
+  duration_ms: 1.222
+  type: 'test'
+  ...
+# Subtest: a raw JSONL symlink cannot redirect append outside the store
+ok 11 - a raw JSONL symlink cannot redirect append outside the store
+  ---
+  duration_ms: 1.095625
+  type: 'test'
+  ...
+# Subtest: corrupt raw JSON blocks rebuild and preserves the last valid index
+ok 12 - corrupt raw JSON blocks rebuild and preserves the last valid index
+  ---
+  duration_ms: 28.761125
+  type: 'test'
+  ...
+# Subtest: duplicate raw ids block rebuild and ID lookup
+ok 13 - duplicate raw ids block rebuild and ID lookup
+  ---
+  duration_ms: 31.292
+  type: 'test'
+  ...
+# Subtest: an existing content-addressed object with different bytes blocks append
+ok 14 - an existing content-addressed object with different bytes blocks append
+  ---
+  duration_ms: 1.106125
+  type: 'test'
+  ...
+# Subtest: content object publication failure returns an exact blocker without throwing
+ok 15 - content object publication failure returns an exact blocker without throwing
+  ---
+  duration_ms: 6.582417
+  type: 'test'
+  ...
+# Subtest: resolve refuses a content object replaced by a symlink
+ok 16 - resolve refuses a content object replaced by a symlink
+  ---
+  duration_ms: 35.725416
+  type: 'test'
+  ...
+# Subtest: lookup rejects a store root replaced by an external symlink
+ok 17 - lookup rejects a store root replaced by an external symlink
+  ---
+  duration_ms: 36.647875
+  type: 'test'
+  ...
+# Subtest: schema rejection blocks raw append and index publication
+ok 18 - schema rejection blocks raw append and index publication
+  ---
+  duration_ms: 0.56475
+  type: 'test'
+  ...
+# Subtest: store root must remain inside the approved change root
+ok 19 - store root must remain inside the approved change root
+  ---
+  duration_ms: 0.350708
+  type: 'test'
+  ...
+# Subtest: a symlinked change root cannot redirect the complete store
+ok 20 - a symlinked change root cannot redirect the complete store
+  ---
+  duration_ms: 0.320708
+  type: 'test'
+  ...
+# Subtest: cache publication failure restores the previous index and preserves raw truth
+ok 21 - cache publication failure restores the previous index and preserves raw truth
+  ---
+  duration_ms: 89.532541
+  type: 'test'
+  ...
+# Subtest: raw writer completes short writes instead of committing a partial line
+ok 22 - raw writer completes short writes instead of committing a partial line
+  ---
+  duration_ms: 0.152458
+  type: 'test'
+  ...
+# Subtest: an occupied raw lock fails closed without creating a raw claim
+ok 23 - an occupied raw lock fails closed without creating a raw claim
+  ---
+  duration_ms: 11.317042
+  type: 'test'
+  ...
+# Subtest: lookup requires a valid summary index and never scans raw as fallback
+ok 24 - lookup requires a valid summary index and never scans raw as fallback
+  ---
+  duration_ms: 46.732041
+  type: 'test'
+  ...
+# Subtest: non-JSON evidence candidates return a blocker instead of throwing
+ok 25 - non-JSON evidence candidates return a blocker instead of throwing
+  ---
+  duration_ms: 2.243333
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1749.774625
+
+
+## stderr
+(empty)
