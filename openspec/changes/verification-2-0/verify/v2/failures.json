@@ -303,5 +303,55 @@
     "created_at": "2026-08-11T03:45:10.507Z",
     "frozen_at": "2026-08-11T03:45:10.507Z",
     "id": "failure-bd952bdf3cddf97c73e2191a2d3a3c5cd4bc3606dbeee3f72317df627673cd30"
+  },
+  {
+    "schema": "specnav.verification.failure-packet.v1",
+    "change_id": "verification-2-0",
+    "run_id": "run-20260811064549-a095f734fdd0d387",
+    "case_id": "CASE-07",
+    "attempt_id": "attempt-20260811064549-a095f734fdd0d387",
+    "reading_ids": [
+      "reading-0117afcf3ea6236a16b38a34644349093d417e5d644aa9a2f2e76e39989dccae",
+      "reading-184b60d16aaa607348d7888a98196336b57b41c6b513e4fb9176b485742204c3",
+      "reading-1ad335fb35305c3f7dea757d982d5debd84dc363eca20597834c46ed431322aa",
+      "reading-1de7c8d3f20e714e85ca304de6cb97be44ffcc914ab8921279a2da3ed9d8c123",
+      "reading-2efe2ffdf66b4140790b7cb943fc65e4ad52ab852c44556ba25c9af99c2d941e",
+      "reading-5b1eb28ad2f8a8c2c09372df97d6eea9f8d61f43fb271ed40c741ed573543e29",
+      "reading-6685ae66b803fe2be06dee77a9894f48d481609e95c0ddf216364198f3a35bb5",
+      "reading-6af574c834a2c2e4159a1c572eebb4fa1ded2b9e4f7582266937e2106e65e9f2",
+      "reading-6fae625632144d44fd7b3457f884d15e14e340b17b6613c44616e671172350f2",
+      "reading-79ea5d14127c04ee961fd0d6ec02b85daff5050c18b4726d1fefa05321e7e3c6",
+      "reading-8c498f3721f9ccc3d2a2a58690f41d9c79b27b2163a409602f8f3e1c381e1998",
+      "reading-9c4a31b65161a1324f08ebbce547879b48bf71ec534b115e4ad6887a4d7470ea",
+      "reading-a24d169d0509912d8f48563eda645335828f63ed528cf36eea061a417c08d78a",
+      "reading-ab852c6055861d2efb2991ba126862365dd7872c16526add15752f0fc4e24a1d",
+      "reading-d20c42540a79df5e6b8c97c473eff62997695391a3a2c48ecda3cf61fad7113d",
+      "reading-d9ed95871b3127524f01f6e50800f58128a1256b55b7ce5c03f0c443ab53574a",
+      "reading-dee5df2ccdb2bb6c2fbc950574e4cfa33a99fddb1c320867436a24e56e51a49d",
+      "reading-e494cae95a1a5613283cbd9af483ade6e5eba99ad7080afa21c1d19b03f11cce"
+    ],
+    "evidence_ids": [
+      "evidence-020e3721ce2491a5e20504b9e74c04024db051c8feb2ca0af9026222ad2c2e2d",
+      "evidence-83879ab88fc4b09d2b554b19bc39152a3e189f57bd1b49d7cbfbc6a834c54e03",
+      "evidence-b23c16e52aff9d8c6d77fcfd047b72ded67d793b6084a98ec110901a5ac4359f",
+      "evidence-b37169d2e8408519089cdbe9938b52ef1d8a946cd10d94113c1a83687e38429f",
+      "evidence-c425da65f8893664230b3a816a49f278caa4a6e5a5fdb427ba33a4b987bbb3d8",
+      "evidence-c72719f984dee22016bddf1042d21a38f9dc66a0194684facf15b3908075cc4d",
+      "evidence-f22b2784736d21451185c184407b597011212cf4bae7d37ccb7b0a2397679d37"
+    ],
+    "classification": null,
+    "status": "open",
+    "next_action": "blocked_for_decision",
+    "summary": "Verification did not pass for CASE-07.",
+    "root_cause": "Classification is required before retry or development repair.",
+    "failed_assertion_ids": [
+      "CASE-07-A01",
+      "CASE-07-A02",
+      "CASE-07-A03"
+    ],
+    "owner": "verification",
+    "created_at": "2026-08-11T06:46:54.675Z",
+    "frozen_at": "2026-08-11T06:46:54.675Z",
+    "id": "failure-f70d6e549f37b23a4be7586c67a75cbd472cf261bc70774aed2434f98231b67b"
   }
 ]
