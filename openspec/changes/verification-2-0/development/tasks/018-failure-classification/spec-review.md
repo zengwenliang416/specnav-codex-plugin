@@ -31,11 +31,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- Direct deliverable: schema-valid frozen failure packet
-- Direct deliverable: six deterministic failure classifications
-- Contribution: `AC-06`
-- Contribution: `AC-25`
-- Contribution: `AC-27`
+- AC-06
+- AC-25
+- AC-27
 
 ## Verified Behavior
 

@@ -43,6 +43,11 @@ approved
   rejection, secret redaction, artifact overwrite protection, and provenance
   are directly covered by production paths and system-executed evidence.
 
+## Acceptance Assertions Verified
+
+- AC-12
+- AC-30
+
 ## Required Fixes
 
 - No required quality or security fix remains.

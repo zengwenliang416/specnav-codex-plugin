@@ -1,5 +1,6 @@
 {
   "task_id": "001-baseline-fake-green",
+  "task_items": ["1.1"],
   "goal": "Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures.",
   "must_read": [
     "openspec/changes/verification-2-0/development/tasks/001-baseline-fake-green/brief.md",
@@ -19,6 +20,7 @@
   "allowed_files": [
     "plugins/specnav-development/scripts/development-contract.js",
     "plugins/specnav-verification/scripts/evidence-runner.js",
+    "plugins/specnav-verification/scripts/validation-receipt-authority.js",
     "tests/run-verification-plugin-fixtures.sh",
     "tests/run-verification-v2-baseline.sh",
     "tests/verification-v2/baseline/**",

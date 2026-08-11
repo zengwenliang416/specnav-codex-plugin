@@ -26,8 +26,8 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-37`
-- `AC-40`
+- AC-37
+- AC-40
 
 ## Required Fixes
 

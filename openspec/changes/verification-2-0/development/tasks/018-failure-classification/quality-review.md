@@ -56,6 +56,12 @@ and all findings now have passing regressions.
 - Exact set validation and timestamp-bound identities are required to keep
   frozen packets replay-safe.
 
+## Acceptance Assertions Verified
+
+- AC-06
+- AC-25
+- AC-27
+
 ## Required Fixes
 
 - No further quality or security fix is required for Task 018.

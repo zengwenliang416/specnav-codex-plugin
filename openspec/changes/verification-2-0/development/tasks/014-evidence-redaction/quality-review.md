@@ -63,6 +63,10 @@ No blocking findings.
 - Static syntax and diff checks: passed.
 - Independent final quality re-review: approved.
 
+## Acceptance Assertions Verified
+
+- AC-30
+
 ## Required Fixes
 
 - No further quality fix is required for Task 014.

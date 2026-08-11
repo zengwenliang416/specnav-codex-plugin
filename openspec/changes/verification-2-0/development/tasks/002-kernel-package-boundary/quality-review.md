@@ -37,6 +37,13 @@ approved
 - Complexity is limited to three small kernel modules, one manifest, one test
   file, and one packaging document.
 
+## Acceptance Assertions Verified
+
+- AC-36
+- AC-37
+- AC-39
+- AC-40
+
 ## Required Fixes
 
 - No required fixes remain.

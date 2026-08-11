@@ -28,6 +28,8 @@ approved
 ## Acceptance Assertions Verified
 
 - AC-17
+- AC-18
+- AC-21
 - AC-29
 
 ## Required Fixes

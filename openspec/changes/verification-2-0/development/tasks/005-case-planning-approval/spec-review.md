@@ -69,30 +69,8 @@ the current code, not the earlier blocked snapshots.
 
 ## Acceptance Assertions Verified
 
-- `AC-01`: met. The case contract requires steps, assertions, six-domain
-  mappings, runner choice, and evidence policy before approval in
-  `plugins/specnav-verification/schemas/test-case.schema.json`. The planner now
-  validates sources, case structure, coverage, duplicates, cross-case change
-  consistency, and malformed case/source records through
-  `plugins/specnav-verification/kernel/cases/planner.js` and
-  `plugins/specnav-verification/kernel/cases/case-validation.js`. The current
-  focused suite proves those behaviors in
-  `tests/verification-v2/cases/planning.test.js`, including the explicit
-  malformed-record regressions. Receipt `063` and my rerun of
-  `node --test tests/verification-v2/cases/*.test.js` both passed.
-- `AC-02`: met. Execution remains blocked unless a current snapshot exists,
-  validates, matches its hash/id, matches current requirements / acceptance,
-  and has explicit human approval from the expected reviewer. The latest code
-  adds an explicit `verification-cases:snapshot-missing` blocker in
-  `plugins/specnav-verification/kernel/cases/approval-validator.js`, keeps
-  freshness / principal / binding checks in
-  `plugins/specnav-verification/kernel/cases/approval-checks.js`, and exposes
-  the gate through
-  `plugins/specnav-verification/skills/specnav-verify-plan/scripts/case-contract.js`.
-  The focused suite now covers the prior bypass in
-  `tests/verification-v2/cases/approval.test.js` and the CLI `null` snapshot
-  path in `tests/verification-v2/cases/cli-integration.js`. Receipts `063` and
-  `064`, plus my reruns of the unit and CLI commands, passed.
+- AC-01
+- AC-02
 
 ## Downstream Scope
 

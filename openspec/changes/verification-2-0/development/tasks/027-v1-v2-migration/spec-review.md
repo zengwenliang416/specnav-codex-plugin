@@ -27,13 +27,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-32`: Original failed V1 bytes, failure verdict, actual result, backup, and
-  historical receipts remain retained.
-- `AC-33`: Dry-run, exact backup, transformed projection, validation result,
-  receipt, rollback instructions, provenance checks, and compensation are
-  directly implemented and tested.
-- `AC-34`: Legacy green without intact and fresh evidence becomes blocked and
-  requires rerun; only the real Evidence Integrity path can retain PASS.
+- AC-32
+- AC-33
+- AC-34
 
 ## Required Fixes
 

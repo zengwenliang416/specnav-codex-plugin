@@ -97,10 +97,10 @@ size, and lossy blocker-deduplication findings.
 
 ## Acceptance Assertions Verified
 
-- `AC-14`
-- `AC-15`
-- `AC-17`
-- `AC-31`
+- AC-14
+- AC-15
+- AC-17
+- AC-31
 
 ## Independent Re-Run
 

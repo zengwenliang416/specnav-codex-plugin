@@ -26,7 +26,7 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-20`
+- AC-20
 
 ## Downstream Contribution
 

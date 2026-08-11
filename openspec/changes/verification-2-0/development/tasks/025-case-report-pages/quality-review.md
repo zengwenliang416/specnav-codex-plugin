@@ -32,6 +32,14 @@ approved
 - Added complexity is limited to approved contract and immutable history
   projection; no second truth or simplified path was introduced.
 
+## Acceptance Assertions Verified
+
+- AC-09
+- AC-10
+- AC-11
+- AC-29
+- AC-38
+
 ## Required Fixes
 
 - No further quality fix is required for Task 025.

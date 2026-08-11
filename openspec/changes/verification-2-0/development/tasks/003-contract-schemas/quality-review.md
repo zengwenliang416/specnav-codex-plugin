@@ -73,6 +73,12 @@ approved
   - `node plugins/specnav-verification/kernel/contracts/validate-fixtures.js` -> exit `0`, `ok: true`, `blockers: []`, `fallback_used: false`.
   - `node --check plugins/specnav-verification/kernel/contracts/schema-registry.js && node --check plugins/specnav-verification/kernel/contracts/validate-fixtures.js && git diff --check` -> exit `0`.
 
+## Acceptance Assertions Verified
+
+- AC-13
+- AC-31
+- AC-35
+
 ## Required Fixes
 
 - No code or test changes are required for Task 003 after this review.

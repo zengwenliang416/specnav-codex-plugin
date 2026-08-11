@@ -59,6 +59,12 @@ No blocking findings remain.
 - Static syntax and diff checks: passed.
 - Independent final quality re-review: approved.
 
+## Acceptance Assertions Verified
+
+- AC-23
+- AC-17:stale-sha
+- AC-35:freshness-result-source
+
 ## Required Fixes
 
 - No further quality fix is required for Task 021.

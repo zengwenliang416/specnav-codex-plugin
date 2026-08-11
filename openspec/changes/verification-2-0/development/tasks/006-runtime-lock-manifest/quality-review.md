@@ -38,6 +38,11 @@ approved
 - The added identity helper and artifact integrity fields are proportionate to
   `AC-04` and `AC-05` and remain directly auditable.
 
+## Acceptance Assertions Verified
+
+- AC-04
+- AC-05
+
 ## Required Fixes
 
 - No further quality fix is required for Task 006; immutable data, compatibility

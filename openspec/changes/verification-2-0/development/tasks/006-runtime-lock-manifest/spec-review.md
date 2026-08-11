@@ -28,10 +28,8 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-04`: the lock fixes runtime, package, browser revision, URL, SHA-256, and
-  size inputs needed by the explicit installer.
-- `AC-05`: the resolver returns exact blockers for unsupported runtime, Node,
-  platform, missing Kernel identity, and every Kernel identity mismatch.
+- AC-04
+- AC-05
 
 ## Required Fixes
 

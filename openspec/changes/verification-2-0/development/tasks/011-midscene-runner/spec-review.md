@@ -28,8 +28,8 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-16`
-- `AC-39:midscene-adapter-boundary`
+- AC-16
+- AC-39:midscene-adapter-boundary
 
 ## Verified Behavior
 

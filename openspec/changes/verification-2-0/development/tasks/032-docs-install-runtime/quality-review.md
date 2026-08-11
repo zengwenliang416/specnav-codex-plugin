@@ -39,6 +39,14 @@ approved
 - Documentation tests add a small deterministic contract and prevent semantic
   drift between English and Chinese surfaces.
 
+## Acceptance Assertions Verified
+
+- AC-04
+- AC-05
+- AC-08
+- AC-09
+- AC-10
+
 ## Required Fixes
 
 - No required quality or documentation-governance fix remains.

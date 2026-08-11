@@ -25,10 +25,8 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-04`: exact packages and browsers install outside the business repository
-  and produce a complete receipt.
-- `AC-05`: installer-owned lock, package, browser, permission, and transaction
-  failures return exact blockers without fallback.
+- AC-04
+- AC-05
 
 ## Required Fixes
 

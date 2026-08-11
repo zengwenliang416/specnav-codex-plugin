@@ -28,10 +28,10 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-17`
-- `AC-18:empty-evidence`
-- `AC-23:evidence-fingerprint-freshness`
-- `AC-28:evidence-integrity-blockers`
+- AC-17
+- AC-18:empty-evidence
+- AC-23:evidence-fingerprint-freshness
+- AC-28:evidence-integrity-blockers
 
 ## Verified Behavior
 

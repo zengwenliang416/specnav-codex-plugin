@@ -69,6 +69,13 @@ implementation.
 - Focused system receipt `247`: 25/25 passed.
 - No-light and legacy fixture receipt `248`: all passed.
 
+## Acceptance Assertions Verified
+
+- AC-03
+- AC-18
+- AC-19
+- AC-21
+
 ## Required Fixes
 
 - No further quality fix is required for Task 016.

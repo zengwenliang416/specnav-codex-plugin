@@ -56,6 +56,13 @@ approved
 - Desktop and mobile screenshots reviewed against the approved light-only
   report design.
 
+## Acceptance Assertions Verified
+
+- AC-08
+- AC-11
+- AC-12
+- AC-29
+
 ## Required Fixes
 
 - No further quality fix is required for Task 024.

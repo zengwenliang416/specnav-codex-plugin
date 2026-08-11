@@ -39,9 +39,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-13` verified. Versioned schemas exist for every entity named by the assertion; the registry enumerates and compiles all fourteen schemas, the package publishes the schema directory and public registry entry, and the focused positive and negative fixture tests pass.
-- `AC-31` verified. The evidence schema requires stable identity, artifact metadata, producer, timestamp, change, run, case, attempt, either a step or assertion binding, and code and test source identifiers; missing-field fixtures return the exact blocker path.
-- `AC-35` verified. The gate decision schema requires source cases and readings, evidence index version, runtime version, kernel version, and freshness result; missing-field fixtures return the exact blocker path.
+- AC-13
+- AC-31
+- AC-35
 
 ## Independent Re-Run
 

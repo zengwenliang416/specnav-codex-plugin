@@ -61,6 +61,13 @@ No blocking findings.
 - Static syntax and diff checks: passed.
 - Independent quality and security re-reviews: approved.
 
+## Acceptance Assertions Verified
+
+- AC-17
+- AC-18:empty-evidence
+- AC-23:evidence-fingerprint-freshness
+- AC-28:evidence-integrity-blockers
+
 ## Required Fixes
 
 - No further quality fix is required for Task 013 after path-race hardening,

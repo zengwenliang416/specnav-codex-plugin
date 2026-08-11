@@ -31,10 +31,10 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-03`
-- `AC-18`
-- `AC-19`
-- `AC-21`
+- AC-03
+- AC-18
+- AC-19
+- AC-21
 
 ## Verified Behavior
 

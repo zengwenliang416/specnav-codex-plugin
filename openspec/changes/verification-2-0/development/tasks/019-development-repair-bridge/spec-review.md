@@ -28,7 +28,7 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-25`
+- AC-25
 
 ## Verified Behavior
 

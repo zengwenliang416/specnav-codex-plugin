@@ -48,6 +48,12 @@ approved
 - Commands use `process.execPath` with argument arrays and no shell expansion.
 - No new path traversal, command injection, or secret exposure was found.
 
+## Acceptance Assertions Verified
+
+- AC-03
+- AC-37
+- AC-40
+
 ## Required Fixes
 
 - No required quality or security fix remains.

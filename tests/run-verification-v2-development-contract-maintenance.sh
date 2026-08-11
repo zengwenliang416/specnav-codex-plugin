@@ -106,30 +106,124 @@ const completedLedgerTasks = new Set(
     .filter((entry) => entry.status === 'complete')
     .map((entry) => entry.task_id)
 );
-const checkedGoals = new Map();
+const checklistItems = new Map();
 for (const line of taskChecklist) {
-  const match = line.match(/^- \[([ x])\] \d+\.\d+ (.+)$/);
-  if (match) checkedGoals.set(match[2].trim(), match[1] === 'x');
+  const match = line.match(/^- \[([ x])\] (\d+\.\d+) (.+)$/);
+  if (!match) continue;
+  const itemId = match[2];
+  if (checklistItems.has(itemId)) {
+    throw new Error(`task checklist contains duplicate item id: ${itemId}`);
+  }
+  checklistItems.set(itemId, {
+    checked: match[1] === 'x',
+    goal: match[3].trim()
+  });
 }
+
+if (graph.nodes.length !== 33) {
+  throw new Error(`expected 33 formal task graph nodes, got ${graph.nodes.length}`);
+}
+if (taskContext.length !== graph.nodes.length) {
+  throw new Error(
+    `task context row count does not match graph node count: ${taskContext.length} != ${graph.nodes.length}`
+  );
+}
+if (checklistItems.size !== 38) {
+  throw new Error(`expected 38 checklist items, got ${checklistItems.size}`);
+}
+
+function requireTaskItems(value, source) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new Error(`task_items must be a non-empty array: ${source}`);
+  }
+  const items = value.map((item) => {
+    if (typeof item !== 'string' || !/^\d+\.\d+$/.test(item)) {
+      throw new Error(`task_items contains an invalid item id: ${source}`);
+    }
+    return item;
+  });
+  if (new Set(items).size !== items.length) {
+    throw new Error(`task_items contains duplicates: ${source}`);
+  }
+  return items;
+}
+
+function requireSameTaskItems(expected, actual, source) {
+  if (JSON.stringify(expected) !== JSON.stringify(actual)) {
+    throw new Error(
+      `task_items mismatch for ${source}: ${JSON.stringify(actual)} != ${JSON.stringify(expected)}`
+    );
+  }
+}
+
+const graphTaskIds = new Set();
+const ownersByItem = new Map();
 for (const node of graph.nodes) {
+  if (graphTaskIds.has(node.id)) {
+    throw new Error(`task graph contains duplicate node id: ${node.id}`);
+  }
+  graphTaskIds.add(node.id);
+
   const context = contextByTask.get(node.id);
   if (!context) throw new Error(`task context row is missing: ${node.id}`);
-  if (!checkedGoals.has(node.goal)) {
-    throw new Error(`task checklist goal is missing: ${node.id}`);
+  const graphItems = requireTaskItems(node.task_items, `task graph node ${node.id}`);
+  const contextItems = requireTaskItems(context.task_items, `task context row ${node.id}`);
+  requireSameTaskItems(graphItems, contextItems, `task context row ${node.id}`);
+
+  const contextPath = `openspec/changes/verification-2-0/${context.source}`;
+  const contextFile = JSON.parse(fs.readFileSync(contextPath, 'utf8'));
+  if (contextFile.task_id !== node.id) {
+    throw new Error(`task context file id mismatch: ${contextPath}`);
   }
-  const checked = checkedGoals.get(node.goal);
-  if (checked && context.status !== 'complete') {
-    throw new Error(`checked task is not complete in task context: ${node.id}`);
+  const contextFileItems = requireTaskItems(
+    contextFile.task_items,
+    `task context file ${node.id}`
+  );
+  requireSameTaskItems(graphItems, contextFileItems, `task context file ${node.id}`);
+
+  let ownsPrimaryGoal = false;
+  for (const itemId of graphItems) {
+    const checklistItem = checklistItems.get(itemId);
+    if (!checklistItem) {
+      throw new Error(`task graph owns unknown checklist item: ${node.id}->${itemId}`);
+    }
+    if (checklistItem.goal === node.goal) ownsPrimaryGoal = true;
+    const owners = ownersByItem.get(itemId) || [];
+    owners.push(node.id);
+    ownersByItem.set(itemId, owners);
+
+    if (checklistItem.checked && context.status !== 'complete') {
+      throw new Error(`checked task item is not complete in task context: ${itemId}->${node.id}`);
+    }
+    if (checklistItem.checked && !completedLedgerTasks.has(node.id)) {
+      throw new Error(`checked task item lacks a complete ledger record: ${itemId}->${node.id}`);
+    }
+    if (!checklistItem.checked && context.status === 'complete') {
+      throw new Error(`unchecked task item is complete in task context: ${itemId}->${node.id}`);
+    }
   }
-  if (checked && !completedLedgerTasks.has(node.id)) {
-    throw new Error(`checked task lacks a complete ledger record: ${node.id}`);
+  if (!ownsPrimaryGoal) {
+    throw new Error(`task graph node does not own its primary goal item: ${node.id}`);
   }
-  if (!checked && context.status === 'complete') {
-    throw new Error(`unchecked task is complete in task context: ${node.id}`);
+}
+
+for (const contextTaskId of contextByTask.keys()) {
+  if (!graphTaskIds.has(contextTaskId)) {
+    throw new Error(`task context row has no graph node: ${contextTaskId}`);
+  }
+}
+
+for (const itemId of checklistItems.keys()) {
+  const owners = ownersByItem.get(itemId) || [];
+  if (owners.length === 0) {
+    throw new Error(`task checklist item has no primary owner: ${itemId}`);
+  }
+  if (owners.length > 1) {
+    throw new Error(`task checklist item has multiple primary owners: ${itemId}->${owners.join(',')}`);
   }
 }
 
 process.stdout.write(
-  'development contract maintenance ok; complete handoff has zero blockers\n'
+  'development contract maintenance ok; 38 checklist items have unique owners across 33 formal tasks\n'
 );
 NODE

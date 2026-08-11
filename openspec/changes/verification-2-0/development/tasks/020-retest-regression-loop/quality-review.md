@@ -50,6 +50,12 @@ but remove implicit trust and keep policy outside the state reducer.
 - `development/evidence/302-020-retest-regression-loop-quality-review-not-approved.md`
 - `development/evidence/304-020-retest-regression-loop-quality-review-approved.md`
 
+## Acceptance Assertions Verified
+
+- AC-06
+- AC-07
+- AC-27
+
 ## Required Fixes
 
 - No required quality or security fix remains.

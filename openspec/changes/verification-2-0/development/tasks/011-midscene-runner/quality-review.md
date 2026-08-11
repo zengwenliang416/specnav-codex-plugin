@@ -70,6 +70,11 @@ No blocking code-quality or security findings remain.
   verdict ownership.
 - Public Kernel exports remain explicit and host-neutral.
 
+## Acceptance Assertions Verified
+
+- AC-16
+- AC-39:midscene-adapter-boundary
+
 ## Required Fixes
 
 - No further code-quality or security fix is required for Task 011.

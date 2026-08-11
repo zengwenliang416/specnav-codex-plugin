@@ -70,6 +70,10 @@ and the not-approved review evidence; receipt `239` proves the repairs.
 - Plugin contracts, lifecycle maintenance, and diff checks passed in receipts
   `241` through `243`.
 
+## Acceptance Assertions Verified
+
+- AC-16
+
 ## Required Fixes
 
 - No further quality fix is required for Task 015.

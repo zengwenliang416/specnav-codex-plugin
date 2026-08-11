@@ -55,6 +55,10 @@ preserved, and every finding now has a passing regression.
 - Task/link ids and scope/evidence digests remain deterministic and
   replay-inspectable.
 
+## Acceptance Assertions Verified
+
+- AC-25
+
 ## Required Fixes
 
 - No further quality or security fix is required for Task 019.

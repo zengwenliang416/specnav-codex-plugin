@@ -27,8 +27,7 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-39:playwright-adapter-boundary`
-- Task 010 does not claim full closure of `AC-39`.
+- AC-39:playwright-adapter-boundary
 
 ## Verified Behavior
 

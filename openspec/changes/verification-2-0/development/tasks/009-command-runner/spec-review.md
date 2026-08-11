@@ -67,9 +67,7 @@ runner contract or claim downstream evidence ownership.
 
 ## Acceptance Assertions Verified
 
-- `AC-14`: approved command-backed cases execute through exact argv, cwd,
-  environment, runtime, identity, lifecycle, timeout, cancellation, and
-  terminal-artifact contracts without shell or fallback execution.
+- AC-14
 
 ## Findings
 

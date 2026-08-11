@@ -26,15 +26,11 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-04`: both guides define locked external runtime installation and explicit
-  approval for mutation.
-- `AC-05`: both guides enumerate runtime doctor blockers for Node, packages,
-  browsers, provider configuration, locks, and permissions.
-- `AC-08`: both guides define `verify/reports/overview.html` and its readiness,
-  six-domain, blocker, freshness, integrity, repair, and release content.
-- `AC-09`: both guides define the approved-case catalog report.
-- `AC-10`: both guides define the case-results report with runs, attempts,
-  readings, evidence, hashes, freshness, and repair history.
+- AC-04
+- AC-05
+- AC-08
+- AC-09
+- AC-10
 
 ## Required Fixes
 

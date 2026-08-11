@@ -27,19 +27,12 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-03`: persisted gates are untrusted and are compared with release/archive
-  gates recomputed by the public Kernel from `verify/v2/gate-input.json`.
-- `AC-28`: missing approval, domains, readings, freshness, integrity, reports,
-  migration, host proof, or compatibility evidence blocks release and archive.
-- `AC-29`: all three reports are required projections and never become verdict
-  authority.
-- `AC-33`: required migration must provide a successful apply receipt with
-  validation and rollback availability; Task 027 supplies the full migration
-  lifecycle evidence.
-- `AC-35`: gates bind source cases/readings, evidence index, runtime, Kernel,
-  freshness, integrity, and stable identity.
-- `AC-37`: Codex, Claude Code, and CodeFree-O pass the synchronized Kernel and
-  cross-host drift contract.
+- AC-03
+- AC-28
+- AC-29
+- AC-33
+- AC-35
+- AC-37
 
 ## Review Evidence
 

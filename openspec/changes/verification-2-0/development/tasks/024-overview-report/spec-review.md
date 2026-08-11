@@ -25,9 +25,9 @@ approved
 ## Acceptance Assertions Verified
 
 - AC-08
-- AC-11, for the overview page's eight verdict states and shared navigation
-- AC-12, for the overview page's desktop, mobile, keyboard, and print behavior
-- AC-29, for overview generation and the HTML projection boundary
+- AC-11
+- AC-12
+- AC-29
 
 ## Verified Behavior
 

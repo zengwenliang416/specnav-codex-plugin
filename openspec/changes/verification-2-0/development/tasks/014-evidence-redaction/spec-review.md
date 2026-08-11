@@ -28,7 +28,7 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-30`
+- AC-30
 
 ## Verified Behavior
 

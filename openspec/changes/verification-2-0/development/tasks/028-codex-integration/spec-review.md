@@ -28,9 +28,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-03`
-- `AC-37`
-- `AC-40`
+- AC-03
+- AC-37
+- AC-40
 
 ## Required Fixes
 

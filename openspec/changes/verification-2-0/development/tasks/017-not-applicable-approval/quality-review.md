@@ -55,6 +55,10 @@ review and RED evidence, and all four are covered by passing regressions.
 - No downstream reporting, host integration, or release complexity entered
   this slice.
 
+## Acceptance Assertions Verified
+
+- AC-20
+
 ## Required Fixes
 
 - No further quality or security fix is required for Task 017.

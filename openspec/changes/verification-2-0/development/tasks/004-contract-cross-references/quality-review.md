@@ -123,6 +123,13 @@ split into maintainable suites with shared bootstrap.
   cohesive enough to absorb future Task 004 changes without recreating the old
   hotspot immediately.
 
+## Acceptance Assertions Verified
+
+- AC-14
+- AC-15
+- AC-17
+- AC-31
+
 ## Required Fixes
 
 No further Task 004 quality fix is required.

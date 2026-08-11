@@ -61,6 +61,12 @@ approved
 - No fallback, light lane, manual green, silent database migration, or trusted
   caller boolean exists.
 
+## Acceptance Assertions Verified
+
+- AC-32
+- AC-33
+- AC-34
+
 ## Required Fixes
 
 - No required fix remains.

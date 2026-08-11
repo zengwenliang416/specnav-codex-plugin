@@ -104,6 +104,10 @@ approved
   `plugins/specnav-verification/kernel/runtime/repair.js:53-58` and
   `plugins/specnav-verification/kernel/runtime/repair.js:83-87`.
 
+## Acceptance Assertions Verified
+
+- AC-05
+
 ## Required Fixes
 
 - No further quality fix is required for Task 008 after remediation synthesis

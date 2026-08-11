@@ -25,9 +25,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-17:stale-sha`
-- `AC-23`
-- `AC-35:freshness-result-source`
+- AC-23
+- AC-17:stale-sha
+- AC-35:freshness-result-source
 
 ## Verified Behavior
 

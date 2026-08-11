@@ -28,9 +28,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-22`
-- `AC-31`
-- `AC-32:evidence-store-retention`
+- AC-22
+- AC-31
+- AC-32:evidence-store-retention
 
 ## Verified Behavior
 

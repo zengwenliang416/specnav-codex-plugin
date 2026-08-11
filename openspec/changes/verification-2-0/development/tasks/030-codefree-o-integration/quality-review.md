@@ -52,6 +52,11 @@ approved
   declarations.
 - Child commands use argument arrays without shell interpolation.
 
+## Acceptance Assertions Verified
+
+- AC-37
+- AC-40
+
 ## Required Fixes
 
 - No required quality or security fix remains.

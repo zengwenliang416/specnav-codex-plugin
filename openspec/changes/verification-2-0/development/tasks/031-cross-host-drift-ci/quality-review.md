@@ -53,6 +53,12 @@ approved
 - `host_files` and `host_runtime_files` are separate so runtime support files
   cannot masquerade as generated provenance.
 
+## Acceptance Assertions Verified
+
+- AC-37
+- AC-39
+- AC-40
+
 ## Required Fixes
 
 - No required quality or security fix remains.

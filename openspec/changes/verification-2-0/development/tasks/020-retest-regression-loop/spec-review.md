@@ -39,7 +39,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- Direct: `AC-06`, `AC-07`, `AC-27`
+- AC-06
+- AC-07
+- AC-27
 
 ## Downstream Contribution
 

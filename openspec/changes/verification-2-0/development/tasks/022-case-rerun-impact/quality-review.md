@@ -67,6 +67,11 @@ No blocking findings remain.
 - Static syntax and diff checks: passed.
 - Independent final quality re-review: approved.
 
+## Acceptance Assertions Verified
+
+- AC-24
+- AC-26
+
 ## Required Fixes
 
 - No further quality fix is required for Task 022.

@@ -58,6 +58,11 @@ approved
 - blocked plan 不生成 snapshot，已有 snapshot 不可被覆盖，runtime 不可用时不会切换简化路径。
 - 未发现 light lane、legacy promotion、manual green override 或其他隐式 fallback。
 
+## Acceptance Assertions Verified
+
+- AC-01
+- AC-02
+
 ## Required Fixes
 
 - No further quality fix is required for Task 005 after the snapshot, approval,

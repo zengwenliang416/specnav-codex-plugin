@@ -1,5 +1,6 @@
 {
   "task_id": "027-v1-v2-migration",
+  "task_items": ["10.1"],
   "goal": "Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS.",
   "must_read": [
     "openspec/changes/verification-2-0/development/tasks/027-v1-v2-migration/brief.md",
@@ -21,7 +22,11 @@
     "plugins/specnav-verification/kernel/index.js",
     "plugins/specnav-verification/scripts/verification-migrate.js",
     "plugins/specnav-development/scripts/development-contract.js",
+    "plugins/specnav-development/scripts/task-acceptance-evidence.js",
+    "plugins/specnav-development/schemas/task-acceptance-evidence.schema.json",
     "tests/run-development-plugin-fixtures.sh",
+    "tests/helpers/development-contract-fixture.js",
+    "tests/verification-v2/development/task-acceptance-evidence.test.js",
     "tests/verification-v2/migration/**",
     "tests/verification-v2/kernel/package-boundary.test.js",
     "tests/run-verification-v2-migration.sh"

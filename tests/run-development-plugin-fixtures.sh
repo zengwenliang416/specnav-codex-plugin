@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEV="$ROOT/plugins/specnav-development"
+CONTRACT_FIXTURE="$ROOT/tests/helpers/development-contract-fixture.js"
 PROJECT="$ROOT/tests/fixtures/simple-project"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -13,7 +14,7 @@ run_json() {
   local expected_status="$3"
   local mode="${4:-}"
   local status
-  local command=(node "$DEV/scripts/development-contract.js" --json --verbose)
+  local command=(node "$CONTRACT_FIXTURE" --project "$project")
 
   if [[ -n "$mode" ]]; then
     command+=(--mode "$mode")
@@ -45,6 +46,82 @@ init_git_baseline() {
   git -C "$project" config user.email "specnav-fixture@example.com"
   git -C "$project" add .
   git -C "$project" commit -qm "test: establish development baseline"
+}
+
+materialize_task_acceptance() {
+  local project="$1"
+  local change="$2"
+
+  node - "$ROOT" "$project" "$change" <<'NODE'
+'use strict';
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
+const root = process.argv[2];
+const projectRoot = process.argv[3];
+const changeId = process.argv[4];
+const {
+  materialize
+} = require(path.join(
+  root,
+  'plugins/specnav-development/scripts/task-acceptance-evidence'
+));
+const {
+  createValidationReceiptAuthority
+} = require(path.join(
+  root,
+  'plugins/specnav-verification/scripts/validation-receipt-authority'
+));
+const authority = createValidationReceiptAuthority({
+  key: Buffer.alloc(32, 29),
+  authorityDigest: 'd'.repeat(64)
+});
+const logFile = path.join(
+  projectRoot,
+  'openspec',
+  'changes',
+  changeId,
+  'development',
+  'validation-log.jsonl'
+);
+const lines = fs.readFileSync(logFile, 'utf8')
+  .split(/\r?\n/)
+  .filter((line) => line.trim() !== '')
+  .map((line) => {
+    const entry = JSON.parse(line);
+    if (
+      entry.schema !== 'specnav.validationLog.v2'
+      || entry.attestation !== 'system-executed'
+      || typeof entry.receipt_id !== 'string'
+    ) {
+      return JSON.stringify(entry);
+    }
+    delete entry.receipt_signature;
+    delete entry.receipt_signature_algorithm;
+    delete entry.runtime_authority_digest;
+    const evidenceFile = path.join(
+      projectRoot,
+      'openspec',
+      'changes',
+      changeId,
+      entry.evidence_log
+    );
+    const evidenceBytes = fs.readFileSync(evidenceFile);
+    entry.evidence_log_sha256 = crypto.createHash('sha256')
+      .update(evidenceBytes)
+      .digest('hex');
+    entry.evidence_log_size = evidenceBytes.length;
+    return JSON.stringify(authority.sign(entry));
+  });
+fs.writeFileSync(logFile, `${lines.join('\n')}\n`);
+materialize({
+  projectRoot,
+  changeId,
+  write: true,
+  force: true,
+  receiptAuthority: authority
+});
+NODE
 }
 
 write_requirements_project() {
@@ -152,6 +229,20 @@ MD
 
 - Dashboard renders with loading, empty, and error states covered.
 MD
+
+  cat >"$project/openspec/changes/$change/acceptance.json" <<'JSON'
+{
+  "assertions": [
+    {
+      "id": "TASK-01",
+      "statement": "The dashboard summary slice is implemented and validated.",
+      "verify_via": "unit",
+      "status": "passing",
+      "evidence_ref": "development/evidence/001-dashboard-summary.log"
+    }
+  ]
+}
+JSON
 
   cat >"$project/openspec/changes/$change/spec-map.json" <<'JSON'
 {
@@ -431,7 +522,7 @@ JSON
   cat >"$change_dir/tasks.md" <<'MD'
 # Development Tasks
 
-- [x] user can view dashboard summary with loading empty and error states
+- [x] 1.1 user can view dashboard summary with loading empty and error states
 MD
 
   cat >"$development/before-dev-check.json" <<'JSON'
@@ -487,7 +578,13 @@ JSON
   cat >"$development/task-graph.json" <<'JSON'
 {
   "schema_version": 1,
-  "nodes": ["001-dashboard-summary"],
+  "nodes": [
+    {
+      "id": "001-dashboard-summary",
+      "goal": "user can view dashboard summary with loading empty and error states",
+      "task_items": ["1.1"]
+    }
+  ],
   "edges": []
 }
 JSON
@@ -513,7 +610,7 @@ JSON
 JSON
 
   cat >"$development/task-context.jsonl" <<'JSONL'
-{"task":"001-dashboard-summary","source":"context.json","status":"ready"}
+{"task_id":"001-dashboard-summary","source":"context.json","status":"ready","task_items":["1.1"]}
 JSONL
 
   cat >"$development/task-ledger.jsonl" <<'JSONL'
@@ -636,7 +733,10 @@ MD
   cat >"$task/context.json" <<'JSON'
 {
   "task_id": "001-dashboard-summary",
+  "task_items": ["1.1"],
   "goal": "Implement dashboard summary slice",
+  "acceptance_assertions": ["TASK-01"],
+  "test_paths": ["npm test dashboard-summary.test.tsx"],
   "stop_condition": "slice implemented, reviews approved, validation recorded",
   "must_read": [
     "openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/brief.md",
@@ -697,7 +797,7 @@ JSON
 
 ## Status
 
-DONE_WITH_CONCERNS
+DONE
 
 ## Files Changed
 
@@ -728,11 +828,7 @@ No behavior-changing refactor was needed.
 
 ## Concerns
 
-Backend naming remains a review watch item.
-
-## Adjudication
-
-Controller reviewed the backend naming concern and accepted it for verification handoff because it is tracked as a non-blocking follow-up with no behavior impact on the dashboard summary slice.
+No blocking concerns remain.
 
 ## Scope Deviations
 
@@ -806,6 +902,10 @@ Existing summary card primitives are reused.
 
 Complexity stays within the recorded budget.
 
+## Acceptance Assertions Verified
+
+- TASK-01
+
 ## Required Fixes
 
 No required fixes remain.
@@ -855,7 +955,22 @@ Backend field naming remains a verification watch item.
 Six-domain verification must check user-visible states, data flow, and component boundaries.
 MD
 
+  mkdir -p "$project/src/dashboard" "$project/tests/dashboard"
+  printf '%s\n' "export const DashboardView = () => null;" \
+    >"$project/src/dashboard/DashboardView.tsx"
+  printf '%s\n' "dashboard summary fixture" \
+    >"$project/tests/dashboard/dashboard-summary.test.tsx"
+
   init_git_baseline "$project"
+
+  local reviewed_head
+  local reviewed_tree
+  reviewed_head="$(git -C "$project" rev-parse HEAD)"
+  reviewed_tree="$(git -C "$project" rev-parse 'HEAD^{tree}')"
+  cat >"$development/validation-log.jsonl" <<JSONL
+{"schema":"specnav.validationLog.v2","receipt_id":"receipt-dashboard-summary","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","assertion_ids":["TASK-01"],"status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-08-11T00:00:00.000Z","reviewed_git_head":"$reviewed_head","reviewed_git_tree":"$reviewed_tree","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
+JSONL
+  materialize_task_acceptance "$project" add-dashboard
 }
 
 test -f "$DEV/scripts/development-contract.js"
@@ -1009,45 +1124,93 @@ assert_blocker "$TMP_DIR/empty-task-acceptance.json" 'invalid-task-acceptance:as
 
 INVALID_TASK_ACCEPTANCE_PROJECT="$TMP_DIR/invalid-task-acceptance-project"
 cp -R "$HAPPY_PROJECT" "$INVALID_TASK_ACCEPTANCE_PROJECT"
-cat >"$INVALID_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" <<'JSON'
-{
-  "schema": "specnav.task-acceptance-evidence.v0",
-  "task_id": "999-wrong-task",
-  "status": "pending",
-  "assertions": [
-    {
-      "id": "TASK-01",
-      "status": "failing",
-      "direct_evidence": [],
-      "reused_evidence": []
-    },
-    {
-      "id": "TASK-01",
-      "status": "passing",
-      "direct_evidence": ["../outside.log"],
-      "reused_evidence": "development/evidence/001-dashboard-summary.log"
-    },
-    {
-      "id": "TASK-02",
-      "status": "passing",
-      "direct_evidence": ["development/evidence/missing.log"],
-      "reused_evidence": []
-    }
-  ],
-  "fallback_used": true
-}
-JSON
+jq '
+  .schema = "specnav.task-acceptance-evidence.v1"
+  | .task_id = "999-wrong-task"
+  | .status = "pending"
+  | .fallback_used = true
+  | .obsolete_field = "forbidden"
+' \
+  "$INVALID_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/invalid-task-acceptance.json.tmp"
+mv "$TMP_DIR/invalid-task-acceptance.json.tmp" \
+  "$INVALID_TASK_ACCEPTANCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
 run_json "$INVALID_TASK_ACCEPTANCE_PROJECT" "$TMP_DIR/invalid-task-acceptance.json" 2
+assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:closed-schema'
 assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:schema'
 assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:task_id'
 assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:status'
 assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:fallback_used'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:duplicate-assertion-id:TASK-01'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:non-passing:TASK-01'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:missing-evidence:TASK-01'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'invalid-task-acceptance:TASK-01:reused_evidence'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:invalid-evidence-path:TASK-01:../outside.log'
-assert_blocker "$TMP_DIR/invalid-task-acceptance.json" 'task-acceptance:missing-evidence-path:TASK-02:development/evidence/missing.log'
+
+TASK_ACCEPTANCE_RECEIPT_DIGEST_PROJECT="$TMP_DIR/task-acceptance-receipt-digest-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_RECEIPT_DIGEST_PROJECT"
+jq '.test_runs[0].validation_receipt_sha256 = ("0" * 64)' \
+  "$TASK_ACCEPTANCE_RECEIPT_DIGEST_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/task-acceptance-receipt-digest.json.tmp"
+mv "$TMP_DIR/task-acceptance-receipt-digest.json.tmp" \
+  "$TASK_ACCEPTANCE_RECEIPT_DIGEST_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+run_json "$TASK_ACCEPTANCE_RECEIPT_DIGEST_PROJECT" "$TMP_DIR/task-acceptance-receipt-digest.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-receipt-digest.json" \
+  'task-acceptance:validation-receipt-digest-mismatch:receipt-dashboard-summary'
+
+TASK_ACCEPTANCE_RECEIPT_DRIFT_PROJECT="$TMP_DIR/task-acceptance-receipt-drift-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_RECEIPT_DRIFT_PROJECT"
+jq -c 'if .receipt_id == "receipt-dashboard-summary" then
+  .reviewed_git_head = ("f" * 40)
+  | .reviewed_git_tree = ("e" * 40)
+else . end' \
+  "$TASK_ACCEPTANCE_RECEIPT_DRIFT_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" \
+  >"$TMP_DIR/task-acceptance-receipt-drift.jsonl"
+mv "$TMP_DIR/task-acceptance-receipt-drift.jsonl" \
+  "$TASK_ACCEPTANCE_RECEIPT_DRIFT_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl"
+run_json "$TASK_ACCEPTANCE_RECEIPT_DRIFT_PROJECT" "$TMP_DIR/task-acceptance-receipt-drift.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-receipt-drift.json" \
+  'task-acceptance:validation-receipt-mismatch:receipt-dashboard-summary'
+assert_blocker "$TMP_DIR/task-acceptance-receipt-drift.json" \
+  'task-acceptance:validation-receipt-digest-mismatch:receipt-dashboard-summary'
+
+TASK_ACCEPTANCE_ARTIFACT_TAMPER_PROJECT="$TMP_DIR/task-acceptance-artifact-tamper-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_ARTIFACT_TAMPER_PROJECT"
+printf '%s\n' 'Tampered after acceptance generation.' \
+  >>"$TASK_ACCEPTANCE_ARTIFACT_TAMPER_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/report.md"
+run_json "$TASK_ACCEPTANCE_ARTIFACT_TAMPER_PROJECT" "$TMP_DIR/task-acceptance-artifact-tamper.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-artifact-tamper.json" \
+  'task-acceptance:artifact-digest-mismatch:report'
+
+TASK_ACCEPTANCE_RUN_MAPPING_PROJECT="$TMP_DIR/task-acceptance-run-mapping-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_RUN_MAPPING_PROJECT"
+jq '.assertions[0].test_run_ids = ["missing-run"]' \
+  "$TASK_ACCEPTANCE_RUN_MAPPING_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
+  >"$TMP_DIR/task-acceptance-run-mapping.json.tmp"
+mv "$TMP_DIR/task-acceptance-run-mapping.json.tmp" \
+  "$TASK_ACCEPTANCE_RUN_MAPPING_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
+run_json "$TASK_ACCEPTANCE_RUN_MAPPING_PROJECT" "$TMP_DIR/task-acceptance-run-mapping.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-run-mapping.json" \
+  'task-acceptance:test-run-assertion-mismatch:TASK-01:missing-run'
+assert_blocker "$TMP_DIR/task-acceptance-run-mapping.json" \
+  'task-acceptance:unreferenced-test-run:receipt-dashboard-summary'
+
+TASK_ACCEPTANCE_EVIDENCE_TAMPER_PROJECT="$TMP_DIR/task-acceptance-evidence-tamper-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_EVIDENCE_TAMPER_PROJECT"
+printf '%s\n' 'tampered evidence' \
+  >>"$TASK_ACCEPTANCE_EVIDENCE_TAMPER_PROJECT/openspec/changes/add-dashboard/development/evidence/001-dashboard-summary.log"
+run_json "$TASK_ACCEPTANCE_EVIDENCE_TAMPER_PROJECT" "$TMP_DIR/task-acceptance-evidence-tamper.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-evidence-tamper.json" \
+  'task-acceptance:test-run-evidence-mismatch:receipt-dashboard-summary'
+
+TASK_ACCEPTANCE_RECEIPT_FORGERY_PROJECT="$TMP_DIR/task-acceptance-receipt-forgery-project"
+cp -R "$HAPPY_PROJECT" "$TASK_ACCEPTANCE_RECEIPT_FORGERY_PROJECT"
+jq -c 'if .receipt_id == "receipt-dashboard-summary" then
+  .receipt_signature = ("0" * 64)
+else . end' \
+  "$TASK_ACCEPTANCE_RECEIPT_FORGERY_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" \
+  >"$TMP_DIR/task-acceptance-receipt-forgery.jsonl"
+mv "$TMP_DIR/task-acceptance-receipt-forgery.jsonl" \
+  "$TASK_ACCEPTANCE_RECEIPT_FORGERY_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl"
+run_json "$TASK_ACCEPTANCE_RECEIPT_FORGERY_PROJECT" \
+  "$TMP_DIR/task-acceptance-receipt-forgery.json" 2
+assert_blocker "$TMP_DIR/task-acceptance-receipt-forgery.json" \
+  'task-acceptance:validation-receipt-mismatch:receipt-dashboard-summary'
 
 INVALID_TASK_ASSERTION_ID_PROJECT="$TMP_DIR/invalid-task-assertion-id-project"
 cp -R "$HAPPY_PROJECT" "$INVALID_TASK_ASSERTION_ID_PROJECT"
@@ -1061,23 +1224,9 @@ assert_blocker "$TMP_DIR/invalid-task-assertion-id.json" 'invalid-task-acceptanc
 
 ASSERTION_REFERENCE_PROJECT="$TMP_DIR/assertion-reference-project"
 cp -R "$HAPPY_PROJECT" "$ASSERTION_REFERENCE_PROJECT"
-cat >"$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/acceptance.json" <<'JSON'
-{
-  "schema_version": 2,
-  "change_id": "add-dashboard",
-  "assertions": [
-    {
-      "id": "PARENT-01",
-      "statement": "The dashboard summary remains reviewable.",
-      "verify_via": "static",
-      "status": "passing",
-      "evidence_ref": "development/evidence/001-dashboard-summary.log"
-    }
-  ]
-}
-JSON
 perl -0pi -e 's/task-level implementation and focused validation evidence were reviewed/task-level implementation and SHA-256 fixture identity were reviewed/' \
   "$ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
+materialize_task_acceptance "$ASSERTION_REFERENCE_PROJECT" add-dashboard
 run_json "$ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/assertion-reference.json" 0
 jq -e '.ok == true' "$TMP_DIR/assertion-reference.json" >/dev/null
 if jq -e '.blockers[] | select(. == "review:invalid-reference:SHA-256")' "$TMP_DIR/assertion-reference.json" >/dev/null; then
@@ -1087,14 +1236,24 @@ fi
 
 TASK_SUBCLAIM_REFERENCE_PROJECT="$TMP_DIR/task-subclaim-reference-project"
 cp -R "$ASSERTION_REFERENCE_PROJECT" "$TASK_SUBCLAIM_REFERENCE_PROJECT"
-jq '.assertions[0].id = "PARENT-01:dashboard-summary"' \
-  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json" \
-  >"$TMP_DIR/task-subclaim-reference.json.tmp"
-mv "$TMP_DIR/task-subclaim-reference.json.tmp" \
-  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/acceptance.json"
-sed -i.bak 's/`TASK-01`/`PARENT-01:dashboard-summary`/' \
-  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
-rm "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
+jq '.acceptance_assertions = ["TASK-01:dashboard-summary"]' \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/context.json" \
+  >"$TMP_DIR/task-subclaim-context.json.tmp"
+mv "$TMP_DIR/task-subclaim-context.json.tmp" \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/context.json"
+jq -c 'if .receipt_id == "receipt-dashboard-summary" then
+  .assertion_ids = ["TASK-01:dashboard-summary"]
+else . end' \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" \
+  >"$TMP_DIR/task-subclaim-validation.jsonl"
+mv "$TMP_DIR/task-subclaim-validation.jsonl" \
+  "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl"
+for review in spec-review.md quality-review.md; do
+  sed -i.bak 's/TASK-01/TASK-01:dashboard-summary/g' \
+    "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/$review"
+  rm "$TASK_SUBCLAIM_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/$review.bak"
+done
+materialize_task_acceptance "$TASK_SUBCLAIM_REFERENCE_PROJECT" add-dashboard
 run_json "$TASK_SUBCLAIM_REFERENCE_PROJECT" "$TMP_DIR/task-subclaim-reference.json" 0
 jq -e '.ok == true' "$TMP_DIR/task-subclaim-reference.json" >/dev/null
 
@@ -1105,15 +1264,15 @@ sed -i.bak 's/`TASK-01`/`TASK-99`/' \
 rm "$INVALID_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
 run_json "$INVALID_ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/invalid-assertion-reference.json" 2
 assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:invalid-reference:TASK-99'
-assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:unsupported-verdict'
+assert_blocker "$TMP_DIR/invalid-assertion-reference.json" 'review:assertion-coverage-mismatch'
 
 PARENT_ONLY_ASSERTION_REFERENCE_PROJECT="$TMP_DIR/parent-only-assertion-reference-project"
-cp -R "$ASSERTION_REFERENCE_PROJECT" "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT"
-sed -i.bak 's/`TASK-01`/`PARENT-01`/' \
+cp -R "$TASK_SUBCLAIM_REFERENCE_PROJECT" "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT"
+sed -i.bak 's/`TASK-01:dashboard-summary`/`TASK-01`/' \
   "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md"
 rm "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/spec-review.md.bak"
 run_json "$PARENT_ONLY_ASSERTION_REFERENCE_PROJECT" "$TMP_DIR/parent-only-assertion-reference.json" 2
-assert_blocker "$TMP_DIR/parent-only-assertion-reference.json" 'review:unsupported-verdict'
+assert_blocker "$TMP_DIR/parent-only-assertion-reference.json" 'review:assertion-coverage-mismatch'
 
 HIERARCHICAL_TASK_PROJECT="$TMP_DIR/hierarchical-task-project"
 cp -R "$HAPPY_PROJECT" "$HIERARCHICAL_TASK_PROJECT"
@@ -1129,6 +1288,21 @@ loading, empty, and failure states.
 - [x] 1.2 Add deterministic state transition tests.
 - [x] 1.3 Refactor the service adapter behind the existing view contract.
 MD
+jq '.nodes[0].task_items = ["1.1", "1.2", "1.3"]' \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/task-graph.json" \
+  >"$TMP_DIR/hierarchical-task-graph.json.tmp"
+mv "$TMP_DIR/hierarchical-task-graph.json.tmp" \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/task-graph.json"
+jq '.task_items = ["1.1", "1.2", "1.3"]' \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/context.json" \
+  >"$TMP_DIR/hierarchical-task-context.json.tmp"
+mv "$TMP_DIR/hierarchical-task-context.json.tmp" \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/tasks/001-dashboard-summary/context.json"
+jq -c '.task_items = ["1.1", "1.2", "1.3"]' \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/task-context.jsonl" \
+  >"$TMP_DIR/hierarchical-task-context.jsonl"
+mv "$TMP_DIR/hierarchical-task-context.jsonl" \
+  "$HIERARCHICAL_TASK_PROJECT/openspec/changes/add-dashboard/development/task-context.jsonl"
 run_json "$HIERARCHICAL_TASK_PROJECT" "$TMP_DIR/hierarchical-task.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/hierarchical-task.json" >/dev/null
 
@@ -1564,7 +1738,7 @@ cp -R "$HAPPY_PROJECT" "$INCOMPLETE_TASK_PROJECT"
 cat >"$INCOMPLETE_TASK_PROJECT/openspec/changes/add-dashboard/tasks.md" <<'MD'
 # Development Tasks
 
-- [ ] user can view dashboard summary with loading empty and error states
+- [ ] 1.1 user can view dashboard summary with loading empty and error states
 MD
 run_json "$INCOMPLETE_TASK_PROJECT" "$TMP_DIR/incomplete-task-entry.json" 0 entry
 jq -e '.ok == true and .mode == "entry"' "$TMP_DIR/incomplete-task-entry.json" >/dev/null
@@ -1612,6 +1786,7 @@ MD
 cat >>"$ARTIFACT_MIGRATION_PROJECT/openspec/changes/add-dashboard/development/task-ledger.jsonl" <<'JSONL'
 {"task_id":"001-dashboard-summary","status":"policy_note","result":"Explicit database migration files still require a ready manifest; this artifact-only task does not create them."}
 JSONL
+materialize_task_acceptance "$ARTIFACT_MIGRATION_PROJECT" add-dashboard
 run_json "$ARTIFACT_MIGRATION_PROJECT" "$TMP_DIR/artifact-migration.json" 0
 jq -e '.ok == true' "$TMP_DIR/artifact-migration.json" >/dev/null
 
@@ -1730,6 +1905,7 @@ No required fixes remain.
 
 - `TASK-01`: task-level implementation and focused validation evidence were reviewed.
 MD
+materialize_task_acceptance "$SUBSTANTIVE_GAP_PROJECT" add-dashboard
 run_json "$SUBSTANTIVE_GAP_PROJECT" "$TMP_DIR/substantive-gap.json" 0
 jq -e '.ok == true' "$TMP_DIR/substantive-gap.json" >/dev/null
 

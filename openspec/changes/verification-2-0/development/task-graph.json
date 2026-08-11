@@ -4,6 +4,7 @@
   "nodes": [
     {
       "id": "001-baseline-fake-green",
+      "task_items": ["1.1"],
       "group": 1,
       "goal": "Maintainer can reproduce every current fake-green acceptance path with failing V2 fixtures.",
       "acceptance": [
@@ -16,6 +17,7 @@
     },
     {
       "id": "002-kernel-package-boundary",
+      "task_items": ["1.2"],
       "group": 1,
       "goal": "Maintainer can install one shared Verification Kernel package without host-specific verdict logic.",
       "acceptance": [
@@ -28,6 +30,7 @@
     },
     {
       "id": "003-contract-schemas",
+      "task_items": ["2.1"],
       "group": 2,
       "goal": "Plugin author can validate every V2 entity through versioned JSON Schemas.",
       "acceptance": [
@@ -39,6 +42,7 @@
     },
     {
       "id": "004-contract-cross-references",
+      "task_items": ["2.2"],
       "group": 2,
       "goal": "Reviewer can reject artifacts whose run, case, attempt, step, or SHA references disagree.",
       "acceptance": [
@@ -51,6 +55,7 @@
     },
     {
       "id": "005-case-planning-approval",
+      "task_items": ["2.3", "14.2"],
       "group": 2,
       "goal": "Reviewer can approve an immutable test-case snapshot before execution starts.",
       "acceptance": [
@@ -63,6 +68,7 @@
     },
     {
       "id": "006-runtime-lock-manifest",
+      "task_items": ["3.1"],
       "group": 3,
       "goal": "Verification operator can resolve an exact runtime version from a committed lock manifest.",
       "acceptance": [
@@ -73,6 +79,7 @@
     },
     {
       "id": "007-runtime-installer",
+      "task_items": ["3.2"],
       "group": 3,
       "goal": "Verification operator can explicitly install Playwright, browsers, Midscene, and AJV outside the business repository.",
       "acceptance": [
@@ -83,6 +90,7 @@
     },
     {
       "id": "008-runtime-doctor",
+      "task_items": ["3.3", "14.1"],
       "group": 3,
       "goal": "Verification operator can diagnose runtime readiness and receive exact blockers without fallback.",
       "acceptance": [
@@ -92,6 +100,7 @@
     },
     {
       "id": "009-command-runner",
+      "task_items": ["4.1", "14.3"],
       "group": 4,
       "goal": "Reviewer can execute command-backed cases and inspect structured attempts, logs, and exit evidence.",
       "acceptance": [
@@ -101,6 +110,7 @@
     },
     {
       "id": "010-playwright-runner",
+      "task_items": ["4.2"],
       "group": 4,
       "goal": "Reviewer can execute Playwright cases with assertions, traces, screenshots, video, console, and network evidence.",
       "acceptance": [
@@ -123,6 +133,7 @@
     },
     {
       "id": "011-midscene-runner",
+      "task_items": ["4.3"],
       "group": 4,
       "goal": "Reviewer can use Midscene for UI interaction while deterministic or human-approved oracles retain final verdict ownership.",
       "acceptance": [
@@ -147,6 +158,7 @@
     },
     {
       "id": "012-evidence-store",
+      "task_items": ["5.1"],
       "group": 5,
       "goal": "Reviewer can retain append-only evidence objects and rebuild the summary index without losing failed attempts.",
       "acceptance": [
@@ -158,6 +170,7 @@
     },
     {
       "id": "013-evidence-integrity",
+      "task_items": ["5.2"],
       "group": 5,
       "goal": "Release owner can see missing, tampered, stale, or incorrectly bound evidence block green.",
       "acceptance": [
@@ -170,6 +183,7 @@
     },
     {
       "id": "014-evidence-redaction",
+      "task_items": ["5.3"],
       "group": 5,
       "goal": "Reviewer can inspect redacted logs and HTML without provider secrets leaking.",
       "acceptance": [
@@ -179,6 +193,7 @@
     },
     {
       "id": "015-reading-model",
+      "task_items": ["5.4"],
       "group": 5,
       "goal": "Reviewer can inspect expected, actual, oracle, and evidence for every assertion reading.",
       "acceptance": [
@@ -188,6 +203,7 @@
     },
     {
       "id": "016-six-domain-aggregation",
+      "task_items": ["6.1"],
       "group": 6,
       "goal": "Release owner can receive six-domain and release verdicts derived only from validated case readings.",
       "acceptance": [
@@ -200,6 +216,7 @@
     },
     {
       "id": "017-not-applicable-approval",
+      "task_items": ["6.2"],
       "group": 6,
       "goal": "Reviewer can approve a domain as not applicable only with reason and evidence.",
       "acceptance": [
@@ -212,6 +229,7 @@
     },
     {
       "id": "018-failure-classification",
+      "task_items": ["7.1"],
       "group": 7,
       "goal": "Maintainer can classify failures into product, test, environment, flaky, blocker, or requirement categories.",
       "acceptance": [],
@@ -228,6 +246,7 @@
     },
     {
       "id": "019-development-repair-bridge",
+      "task_items": ["7.2"],
       "group": 7,
       "goal": "Developer can receive a scoped repair task linked to frozen verification failure evidence.",
       "acceptance": [
@@ -237,6 +256,7 @@
     },
     {
       "id": "020-retest-regression-loop",
+      "task_items": ["7.3", "7.4"],
       "group": 7,
       "goal": "Reviewer can distinguish retry, retest, and regression and close a failure only after required regression passes.",
       "acceptance": [
@@ -257,6 +277,7 @@
     },
     {
       "id": "021-case-freshness",
+      "task_items": ["8.1"],
       "group": 8,
       "goal": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime.",
       "acceptance": [
@@ -268,6 +289,7 @@
     },
     {
       "id": "022-case-rerun-impact",
+      "task_items": ["8.2"],
       "group": 8,
       "goal": "Verification operator can rerun concrete impacted cases plus mandatory baselines using CodeGraph and policy evidence.",
       "acceptance": [
@@ -278,6 +300,7 @@
     },
     {
       "id": "023-report-model",
+      "task_items": ["9.1"],
       "group": 9,
       "goal": "Stakeholder can receive one validated report model for all three report pages and every verdict state.",
       "acceptance": [
@@ -291,6 +314,7 @@
     },
     {
       "id": "024-overview-report",
+      "task_items": ["9.2"],
       "group": 9,
       "goal": "Stakeholder can review lifecycle readiness, six domains, blockers, freshness, integrity, and repair status in overview.html.",
       "acceptance": [
@@ -303,6 +327,7 @@
     },
     {
       "id": "025-case-report-pages",
+      "task_items": ["9.3"],
       "group": 9,
       "goal": "Stakeholder can review approved case contracts in test-case-catalog.html and immutable attempt evidence in test-case-results.html.",
       "acceptance": [
@@ -316,6 +341,7 @@
     },
     {
       "id": "026-report-accessibility-security",
+      "task_items": ["9.4"],
       "group": 9,
       "goal": "Stakeholder can use desktop, mobile, keyboard, print, and escaped secret-safe report pages.",
       "acceptance": [
@@ -326,6 +352,7 @@
     },
     {
       "id": "027-v1-v2-migration",
+      "task_items": ["10.1"],
       "group": 10,
       "goal": "Maintainer can dry-run, back up, migrate, validate, and roll back V1 verification artifacts without fake PASS.",
       "acceptance": [
@@ -337,6 +364,7 @@
     },
     {
       "id": "028-codex-integration",
+      "task_items": ["11.1"],
       "group": 11,
       "goal": "Codex user can discover and run Verification 2.0 through the Codex marketplace adapter.",
       "acceptance": [
@@ -348,6 +376,7 @@
     },
     {
       "id": "029-claude-code-integration",
+      "task_items": ["11.2"],
       "group": 11,
       "goal": "Claude Code user can discover and run the same Verification Kernel through the Claude plugin adapter.",
       "acceptance": [
@@ -358,6 +387,7 @@
     },
     {
       "id": "030-codefree-o-integration",
+      "task_items": ["11.3"],
       "group": 11,
       "goal": "CodeFree-O user can discover and run the same Verification Kernel without losing existing local installation fixes.",
       "acceptance": [
@@ -368,6 +398,7 @@
     },
     {
       "id": "031-cross-host-drift-ci",
+      "task_items": ["12.1"],
       "group": 12,
       "goal": "Release owner can detect cross-host kernel, schema, blocker, fixture, and generated-artifact drift in CI.",
       "acceptance": [
@@ -379,6 +410,7 @@
     },
     {
       "id": "032-docs-install-runtime",
+      "task_items": ["12.2"],
       "group": 12,
       "goal": "User can install, configure, diagnose, and review Verification 2.0 from matched English and Chinese documentation.",
       "acceptance": [
@@ -392,6 +424,7 @@
     },
     {
       "id": "033-release-archive-proof",
+      "task_items": ["13.1", "14.4"],
       "group": 13,
       "goal": "Release owner can prove clean GitHub installation, full six-domain evidence, three reports, and archive readiness across all hosts.",
       "acceptance": [

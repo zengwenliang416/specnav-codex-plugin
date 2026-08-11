@@ -60,6 +60,12 @@ No blocking findings.
 - Managed runtime doctor: ready, no fallback used.
 - Static syntax and diff checks: passed.
 
+## Acceptance Assertions Verified
+
+- AC-22
+- AC-31
+- AC-32:evidence-store-retention
+
 ## Required Fixes
 
 - No further quality fix is required for Task 012 after append, object

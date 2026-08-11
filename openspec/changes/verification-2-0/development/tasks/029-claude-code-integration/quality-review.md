@@ -45,6 +45,11 @@ approved
 - Child commands use argument arrays without shell interpolation.
 - Host entry files have independent digest verification.
 
+## Acceptance Assertions Verified
+
+- AC-37
+- AC-40
+
 ## Required Fixes
 
 - No required quality or security fix remains.

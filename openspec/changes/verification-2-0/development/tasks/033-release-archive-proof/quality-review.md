@@ -61,6 +61,15 @@ approved
 - `development/evidence/481-033-release-archive-proof.log`: syntax and diff.
 - Independent final quality/security review found no remaining required fix.
 
+## Acceptance Assertions Verified
+
+- AC-03
+- AC-28
+- AC-29
+- AC-33
+- AC-35
+- AC-37
+
 ## Required Fixes
 
 - No required quality or security fix remains.

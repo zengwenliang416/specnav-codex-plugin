@@ -25,12 +25,9 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-37`: all three host adapters execute through the cross-host runner and
-  root `npm test`.
-- `AC-39`: host wrappers remain invocation-only and architecture checks reject
-  duplicated Kernel behavior.
-- `AC-40`: exact synchronized trees, host digests, stable blockers, clean
-  source provenance, and immutable downstream commits are enforced.
+- AC-37
+- AC-39
+- AC-40
 
 ## Required Fixes
 

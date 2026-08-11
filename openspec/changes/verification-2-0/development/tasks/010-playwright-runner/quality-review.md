@@ -63,6 +63,10 @@ No blocking findings.
 - Managed runtime doctor: ready, no fallback used.
 - Static syntax and diff checks: passed.
 
+## Acceptance Assertions Verified
+
+- AC-39:playwright-adapter-boundary
+
 ## Required Fixes
 
 - No further quality fix is required for Task 010 after process confinement,

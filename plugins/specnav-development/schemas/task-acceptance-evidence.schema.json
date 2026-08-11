@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/task-acceptance-evidence.schema.json",
+  "title": "SpecNav Task Acceptance Evidence V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generated_by",
+    "task_id",
+    "generated_at",
+    "recorded_at",
+    "status",
+    "reviewed_git_head",
+    "reviewed_git_tree",
+    "implementation_scope",
+    "artifacts",
+    "test_runs",
+    "assertions",
+    "fallback_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.task-acceptance-evidence.v2"
+    },
+    "generated_by": {
+      "const": "specnav-development/task-acceptance-evidence"
+    },
+    "task_id": {
+      "$ref": "#/$defs/taskId"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "const": "approved"
+    },
+    "reviewed_git_head": {
+      "$ref": "#/$defs/gitObject"
+    },
+    "reviewed_git_tree": {
+      "$ref": "#/$defs/gitObject"
+    },
+    "implementation_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "included_patterns",
+        "entries",
+        "sha256"
+      ],
+      "properties": {
+        "included_patterns": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relativePath"
+          }
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "mode",
+              "type",
+              "object_id"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/relativePath"
+              },
+              "mode": {
+                "type": "string",
+                "pattern": "^[0-7]{6}$"
+              },
+              "type": {
+                "const": "blob"
+              },
+              "object_id": {
+                "$ref": "#/$defs/gitObject"
+              }
+            }
+          }
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "context",
+        "report",
+        "spec_review",
+        "quality_review"
+      ],
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/artifact"
+        },
+        "report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "status"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relativePath"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "status": {
+              "const": "DONE"
+            }
+          }
+        },
+        "spec_review": {
+          "$ref": "#/$defs/approvedReview"
+        },
+        "quality_review": {
+          "$ref": "#/$defs/approvedReview"
+        }
+      }
+    },
+    "test_runs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "command",
+          "assertion_ids",
+          "recorded_at",
+          "validation_receipt_sha256",
+          "evidence_log"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assertion_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "recorded_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validation_receipt_sha256": {
+            "$ref": "#/$defs/sha256"
+          },
+          "evidence_log": {
+            "$ref": "#/$defs/evidenceFile"
+          }
+        }
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "parent_id",
+          "status",
+          "test_run_ids",
+          "direct_evidence",
+          "reused_evidence",
+          "claim"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "const": "passing"
+          },
+          "test_run_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "direct_evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/evidenceFile"
+            }
+          },
+          "reused_evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "task_id",
+                "path",
+                "sha256",
+                "size"
+              ],
+              "properties": {
+                "task_id": {
+                  "$ref": "#/$defs/taskId"
+                },
+                "path": {
+                  "$ref": "#/$defs/relativePath"
+                },
+                "sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "size": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "fallback_used": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "taskId": {
+      "type": "string",
+      "pattern": "^\\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "gitObject": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "approvedReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "verdict"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "verdict": {
+          "const": "approved"
+        }
+      }
+    },
+    "evidenceFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "size"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

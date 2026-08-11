@@ -37,6 +37,11 @@ approved
 - Added complexity is isolated to transactional installation and auditable
   failure handling required by `AC-04` and `AC-05`.
 
+## Acceptance Assertions Verified
+
+- AC-04
+- AC-05
+
 ## Required Fixes
 
 - No further quality fix is required for Task 007; transaction, integrity, and

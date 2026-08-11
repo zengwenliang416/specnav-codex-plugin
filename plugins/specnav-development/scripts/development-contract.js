@@ -2,12 +2,19 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { execFileSync } = require('node:child_process');
 const fs = require('fs');
 const path = require('path');
 const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const { validatePrototype } = runtime.requirePluginScript('specnav-prototype', 'scripts/prototype-contract');
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
+const {
+  resolveManagedValidationReceiptAuthority
+} = runtime.requirePluginScript(
+  'specnav-verification',
+  'scripts/validation-receipt-authority'
+);
 const { isValidTaskId } = require('./task-id');
 
 const CHANGE_ARTIFACTS = ['scope.json', 'tasks.md'];
@@ -144,9 +151,23 @@ const QUALITY_REVIEW_REQUIRED_HEADINGS = [
 
 const TASK_ENTRY_FILES = ['brief.md', 'context.json'];
 const TASK_HANDOFF_FILES = [...TASK_ENTRY_FILES, 'acceptance.json', 'report.md', 'spec-review.md', 'quality-review.md'];
-const TASK_CONTEXT_ARRAYS = ['must_read', 'allowed_files', 'non_goals', 'expected_evidence', 'unsafe_assumptions'];
-const NON_EMPTY_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files', 'non_goals', 'expected_evidence']);
+const TASK_CONTEXT_ARRAYS = [
+  'task_items',
+  'must_read',
+  'allowed_files',
+  'non_goals',
+  'expected_evidence',
+  'unsafe_assumptions'
+];
+const NON_EMPTY_TASK_CONTEXT_ARRAYS = new Set([
+  'task_items',
+  'must_read',
+  'allowed_files',
+  'non_goals',
+  'expected_evidence'
+]);
 const PATH_TASK_CONTEXT_ARRAYS = new Set(['must_read', 'allowed_files']);
+const TASK_ITEM_ID_PATTERN = /^[0-9]+(?:\.[0-9]+)+$/;
 const REPAIR_TASK_SCHEMA = 'specnav.development.repair-task.v1';
 const REPAIR_CLASSIFICATIONS = new Set(['product_defect', 'test_defect']);
 const REPAIR_OWNERSHIP = Object.freeze({
@@ -1784,6 +1805,16 @@ function validateTaskContext(taskDir, relativeTaskPath, taskId, requiredMustRead
       blockers.push(`invalid-task-context:${field}`);
     }
   }
+  if (Array.isArray(value.task_items)) {
+    if (new Set(value.task_items).size !== value.task_items.length) {
+      blockers.push('invalid-task-context:task_items-duplicate');
+    }
+    for (const taskItem of value.task_items) {
+      if (!TASK_ITEM_ID_PATTERN.test(String(taskItem))) {
+        blockers.push(`invalid-task-context:task_items-id:${String(taskItem)}`);
+      }
+    }
+  }
 
   if (Array.isArray(value.must_read)) {
     for (const relativePath of requiredMustRead) {
@@ -1850,7 +1881,185 @@ function taskEvidencePathExists(projectRoot, changeDir, relativePath) {
   return false;
 }
 
-function validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPath, taskId) {
+function sha256Value(value) {
+  return crypto.createHash('sha256').update(value).digest('hex');
+}
+
+function exactObjectKeys(value, expected) {
+  if (!isPlainObject(value)) return false;
+  const actual = Object.keys(value).sort();
+  const required = [...expected].sort();
+  return JSON.stringify(actual) === JSON.stringify(required);
+}
+
+function developmentGit(projectRoot, args) {
+  try {
+    return execFileSync('git', ['-C', projectRoot, ...args], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe']
+    }).trim();
+  } catch {
+    return null;
+  }
+}
+
+function developmentLifecyclePath(relativePath, activeChange) {
+  const normalized = String(relativePath).split(path.sep).join('/');
+  const changePrefix = `openspec/changes/${activeChange}/`;
+  return (
+    ['development/', 'verify/', 'codegraph/', 'operations/']
+      .some((directory) => normalized.startsWith(`${changePrefix}${directory}`))
+    || normalized === `openspec/changes/${activeChange}/tasks.md`
+  );
+}
+
+function developmentGlobPattern(pattern) {
+  let result = '^';
+  for (let index = 0; index < pattern.length; index += 1) {
+    const char = pattern[index];
+    if (char === '*' && pattern[index + 1] === '*') {
+      result += '.*';
+      index += 1;
+    } else if (char === '*') {
+      result += '[^/]*';
+    } else if (char === '?') {
+      result += '[^/]';
+    } else {
+      result += escapeRegExp(char);
+    }
+  }
+  return new RegExp(`${result}$`);
+}
+
+function taskAcceptanceAssertionIds(context) {
+  const scoped = unique([
+    ...(Array.isArray(context.acceptance_primary) ? context.acceptance_primary : []),
+    ...(Array.isArray(context.acceptance_subclaims) ? context.acceptance_subclaims : [])
+  ]);
+  if (scoped.length > 0) return scoped;
+  const declared = unique(
+    Array.isArray(context.acceptance_assertions)
+      ? context.acceptance_assertions
+      : []
+  );
+  if (declared.length > 0) return declared;
+  return unique([
+    ...(Array.isArray(context.acceptance_contributes) ? context.acceptance_contributes : []),
+    ...(Array.isArray(context.contributes_to) ? context.contributes_to : [])
+  ]);
+}
+
+function implementationScopeAtRef(
+  projectRoot,
+  activeChange,
+  context,
+  reviewedGitHead
+) {
+  const patterns = unique(
+    Array.isArray(context.allowed_files) ? context.allowed_files : []
+  )
+    .map((entry) => String(entry).split(path.sep).join('/'))
+    .filter((entry) => !developmentLifecyclePath(entry, activeChange))
+    .sort();
+  if (patterns.length === 0) return null;
+  const output = developmentGit(projectRoot, [
+    'ls-tree',
+    '-r',
+    '--full-tree',
+    reviewedGitHead
+  ]);
+  if (output === null) return null;
+  const matchers = patterns.map(developmentGlobPattern);
+  const entries = output === '' ? [] : output.split(/\r?\n/).map((line) => {
+    const [metadata, relativePath] = line.split('\t');
+    const [mode, type, objectId] = metadata.split(' ');
+    return {
+      path: String(relativePath).split(path.sep).join('/'),
+      mode,
+      type,
+      object_id: objectId
+    };
+  }).filter((entry) => matchers.some((matcher) => matcher.test(entry.path)))
+    .sort((left, right) => left.path.localeCompare(right.path));
+  if (entries.length === 0) return null;
+  return {
+    included_patterns: patterns,
+    entries,
+    sha256: sha256Value(JSON.stringify(canonicalAcceptanceScope({
+      patterns,
+      entries
+    })))
+  };
+}
+
+function safeDevelopmentRegularFile(root, candidate) {
+  try {
+    const rootReal = fs.realpathSync(root);
+    const status = fs.lstatSync(candidate);
+    const candidateReal = fs.realpathSync(candidate);
+    const relative = path.relative(rootReal, candidateReal);
+    return (
+      !status.isSymbolicLink()
+      && status.isFile()
+      && relative !== ''
+      && !relative.startsWith('..')
+      && !path.isAbsolute(relative)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function resolveTaskEvidence(projectRoot, changeDir, relativePath) {
+  if (!isCleanRelativePath(relativePath)) return null;
+  const changeRelativePrefixes = [
+    'codegraph/',
+    'development/',
+    'operations/',
+    'prototype/',
+    'verify/'
+  ];
+  const root = changeRelativePrefixes.some((prefix) => relativePath.startsWith(prefix))
+    ? changeDir
+    : projectRoot;
+  const candidate = path.resolve(root, relativePath);
+  if (!safeDevelopmentRegularFile(root, candidate)) return null;
+  return {
+    path: relativePath,
+    sha256: sha256Value(fs.readFileSync(candidate)),
+    size: fs.statSync(candidate).size
+  };
+}
+
+function sameEvidenceBinding(expected, actual) {
+  return (
+    isPlainObject(actual)
+    && exactObjectKeys(actual, ['path', 'sha256', 'size'])
+    && expected !== null
+    && actual.path === expected.path
+    && actual.sha256 === expected.sha256
+    && actual.size === expected.size
+  );
+}
+
+function canonicalAcceptanceScope(value) {
+  if (Array.isArray(value)) return value.map(canonicalAcceptanceScope);
+  if (!isPlainObject(value)) return value;
+  return Object.fromEntries(
+    Object.keys(value)
+      .sort()
+      .map((key) => [key, canonicalAcceptanceScope(value[key])])
+  );
+}
+
+function validateTaskAcceptance(
+  projectRoot,
+  changeDir,
+  taskDir,
+  relativeTaskPath,
+  taskId,
+  receiptAuthority
+) {
   const name = 'acceptance.json';
   const parsed = readJsonFile(path.join(taskDir, name));
   const blockers = [];
@@ -1878,19 +2087,288 @@ function validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPat
   }
 
   const value = parsed.value;
-  if (value.schema !== 'specnav.task-acceptance-evidence.v1') {
-    blockers.push('invalid-task-acceptance:schema');
+  const topLevelKeys = [
+    'schema',
+    'generated_by',
+    'task_id',
+    'generated_at',
+    'recorded_at',
+    'status',
+    'reviewed_git_head',
+    'reviewed_git_tree',
+    'implementation_scope',
+    'artifacts',
+    'test_runs',
+    'assertions',
+    'fallback_used'
+  ];
+  if (!exactObjectKeys(value, topLevelKeys)) {
+    blockers.push('invalid-task-acceptance:closed-schema');
+  }
+  if (value.schema !== 'specnav.task-acceptance-evidence.v2') blockers.push('invalid-task-acceptance:schema');
+  if (value.generated_by !== 'specnav-development/task-acceptance-evidence') {
+    blockers.push('invalid-task-acceptance:generated_by');
   }
   if (value.task_id !== taskId) blockers.push('invalid-task-acceptance:task_id');
   if (value.status !== 'approved') blockers.push('invalid-task-acceptance:status');
   if (value.fallback_used !== false) blockers.push('invalid-task-acceptance:fallback_used');
+  for (const field of ['generated_at', 'recorded_at']) {
+    if (!isCleanString(value[field]) || Number.isNaN(Date.parse(value[field]))) {
+      blockers.push(`invalid-task-acceptance:${field}`);
+    }
+  }
+
+  const gitObjectPattern = /^[0-9a-f]{40}$/;
+  if (!gitObjectPattern.test(String(value.reviewed_git_head))) {
+    blockers.push('invalid-task-acceptance:reviewed_git_head');
+  }
+  if (!gitObjectPattern.test(String(value.reviewed_git_tree))) {
+    blockers.push('invalid-task-acceptance:reviewed_git_tree');
+  }
+  const reviewedTree = gitObjectPattern.test(String(value.reviewed_git_head))
+    ? developmentGit(projectRoot, ['rev-parse', `${value.reviewed_git_head}^{tree}`])
+    : null;
+  if (reviewedTree !== value.reviewed_git_tree) {
+    blockers.push('task-acceptance:reviewed-tree-mismatch');
+  }
+  const currentHead = developmentGit(projectRoot, ['rev-parse', 'HEAD']);
+  if (
+    currentHead === null
+    || developmentGit(projectRoot, [
+      'merge-base',
+      '--is-ancestor',
+      value.reviewed_git_head,
+      currentHead
+    ]) === null
+  ) {
+    blockers.push('task-acceptance:reviewed-head-not-ancestor');
+  }
+  if (currentHead !== null && gitObjectPattern.test(String(value.reviewed_git_head))) {
+    const committedChanges = developmentGit(projectRoot, [
+      'diff',
+      '--name-only',
+      `${value.reviewed_git_head}..${currentHead}`,
+      '--'
+    ]);
+    if (committedChanges === null) {
+      blockers.push('task-acceptance:git-diff-unavailable');
+    } else {
+      for (const relativePath of committedChanges.split(/\r?\n/).filter(Boolean)) {
+        if (!developmentLifecyclePath(relativePath, path.basename(changeDir))) {
+          blockers.push(`task-acceptance:implementation-changed-after-review:${relativePath}`);
+        }
+      }
+    }
+  }
+  const dirtyPaths = unique([
+    ...(developmentGit(projectRoot, ['diff', '--name-only', 'HEAD', '--']) || '').split(/\r?\n/),
+    ...(developmentGit(projectRoot, ['ls-files', '--others', '--exclude-standard']) || '').split(/\r?\n/)
+  ]).filter(Boolean);
+  for (const relativePath of dirtyPaths) {
+    if (!developmentLifecyclePath(relativePath, path.basename(changeDir))) {
+      blockers.push(`task-acceptance:dirty-implementation-scope:${relativePath}`);
+    }
+  }
+
+  const contextParsed = readJsonFile(path.join(taskDir, 'context.json'));
+  const context = contextParsed.ok && isPlainObject(contextParsed.value)
+    ? contextParsed.value
+    : null;
+  const expectedScope = context && gitObjectPattern.test(String(value.reviewed_git_head))
+    ? implementationScopeAtRef(
+      projectRoot,
+      path.basename(changeDir),
+      context,
+      value.reviewed_git_head
+    )
+    : null;
+  if (
+    expectedScope === null
+    || !isPlainObject(value.implementation_scope)
+    || JSON.stringify(canonicalAcceptanceScope(value.implementation_scope))
+      !== JSON.stringify(canonicalAcceptanceScope(expectedScope))
+  ) {
+    blockers.push('task-acceptance:implementation-scope-mismatch');
+  }
+
+  const taskPrefix = `development/tasks/${taskId}`;
+  const artifactDefinitions = {
+    context: { path: `${taskPrefix}/context.json`, heading: null, expected: null },
+    report: { path: `${taskPrefix}/report.md`, heading: 'Status', expected: 'DONE' },
+    spec_review: {
+      path: `${taskPrefix}/spec-review.md`,
+      heading: 'Verdict',
+      expected: 'approved'
+    },
+    quality_review: {
+      path: `${taskPrefix}/quality-review.md`,
+      heading: 'Verdict',
+      expected: 'approved'
+    }
+  };
+  if (
+    !exactObjectKeys(value.artifacts, Object.keys(artifactDefinitions))
+  ) {
+    blockers.push('invalid-task-acceptance:artifacts');
+  } else {
+    for (const [field, definition] of Object.entries(artifactDefinitions)) {
+      const binding = value.artifacts[field];
+      const expectedKeys = definition.heading
+        ? ['path', 'sha256', definition.heading.toLowerCase()]
+        : ['path', 'sha256'];
+      if (
+        !exactObjectKeys(binding, expectedKeys)
+        || binding.path !== definition.path
+      ) {
+        blockers.push(`invalid-task-acceptance:artifact:${field}`);
+        continue;
+      }
+      const file = path.join(changeDir, definition.path);
+      if (statKind(file) !== 'file') {
+        blockers.push(`task-acceptance:missing-artifact:${field}`);
+        continue;
+      }
+      const content = fs.readFileSync(file);
+      if (binding.sha256 !== sha256Value(content)) {
+        blockers.push(`task-acceptance:artifact-digest-mismatch:${field}`);
+      }
+      if (definition.heading) {
+        const text = content.toString('utf8');
+        const parsedHeadings = parseMarkdownHeadings(text);
+        const heading = findHeading(parsedHeadings, definition.heading);
+        const actual = heading ? firstSubstantiveValue(parsedHeadings, heading) : null;
+        if (actual !== definition.expected || binding[definition.heading.toLowerCase()] !== actual) {
+          blockers.push(`task-acceptance:artifact-verdict-mismatch:${field}`);
+        }
+      }
+    }
+  }
+
+  const validationLog = readTextFile(path.join(
+    changeDir,
+    'development',
+    'validation-log.jsonl'
+  ));
+  const validationReceipts = new Map();
+  if (!validationLog.ok) {
+    blockers.push('task-acceptance:validation-log-missing');
+  } else {
+    validationLog.value.split(/\r?\n/).forEach((raw, index) => {
+      if (!raw.trim()) return;
+      try {
+        const entry = JSON.parse(raw);
+        if (isCleanString(entry.receipt_id)) {
+          if (validationReceipts.has(entry.receipt_id)) {
+            blockers.push(`task-acceptance:duplicate-receipt-id:${entry.receipt_id}`);
+          } else {
+            validationReceipts.set(entry.receipt_id, {
+              entry,
+              raw,
+              line: index + 1
+            });
+          }
+        }
+      } catch {
+        blockers.push(`task-acceptance:invalid-validation-log:${index + 1}`);
+      }
+    });
+  }
+
+  const declaredAssertionIds = context ? taskAcceptanceAssertionIds(context) : [];
+  const declaredAssertionSet = new Set(declaredAssertionIds);
+  const testRuns = new Map();
+  if (!Array.isArray(value.test_runs) || value.test_runs.length === 0) {
+    blockers.push('invalid-task-acceptance:test_runs');
+  } else {
+    for (const testRun of value.test_runs) {
+      if (
+        !exactObjectKeys(testRun, [
+          'id',
+          'command',
+          'assertion_ids',
+          'recorded_at',
+          'validation_receipt_sha256',
+          'evidence_log'
+        ])
+        || !isCleanString(testRun.id)
+      ) {
+        blockers.push('invalid-task-acceptance:test-run');
+        continue;
+      }
+      if (testRuns.has(testRun.id)) {
+        blockers.push(`task-acceptance:duplicate-test-run-id:${testRun.id}`);
+        continue;
+      }
+      testRuns.set(testRun.id, testRun);
+      const receipt = validationReceipts.get(testRun.id);
+      if (!receipt) {
+        blockers.push(`task-acceptance:missing-validation-receipt:${testRun.id}`);
+        continue;
+      }
+      const entry = receipt.entry;
+      const trustedReceipt = receiptAuthority
+        && typeof receiptAuthority.verify === 'function'
+        && receiptAuthority.verify(entry);
+      const normalizedAssertions = Array.isArray(testRun.assertion_ids)
+        ? unique(testRun.assertion_ids)
+        : [];
+      if (
+        !trustedReceipt
+        || entry.task !== taskId
+        || entry.command !== testRun.command
+        || entry.status !== 'pass'
+        || entry.ok !== true
+        || entry.exit_status !== 0
+        || entry.attestation !== 'system-executed'
+        || entry.overturned === true
+        || entry.reviewed_git_head !== value.reviewed_git_head
+        || entry.reviewed_git_tree !== value.reviewed_git_tree
+        || entry.recorded_at !== testRun.recorded_at
+        || JSON.stringify(entry.assertion_ids) !== JSON.stringify(testRun.assertion_ids)
+        || normalizedAssertions.length !== testRun.assertion_ids.length
+        || normalizedAssertions.some((id) => !declaredAssertionSet.has(id))
+      ) {
+        blockers.push(`task-acceptance:validation-receipt-mismatch:${testRun.id}`);
+      }
+      if (testRun.validation_receipt_sha256 !== sha256Value(Buffer.from(receipt.raw))) {
+        blockers.push(`task-acceptance:validation-receipt-digest-mismatch:${testRun.id}`);
+      }
+      const expectedEvidence = resolveTaskEvidence(
+        projectRoot,
+        changeDir,
+        entry.evidence_log
+      );
+      if (
+        expectedEvidence === null
+        || entry.evidence_log_sha256 !== expectedEvidence.sha256
+        || entry.evidence_log_size !== expectedEvidence.size
+      ) {
+        blockers.push(`task-acceptance:signed-evidence-mismatch:${testRun.id}`);
+      }
+      if (!sameEvidenceBinding(expectedEvidence, testRun.evidence_log)) {
+        blockers.push(`task-acceptance:test-run-evidence-mismatch:${testRun.id}`);
+      }
+    }
+  }
 
   if (!Array.isArray(value.assertions) || value.assertions.length === 0) {
     blockers.push('invalid-task-acceptance:assertions');
   } else {
     const seenIds = new Set();
+    const referencedTestRuns = new Set();
     for (const assertion of value.assertions) {
-      if (!isPlainObject(assertion) || !isCleanString(assertion.id)) {
+      if (
+        !exactObjectKeys(assertion, [
+          'id',
+          'parent_id',
+          'status',
+          'test_run_ids',
+          'direct_evidence',
+          'reused_evidence',
+          'claim'
+        ])
+        || !isCleanString(assertion.id)
+      ) {
         blockers.push('invalid-task-acceptance:assertion-id');
         continue;
       }
@@ -1905,26 +2383,75 @@ function validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPat
       if (assertion.status !== 'passing') {
         blockers.push(`task-acceptance:non-passing:${assertionId}`);
       }
-
-      const evidenceFields = ['direct_evidence', 'reused_evidence'];
-      for (const field of evidenceFields) {
+      if (assertion.parent_id !== assertionId.split(':', 1)[0]) {
+        blockers.push(`invalid-task-acceptance:${assertionId}:parent_id`);
+      }
+      if (!isCleanString(assertion.claim)) {
+        blockers.push(`invalid-task-acceptance:${assertionId}:claim`);
+      }
+      if (
+        !Array.isArray(assertion.test_run_ids)
+        || assertion.test_run_ids.length === 0
+        || unique(assertion.test_run_ids).length !== assertion.test_run_ids.length
+      ) {
+        blockers.push(`invalid-task-acceptance:${assertionId}:test_run_ids`);
+      } else {
+        for (const testRunId of assertion.test_run_ids) {
+          referencedTestRuns.add(testRunId);
+          const testRun = testRuns.get(testRunId);
+          if (
+            !testRun
+            || !Array.isArray(testRun.assertion_ids)
+            || !testRun.assertion_ids.includes(assertionId)
+          ) {
+            blockers.push(
+              `task-acceptance:test-run-assertion-mismatch:${assertionId}:${testRunId}`
+            );
+          }
+        }
+      }
+      for (const field of ['direct_evidence', 'reused_evidence']) {
         if (!Array.isArray(assertion[field])) {
           blockers.push(`invalid-task-acceptance:${assertionId}:${field}`);
         }
       }
-
-      const directEvidence = Array.isArray(assertion.direct_evidence) ? assertion.direct_evidence : [];
-      const reusedEvidence = Array.isArray(assertion.reused_evidence) ? assertion.reused_evidence : [];
-      if (directEvidence.length === 0 && reusedEvidence.length === 0) {
-        blockers.push(`task-acceptance:missing-evidence:${assertionId}`);
-      }
-
-      for (const evidencePath of [...directEvidence, ...reusedEvidence]) {
-        if (!isCleanRelativePath(evidencePath)) {
-          blockers.push(`task-acceptance:invalid-evidence-path:${assertionId}:${String(evidencePath)}`);
-        } else if (!taskEvidencePathExists(projectRoot, changeDir, evidencePath)) {
-          blockers.push(`task-acceptance:missing-evidence-path:${assertionId}:${evidencePath}`);
+      for (const evidence of Array.isArray(assertion.direct_evidence)
+        ? assertion.direct_evidence
+        : []) {
+        const expected = isPlainObject(evidence)
+          ? resolveTaskEvidence(projectRoot, changeDir, evidence.path)
+          : null;
+        if (!sameEvidenceBinding(expected, evidence)) {
+          blockers.push(`task-acceptance:direct-evidence-mismatch:${assertionId}`);
         }
+      }
+      for (const evidence of Array.isArray(assertion.reused_evidence)
+        ? assertion.reused_evidence
+        : []) {
+        if (
+          !isPlainObject(evidence)
+          || !isValidTaskId(evidence.task_id)
+          || !sameEvidenceBinding(
+            resolveTaskEvidence(projectRoot, changeDir, evidence.path),
+            {
+              path: evidence.path,
+              sha256: evidence.sha256,
+              size: evidence.size
+            }
+          )
+        ) {
+          blockers.push(`task-acceptance:reused-evidence-mismatch:${assertionId}`);
+        }
+      }
+    }
+    const actualAssertionIds = [...seenIds].sort();
+    const expectedAssertionIds = [...declaredAssertionSet].sort();
+    if (JSON.stringify(actualAssertionIds) !== JSON.stringify(expectedAssertionIds)) {
+      blockers.push('task-acceptance:assertion-set-mismatch');
+    }
+    for (const testRunId of testRuns.keys()) {
+      if (!referencedTestRuns.has(testRunId)) {
+        blockers.push(`task-acceptance:unreferenced-test-run:${testRunId}`);
       }
     }
   }
@@ -1965,19 +2492,15 @@ function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
     if (!HANDOFF_REVIEW_VERDICTS.has(verdict)) blockers.push(`invalid-${type}:verdict`);
   }
 
-  // Generation/evaluation separation: an approved task review must cite the
-  // task-level assertions it verified. Parent acceptance alone cannot approve
-  // a task handoff.
-  if (type === 'spec-review' && acceptanceIds && acceptanceIds.size > 0 && verdict === 'approved') {
+  // Both independent reviews must cover the exact task-level assertion set.
+  // Parent acceptance, partial citation, and an unbound quality verdict cannot
+  // approve a task handoff.
+  if (acceptanceIds && acceptanceIds.size > 0 && verdict === 'approved') {
     const assertionsHeading = findHeading(parsed, 'Acceptance Assertions Verified');
     if (!assertionsHeading) {
       blockers.push('review:unsupported-verdict');
     } else {
       const body = headingBodyLines(parsed, assertionsHeading).join('\n');
-      const validCited = [...acceptanceIds].filter((id) => {
-        const boundary = '[^A-Za-z0-9:_-]';
-        return new RegExp(`(?:^|${boundary})${escapeRegExp(id)}(?=$|${boundary})`, 'm').test(body);
-      });
       const assertionPrefixes = new Set(
         [...acceptanceIds]
           .map((id) => String(id).replace(/\d+$/, ''))
@@ -1991,14 +2514,27 @@ function validateVerdictFile(taskDir, relativeTaskPath, name, acceptanceIds) {
       for (const id of cited) {
         if (!acceptanceIds.has(id)) blockers.push(`review:invalid-reference:${id}`);
       }
-      if (validCited.length === 0) blockers.push('review:unsupported-verdict');
+      const expected = [...acceptanceIds].sort();
+      const actual = cited.filter((id) => acceptanceIds.has(id)).sort();
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        blockers.push('review:assertion-coverage-mismatch');
+      }
     }
   }
 
   return { name, path: path.join(relativeTaskPath, name), ok: blockers.length === 0, blockers: unique(blockers) };
 }
 
-function validateTaskDir(projectRoot, changeDir, developmentDir, activeChange, dirName, mode, requiredMustRead) {
+function validateTaskDir(
+  projectRoot,
+  changeDir,
+  developmentDir,
+  activeChange,
+  dirName,
+  mode,
+  requiredMustRead,
+  receiptAuthority
+) {
   const taskDir = path.join(developmentDir, 'tasks', dirName);
   const relativeTaskPath = artifactPath(activeChange, path.join('tasks', dirName), true);
   const requiredBriefPath = artifactPath(activeChange, path.join('tasks', dirName, 'brief.md'), true);
@@ -2016,14 +2552,21 @@ function validateTaskDir(projectRoot, changeDir, developmentDir, activeChange, d
   ];
 
   if (mode === 'handoff') {
-    const acceptance = validateTaskAcceptance(projectRoot, changeDir, taskDir, relativeTaskPath, dirName);
+    const acceptance = validateTaskAcceptance(
+      projectRoot,
+      changeDir,
+      taskDir,
+      relativeTaskPath,
+      dirName,
+      receiptAuthority
+    );
     const acceptanceIds = new Set(acceptance.assertion_ids);
     artifacts.push(acceptance);
     blockers.push(...acceptance.blockers);
     validators.push(
       () => validateReport(taskDir, relativeTaskPath),
       () => validateVerdictFile(taskDir, relativeTaskPath, 'spec-review.md', acceptanceIds),
-      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md', null)
+      () => validateVerdictFile(taskDir, relativeTaskPath, 'quality-review.md', acceptanceIds)
     );
   }
 
@@ -2074,6 +2617,172 @@ function taskGraphNodeIds(graph) {
     ids.push(id);
   }
   return unique(ids);
+}
+
+function normalizedTaskItemIds(value) {
+  if (!Array.isArray(value)) return null;
+  const ids = value.map((entry) => (
+    typeof entry === 'string' ? entry.trim() : ''
+  ));
+  if (
+    ids.length === 0
+    || ids.some((entry) => !TASK_ITEM_ID_PATTERN.test(entry))
+    || new Set(ids).size !== ids.length
+  ) {
+    return null;
+  }
+  return [...ids].sort((left, right) => left.localeCompare(right, undefined, {
+    numeric: true
+  }));
+}
+
+function sameTaskItemIds(left, right) {
+  const normalizedLeft = normalizedTaskItemIds(left);
+  const normalizedRight = normalizedTaskItemIds(right);
+  return normalizedLeft !== null
+    && normalizedRight !== null
+    && JSON.stringify(normalizedLeft) === JSON.stringify(normalizedRight);
+}
+
+function validateTaskItemOwnership(
+  changeDir,
+  developmentDir,
+  activeChange,
+  taskIds,
+  manifest
+) {
+  const name = 'task-item-ownership';
+  const blockers = [];
+  const tasksText = readTextFile(path.join(changeDir, 'tasks.md'));
+  const checklistItems = tasksText.ok ? parseTaskItems(tasksText.value) : [];
+  const checklistIds = [];
+  for (const item of checklistItems) {
+    if (!item.task_id) {
+      blockers.push(`task-item-ownership:checklist-id-missing:line-${item.line}`);
+      continue;
+    }
+    if (!TASK_ITEM_ID_PATTERN.test(item.task_id)) {
+      blockers.push(`task-item-ownership:checklist-id-invalid:${item.task_id}`);
+      continue;
+    }
+    checklistIds.push(item.task_id);
+  }
+  for (const duplicate of checklistIds.filter(
+    (id, index) => checklistIds.indexOf(id) !== index
+  )) {
+    blockers.push(`task-item-ownership:checklist-id-duplicate:${duplicate}`);
+  }
+
+  const graph = manifest.present && manifest.ok
+    ? manifest.value.task_graph
+    : readJsonFile(path.join(developmentDir, 'task-graph.json')).value;
+  const graphNodes = isPlainObject(graph) && Array.isArray(graph.nodes)
+    ? graph.nodes
+    : [];
+  if (graphNodes.length === 0) {
+    blockers.push('task-item-ownership:task-graph-unavailable');
+  }
+
+  const contextLog = parseJsonl(
+    path.join(developmentDir, 'task-context.jsonl'),
+    'task-context.jsonl'
+  );
+  blockers.push(...contextLog.blockers.map(
+    (blocker) => `task-item-ownership:${blocker}`
+  ));
+  const contextRows = new Map();
+  for (const row of contextLog.entries) {
+    if (!isCleanString(row.task_id)) continue;
+    if (contextRows.has(row.task_id)) {
+      blockers.push(`task-item-ownership:duplicate-context-row:${row.task_id}`);
+      continue;
+    }
+    contextRows.set(row.task_id, row);
+  }
+
+  const formalTasks = new Set(taskIds);
+  const graphTaskIds = new Set();
+  const owners = new Map();
+  for (const node of graphNodes) {
+    if (!isPlainObject(node) || !isCleanString(node.id)) {
+      blockers.push('task-item-ownership:invalid-graph-node');
+      continue;
+    }
+    const taskId = node.id;
+    graphTaskIds.add(taskId);
+    if (!formalTasks.has(taskId)) {
+      blockers.push(`task-item-ownership:graph-task-not-formal:${taskId}`);
+    }
+    const graphItems = normalizedTaskItemIds(node.task_items);
+    if (graphItems === null) {
+      blockers.push(`task-item-ownership:invalid-graph-task-items:${taskId}`);
+      continue;
+    }
+
+    const contextFile = readJsonFile(path.join(
+      developmentDir,
+      'tasks',
+      taskId,
+      'context.json'
+    ));
+    if (
+      !contextFile.ok
+      || !isPlainObject(contextFile.value)
+      || !sameTaskItemIds(graphItems, contextFile.value.task_items)
+    ) {
+      blockers.push(`task-item-ownership:context-mismatch:${taskId}`);
+    }
+
+    const contextRow = contextRows.get(taskId);
+    if (!contextRow || !sameTaskItemIds(graphItems, contextRow.task_items)) {
+      blockers.push(`task-item-ownership:context-log-mismatch:${taskId}`);
+    }
+
+    for (const itemId of graphItems) {
+      if (!owners.has(itemId)) owners.set(itemId, []);
+      owners.get(itemId).push(taskId);
+    }
+  }
+
+  for (const taskId of formalTasks) {
+    if (!graphTaskIds.has(taskId)) {
+      blockers.push(`task-item-ownership:formal-task-missing-from-graph:${taskId}`);
+    }
+    if (!contextRows.has(taskId)) {
+      blockers.push(`task-item-ownership:formal-task-missing-context-row:${taskId}`);
+    }
+  }
+  for (const taskId of contextRows.keys()) {
+    if (!formalTasks.has(taskId)) {
+      blockers.push(`task-item-ownership:orphan-context-row:${taskId}`);
+    }
+  }
+
+  const checklistSet = new Set(checklistIds);
+  for (const itemId of checklistSet) {
+    const itemOwners = owners.get(itemId) || [];
+    if (itemOwners.length === 0) {
+      blockers.push(`task-item-ownership:unowned-checklist-item:${itemId}`);
+    } else if (itemOwners.length > 1) {
+      blockers.push(
+        `task-item-ownership:multiple-primary-owners:${itemId}:${itemOwners.join(',')}`
+      );
+    }
+  }
+  for (const [itemId, itemOwners] of owners) {
+    if (!checklistSet.has(itemId)) {
+      blockers.push(
+        `task-item-ownership:unknown-owned-item:${itemId}:${itemOwners.join(',')}`
+      );
+    }
+  }
+
+  return artifactResult(activeChange, name, unique(blockers), true, {
+    checkbox_count: checklistSet.size,
+    formal_task_count: formalTasks.size,
+    owned_item_count: owners.size,
+    context_row_count: contextRows.size
+  });
 }
 
 function plannedTaskIds(developmentDir, manifest) {
@@ -2240,6 +2949,19 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   const tasks = [];
   const repairIncidents = [];
   const blockers = [];
+  let receiptAuthority = options.receiptAuthority || null;
+  if (mode === 'handoff' && !receiptAuthority) {
+    try {
+      receiptAuthority = resolveManagedValidationReceiptAuthority({
+        projectRoot,
+        changeDir
+      });
+    } catch (error) {
+      blockers.push(
+        `task-acceptance:receipt-authority-unavailable:${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
   const approvalBinding = validatePrototypeApprovalBinding(projectRoot, activeChange);
   const requiredReferences = requiredSourcePaths(activeChange, approvalBinding.approved_source_path);
 
@@ -2294,12 +3016,20 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
         activeChange,
         dirName,
         mode,
-        requiredReferences
+        requiredReferences,
+        receiptAuthority
       ));
     }
   }
 
   const taskIds = tasks.map((task) => task.task_id);
+  artifacts.push(validateTaskItemOwnership(
+    changeDir,
+    developmentDir,
+    activeChange,
+    taskIds,
+    manifest
+  ));
   artifacts.push(validateTaskContextLog(developmentDir, activeChange));
   const acceptanceArtifact = validateAcceptanceAssertions(changeDir, activeChange);
   if (acceptanceArtifact) artifacts.push(acceptanceArtifact);

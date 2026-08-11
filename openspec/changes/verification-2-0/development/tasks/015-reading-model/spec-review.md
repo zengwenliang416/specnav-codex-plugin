@@ -31,7 +31,7 @@ approved
 
 ## Acceptance Assertions Verified
 
-- `AC-16`
+- AC-16
 
 ## Verified Behavior
 
