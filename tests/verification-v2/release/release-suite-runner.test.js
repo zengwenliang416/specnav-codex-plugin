@@ -1,8 +1,10 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { EventEmitter } = require('node:events');
+const { spawn } = require('node:child_process');
+const { EventEmitter, once } = require('node:events');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -12,7 +14,8 @@ const {
   createShardTest,
   parseShardConfig,
   runReleaseSuite,
-  shardAssignments
+  shardAssignments,
+  terminateProcessGroup
 } = require('./release-suite-runner');
 
 const RELEASE_RUNNER = path.resolve(
@@ -39,6 +42,32 @@ function fakeChild(result, kills = [], options = {}) {
     });
   }
   return child;
+}
+
+function fakeTerminate(child, signal) {
+  return child.kill(signal);
+}
+
+async function waitForFile(file, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (fs.existsSync(file)) return;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`timed out waiting for ${file}`);
+}
+
+async function waitForExit(child, timeoutMs = 5000) {
+  if (child.exitCode !== null || child.signalCode !== null) return;
+  await Promise.race([
+    once(child, 'exit'),
+    new Promise((_, reject) => {
+      setTimeout(
+        () => reject(new Error('timed out waiting for process exit')),
+        timeoutMs
+      );
+    })
+  ]);
 }
 
 test('shard configuration is explicit and fails closed', () => {
@@ -121,6 +150,7 @@ test('release suite launches four shards with isolated shard identities', async 
     ]);
     assert.equal(invocation.options.env[SHARD_COUNT_ENV], '4');
     assert.equal(invocation.options.env.BASE, 'kept');
+    assert.equal(invocation.options.detached, true);
   }
 });
 
@@ -129,6 +159,7 @@ test('a failed shard fails the suite without hiding successful shards', async ()
   const result = await runReleaseSuite({
     shardCount: 4,
     signalSource: new EventEmitter(),
+    terminateProcess: fakeTerminate,
     spawnFunction() {
       const current = index;
       index += 1;
@@ -150,6 +181,7 @@ test('a synchronous spawn failure stops launch and terminates active shards', as
   const result = await runReleaseSuite({
     shardCount: 4,
     signalSource: new EventEmitter(),
+    terminateProcess: fakeTerminate,
     spawnFunction() {
       calls += 1;
       if (calls === 2) throw new Error('spawn denied');
@@ -198,6 +230,7 @@ test('parent termination is forwarded to every active shard', async () => {
     signalSource,
     terminationGraceMs: 5,
     forceWaitMs: 5,
+    terminateProcess: fakeTerminate,
     spawnFunction() {
       const current = index;
       index += 1;
@@ -233,6 +266,7 @@ test('ignored termination is escalated and forcibly settled', async () => {
     signalSource,
     terminationGraceMs: 5,
     forceWaitMs: 5,
+    terminateProcess: fakeTerminate,
     spawnFunction() {
       return fakeChild(null, kills, {
         killResult: false,
@@ -255,6 +289,122 @@ test('ignored termination is escalated and forcibly settled', async () => {
   );
   assert.equal(result.termination_errors.length, 2);
   assert.equal(signalSource.listenerCount('SIGTERM'), 0);
+});
+
+test('process-group termination reaches a real test worker descendant', async (t) => {
+  if (process.platform === 'win32') {
+    const calls = [];
+    terminateProcessGroup({ pid: 4321 }, 'SIGKILL', {
+      spawnSyncFunction(command, args) {
+        calls.push({ command, args });
+        return { status: 0, stderr: '' };
+      }
+    });
+    assert.deepEqual(calls, [{
+      command: 'taskkill.exe',
+      args: ['/pid', '4321', '/T', '/F']
+    }]);
+    return;
+  }
+
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-process-group-')
+  );
+  const readyFile = path.join(root, 'ready.json');
+  const markerFile = path.join(root, 'worker-signal.txt');
+  const workerSource = [
+    "'use strict';",
+    "const fs = require('node:fs');",
+    'const marker = process.argv[1];',
+    "process.on('SIGTERM', () => {",
+    "  fs.writeFileSync(marker, 'SIGTERM\\n');",
+    '  process.exit(0);',
+    '});',
+    "if (process.send) process.send('ready');",
+    'setInterval(() => {}, 1000);'
+  ].join('\n');
+  const parentSource = [
+    "'use strict';",
+    "const { spawn } = require('node:child_process');",
+    "const fs = require('node:fs');",
+    'const ready = process.argv[1];',
+    'const marker = process.argv[2];',
+    `const worker = spawn(process.execPath, ['-e', ${JSON.stringify(
+      workerSource
+    )}, marker], {`,
+    "  stdio: ['ignore', 'ignore', 'ignore', 'ipc']",
+    '});',
+    "worker.once('message', () => {",
+    '  fs.writeFileSync(ready, JSON.stringify({',
+    '    parent_pid: process.pid,',
+    '    worker_pid: worker.pid',
+    '  }));',
+    '});',
+    'setInterval(() => {}, 1000);'
+  ].join('\n');
+  const parent = spawn(
+    process.execPath,
+    ['-e', parentSource, readyFile, markerFile],
+    {
+      detached: true,
+      stdio: 'ignore'
+    }
+  );
+  t.after(() => {
+    try {
+      process.kill(-parent.pid, 'SIGKILL');
+    } catch {
+      // The process group is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(readyFile);
+  terminateProcessGroup(parent, 'SIGTERM');
+  await waitForExit(parent);
+  await waitForFile(markerFile);
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'SIGTERM\n');
+});
+
+test('release shell forwards adapter termination to its active Node command', async (t) => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-release-shell-signal-')
+  );
+  const nodeFile = path.join(root, 'node');
+  const pidFile = path.join(root, 'node.pid');
+  const markerFile = path.join(root, 'node-signal.txt');
+  fs.writeFileSync(nodeFile, [
+    '#!/usr/bin/env bash',
+    'if [[ "${1:-}" == "--check" ]]; then exit 0; fi',
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
+    "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'while true; do sleep 1; done',
+    ''
+  ].join('\n'), { mode: 0o755 });
+  const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
+    cwd: path.resolve(__dirname, '../../..'),
+    env: {
+      ...process.env,
+      PATH: `${root}:${process.env.PATH}`,
+      SPECNAV_TEST_CHILD_PID_FILE: pidFile,
+      SPECNAV_TEST_SIGNAL_FILE: markerFile
+    },
+    stdio: 'ignore'
+  });
+  t.after(() => {
+    try {
+      shell.kill('SIGKILL');
+    } catch {
+      // The shell is expected to have exited.
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  await waitForFile(pidFile);
+  shell.kill('SIGTERM');
+  await waitForExit(shell);
+  await waitForFile(markerFile);
+  assert.equal(fs.readFileSync(markerFile, 'utf8'), 'TERM\n');
 });
 
 test('release shell dynamically includes support tests and excludes the sharded file', () => {

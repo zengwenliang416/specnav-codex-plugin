@@ -1,6 +1,6 @@
 'use strict';
 
-const { spawn } = require('node:child_process');
+const { spawn, spawnSync } = require('node:child_process');
 const { EventEmitter } = require('node:events');
 const path = require('node:path');
 
@@ -80,6 +80,7 @@ function shardCommand(options, index) {
         [SHARD_COUNT_ENV]: String(options.shardCount),
         [SHARD_INDEX_ENV]: String(index)
       },
+      detached: true,
       stdio: options.stdio
     }
   };
@@ -121,13 +122,35 @@ function launchShard(spawnFunction, command, index) {
   };
 }
 
-function killExecution(execution, signal, errors) {
+function terminateProcessGroup(child, signal, dependencies = {}) {
+  if (!Number.isSafeInteger(child?.pid) || child.pid <= 0) {
+    throw new Error('verification-release:shard-pid-invalid');
+  }
+  if (process.platform === 'win32') {
+    const run = dependencies.spawnSyncFunction || spawnSync;
+    const args = ['/pid', String(child.pid), '/T'];
+    if (signal === 'SIGKILL') args.push('/F');
+    const result = run('taskkill.exe', args, {
+      encoding: 'utf8',
+      windowsHide: true
+    });
+    if (result.status !== 0) {
+      throw new Error(
+        result.stderr?.trim()
+        || 'verification-release:taskkill-failed'
+      );
+    }
+    return true;
+  }
+  const kill = dependencies.killProcess || process.kill;
+  kill(-child.pid, signal);
+  return true;
+}
+
+function killExecution(execution, signal, errors, terminateProcess) {
   if (execution.settled) return;
   try {
-    if (
-      typeof execution.child.kill !== 'function'
-      || execution.child.kill(signal) === false
-    ) {
+    if (terminateProcess(execution.child, signal) === false) {
       errors.push({
         index: execution.index,
         signal,
@@ -175,6 +198,7 @@ async function runReleaseSuite(options = {}) {
     shardCount,
     spawnFunction: options.spawnFunction || spawn,
     stdio: options.stdio || 'inherit',
+    terminateProcess: options.terminateProcess || terminateProcessGroup,
     testFile: options.testFile || path.join(__dirname, 'release-proof.test.js')
   };
   const signalSource = options.signalSource || process;
@@ -200,11 +224,21 @@ async function runReleaseSuite(options = {}) {
     if (shutdownStarted) return;
     shutdownStarted = true;
     for (const execution of executions) {
-      killExecution(execution, signal, terminationErrors);
+      killExecution(
+        execution,
+        signal,
+        terminationErrors,
+        runtime.terminateProcess
+      );
     }
     escalationTimer = setTimeout(() => {
       for (const execution of executions) {
-        killExecution(execution, 'SIGKILL', terminationErrors);
+        killExecution(
+          execution,
+          'SIGKILL',
+          terminationErrors,
+          runtime.terminateProcess
+        );
       }
     }, terminationGraceMs);
     forceTimer = setTimeout(() => {
@@ -291,5 +325,6 @@ module.exports = {
   parseShardConfig,
   runReleaseSuite,
   shardAssignments,
-  shardCommand
+  shardCommand,
+  terminateProcessGroup
 };
