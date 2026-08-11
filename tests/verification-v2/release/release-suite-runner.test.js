@@ -753,8 +753,8 @@ test('release shell forwards adapter termination to its active Node command', as
   const markerFile = path.join(root, 'node-signal.txt');
   writeNodeProxy(nodeFile, [
     'if [[ "${1:-}" == "--check" ]]; then exit 0; fi',
-    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     'while true; do sleep 1; done'
   ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
@@ -795,8 +795,8 @@ test('release shell terminates during managed Python preflight without continuin
   const continuedFile = path.join(root, 'node-ran.txt');
   fs.writeFileSync(pythonFile, [
     '#!/usr/bin/env bash',
-    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     'while true; do sleep 1; done',
     ''
   ].join('\n'), { mode: 0o755 });
@@ -842,8 +842,8 @@ test('release shell escalates a stubborn managed command to SIGKILL', async (t) 
   const pidFile = path.join(root, 'python.pid');
   fs.writeFileSync(pythonFile, [
     '#!/bin/bash',
-    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap '' TERM",
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     'while true; do /bin/sleep 1; done',
     ''
   ].join('\n'), { mode: 0o755 });
@@ -894,9 +894,9 @@ test('release shell kills a stubborn descendant after its coordinator exits', as
     'if [[ "${1:-}" != "--check" ]]; then exit 0; fi',
     "/bin/bash -c 'trap \"\" TERM; while true; do /bin/sleep 1; done' &",
     'worker_pid=$!',
+    "trap 'exit 143' TERM",
     'printf "%s\\n" "$$" > "$SPECNAV_TEST_COORDINATOR_PID_FILE"',
     'printf "%s\\n" "$worker_pid" > "$SPECNAV_TEST_WORKER_PID_FILE"',
-    "trap 'exit 143' TERM",
     'while true; do /bin/sleep 1; done'
   ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
@@ -946,8 +946,8 @@ test('release shell manages assertion emission after a failed command', async (t
   const resultFile = path.join(root, 'assertion-results.jsonl');
   writeNodeProxy(nodeFile, [
     'if [[ "${1:-}" == "--check" ]]; then exit 1; fi',
-    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     "trap 'printf \"TERM\\\\n\" > \"$SPECNAV_TEST_SIGNAL_FILE\"; exit 143' TERM",
+    'printf "%s\\n" "$$" > "$SPECNAV_TEST_CHILD_PID_FILE"',
     'while true; do sleep 1; done'
   ]);
   const shell = spawn('/bin/bash', [RELEASE_RUNNER], {
