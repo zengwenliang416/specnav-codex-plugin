@@ -6,7 +6,13 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const childProcess = require('node:child_process');
-const test = require('node:test');
+const nodeTest = require('node:test');
+
+const {
+  createShardTest
+} = require('./release-suite-runner');
+
+const test = createShardTest(nodeTest);
 
 const kernel = require('../../../plugins/specnav-verification/kernel');
 const {
