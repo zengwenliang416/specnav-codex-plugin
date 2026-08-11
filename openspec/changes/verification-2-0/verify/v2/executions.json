@@ -1882,5 +1882,43 @@
       }
     ],
     "recorded_at": "2026-08-11T07:11:56.723Z"
+  },
+  {
+    "id": "execution-attempt-20260811075800-6f92ef4bc4b2d5b9",
+    "run_id": "run-20260811075800-6f92ef4bc4b2d5b9",
+    "attempt_id": "attempt-20260811075800-6f92ef4bc4b2d5b9",
+    "case_id": "CASE-08",
+    "status": "failed",
+    "assertions": [
+      {
+        "id": "CASE-08-A01",
+        "method": "equal",
+        "expected": true,
+        "actual": true,
+        "status": "passed"
+      },
+      {
+        "id": "CASE-08-A02",
+        "method": "equal",
+        "expected": true,
+        "actual": true,
+        "status": "passed"
+      },
+      {
+        "id": "CASE-08-A03",
+        "method": "equal",
+        "expected": true,
+        "actual": true,
+        "status": "passed"
+      }
+    ],
+    "blockers": [
+      {
+        "id": "verification-execution:command-timeout",
+        "artifact": "command",
+        "detail": null
+      }
+    ],
+    "recorded_at": "2026-08-11T08:17:11.165Z"
   }
 ]
