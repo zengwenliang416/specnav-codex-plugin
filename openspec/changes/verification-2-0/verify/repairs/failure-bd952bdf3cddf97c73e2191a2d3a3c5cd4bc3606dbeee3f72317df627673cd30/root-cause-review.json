@@ -1,0 +1,24 @@
+{
+  "schema": "specnav.verification.root-cause-review.v1",
+  "id": "root-cause-review-case-03-protocol-owner-inheritance",
+  "failure_id": "failure-bd952bdf3cddf97c73e2191a2d3a3c5cd4bc3606dbeee3f72317df627673cd30",
+  "root_failure_digest": "cd7fec89f69a3143d694cc786f8b8a64c99b7f9b10d4eb07df695edc05f3628f",
+  "change_id": "verification-2-0",
+  "run_id": "run-20260811034457-768c7b688eacccdc",
+  "case_id": "CASE-03",
+  "attempt_id": "attempt-20260811034457-768c7b688eacccdc",
+  "classification": "test_defect",
+  "summary": "The CASE-03 routing test passed standalone but failed inside the formal runner because its simulated child smoke process inherited the real outer assertion-protocol owner identity.",
+  "root_cause": "The routing-test harness copied SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID and the emitted state from process.env into its simulated run-smoke child. The child correctly refused to write another assertion result file, while the test incorrectly expected that isolated simulation to own and emit its temporary assertion records.",
+  "failed_assertion_ids": [
+    "CASE-03-A01",
+    "CASE-03-A02",
+    "CASE-03-A03"
+  ],
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "decision": "approved",
+  "reviewed_at": "2026-08-11T03:46:29Z"
+}

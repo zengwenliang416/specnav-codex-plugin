@@ -1,0 +1,76 @@
+{
+  "ok": true,
+  "status": "reopen_required",
+  "label": "failed",
+  "history": [
+    {
+      "kind": "initial",
+      "attempt_id": "attempt-20260811022747-a6f726be7a86df82",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-149fbad9bf55627733a829a00974ee34b5d8955dbda9286833ba2d129f669556",
+        "evidence-2abfd8abbdddfd7c1b730fbddab4d4c5fc021bbe0cea953ffb2ffec24fd427fa",
+        "evidence-65ccb2c793b3fe8db80d5fe7ad2c2f660a3126b19c9b0e353e7477abd1f61db6",
+        "evidence-6ba40f1533a7c0366ad0794fd4537c2e39fb2e0e0db01bb9824fddab13d81e1a",
+        "evidence-76cd03edd27d64f4d251a817eb6d596891c60941653967b2630413dc1789706f",
+        "evidence-892e45990a10fd1cdb14be56335e60da74b91270e4387881ca6284522007e1bc",
+        "evidence-92c03ab4dc952ced92b651d8132fa4df26a80f5fcfe00ffc64deb8a24e827a92",
+        "evidence-c634904707a1a1269f2f7f12250458b38dcb28faa535912eb53e3c98ec1c2bfa"
+      ],
+      "recorded_at": "2026-08-11T02:43:39.868Z"
+    },
+    {
+      "kind": "repair",
+      "repair_link_id": "repair-c1ef7fe711eb2a6124c8f852b45c9330909feec2915ac292c9d2ddab4ce59e0d",
+      "label": "REPAIR COMPLETED",
+      "recorded_at": "2026-08-11T03:43:04.735Z"
+    },
+    {
+      "kind": "retest",
+      "attempt_id": "attempt-20260811034457-768c7b688eacccdc",
+      "case_id": "CASE-03",
+      "label": "FAILED",
+      "verdict": "fail",
+      "integrity": "intact",
+      "freshness": "fresh",
+      "evidence_ids": [
+        "evidence-1ad97e38a67e04565f86b23186c62335d5e7641e92392448a719b0a444874488",
+        "evidence-40166d1cf88a3b0dbdeb1f600f6da5535fa99fb1e7702a34cb0513473889d7a3",
+        "evidence-53d8c21da06f6640ae801e853b9d734263f53177a4f4d50338547537875de588",
+        "evidence-6220ac497465855a3f2c34124d1ac1dfd3722dc3723dae07e5ab688f81ba5cb4",
+        "evidence-6e206b977f439a17f678bc85f99e6e23fe50fe182f23ee37d725ebee3154ccc4",
+        "evidence-893aa098b98193a8a982aabcc970b175a7eaa310bb9b7e1d0f56b7bc4824710b",
+        "evidence-9a098a4e1644b5881b2d094b5231ee68dc8c1a8caad489e52670e928b4bf971f",
+        "evidence-e9828ca2759319ab2523272c0d7c46b057cab63f7d2f95cafc17379c8430e153"
+      ],
+      "recorded_at": "2026-08-11T03:45:09.950Z"
+    }
+  ],
+  "transition_proposal": {
+    "schema": "specnav.verification.transition-proposal.v1",
+    "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf",
+    "change_id": "verification-2-0",
+    "action": "reopen_failure",
+    "owner": "core",
+    "from_state": "reopen_required",
+    "target_state": "reopened",
+    "case_ids": [
+      "CASE-03"
+    ],
+    "attempt_ids": [
+      "attempt-20260811022747-a6f726be7a86df82",
+      "attempt-20260811034457-768c7b688eacccdc"
+    ],
+    "reason_ids": [
+      "retest-not-fresh-pass"
+    ],
+    "repair_link_id": "repair-c1ef7fe711eb2a6124c8f852b45c9330909feec2915ac292c9d2ddab4ce59e0d",
+    "proposed_at": "2026-08-11T03:45:09.950Z",
+    "id": "transition-c6e2fecf22aae544421171b9f0546854bc86dfd99bbb1b8c786f245d278c7215"
+  },
+  "blockers": []
+}
