@@ -1,0 +1,26 @@
+{
+  "schema": "specnav.verification.repair-generation-rebind-review.v1",
+  "id": "repair-generation-rebind-review-failure-597468f6-v3",
+  "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a",
+  "change_id": "verification-2-0",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-12T05:07:28Z",
+  "reason": "The original CASE-03 smoke-routing repair remains valid at the current committed revision; the reviewed test file retains the intended repair and is rebound to the current execution identity.",
+  "previous_repair_link_digest": "d3f3270657ee15397c5207d9289441423239127cb64b0198b19adaaa0231a980",
+  "repair_revision_range": {
+    "before_revision": "a256e4ad87e8074335fb95cd0b264e6846db2966",
+    "after_revision": "7ee95ae098337b22885cf2b8f72f387d3db78287"
+  },
+  "reviewed_files": [
+    {
+      "file": "tests/verification-v2/production/case-03-smoke-routing.test.js",
+      "blob_sha": "e96ab35b0bd679adb7cb4f1fb4449f165b6c2d20"
+    }
+  ],
+  "expected_current_identity_digest": "d0aee3e7712fe09753a7cfec0a3ac7a22a8f81e431b956eca98468a524145b0c"
+}
