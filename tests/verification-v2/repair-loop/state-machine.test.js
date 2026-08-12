@@ -31,6 +31,7 @@ const PRODUCERS = Object.freeze({
   classification_result: 'specnav-failure-classifier',
   repair_link: 'specnav-development-repair-bridge',
   repair_recovery: 'specnav-repair-lineage-recovery',
+  repair_rebind: 'specnav-repair-generation-rebind',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner'
 });
@@ -45,6 +46,11 @@ const CLAIMS = Object.freeze({
     'repair-recovery:human-approved',
     'repair-recovery:invalid-lineage-preserved',
     'repair-recovery:scope-verified'
+  ],
+  repair_rebind: [
+    'repair-rebind:human-approved',
+    'repair-rebind:previous-generation-preserved',
+    'repair-rebind:scope-verified'
   ],
   attempt_fact: [
     'attempt-binding:verified',
@@ -243,6 +249,64 @@ function repairRecovery(baseAttempt = initialAttempt(), overrides = {}) {
       link.after_identity
     )),
     recovered_repair_link: link,
+    verified_changes: [{
+      status: 'M',
+      file: 'tests/specnav/repair.test.js'
+    }],
+    ...overrides
+  };
+}
+
+function repairRebind(baseAttempt = initialAttempt(), overrides = {}) {
+  const previous = completedRepair(baseAttempt, {
+    id: 'repair-generation-1',
+    repair_kind: 'test_code',
+    after_identity: fingerprint(baseAttempt, {
+      code_sha: '3'.repeat(40),
+      test_sha: '4'.repeat(64)
+    })
+  });
+  const rebound = completedRepair(baseAttempt, {
+    id: 'repair-generation-2',
+    repair_kind: 'test_code',
+    completed_at: '2026-08-01T08:00:00Z',
+    after_identity: fingerprint(baseAttempt, {
+      code_sha: '7'.repeat(40),
+      test_sha: '8'.repeat(64)
+    }),
+    review_evidence_ids: [
+      'repair-spec-review',
+      'repair-quality-review',
+      'repair-generation-rebind-review'
+    ]
+  });
+  return {
+    schema: 'specnav.verification.repair-generation-rebind.v1',
+    id: 'repair-generation-rebind-minimal',
+    failure_id: 'failure-minimal',
+    change_id: 'change-v2',
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: '2026-08-01T07:59:00Z',
+    reason: 'The repair scope was reviewed at the current revision.',
+    previous_repair_link_digest: sha256(canonicalJson(previous)),
+    repair_revision_range: {
+      before_revision: '8'.repeat(40),
+      after_revision: '9'.repeat(40)
+    },
+    reviewed_files: [{
+      file: 'tests/specnav/repair.test.js',
+      blob_sha: 'a'.repeat(40)
+    }],
+    expected_current_identity_digest: sha256(canonicalJson(
+      rebound.after_identity
+    )),
+    previous_repair_link: previous,
+    rebound_repair_link: rebound,
     verified_changes: [{
       status: 'M',
       file: 'tests/specnav/repair.test.js'
@@ -469,6 +533,16 @@ function request(options = {}) {
             baseBindings
           )
         }),
+    ...(options.repairRebind === undefined
+      && options.repairRebindEnvelope === undefined
+      ? {}
+      : {
+          repair_rebind: options.repairRebindEnvelope || seal(
+            'repair_rebind',
+            options.repairRebind,
+            baseBindings
+          )
+        }),
     ...(options.rerunPlan === undefined && options.rerunEnvelope === undefined
       ? {}
       : {
@@ -585,6 +659,36 @@ test('blocks recovery when protected identity drift was not exactly approved', (
   assert.deepEqual(blockerIds(result), [
     'verification-repair-loop:repair-recovery-drift-invalid'
   ]);
+});
+
+test('a newer reviewed repair generation starts a fresh retest window', () => {
+  const first = initialAttempt();
+  const classification = classificationResult({
+    classification: 'test_defect'
+  });
+  const oldRetest = retestAttempt(first, {
+    id: 'attempt-old-retest',
+    status: 'failed',
+    started_at: '2026-08-01T07:30:00Z',
+    completed_at: '2026-08-01T07:31:00Z'
+  });
+  const result = factory().evaluate(request({
+    attempts: [first, oldRetest],
+    attemptFacts: [
+      attemptFact(first),
+      attemptFact(oldRetest, { verdict: 'fail' })
+    ],
+    classificationResult: classification,
+    repairRebind: repairRebind(first)
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'retest_required');
+  assert.equal(result.transition_proposal.action, 'request_retest');
+  assert.equal(
+    result.history.find((entry) => entry.kind === 'repair').repair_link_id,
+    'repair-generation-2'
+  );
 });
 
 test('labels an unchanged-fingerprint retry pass as flaky', () => {

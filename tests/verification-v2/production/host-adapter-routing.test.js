@@ -139,6 +139,28 @@ test('repair actions route to the dedicated append-only repair-loop CLI', () => 
     assert.equal(recovered[index + 1], value, flag);
   }
 
+  const parsedRebind = parseCli([
+    'repair-rebind',
+    '--project',
+    PROJECT,
+    '--change',
+    'change-v2',
+    '--reviewer-id',
+    'reviewer-1',
+    '--failure-id',
+    'failure-open',
+    '--rebind-review',
+    'openspec/changes/change-v2/rebind-review.json',
+    '--approved'
+  ]);
+  assert.equal(parsedRebind.approved, true);
+  const rebound = command(parsedRebind.action, parsedRebind);
+  assert.equal(rebound[1], 'repair-rebind');
+  assert.equal(
+    rebound[rebound.indexOf('--rebind-review') + 1],
+    'openspec/changes/change-v2/rebind-review.json'
+  );
+
   const applied = command('repair-transition-apply', {
     change: 'change-v2',
     reviewer_id: 'reviewer-1',

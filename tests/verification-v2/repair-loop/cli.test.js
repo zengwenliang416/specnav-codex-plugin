@@ -1386,6 +1386,337 @@ test('repair CLI preserves invalid lineage and creates an approved recovery fact
   )), true);
 });
 
+test('repair CLI appends and replays a human-approved repair generation rebind', async () => {
+  const source = projectFixture();
+  const baselineIdentity = {
+    case_snapshot_hash: source.attempt.case_snapshot_hash,
+    code_sha: source.attempt.code_sha,
+    test_sha: source.attempt.test_sha,
+    environment_hash: source.attempt.environment_hash,
+    runtime_version: source.attempt.runtime_version,
+    kernel_version: source.attempt.kernel_version
+  };
+  const completedIdentity = {
+    ...baselineIdentity,
+    test_sha: 'e'.repeat(64)
+  };
+  const currentIdentity = {
+    ...completedIdentity,
+    code_sha: 'c'.repeat(40),
+    test_sha: 'd'.repeat(64)
+  };
+  let fingerprintCall = 0;
+  const lifecycleDeps = {
+    ...dependencies(),
+    fingerprints() {
+      const value = fingerprintCall === 0
+        ? baselineIdentity
+        : completedIdentity;
+      fingerprintCall += 1;
+      return {
+        codeSha: value.code_sha,
+        testSha: value.test_sha,
+        environmentHash: value.environment_hash
+      };
+    },
+    validateRepairDiff() {
+      return {
+        ok: true,
+        status: 'scope_verified',
+        changes: [{
+          status: 'M',
+          file: 'tests/specnav/repair.test.js'
+        }],
+        blockers: [],
+        fallback_used: false
+      };
+    }
+  };
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], lifecycleDeps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const requested = await run([
+    ...baseArgs(source, 'repair-request'),
+    '--scope',
+    path.relative(source.projectRoot, source.scopeFile)
+  ], lifecycleDeps);
+  assert.equal(requested.ok, true, JSON.stringify(requested.blockers));
+  const started = await run(
+    baseArgs(source, 'repair-start'),
+    lifecycleDeps
+  );
+  assert.equal(started.ok, true, JSON.stringify(started.blockers));
+
+  const repairRoot = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id
+  );
+  const startedLink = JSON.parse(fs.readFileSync(path.join(
+    repairRoot,
+    'repair-link.json'
+  ), 'utf8'));
+  const specReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link: startedLink,
+    afterIdentity: completedIdentity,
+    kind: 'spec-review',
+    reviewerId: 'spec-reviewer'
+  });
+  const qualityReview = writeRepairReview({
+    source,
+    taskId: requested.development_task_id,
+    link: startedLink,
+    afterIdentity: completedIdentity,
+    kind: 'quality-review',
+    reviewerId: 'quality-reviewer'
+  });
+  const completed = await run([
+    ...baseArgs(source, 'repair-complete'),
+    '--spec-review',
+    path.relative(source.projectRoot, specReview),
+    '--quality-review',
+    path.relative(source.projectRoot, qualityReview)
+  ], lifecycleDeps);
+  assert.equal(completed.ok, true, JSON.stringify(completed.blockers));
+
+  const completedLink = JSON.parse(fs.readFileSync(path.join(
+    repairRoot,
+    'repair-link.json'
+  ), 'utf8'));
+  const reviewFile = path.join(
+    repairRoot,
+    'repair-generation-rebind-review.json'
+  );
+  writeJson(reviewFile, {
+    schema: 'specnav.verification.repair-generation-rebind-review.v1',
+    id: 'repair-generation-rebind-review-cli',
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The reviewed test repair remains valid at the current revision.',
+    previous_repair_link_digest: sha256(canonicalJson(completedLink)),
+    repair_revision_range: {
+      before_revision: '1'.repeat(40),
+      after_revision: '2'.repeat(40)
+    },
+    reviewed_files: [{
+      file: 'tests/specnav/repair.test.js',
+      blob_sha: '3'.repeat(40)
+    }],
+    expected_current_identity_digest: sha256(
+      canonicalJson(currentIdentity)
+    )
+  });
+  const rebindDeps = {
+    ...dependencies(),
+    fingerprints() {
+      return {
+        codeSha: currentIdentity.code_sha,
+        testSha: currentIdentity.test_sha,
+        environmentHash: currentIdentity.environment_hash
+      };
+    },
+    validateRepairRebindScope() {
+      return {
+        ok: true,
+        status: 'scope_verified',
+        changes: [{
+          status: 'M',
+          file: 'tests/specnav/repair.test.js'
+        }],
+        blockers: [],
+        fallback_used: false
+      };
+    }
+  };
+  const args = [
+    ...baseArgs(source, 'repair-rebind'),
+    '--rebind-review',
+    path.relative(source.projectRoot, reviewFile)
+  ];
+  const rebound = await run(args, rebindDeps);
+  const replayed = await run(args, rebindDeps);
+
+  assert.equal(rebound.ok, true, JSON.stringify(rebound.blockers));
+  assert.equal(rebound.status, 'repair_rebound');
+  assert.deepEqual(rebound.after_identity, currentIdentity);
+  assert.equal(rebound.replayed, false);
+  assert.equal(replayed.ok, true, JSON.stringify(replayed.blockers));
+  assert.equal(replayed.replayed, true);
+
+  const history = fs.readFileSync(path.join(
+    repairRoot,
+    'repair-generation-rebinds.jsonl'
+  ), 'utf8').trim().split(/\r?\n/).map((line) => JSON.parse(line));
+  assert.equal(history.length, 1);
+  assert.equal(history[0].kind, 'repair_rebind');
+  assert.equal(
+    history[0].payload.previous_repair_link.id,
+    completedLink.id
+  );
+  assert.deepEqual(
+    history[0].payload.rebound_repair_link.after_identity,
+    currentIdentity
+  );
+
+  const state = await run(baseArgs(source, 'state'), rebindDeps);
+  assert.equal(state.ok, true, JSON.stringify(state.blockers));
+  assert.equal(state.status, 'retest_required');
+  assert.equal(state.transition_proposal.action, 'request_retest');
+});
+
+test('repair CLI rejects a rebind review for a different current identity', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const authority = createTrustedFactAuthority({
+    schemaRegistry: deps.schemaRegistry,
+    key: Buffer.alloc(32, 23),
+    clock: () => FIXED_TIME
+  });
+  const repairRoot = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id
+  );
+  const completedLink = {
+    ...fixture('positive/repair-link.json'),
+    kernel_version: verificationKernel.metadata.version,
+    status: 'completed',
+    completed_at: FIXED_TIME,
+    after_identity: {
+      case_snapshot_hash: source.attempt.case_snapshot_hash,
+      code_sha: 'c'.repeat(40),
+      test_sha: 'd'.repeat(64),
+      environment_hash: source.attempt.environment_hash,
+      runtime_version: source.attempt.runtime_version,
+      kernel_version: source.attempt.kernel_version
+    },
+    review_evidence_ids: ['quality-review', 'spec-review']
+  };
+  completedLink.id = 'repair-link-rebind-mismatch';
+  completedLink.failure_id = source.failure.id;
+  completedLink.change_id = source.failure.change_id;
+  completedLink.development_task_id = '900-verification-repair-cli';
+  completedLink.repair_kind = 'test_code';
+  completedLink.before_identity = {
+    case_snapshot_hash: source.attempt.case_snapshot_hash,
+    code_sha: source.attempt.code_sha,
+    test_sha: source.attempt.test_sha,
+    environment_hash: source.attempt.environment_hash,
+    runtime_version: source.attempt.runtime_version,
+    kernel_version: source.attempt.kernel_version
+  };
+  fs.mkdirSync(repairRoot, { recursive: true });
+  writeJson(path.join(repairRoot, 'classification-envelope.json'), (
+    authority.seal('classification_result', {
+      ok: true,
+      status: 'classified',
+      packet: {
+        ...source.failure,
+        classification: 'test_defect',
+        status: 'repair_required',
+        next_action: 'repair_required',
+        owner: 'development'
+      },
+      signals: [],
+      blockers: []
+    }, {
+      failure_id: source.failure.id,
+      change_id: source.failure.change_id,
+      run_id: source.failure.run_id,
+      case_id: source.failure.case_id
+    })
+  ));
+  writeJson(path.join(repairRoot, 'repair-link.json'), completedLink);
+  writeJson(path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'development',
+    'tasks',
+    completedLink.development_task_id,
+    'context.json'
+  ), {
+    id: completedLink.development_task_id,
+    scope: {
+      allowed_files: ['tests/specnav/**'],
+      denied_files: ['openspec/changes/archive/**'],
+      requires_review_on: ['tests/specnav/**'],
+      allowed_operations: {
+        create: true,
+        modify: true,
+        delete: false,
+        rename: false
+      }
+    }
+  });
+  const reviewFile = path.join(
+    repairRoot,
+    'repair-generation-rebind-review.json'
+  );
+  writeJson(reviewFile, {
+    schema: 'specnav.verification.repair-generation-rebind-review.v1',
+    id: 'repair-generation-rebind-review-mismatch',
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The review binds a different current repository identity.',
+    previous_repair_link_digest: sha256(canonicalJson(completedLink)),
+    repair_revision_range: {
+      before_revision: '1'.repeat(40),
+      after_revision: '2'.repeat(40)
+    },
+    reviewed_files: [{
+      file: 'tests/specnav/repair.test.js',
+      blob_sha: '3'.repeat(40)
+    }],
+    expected_current_identity_digest: 'f'.repeat(64)
+  });
+
+  const result = await run([
+    ...baseArgs(source, 'repair-rebind'),
+    '--rebind-review',
+    path.relative(source.projectRoot, reviewFile)
+  ], {
+    ...deps,
+    fingerprints() {
+      return {
+        codeSha: 'c'.repeat(40),
+        testSha: 'd'.repeat(64),
+        environmentHash: source.attempt.environment_hash
+      };
+    }
+  });
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(
+    result.blockers.map((entry) => entry.id),
+    ['verification-repair:rebind-current-identity-mismatch']
+  );
+  assert.equal(fs.existsSync(path.join(
+    repairRoot,
+    'repair-generation-rebinds.jsonl'
+  )), false);
+});
+
 test('rerun planning migrates the legacy envelope and appends refreshed authority', async () => {
   const source = projectFixture();
   const deps = dependencies();

@@ -1,0 +1,97 @@
+{
+  "schema": "specnav.verification.repair-generation-rebind.v1",
+  "id": "repair-generation-rebind-minimal",
+  "failure_id": "failure-minimal",
+  "change_id": "change-v2",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "reviewer-1",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-01T08:00:00Z",
+  "reason": "The original repair scope was reviewed at the current revision.",
+  "previous_repair_link_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "repair_revision_range": {
+    "before_revision": "1111111111111111111111111111111111111111",
+    "after_revision": "2222222222222222222222222222222222222222"
+  },
+  "reviewed_files": [
+    {
+      "file": "tests/specnav/repair.test.js",
+      "blob_sha": "3333333333333333333333333333333333333333"
+    }
+  ],
+  "expected_current_identity_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "previous_repair_link": {
+    "schema": "specnav.verification.repair-link.v1",
+    "id": "repair-previous-minimal",
+    "failure_id": "failure-minimal",
+    "change_id": "change-v2",
+    "development_task_id": "task-repair-1",
+    "repair_kind": "test_code",
+    "status": "completed",
+    "requested_at": "2026-07-31T00:00:03Z",
+    "completed_at": "2026-08-01T07:20:00Z",
+    "before_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "1111111111111111111111111111111111111111",
+      "test_sha": "2222222222222222222222222222222222222222",
+      "environment_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "runtime_version": "1.0.0",
+      "kernel_version": "2.0.0"
+    },
+    "scope_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "after_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "3333333333333333333333333333333333333333",
+      "test_sha": "4444444444444444444444444444444444444444",
+      "environment_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2"
+    },
+    "review_evidence_ids": [
+      "quality-review-evidence",
+      "spec-review-evidence"
+    ]
+  },
+  "rebound_repair_link": {
+    "schema": "specnav.verification.repair-link.v1",
+    "id": "repair-rebound-minimal",
+    "failure_id": "failure-minimal",
+    "change_id": "change-v2",
+    "development_task_id": "task-repair-1",
+    "repair_kind": "test_code",
+    "status": "completed",
+    "requested_at": "2026-07-31T00:00:03Z",
+    "completed_at": "2026-08-01T08:01:00Z",
+    "before_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "1111111111111111111111111111111111111111",
+      "test_sha": "2222222222222222222222222222222222222222",
+      "environment_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "runtime_version": "1.0.0",
+      "kernel_version": "2.0.0"
+    },
+    "scope_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "after_identity": {
+      "case_snapshot_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "code_sha": "5555555555555555555555555555555555555555",
+      "test_sha": "6666666666666666666666666666666666666666",
+      "environment_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2"
+    },
+    "review_evidence_ids": [
+      "quality-review-evidence",
+      "repair-generation-rebind-review-minimal",
+      "spec-review-evidence"
+    ]
+  },
+  "verified_changes": [
+    {
+      "status": "M",
+      "file": "tests/specnav/repair.test.js"
+    }
+  ]
+}

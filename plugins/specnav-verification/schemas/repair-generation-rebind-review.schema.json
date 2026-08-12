@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/repair-generation-rebind-review.schema.json",
+  "title": "SpecNav Verification 2.0 Repair Generation Rebind Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "change_id",
+    "classification",
+    "decision",
+    "reviewer",
+    "reviewed_at",
+    "reason",
+    "previous_repair_link_digest",
+    "repair_revision_range",
+    "reviewed_files",
+    "expected_current_identity_digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.repair-generation-rebind-review.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "classification": {
+      "enum": [
+        "product_defect",
+        "test_defect"
+      ]
+    },
+    "decision": {
+      "const": "approved"
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "kind": {
+          "const": "human"
+        }
+      }
+    },
+    "reviewed_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "reason": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "previous_repair_link_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "repair_revision_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "before_revision",
+        "after_revision"
+      ],
+      "properties": {
+        "before_revision": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        },
+        "after_revision": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        }
+      }
+    },
+    "reviewed_files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file",
+          "blob_sha"
+        ],
+        "properties": {
+          "file": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "blob_sha": {
+            "$ref": "common.schema.json#/$defs/sourceSha"
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "expected_current_identity_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

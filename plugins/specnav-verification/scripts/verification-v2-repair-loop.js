@@ -71,6 +71,9 @@ function paths(context, failureId = null) {
     repairRecoveries: repairRoot
       ? path.posix.join(repairRoot, 'repair-lineage-recoveries.jsonl')
       : null,
+    repairRebinds: repairRoot
+      ? path.posix.join(repairRoot, 'repair-generation-rebinds.jsonl')
+      : null,
     rerunPlans: repairRoot
       ? path.posix.join(repairRoot, 'rerun-plans.jsonl')
       : null,
@@ -305,6 +308,83 @@ function validateRepairDiff({
     ok: true,
     status: 'scope_verified',
     changes: sourceChanges,
+    blockers: [],
+    fallback_used: false
+  };
+}
+
+function validateRepairRebindScope({
+  projectRoot,
+  task,
+  afterRevision,
+  reviewedFiles
+}) {
+  if (
+    !task?.scope
+    || !Array.isArray(task.scope.allowed_files)
+    || !Array.isArray(task.scope.denied_files)
+    || !Array.isArray(task.scope.requires_review_on)
+    || !/^[a-f0-9]{40}$/.test(afterRevision || '')
+    || !Array.isArray(reviewedFiles)
+    || reviewedFiles.length === 0
+  ) {
+    return blocked(
+      'verification-repair:rebind-scope-input-invalid',
+      task?.id || 'repair-task'
+    );
+  }
+  const head = currentGitRevision(projectRoot);
+  if (head !== afterRevision) {
+    return blocked(
+      'verification-repair:rebind-head-mismatch',
+      task.id,
+      `${afterRevision}:${head}`
+    );
+  }
+  const changes = [];
+  const seen = new Set();
+  for (const entry of reviewedFiles) {
+    if (
+      !entry
+      || typeof entry.file !== 'string'
+      || !/^[a-f0-9]{40}$/.test(entry.blob_sha || '')
+      || seen.has(entry.file)
+      || !matchesAny(entry.file, task.scope.allowed_files)
+      || !matchesAny(entry.file, task.scope.requires_review_on)
+      || matchesAny(entry.file, task.scope.denied_files)
+    ) {
+      return blocked(
+        'verification-repair:rebind-reviewed-file-invalid',
+        entry?.file || task.id
+      );
+    }
+    let actual;
+    try {
+      actual = gitOutput(
+        projectRoot,
+        ['rev-parse', `${afterRevision}:${entry.file}`]
+      ).trim();
+    } catch (error) {
+      return blocked(
+        'verification-repair:rebind-reviewed-file-missing',
+        entry.file,
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+    if (actual !== entry.blob_sha) {
+      return blocked(
+        'verification-repair:rebind-reviewed-file-mismatch',
+        entry.file,
+        `${entry.blob_sha}:${actual}`
+      );
+    }
+    seen.add(entry.file);
+    changes.push({ status: 'M', file: entry.file });
+  }
+  return {
+    ok: true,
+    status: 'scope_verified',
+    changes: changes.sort((left, right) => left.file.localeCompare(right.file)),
     blockers: [],
     fallback_used: false
   };
@@ -943,7 +1023,23 @@ function evaluateState(
     };
   }
   const repairRecovery = recoveryHistory.value.at(-1) || undefined;
-  const repair = repairRecovery
+  const rebindHistory = authorityLog.validate(
+    paths(context, failure.id).repairRebinds,
+    'repair_rebind'
+  );
+  if (!rebindHistory.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: rebindHistory.blockers
+    };
+  }
+  const repairRebind = rebindHistory.value.at(-1) || undefined;
+  const effectiveRepairRecovery = repairRebind
+    ? undefined
+    : repairRecovery;
+  const repair = effectiveRepairRecovery || repairRebind
     ? undefined
     : completedRepair || requestedRepair || undefined;
   const rerunHistory = authorityLog.validate(
@@ -1040,7 +1136,10 @@ function evaluateState(
     attempts: history.attempts,
     attempt_facts: facts,
     ...(repair ? { repair_link: repair } : {}),
-    ...(repairRecovery ? { repair_recovery: repairRecovery } : {}),
+    ...(effectiveRepairRecovery
+      ? { repair_recovery: effectiveRepairRecovery }
+      : {}),
+    ...(repairRebind ? { repair_rebind: repairRebind } : {}),
     ...(rerun ? { rerun_plan: rerun } : {})
   });
 }
@@ -1297,6 +1396,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     'repair-start',
     'repair-complete',
     'repair-recover',
+    'repair-rebind',
     'rerun-plan',
     'evaluate',
     'transition-apply',
@@ -2257,6 +2357,224 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       };
     }
 
+    if (action === 'repair-rebind') {
+      const reviewFile = resolveChangeFile(
+        context,
+        argValue(args, '--rebind-review'),
+        'verification-repair:rebind-review-required'
+      );
+      const review = readRequiredJson(
+        changeStore,
+        reviewFile,
+        'verification-repair:rebind-review-read-failed'
+      );
+      const validatedReview = context.schemaRegistry.validate(
+        'repair-generation-rebind-review',
+        review
+      );
+      const classification = classificationEnvelope(
+        context,
+        store,
+        failure.id
+      ).payload.packet.classification;
+      if (
+        !validatedReview.ok
+        || review.failure_id !== failure.id
+        || review.change_id !== failure.change_id
+        || review.classification !== classification
+        || review.reviewer.id !== context.reviewerId
+        || review.reviewer.kind !== 'human'
+        || review.decision !== 'approved'
+      ) {
+        return blocked(
+          'verification-repair:rebind-review-invalid',
+          reviewFile
+        );
+      }
+      const recoveryHistory = authorityLog.validate(
+        paths(context, failure.id).repairRecoveries,
+        'repair_recovery'
+      );
+      const rebindHistory = authorityLog.validate(
+        paths(context, failure.id).repairRebinds,
+        'repair_rebind'
+      );
+      if (!recoveryHistory.ok || !rebindHistory.ok) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: [
+            ...(recoveryHistory.blockers || []),
+            ...(rebindHistory.blockers || [])
+          ],
+          fallback_used: false
+        };
+      }
+      const current = (dependencies.fingerprints || fingerprints)(
+        context.projectRoot,
+        context.snapshotValue,
+        context.runtimeStatusValue,
+        context.runtimeAuthority
+      );
+      const afterIdentity = currentFingerprint(context, current);
+      const existingRebind = rebindHistory.value.find((envelope) => {
+        const payload = envelope.payload;
+        return payload.failure_id === review.failure_id
+          && payload.change_id === review.change_id
+          && payload.classification === review.classification
+          && payload.decision === review.decision
+          && canonicalJson(payload.reviewer)
+            === canonicalJson(review.reviewer)
+          && payload.reviewed_at === review.reviewed_at
+          && payload.reason === review.reason
+          && payload.previous_repair_link_digest
+            === review.previous_repair_link_digest
+          && canonicalJson(payload.repair_revision_range)
+            === canonicalJson(review.repair_revision_range)
+          && canonicalJson(payload.reviewed_files)
+            === canonicalJson(review.reviewed_files)
+          && payload.expected_current_identity_digest
+            === review.expected_current_identity_digest
+          && payload.rebound_repair_link.review_evidence_ids.includes(
+            review.id
+          );
+      });
+      if (existingRebind) {
+        if (
+          canonicalJson(existingRebind.payload.rebound_repair_link.after_identity)
+            !== canonicalJson(afterIdentity)
+        ) {
+          return blocked(
+            'verification-repair:rebind-current-identity-mismatch',
+            failure.id
+          );
+        }
+        return {
+          ok: true,
+          status: 'repair_rebound',
+          failure_id: failure.id,
+          repair_link_id: existingRebind.payload.rebound_repair_link.id,
+          after_identity: afterIdentity,
+          verified_changes: existingRebind.payload.verified_changes,
+          envelope_id: existingRebind.id,
+          replayed: true,
+          blockers: [],
+          fallback_used: false
+        };
+      }
+      const previousLink = rebindHistory.value.at(-1)?.payload
+        .rebound_repair_link
+        || recoveryHistory.value.at(-1)?.payload.recovered_repair_link
+        || readRequiredJson(
+          store,
+          relativeRepairPath(failure.id, 'repair-link.json'),
+          'verification-repair:repair-link-read-failed'
+        );
+      if (
+        previousLink.status !== 'completed'
+        || review.previous_repair_link_digest
+          !== sha256(canonicalJson(previousLink))
+      ) {
+        return blocked(
+          'verification-repair:rebind-previous-link-mismatch',
+          failure.id
+        );
+      }
+      if (
+        review.expected_current_identity_digest
+          !== sha256(canonicalJson(afterIdentity))
+      ) {
+        return blocked(
+          'verification-repair:rebind-current-identity-mismatch',
+          failure.id
+        );
+      }
+      const task = readRequiredJson(
+        changeStore,
+        path.posix.join(
+          'development',
+          'tasks',
+          previousLink.development_task_id,
+          'context.json'
+        ),
+        'verification-repair:repair-task-read-failed'
+      );
+      const diffValidation = (
+        dependencies.validateRepairRebindScope || validateRepairRebindScope
+      )({
+        projectRoot: context.projectRoot,
+        task,
+        afterRevision: review.repair_revision_range.after_revision,
+        reviewedFiles: review.reviewed_files
+      });
+      if (!diffValidation.ok) return diffValidation;
+      const reboundLink = context.schemaRegistry.assertValid('repair-link', {
+        ...previousLink,
+        id: `repair-rebound-${sha256(canonicalJson({
+          failure_id: failure.id,
+          review_id: review.id,
+          after_identity: afterIdentity
+        }))}`,
+        completed_at: clock(),
+        after_identity: afterIdentity,
+        review_evidence_ids: [
+          ...new Set([
+            ...(previousLink.review_evidence_ids || []),
+            review.id
+          ])
+        ].sort()
+      });
+      const rebind = context.schemaRegistry.assertValid(
+        'repair-generation-rebind',
+        {
+          ...validatedReview.value,
+          schema: 'specnav.verification.repair-generation-rebind.v1',
+          id: `repair-generation-rebind-${sha256(canonicalJson({
+            review_id: review.id,
+            rebound_repair_link_id: reboundLink.id
+          }))}`,
+          previous_repair_link: previousLink,
+          rebound_repair_link: reboundLink,
+          verified_changes: diffValidation.changes
+        }
+      );
+      const persisted = appendTrustedEnvelopeHistory({
+        authorityLog,
+        authority,
+        relative: paths(context, failure.id).repairRebinds,
+        kind: 'repair_rebind',
+        payload: rebind,
+        expectedBindings: bindings(failure)
+      });
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link-rebound.json'),
+        reboundLink
+      );
+      writeJson(
+        store,
+        relativeRepairPath(failure.id, 'repair-link.json'),
+        reboundLink
+      );
+      const links = readOptionalJson(store, root.files.repairLinks, []);
+      writeJson(store, root.files.repairLinks, mergeById(
+        links,
+        [reboundLink]
+      ));
+      return {
+        ok: true,
+        status: 'repair_rebound',
+        failure_id: failure.id,
+        repair_link_id: reboundLink.id,
+        after_identity: afterIdentity,
+        verified_changes: diffValidation.changes,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.appended,
+        blockers: [],
+        fallback_used: false
+      };
+    }
+
     if (action === 'rerun-plan') {
       const scope = (
         dependencies.computeRerunScope || computeRerunScope
@@ -2547,5 +2865,6 @@ module.exports = {
   scopeProjection,
   trustAuthority,
   validateRepairDiff,
+  validateRepairRebindScope,
   repairCompletionFingerprints
 };

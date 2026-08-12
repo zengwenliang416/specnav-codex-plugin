@@ -11,6 +11,9 @@ const kernel = require('../kernel');
 const {
   createTrustedFactAuthority
 } = require('../kernel/repair/trusted-fact-authority');
+const {
+  createAuthorityLog
+} = require('../kernel/repair/authority-log');
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -45,6 +48,91 @@ function readJson(file, id) {
     )];
     throw failure;
   }
+}
+
+function resolveRepairIdentity(context, authority, failureId) {
+  if (
+    typeof failureId !== 'string'
+    || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(failureId)
+  ) {
+    return blocked(
+      'verification-production:repair-identity-failure-invalid',
+      failureId || 'failure-id'
+    );
+  }
+  const store = kernel.createVerificationArtifactStore({
+    changeRoot: context.changeRoot,
+    root: context.verificationRoot
+  });
+  const authorityLog = createAuthorityLog({ store, authority });
+  const repairRoot = path.posix.join('repairs', failureId);
+  const rebinds = authorityLog.validate(
+    path.posix.join(repairRoot, 'repair-generation-rebinds.jsonl'),
+    'repair_rebind'
+  );
+  const recoveries = authorityLog.validate(
+    path.posix.join(repairRoot, 'repair-lineage-recoveries.jsonl'),
+    'repair_recovery'
+  );
+  if (!rebinds.ok || !recoveries.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: [
+        ...(rebinds.blockers || []),
+        ...(recoveries.blockers || [])
+      ],
+      fallback_used: false
+    };
+  }
+  const rebind = rebinds.value.at(-1)?.payload;
+  const recovery = recoveries.value.at(-1)?.payload;
+  let link = rebind?.rebound_repair_link
+    || recovery?.recovered_repair_link
+    || null;
+  if (!link) {
+    const completedFile = path.posix.join(
+      repairRoot,
+      'repair-link-completed-envelope.json'
+    );
+    const completed = store.readJson(completedFile);
+    if (!completed.ok) {
+      return blocked(
+        'verification-production:repair-identity-unavailable',
+        failureId
+      );
+    }
+    if (
+      !authority.verify(completed.value).ok
+      || completed.value.kind !== 'repair_link'
+    ) {
+      return blocked(
+        'verification-production:repair-identity-untrusted',
+        failureId
+      );
+    }
+    link = completed.value.payload;
+  }
+  const validated = context.schemaRegistry.validate('repair-link', link);
+  if (
+    !validated.ok
+    || validated.value.failure_id !== failureId
+    || validated.value.change_id !== context.changeId
+    || validated.value.status !== 'completed'
+    || !validated.value.after_identity
+  ) {
+    return blocked(
+      'verification-production:repair-identity-invalid',
+      failureId
+    );
+  }
+  return {
+    ok: true,
+    identity: validated.value.after_identity,
+    repair_link_id: validated.value.id,
+    blockers: [],
+    fallback_used: false
+  };
 }
 
 function git(projectRoot, args) {
@@ -623,7 +711,10 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     environmentHash: current.environmentHash,
     clock,
     secrets,
-    scenarioRegistry
+    scenarioRegistry,
+    repairIdentityResolver(failureId) {
+      return resolveRepairIdentity(context, trustedFactAuthority, failureId);
+    }
   });
   if (!runner.approvalState.ok) {
     return {
@@ -863,6 +954,7 @@ module.exports = {
   assertSelectedChange,
   dirtyImplementationPaths,
   fingerprints,
+  resolveRepairIdentity,
   isLifecyclePath,
   loadContext,
   loadScenarioRegistry,

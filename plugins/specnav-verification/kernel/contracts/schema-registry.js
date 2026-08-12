@@ -18,6 +18,8 @@ const ENTITY_TYPES = Object.freeze([
   'repair-baseline',
   'repair-lineage-recovery',
   'repair-lineage-recovery-review',
+  'repair-generation-rebind',
+  'repair-generation-rebind-review',
   'repair-review',
   'root-cause-review',
   'authority-chain-anchor',

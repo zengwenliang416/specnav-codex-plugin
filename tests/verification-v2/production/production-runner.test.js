@@ -231,6 +231,9 @@ function fixture(options = {}) {
 }
 
 function runner(source, overrides = {}) {
+  const codeSha = overrides.codeSha || '1'.repeat(40);
+  const testSha = overrides.testSha || '2'.repeat(64);
+  const environmentHash = overrides.environmentHash || '3'.repeat(64);
   return kernel.createProductionVerificationRunner({
     kernel,
     schemaRegistry: source.schemaRegistry,
@@ -243,9 +246,21 @@ function runner(source, overrides = {}) {
     requirements: source.requirements,
     acceptance: source.acceptance,
     reviewerId: 'reviewer-1',
-    codeSha: '1'.repeat(40),
-    testSha: '2'.repeat(64),
-    environmentHash: '3'.repeat(64),
+    codeSha,
+    testSha,
+    environmentHash,
+    repairIdentityResolver: () => ({
+      ok: true,
+      identity: {
+        case_snapshot_hash: source.snapshot.snapshot_hash,
+        code_sha: codeSha,
+        test_sha: testSha,
+        environment_hash: environmentHash,
+        runtime_version: source.runtimeStatus.runtime_version,
+        kernel_version: kernel.metadata.version
+      },
+      blockers: []
+    }),
     clock: clock(),
     secrets: [],
     ...overrides
@@ -428,6 +443,25 @@ test('retry remains in the same run and rejects changed immutable fingerprints',
   );
 });
 
+test('retry does not require a completed repair identity', async () => {
+  const source = fixture();
+  const first = await runner(source, {
+    repairIdentityResolver: null
+  }).executeCase(source.testCase.id);
+  assert.equal(first.ok, true, JSON.stringify(first.blockers));
+
+  const retry = await runner(source, {
+    repairIdentityResolver: null
+  }).executeCase(source.testCase.id, {
+    kind: 'retry',
+    parentAttemptId: first.attempt.id
+  });
+
+  assert.equal(retry.ok, true, JSON.stringify(retry.blockers));
+  assert.equal(retry.run.id, first.run.id);
+  assert.equal(retry.attempt.kind, 'retry');
+});
+
 test('retry preserves immutable attempt integrity and finalizes the full evidence history', async () => {
   const source = fixture();
   const first = await runner(source).executeCase(source.testCase.id);
@@ -584,6 +618,52 @@ test('retest and regression create new runs with immutable cross-run lineage', a
       false
     );
   }
+});
+
+test('follow-up execution blocks before creating artifacts when repair identity differs', async () => {
+  const source = fixture({
+    runnerSource: [
+      "'use strict';",
+      "const fs = require('node:fs');",
+      'fs.writeFileSync(',
+      '  process.env.SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE,',
+      "  `${JSON.stringify({",
+      "    assertion_id: 'ASSERT-1',",
+      "    method: 'equal',",
+      '    expected: true,',
+      '    actual: false,',
+      "    status: 'failed'",
+      "  })}\\n`,",
+      "  { flag: 'wx' }",
+      ');',
+      'process.exit(1);',
+      ''
+    ].join('\n')
+  });
+  const initial = await runner(source).executeCase(source.testCase.id);
+  const runRoot = path.join(source.verificationRoot, 'runs');
+  const before = fs.readdirSync(runRoot).sort();
+  const result = await runner(source, {
+    codeSha: '3'.repeat(40),
+    repairIdentityResolver: () => ({
+      ok: true,
+      identity: currentFingerprints(source, {
+        code_sha: '4'.repeat(40)
+      }),
+      blockers: []
+    })
+  }).executeCase(source.testCase.id, {
+    kind: 'retest',
+    parentAttemptId: initial.attempt.id,
+    failureId: initial.failure_packet.id
+  });
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(
+    result.blockers.map((entry) => entry.id),
+    ['verification-production:followup-repair-identity-mismatch']
+  );
+  assert.deepEqual(fs.readdirSync(runRoot).sort(), before);
 });
 
 test('failed retest and regression attempts retain subordinate failure packets', async () => {

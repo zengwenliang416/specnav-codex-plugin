@@ -16,6 +16,7 @@ const REQUEST_FIELDS = Object.freeze([
   'attempt_facts',
   'repair_link',
   'repair_recovery',
+  'repair_rebind',
   'rerun_plan'
 ]);
 const CLASSIFICATION_RESULT_FIELDS = Object.freeze([
@@ -39,6 +40,7 @@ const TRUSTED_PRODUCERS = Object.freeze({
   classification_result: 'specnav-failure-classifier',
   repair_link: 'specnav-development-repair-bridge',
   repair_recovery: 'specnav-repair-lineage-recovery',
+  repair_rebind: 'specnav-repair-generation-rebind',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner'
 });
@@ -55,6 +57,11 @@ const REQUIRED_CLAIMS = Object.freeze({
     'repair-recovery:human-approved',
     'repair-recovery:invalid-lineage-preserved',
     'repair-recovery:scope-verified'
+  ]),
+  repair_rebind: Object.freeze([
+    'repair-rebind:human-approved',
+    'repair-rebind:previous-generation-preserved',
+    'repair-rebind:scope-verified'
   ]),
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
@@ -860,6 +867,70 @@ function validateRepairRecovery(
   return { link, recovery };
 }
 
+function validateRepairRebind(
+  schemaRegistry,
+  trustVerifier,
+  packet,
+  firstAttempt,
+  rawEnvelope
+) {
+  const trusted = verifyEnvelope(
+    schemaRegistry,
+    trustVerifier,
+    'repair_rebind',
+    rawEnvelope,
+    {
+      failure_id: packet.id,
+      change_id: packet.change_id,
+      run_id: packet.run_id,
+      case_id: packet.case_id
+    }
+  );
+  if (trusted.blocker) return trusted;
+  const rebind = schemaValue(
+    schemaRegistry,
+    'repair-generation-rebind',
+    trusted.payload
+  );
+  const link = rebind?.rebound_repair_link;
+  const previous = rebind?.previous_repair_link;
+  const expectedKind = packet.classification === 'product_defect'
+    ? 'product_code'
+    : 'test_code';
+  if (
+    !rebind
+    || rebind.failure_id !== packet.id
+    || rebind.change_id !== packet.change_id
+    || rebind.classification !== packet.classification
+    || rebind.decision !== 'approved'
+    || rebind.reviewer?.kind !== 'human'
+    || !validDate(rebind.reviewed_at)
+    || !previous
+    || !link
+    || rebind.previous_repair_link_digest
+      !== sha256(canonicalJson(previous))
+    || previous.failure_id !== packet.id
+    || previous.status !== 'completed'
+    || link.failure_id !== packet.id
+    || link.change_id !== packet.change_id
+    || link.repair_kind !== expectedKind
+    || link.status !== 'completed'
+    || !sameFingerprint(firstAttempt, link.before_identity)
+    || !validDate(link.completed_at)
+    || Date.parse(link.completed_at) < Date.parse(previous.completed_at)
+    || !Array.isArray(link.review_evidence_ids)
+    || link.review_evidence_ids.length < 2
+  ) {
+    return {
+      blocker: blocker(
+        'verification-repair-loop:repair-rebind-invalid',
+        rawEnvelope?.id || 'repair-rebind'
+      )
+    };
+  }
+  return { link, rebind };
+}
+
 function validateRerunPlan(
   schemaRegistry,
   trustVerifier,
@@ -1184,8 +1255,11 @@ function createRepairLoopStateMachine(options = {}) {
 
     let repairLink = null;
     if (
-      request.repair_link !== undefined
-      && request.repair_recovery !== undefined
+      [
+        request.repair_link,
+        request.repair_recovery,
+        request.repair_rebind
+      ].filter((entry) => entry !== undefined).length > 1
     ) {
       return blocked([
         blocker(
@@ -1215,6 +1289,17 @@ function createRepairLoopStateMachine(options = {}) {
       );
       if (recovery.blocker) return blocked([recovery.blocker]);
       repairLink = recovery.link;
+    }
+    if (request.repair_rebind !== undefined) {
+      const rebind = validateRepairRebind(
+        schemaRegistry,
+        trustVerifier,
+        packet,
+        first,
+        request.repair_rebind
+      );
+      if (rebind.blocker) return blocked([rebind.blocker]);
+      repairLink = rebind.link;
     }
     const history = buildHistory(attempts, factsByAttempt, repairLink);
 
@@ -1280,6 +1365,9 @@ function createRepairLoopStateMachine(options = {}) {
       const currentRetests = retests.filter((attempt) => (
         Date.parse(attempt.started_at) >= repairCompletedAt
       ));
+      const currentRegressions = regressions.filter((attempt) => (
+        Date.parse(attempt.started_at) >= repairCompletedAt
+      ));
       if (currentRetests.length === 0) {
         return result({
           packet,
@@ -1341,7 +1429,7 @@ function createRepairLoopStateMachine(options = {}) {
       );
       if (rerun.blocker) return blocked([rerun.blocker], history);
       const latestRegressionByCase = new Map();
-      for (const regression of regressions) {
+      for (const regression of currentRegressions) {
         if (
           regression.sequence <= latestRetest.sequence
           || !sameFingerprint(regression, repairLink.after_identity)

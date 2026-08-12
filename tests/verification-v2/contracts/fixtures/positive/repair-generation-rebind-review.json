@@ -1,0 +1,26 @@
+{
+  "schema": "specnav.verification.repair-generation-rebind-review.v1",
+  "id": "repair-generation-rebind-review-minimal",
+  "failure_id": "failure-minimal",
+  "change_id": "change-v2",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "reviewer-1",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-01T08:00:00Z",
+  "reason": "The original repair scope was reviewed at the current revision.",
+  "previous_repair_link_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "repair_revision_range": {
+    "before_revision": "1111111111111111111111111111111111111111",
+    "after_revision": "2222222222222222222222222222222222222222"
+  },
+  "reviewed_files": [
+    {
+      "file": "tests/specnav/repair.test.js",
+      "blob_sha": "3333333333333333333333333333333333333333"
+    }
+  ],
+  "expected_current_identity_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

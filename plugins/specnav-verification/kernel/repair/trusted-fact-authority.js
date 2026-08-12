@@ -13,6 +13,7 @@ const PRODUCERS = Object.freeze({
   repair_link: 'specnav-development-repair-bridge',
   repair_baseline: 'specnav-repair-baseline-recorder',
   repair_recovery: 'specnav-repair-lineage-recovery',
+  repair_rebind: 'specnav-repair-generation-rebind',
   attempt_fact: 'specnav-execution-evidence',
   host_execution: 'specnav-managed-host-proof-runner',
   rerun_plan: 'specnav-case-rerun-planner',
@@ -37,6 +38,11 @@ const CLAIMS = Object.freeze({
     'repair-recovery:human-approved',
     'repair-recovery:invalid-lineage-preserved',
     'repair-recovery:scope-verified'
+  ]),
+  repair_rebind: Object.freeze([
+    'repair-rebind:human-approved',
+    'repair-rebind:previous-generation-preserved',
+    'repair-rebind:scope-verified'
   ]),
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
@@ -147,6 +153,13 @@ function payloadValid(schemaRegistry, kind, payload, bindings) {
       payload
     );
     return recovery.ok && sameBindings(recovery.value, bindings);
+  }
+  if (kind === 'repair_rebind') {
+    const rebind = schemaRegistry.validate(
+      'repair-generation-rebind',
+      payload
+    );
+    return rebind.ok && sameBindings(rebind.value, bindings);
   }
   if (kind === 'attempt_fact') {
     return typeof payload.attempt_id === 'string'

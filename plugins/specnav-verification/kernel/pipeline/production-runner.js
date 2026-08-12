@@ -29,6 +29,28 @@ function stableHash(value) {
   return sha256(canonicalJson(value));
 }
 
+function executionFingerprint(context) {
+  return {
+    case_snapshot_hash: context.snapshot.snapshot_hash,
+    code_sha: context.codeSha,
+    test_sha: context.testSha,
+    environment_hash: context.environmentHash,
+    runtime_version: context.runtimeStatus.runtime_version,
+    kernel_version: context.kernelVersion
+  };
+}
+
+function sameFingerprint(left, right) {
+  return [
+    'case_snapshot_hash',
+    'code_sha',
+    'test_sha',
+    'environment_hash',
+    'runtime_version',
+    'kernel_version'
+  ].every((field) => left?.[field] === right?.[field]);
+}
+
 function compactTimestamp(value) {
   return value.replace(/[-:.TZ]/g, '').slice(0, 14);
 }
@@ -714,6 +736,20 @@ function makeFollowupRun(context, testCase, now, options, history) {
       )]
     };
   }
+  const repairIdentity = options.repairIdentity;
+  if (
+    !repairIdentity
+    || !sameFingerprint(executionFingerprint(context), repairIdentity)
+  ) {
+    return {
+      ok: false,
+      blockers: [blocker(
+        'verification-production:followup-repair-identity-mismatch',
+        options.failureId,
+        kind
+      )]
+    };
+  }
   const originRunId = rootRun.id;
   return {
     ok: true,
@@ -1110,6 +1146,7 @@ function createProductionVerificationRunner(options = {}) {
     clock = () => new Date().toISOString(),
     secrets = [],
     scenarioRegistry = null,
+    repairIdentityResolver = null,
     commandAdapter = null,
     playwrightAdapter = null,
     midsceneAdapter = null
@@ -1216,6 +1253,37 @@ function createProductionVerificationRunner(options = {}) {
       };
     }
     const now = clock();
+    let repairIdentity = null;
+    if (
+      ['retest', 'regression'].includes(
+        executionOptions.kind || 'initial'
+      )
+    ) {
+      if (typeof repairIdentityResolver !== 'function') {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: [blocker(
+            'verification-production:repair-identity-resolver-required',
+            executionOptions.failureId || caseId
+          )],
+          fallback_used: false
+        };
+      }
+      const resolved = repairIdentityResolver(executionOptions.failureId);
+      if (!resolved?.ok || !resolved.identity) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: resolved?.blockers || [blocker(
+            'verification-production:repair-identity-unavailable',
+            executionOptions.failureId || caseId
+          )],
+          fallback_used: false
+        };
+      }
+      repairIdentity = resolved.identity;
+    }
     const prepared = makeFollowupRun({
       snapshot,
       runtimeStatus,
@@ -1223,7 +1291,10 @@ function createProductionVerificationRunner(options = {}) {
       testSha,
       environmentHash,
       kernelVersion: kernel.metadata.version
-    }, testCase, now, executionOptions, executionHistory(verificationRoot));
+    }, testCase, now, {
+      ...executionOptions,
+      repairIdentity
+    }, executionHistory(verificationRoot));
     if (!prepared.ok) {
       return {
         ok: false,

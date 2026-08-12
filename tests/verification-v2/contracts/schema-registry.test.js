@@ -124,6 +124,8 @@ test('registry compiles and validates every Verification Contract V2 entity', ()
     'repair-baseline',
     'repair-lineage-recovery',
     'repair-lineage-recovery-review',
+    'repair-generation-rebind',
+    'repair-generation-rebind-review',
     'repair-review',
     'root-cause-review',
     'authority-chain-anchor',
