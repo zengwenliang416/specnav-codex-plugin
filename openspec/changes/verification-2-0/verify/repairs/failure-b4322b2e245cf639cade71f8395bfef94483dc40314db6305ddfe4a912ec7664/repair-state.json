@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "status": "closure_ready",
+  "status": "closed",
   "label": "pass_after_fix",
   "history": [
     {
@@ -181,42 +181,7 @@
       "recorded_at": "2026-08-11T19:06:57.385Z"
     }
   ],
-  "transition_proposal": {
-    "schema": "specnav.verification.transition-proposal.v1",
-    "failure_id": "failure-b4322b2e245cf639cade71f8395bfef94483dc40314db6305ddfe4a912ec7664",
-    "change_id": "verification-2-0",
-    "action": "close_failure",
-    "owner": "core",
-    "from_state": "closure_ready",
-    "target_state": "closed",
-    "case_ids": [
-      "CASE-01",
-      "CASE-02",
-      "CASE-03",
-      "CASE-04",
-      "CASE-05",
-      "CASE-06",
-      "CASE-07",
-      "CASE-08"
-    ],
-    "attempt_ids": [
-      "attempt-20260811075800-6f92ef4bc4b2d5b9",
-      "attempt-20260811185727-fe838f72ef8f6909",
-      "attempt-20260811190210-b8233b81f14f32c9",
-      "attempt-20260811190312-aa16c4cf775e920b",
-      "attempt-20260811190359-a8455f80d0dad389",
-      "attempt-20260811190445-74810c1f49cc5bc3",
-      "attempt-20260811190523-ba5732631da94444",
-      "attempt-20260811190602-54ca9f2c79e641b3",
-      "attempt-20260811190640-1741384cb4134444"
-    ],
-    "reason_ids": [
-      "required-regression-passed"
-    ],
-    "repair_link_id": "repair-820573424a5e984b1a6242778c182b9ae6e0fb3e82ffa6bef2d2e87b9f08b95e",
-    "scope_digest": "f43c56674fbd79075a2fa05cdf13f99fc2003cc6c05a78e51811504d28bc2097",
-    "proposed_at": "2026-08-11T19:06:57.385Z",
-    "id": "transition-927318469e9f31bf98387a84f445a3035757a5a0b7d58190e6839621a07d35c8"
-  },
-  "blockers": []
+  "transition_proposal": null,
+  "blockers": [],
+  "transition_receipt_id": "transition-application-26d30994807183c257d46a3097e6215d6f5b993d463c52dbac74ba5973225ea8"
 }
