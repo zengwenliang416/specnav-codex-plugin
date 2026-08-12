@@ -36,31 +36,7 @@
           {
             "type": "command",
             "command": "node \"${PLUGIN_ROOT}/scripts/specnav-guard.js\"",
-            "timeout": 15,
-            "statusMessage": "Checking SpecNav gates"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/cross-repo-guard.js\"",
-            "timeout": 10,
-            "statusMessage": "Checking cross-repo search redirect"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash|apply_patch|Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/specnav-post-tool.js\"",
-            "timeout": 20
+            "timeout": 15
           }
         ]
       }

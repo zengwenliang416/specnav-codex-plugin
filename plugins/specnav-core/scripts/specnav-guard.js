@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const lib = require('./specnav-lib');
+const crossRepo = require('./cross-repo-guard');
 
 // Accounting-first policy (0.6): the guard keeps a small set of hard gates
 // (truly destructive commands, contract freezes, explicitly admitted
@@ -79,7 +80,7 @@ function normalizePayload(payload) {
 }
 
 function isWriteTool(tool) {
-  return /^(Write|Edit|MultiEdit|NotebookEdit)$/i.test(tool || '');
+  return /^(Write|Edit|MultiEdit|NotebookEdit|apply_patch)$/i.test(tool || '');
 }
 
 function isBashTool(tool) {
@@ -238,6 +239,57 @@ function touchExternalStale(externalRoot) {
       fs.writeFileSync(path.join(dir, 'verify-report.stale'), `${new Date().toISOString()}\n`);
     }
   } catch {}
+}
+
+function markVerificationStale(root, reason) {
+  try {
+    const change = lib.activeChange(root);
+    const dir = lib.changeDir(root, change);
+    if (!dir) return;
+    const report = path.join(dir, 'verify-report.json');
+    const staleMarker = path.join(dir, 'verify-report.stale');
+    if (!fs.existsSync(report) || fs.existsSync(staleMarker)) return;
+    fs.writeFileSync(staleMarker, `${new Date().toISOString()}\n`);
+    lib.event(root, 'verify.stale', { active_change: change, reason });
+  } catch (error) {
+    try {
+      lib.event(root, 'verify.stale-marker-failed', { reason, error: error.message });
+    } catch {}
+  }
+}
+
+const READ_ONLY_BASH_SEGMENT_PATTERNS = [
+  /^(?:pwd|ls|find|fd|rg|grep|ag|ack|cat|head|tail|less|more|wc|stat|file|which|whereis|type|command\s+-v|realpath|readlink|printenv|env|date|uname|whoami|id|ps|lsof|df|du)\b/i,
+  /^git\s+(?:status|diff|show|log|branch|rev-parse|ls-files|remote|tag|describe)\b/i,
+  /^(?:node|python3?|ruby|perl)\s+--?(?:version|help)\b/i,
+  /^(?:npm|pnpm|yarn|bun)\s+(?:test|run\s+(?:test|lint|typecheck|check|build)|exec\s+[^;&|]+--help)\b/i,
+  /^(?:pytest|vitest|jest|eslint|tsc|cargo\s+(?:test|check)|go\s+test)\b/i,
+  /^test\b/i,
+  /^\[\[/,
+  /^\[/,
+  /^printf\b/i,
+  /^echo\b/i
+];
+
+function isReadOnlyBashCommand(command) {
+  const source = String(command || '');
+  if (/(?:^|[^<])>{1,2}(?!>)|(?:^|\s)(?:tee|install|cp|mv|rm|mkdir|touch|truncate|patch)\b|\bsed\s+-i\b|\bgit\s+(?:apply|checkout|restore|reset|clean|commit|merge|rebase|cherry-pick)\b/i.test(source)) {
+    return false;
+  }
+  const segments = source
+    .split(/(?:&&|\|\||;|\n)/)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  return segments.length > 0 && segments.every(
+    (segment) => READ_ONLY_BASH_SEGMENT_PATTERNS.some((pattern) => pattern.test(segment))
+  );
+}
+
+function shouldMarkVerificationStale(normalized) {
+  if (isWriteTool(normalized.tool)) return true;
+  return isBashTool(normalized.tool)
+    && !!normalized.command
+    && !isReadOnlyBashCommand(normalized.command);
 }
 
 function selfCheck(options = {}) {
@@ -452,6 +504,14 @@ function main() {
   if (lib.isSpecNavDisabled(root)) {
     allow(root, 'project-disabled');
   }
+  const crossRepoMessage = crossRepo.redirectMessage(payload, root);
+  if (crossRepoMessage) {
+    lib.event(root, 'hook.deny', { reason: 'cross-repo-search' });
+    deny('cross-repo-search', crossRepoMessage.replace(/^\[cross-repo-search\]\s*/, ''));
+  }
+  if (shouldMarkVerificationStale(normalized)) {
+    markVerificationStale(root, isBashTool(normalized.tool) ? 'bash-mutation' : 'edit-tool');
+  }
   if (lib.isSpecNavProject(root) && isBashTool(normalized.tool) && isLegacyOpenSpecWorkflowCommand(normalized.command)) {
     softDeny(root, 'legacy-openspec-workflow-command', 'native OpenSpec workflow entrypoints are disabled inside SpecNav projects. Fix: use SpecNav requirements/prototype/development/verification/operations commands instead.');
   }
@@ -635,8 +695,11 @@ if (require.main === module) main();
 
 module.exports = {
   collectFallbackPaths,
+  isReadOnlyBashCommand,
+  markVerificationStale,
   normalizePayload,
   pathAllowedByScope,
   selfCheck,
+  shouldMarkVerificationStale,
   toRelativeProjectPath
 };

@@ -46,7 +46,13 @@ run_case() {
   fi
 }
 
-jq -e '.hooks.SessionStart and .hooks.UserPromptSubmit and .hooks.PreToolUse and .hooks.PostToolUse' "$HOOKS" >/dev/null
+jq -e '.hooks.SessionStart and .hooks.UserPromptSubmit and .hooks.PreToolUse and (.hooks | has("PostToolUse") | not)' "$HOOKS" >/dev/null
+jq -e '
+  (.hooks.PreToolUse | length) == 1
+  and .hooks.PreToolUse[0].matcher == "Bash|apply_patch|Edit|Write"
+  and (.hooks.PreToolUse[0].hooks | length) == 1
+  and (.hooks.PreToolUse[0].hooks[0] | has("statusMessage") | not)
+' "$HOOKS" >/dev/null
 grep -Fq '${PLUGIN_ROOT}' "$HOOKS"
 if grep -Fq 'CLAUDE_PLUGIN_ROOT' "$HOOKS"; then
   echo "hooks must use PLUGIN_ROOT, not CLAUDE_PLUGIN_ROOT" >&2
@@ -56,7 +62,7 @@ fi
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-session-start.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-user-prompt-submit.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-guard.js"
-node --check "$ROOT/plugins/specnav-core/scripts/specnav-post-tool.js"
+node --check "$ROOT/plugins/specnav-core/scripts/cross-repo-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/tasks-md.js"
 
 # Accounting-first default: legacy-entrypoint invocation warns; strict blocks.
@@ -78,6 +84,19 @@ cat >"$DISABLED_PROJECT/.specnav.json" <<'JSON'
 JSON
 run_case bash-openspec-propose "$DISABLED_PROJECT" 0
 run_case write-allowed "$DISABLED_PROJECT" 0
+DISABLED_EXTERNAL="$TMP_DIR/disabled-external"
+mkdir -p "$DISABLED_EXTERNAL/.codegraph"
+DISABLED_CROSS_REPO_PAYLOAD="$TMP_DIR/disabled-cross-repo.json"
+jq -n --arg target "$DISABLED_EXTERNAL" '{
+  tool_name: "Bash",
+  tool_input: {command: ("rg symbol " + $target)}
+}' >"$DISABLED_CROSS_REPO_PAYLOAD"
+PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/specnav-guard.js" <"$DISABLED_CROSS_REPO_PAYLOAD" >"$TMP_DIR/disabled-cross-repo.out"
+[[ ! -s "$TMP_DIR/disabled-cross-repo.out" ]] || {
+  echo "disabled project must bypass the unified cross-repo guard" >&2
+  cat "$TMP_DIR/disabled-cross-repo.out" >&2
+  exit 1
+}
 DISABLED_STATE="$TMP_DIR/disabled-state.json"
 PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/workflow-state.js" --json >"$DISABLED_STATE"
 jq -e '.ok == true and .status == "disabled" and .active_change == null and (.blockers | length == 0)' "$DISABLED_STATE" >/dev/null
@@ -86,6 +105,62 @@ PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/affordances.js" --json >"$DI
 jq -e '.state_source == "project-disabled" and (.blockers | length == 0) and (.actions[] | select(.id == "status" and .state == "ready"))' "$DISABLED_AFFORDANCES" >/dev/null
 [[ -z "$(PROJECT_DIR="$DISABLED_PROJECT" node "$CORE/scripts/specnav-session-start.js")" ]]
 [[ -z "$(printf '%s' "{\"cwd\":\"$DISABLED_PROJECT\"}" | node "$CORE/scripts/specnav-user-prompt-submit.js")" ]]
+
+# Bash has one unified PreToolUse process. Active projects still redirect
+# foreign indexed-repository searches through CodeGraph.
+ACTIVE_EXTERNAL="$TMP_DIR/active-external"
+mkdir -p "$ACTIVE_EXTERNAL/.codegraph"
+ACTIVE_CROSS_REPO_PAYLOAD="$TMP_DIR/active-cross-repo.json"
+jq -n --arg target "$ACTIVE_EXTERNAL" '{
+  tool_name: "Bash",
+  tool_input: {command: ("rg symbol " + $target)}
+}' >"$ACTIVE_CROSS_REPO_PAYLOAD"
+set +e
+PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" <"$ACTIVE_CROSS_REPO_PAYLOAD" >"$TMP_DIR/active-cross-repo.out" 2>/dev/null
+ACTIVE_CROSS_REPO_STATUS=$?
+set -e
+[[ "$ACTIVE_CROSS_REPO_STATUS" == "2" ]] || {
+  echo "unified guard must deny indexed cross-repo grep, got $ACTIVE_CROSS_REPO_STATUS" >&2
+  exit 1
+}
+grep -q "cross-repo-search" "$TMP_DIR/active-cross-repo.out" || {
+  echo "unified guard cross-repo denial missing blocker id" >&2
+  cat "$TMP_DIR/active-cross-repo.out" >&2
+  exit 1
+}
+
+# Verification reports become stale before a possible edit. Read-only Bash
+# commands stay quiet, while mutating Bash commands conservatively invalidate.
+STALE_PROJECT="$TMP_DIR/stale-project"
+cp -R "$PROJECT" "$STALE_PROJECT"
+STALE_CHANGE="$(cat "$STALE_PROJECT/openspec/.specnav/active-change")"
+STALE_DIR="$STALE_PROJECT/openspec/changes/$STALE_CHANGE"
+printf '{}\n' >"$STALE_DIR/verify-report.json"
+rm -f "$STALE_DIR/verify-report.stale"
+PROJECT_DIR="$STALE_PROJECT" node "$CORE/scripts/specnav-guard.js" <"$PAYLOADS/bash-safe.json" >/dev/null
+[[ ! -e "$STALE_DIR/verify-report.stale" ]] || {
+  echo "read-only Bash must not mark verification stale" >&2
+  exit 1
+}
+PROJECT_DIR="$STALE_PROJECT" node "$CORE/scripts/specnav-guard.js" <"$PAYLOADS/write-allowed.json" >/dev/null
+[[ -e "$STALE_DIR/verify-report.stale" ]] || {
+  echo "edit tool must mark verification stale before execution" >&2
+  exit 1
+}
+rm -f "$STALE_DIR/verify-report.stale"
+printf '%s' '{"tool_name":"Bash","tool_input":{"command":"npm run format"}}' \
+  | PROJECT_DIR="$STALE_PROJECT" node "$CORE/scripts/specnav-guard.js" >/dev/null
+[[ -e "$STALE_DIR/verify-report.stale" ]] || {
+  echo "mutating Bash must mark verification stale before execution" >&2
+  exit 1
+}
+rm -f "$STALE_DIR/verify-report.stale"
+printf '%s' '{"tool_name":"Bash","tool_input":{"command":"printf changed > src/ui/theme.ts"}}' \
+  | PROJECT_DIR="$STALE_PROJECT" node "$CORE/scripts/specnav-guard.js" >/dev/null
+[[ -e "$STALE_DIR/verify-report.stale" ]] || {
+  echo "redirected shell output must mark verification stale before execution" >&2
+  exit 1
+}
 
 LEGACY_OPENSPEC_PROJECT="$TMP_DIR/legacy-openspec-project"
 cp -R "$PROJECT" "$LEGACY_OPENSPEC_PROJECT"

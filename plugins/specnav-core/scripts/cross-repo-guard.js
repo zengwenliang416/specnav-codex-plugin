@@ -84,10 +84,8 @@ function deny(message) {
   process.exit(2);
 }
 
-function main() {
-  if (process.env.SPECNAV_CROSS_REPO_REDIRECT === '0') process.exit(0);
-  const root = projectRoot();
-  const payload = readStdinJson();
+function redirectMessage(payload, root = projectRoot()) {
+  if (process.env.SPECNAV_CROSS_REPO_REDIRECT === '0') return null;
   const tool = payload.tool_name || payload.toolName || '';
   const input = payload.tool_input || payload.input || {};
 
@@ -102,23 +100,38 @@ function main() {
       externalTargets = externalPathArgsFromCommand(input.command, root);
     }
   }
-  if (!externalTargets.length) process.exit(0);
+  if (!externalTargets.length) return null;
 
   for (const target of externalTargets) {
     const repoRoot = findIndexedRepoRoot(target);
     if (!repoRoot || isContainedIn(root, repoRoot)) continue;
-    deny(`[cross-repo-search] ${target} is inside ${repoRoot}, which has a CodeGraph index. `
+    return `[cross-repo-search] ${target} is inside ${repoRoot}, which has a CodeGraph index. `
       + `Use \`codegraph explore -p "${repoRoot}" "<your question or symbol names>"\` `
       + `(or the codegraph_explore MCP tool with projectPath) instead of grep/find — one call returns `
       + `the relevant symbols' source plus call paths. Reading one specific file with the Read tool is fine. `
-      + `Set SPECNAV_CROSS_REPO_REDIRECT=0 to disable this redirect.`);
+      + `Set SPECNAV_CROSS_REPO_REDIRECT=0 to disable this redirect.`;
   }
+  return null;
+}
+
+function main() {
+  const payload = readStdinJson();
+  const message = redirectMessage(payload);
+  if (message) deny(message);
   process.exit(0);
 }
 
-try {
-  main();
-} catch {
-  // Fail open: an efficiency gate must never block real work on an internal error.
-  process.exit(0);
+if (require.main === module) {
+  try {
+    main();
+  } catch {
+    // Fail open: an efficiency gate must never block real work on an internal error.
+    process.exit(0);
+  }
 }
+
+module.exports = {
+  externalPathArgsFromCommand,
+  findIndexedRepoRoot,
+  redirectMessage
+};

@@ -201,12 +201,14 @@ high-risk path/surface.
 | --- | --- |
 | `SessionStart` | Surface current SpecNav/OpenSpec state; announce sibling repos with a CodeGraph index |
 | `UserPromptSubmit` | Inject the legal next actions and blockers for each user request |
-| `PreToolUse` | Gate writes (soft by default, `SPECNAV_STRICT=1` blocks); redirect cross-repo Bash searches to `codegraph explore -p` |
-| `PostToolUse` | Mark verification reports stale after relevant edits (idempotent) |
+| `PreToolUse` | Unified write gate: enforce lifecycle rules, redirect cross-repo Bash searches to `codegraph explore -p`, and mark verification stale before possible mutations |
 
 The cross-repo scripts (`cross-repo-announce.js`, `cross-repo-guard.js`) live
 in `specnav-core/scripts/` because only `specnav-core` may ship hooks; Codex
-has no standalone Grep tool, so the search redirect matches `Bash` only.
+has no standalone Grep tool, so the search redirect matches `Bash` only. The
+plugin intentionally ships no global `PostToolUse` hook: edit tools invalidate
+verification in the unified pre-tool guard, while read-only Bash commands do
+not create hook noise.
 
 Hook commands must use `PLUGIN_ROOT`:
 
