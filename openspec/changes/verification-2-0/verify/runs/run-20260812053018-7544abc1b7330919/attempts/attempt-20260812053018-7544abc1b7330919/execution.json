@@ -1,0 +1,1048 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260812053018-7544abc1b7330919",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-08"
+    ],
+    "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+    "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-12T05:30:18.449Z",
+    "started_at": "2026-08-12T05:30:18.478Z",
+    "completed_at": "2026-08-12T05:34:07.519Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+    "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+    "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+    "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260812053018-7544abc1b7330919",
+    "run_id": "run-20260812053018-7544abc1b7330919",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-08",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+    "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+    "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-12T05:30:18.478Z",
+    "completed_at": "2026-08-12T05:34:07.519Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260812053018-7544abc1b7330919",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-08"
+      ],
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-12T05:30:18.449Z",
+      "started_at": "2026-08-12T05:30:18.478Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+      "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+      "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260812053018-7544abc1b7330919",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-08"
+      ],
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-12T05:30:18.449Z",
+      "started_at": "2026-08-12T05:30:18.478Z",
+      "completed_at": "2026-08-12T05:34:07.519Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+      "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+      "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812053018-7544abc1b7330919",
+      "run_id": "run-20260812053018-7544abc1b7330919",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-12T05:30:18.478Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812053018-7544abc1b7330919",
+      "run_id": "run-20260812053018-7544abc1b7330919",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-12T05:30:18.478Z",
+      "completed_at": "2026-08-12T05:34:07.519Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812053018-7544abc1b7330919",
+      "run_id": "run-20260812053018-7544abc1b7330919",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-08",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-12T05:30:18.478Z",
+      "completed_at": "2026-08-12T05:34:07.519Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: production host artifact generator writes proof-consumable receipts\nok 1 - production host artifact generator writes proof-consumable receipts\n  ---\n  duration_ms: 30217.041042\n  type: 'test'\n  ...\n# Subtest: remote or host command failure cannot publish official host artifacts\nok 2 - remote or host command failure cannot publish official host artifacts\n  ---\n  duration_ms: 20932.912166\n  type: 'test'\n  ...\n# Subtest: a stale writer cannot replace a newer host proof pointer\nok 3 - a stale writer cannot replace a newer host proof pointer\n  ---\n  duration_ms: 15763.223209\n  type: 'test'\n  ...\n# Subtest: runner source digest covers trusted execution dependencies\nok 4 - runner source digest covers trusted execution dependencies\n  ---\n  duration_ms: 684.588084\n  type: 'test'\n  ...\n# Subtest: sandbox and environment identities ignore mkdtemp root names\nok 5 - sandbox and environment identities ignore mkdtemp root names\n  ---\n  duration_ms: 6.872541\n  type: 'test'\n  ...\n# Subtest: host-smoke sandbox cannot stat the managed runtime authority key\nok 6 - host-smoke sandbox cannot stat the managed runtime authority key\n  ---\n  duration_ms: 157.774542\n  type: 'test'\n  ...\n# Subtest: shard configuration is explicit and fails closed\nok 7 - shard configuration is explicit and fails closed\n  ---\n  duration_ms: 4.071917\n  type: 'test'\n  ...\n# Subtest: waitForExit removes exit listeners after success and timeout\nok 8 - waitForExit removes exit listeners after success and timeout\n  ---\n  duration_ms: 11.41125\n  type: 'test'\n  ...\n# Subtest: 43 release tests are assigned exactly once across four shards\nok 9 - 43 release tests are assigned exactly once across four shards\n  ---\n  duration_ms: 0.421292\n  type: 'test'\n  ...\n# Subtest: test registration selects only the current deterministic shard\nok 10 - test registration selects only the current deterministic shard\n  ---\n  duration_ms: 0.378917\n  type: 'test'\n  ...\n# Subtest: release suite launches four shards with isolated shard identities\nok 11 - release suite launches four shards with isolated shard identities\n  ---\n  duration_ms: 0.909625\n  type: 'test'\n  ...\n# Subtest: a failed shard fails the suite without hiding successful shards\nok 12 - a failed shard fails the suite without hiding successful shards\n  ---\n  duration_ms: 11.568458\n  type: 'test'\n  ...\n# Subtest: a failed shard terminates a hanging sibling\nok 13 - a failed shard terminates a hanging sibling\n  ---\n  duration_ms: 10.993291\n  type: 'test'\n  ...\n# Subtest: a synchronous spawn failure stops launch and terminates active shards\nok 14 - a synchronous spawn failure stops launch and terminates active shards\n  ---\n  duration_ms: 11.060709\n  type: 'test'\n  ...\n# Subtest: asynchronous spawn errors and child signals fail the suite\nok 15 - asynchronous spawn errors and child signals fail the suite\n  ---\n  duration_ms: 10.60175\n  type: 'test'\n  ...\n# Subtest: parent termination is forwarded to every active shard\nok 16 - parent termination is forwarded to every active shard\n  ---\n  duration_ms: 11.854375\n  type: 'test'\n  ...\n# Subtest: ignored termination is escalated and forcibly settled\nok 17 - ignored termination is escalated and forcibly settled\n  ---\n  duration_ms: 10.590917\n  type: 'test'\n  ...\n# Subtest: process-group termination reaches a real test worker descendant\nok 18 - process-group termination reaches a real test worker descendant\n  ---\n  duration_ms: 73.030125\n  type: 'test'\n  ...\n# Subtest: SIGKILL escalation cleans a worker after its coordinator exits\nok 19 - SIGKILL escalation cleans a worker after its coordinator exits\n  ---\n  duration_ms: 165.758333\n  type: 'test'\n  ...\n# Subtest: managed owner drains registry data delivered after coordinator exit\nok 20 - managed owner drains registry data delivered after coordinator exit\n  ---\n  duration_ms: 17.915125\n  type: 'test'\n  ...\n# Subtest: managed owner sends TERM to a process group registered during shutdown\nok 21 - managed owner sends TERM to a process group registered during shutdown\n  ---\n  duration_ms: 15.838\n  type: 'test'\n  ...\n# Subtest: managed owner kills a registered detached group after coordinator exit\nok 22 - managed owner kills a registered detached group after coordinator exit\n  ---\n  duration_ms: 45.69725\n  type: 'test'\n  ...\n# Subtest: release shell forwards adapter termination to its active Node command\nok 23 - release shell forwards adapter termination to its active Node command\n  ---\n  duration_ms: 196.488958\n  type: 'test'\n  ...\n# Subtest: release shell terminates during managed Python preflight without continuing\nok 24 - release shell terminates during managed Python preflight without continuing\n  ---\n  duration_ms: 86.489\n  type: 'test'\n  ...\n# Subtest: release shell escalates a stubborn managed command to SIGKILL\nok 25 - release shell escalates a stubborn managed command to SIGKILL\n  ---\n  duration_ms: 5106.365542\n  type: 'test'\n  ...\n# Subtest: release shell kills a stubborn descendant after its coordinator exits\nok 26 - release shell kills a stubborn descendant after its coordinator exits\n  ---\n  duration_ms: 6201.470208\n  type: 'test'\n  ...\n# Subtest: release shell manages assertion emission after a failed command\nok 27 - release shell manages assertion emission after a failed command\n  ---\n  duration_ms: 223.627917\n  type: 'test'\n  ...\n# Subtest: release shell emits failed assertions when Python is unavailable\nok 28 - release shell emits failed assertions when Python is unavailable\n  ---\n  duration_ms: 90.539416\n  type: 'test'\n  ...\n# Subtest: release shell dynamically includes support tests and excludes the sharded file\nok 29 - release shell dynamically includes support tests and excludes the sharded file\n  ---\n  duration_ms: 0.422792\n  type: 'test'\n  ...\n# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes\nok 30 - descriptor-relative read rejects an ancestor swap without reading external bytes\n  ---\n  duration_ms: 128.509625\n  type: 'test'\n  ...\n# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup\nok 31 - descriptor-relative tree copy rejects a source swap and deletes the partial backup\n  ---\n  duration_ms: 72.418625\n  type: 'test'\n  ...\n# Subtest: archive lock acquisition has one atomic winner and owner-bound release\nok 32 - archive lock acquisition has one atomic winner and owner-bound release\n  ---\n  duration_ms: 131.284333\n  type: 'test'\n  ...\n# Subtest: atomic write compare-and-swap rejects a stale expected value\nok 33 - atomic write compare-and-swap rejects a stale expected value\n  ---\n  duration_ms: 39.266083\n  type: 'test'\n  ...\n# Subtest: safe filesystem ignores an environment-selected Python executable\nok 34 - safe filesystem ignores an environment-selected Python executable\n  ---\n  duration_ms: 217.124583\n  type: 'test'\n  ...\n# Subtest: trusted runtime resolves versioned sibling plugins in an installed cache\nok 35 - trusted runtime resolves versioned sibling plugins in an installed cache\n  ---\n  duration_ms: 25.165458\n  type: 'test'\n  ...\n# Subtest: trusted local source roots take precedence over an environment override\nok 36 - trusted local source roots take precedence over an environment override\n  ---\n  duration_ms: 7.334875\n  type: 'test'\n  ...\n# Subtest: installed runtime rejects an explicit root outside the discovered marketplace\nok 37 - installed runtime rejects an explicit root outside the discovered marketplace\n  ---\n  duration_ms: 5.274584\n  type: 'test'\n  ...\n1..37\n# tests 37\n# suites 0\n# pass 37\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 67920.014459\nTAP version 13\nTAP version 13\nTAP version 13\nTAP version 13\n# Subtest: missing or non-human case approval blocks release\nok 1 - missing or non-human case approval blocks release\n  ---\n  duration_ms: 14605.783583\n  type: 'test'\n  ...\n# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates\nok 2 - standard-lane missing-domain input cannot use self-consistent forged pass gates\n  ---\n  duration_ms: 9790.546583\n  type: 'test'\n  ...\n# Subtest: missing evidence index cannot reuse green gates and reports\nok 3 - missing evidence index cannot reuse green gates and reports\n  ---\n  duration_ms: 10474.526458\n  type: 'test'\n  ...\n# Subtest: release proof uses the same governance-excluding code fingerprint as execution\nok 4 - release proof uses the same governance-excluding code fingerprint as execution\n  ---\n  duration_ms: 496.467084\n  type: 'test'\n  ...\n# Subtest: placeholder clean-install claims fail closed\nok 5 - placeholder clean-install claims fail closed\n  ---\n  duration_ms: 10173.535125\n  type: 'test'\n  ...\n# Subtest: managed fixture manifest is bound to the trusted local corpus\nok 6 - managed fixture manifest is bound to the trusted local corpus\n  ---\n  duration_ms: 10491.589041\n  type: 'test'\n  ...\n# Subtest: host proof pointer generation semantics fail closed\nok 7 - host proof pointer generation semantics fail closed\n  ---\n  duration_ms: 20286.962584\n  type: 'test'\n  ...\n# Subtest: verification plugin root environment overrides cannot replace trusted code\nok 8 - verification plugin root environment overrides cannot replace trusted code\n  ---\n  duration_ms: 9951.985\n  type: 'test'\n  ...\n# Subtest: a symlinked change directory is rejected before any proof is written\nok 9 - a symlinked change directory is rejected before any proof is written\n  ---\n  duration_ms: 314.495167\n  type: 'test'\n  ...\n# Subtest: a symlinked operations directory cannot receive a blocked proof write\nok 10 - a symlinked operations directory cannot receive a blocked proof write\n  ---\n  duration_ms: 3467.044959\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 90387.201208\n# Subtest: no-failure release proof rejects a forged closed repair state\nok 1 - no-failure release proof rejects a forged closed repair state\n  ---\n  duration_ms: 14547.379083\n  type: 'test'\n  ...\n# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate\nok 2 - partial-domain and light-mode input cannot reuse a persisted green gate\n  ---\n  duration_ms: 3342.601833\n  type: 'test'\n  ...\n# Subtest: all three HTML projections are required but never used as verdict authority\nok 3 - all three HTML projections are required but never used as verdict authority\n  ---\n  duration_ms: 9764.035083\n  type: 'test'\n  ...\n# Subtest: missing or tampered authority chain anchor blocks release proof\nok 4 - missing or tampered authority chain anchor blocks release proof\n  ---\n  duration_ms: 20923.253167\n  type: 'test'\n  ...\n# Subtest: required migration accepts one successful schema-valid apply receipt\nok 5 - required migration accepts one successful schema-valid apply receipt\n  ---\n  duration_ms: 10592.938666\n  type: 'test'\n  ...\n# Subtest: all host executions must use the same managed fixture snapshot\nok 6 - all host executions must use the same managed fixture snapshot\n  ---\n  duration_ms: 10060.503709\n  type: 'test'\n  ...\n# Subtest: the current pointer cannot mix artifacts from different proof runs\nok 7 - the current pointer cannot mix artifacts from different proof runs\n  ---\n  duration_ms: 10027.236875\n  type: 'test'\n  ...\n# Subtest: host proof pointer accepts a complete generation-two chain\nok 8 - host proof pointer accepts a complete generation-two chain\n  ---\n  duration_ms: 0.485666\n  type: 'test'\n  ...\n# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity\nok 9 - persisted gate edits cannot bypass Kernel-owned gate identity\n  ---\n  duration_ms: 9995.363583\n  type: 'test'\n  ...\n# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts\nok 10 - duplicate compatibility hosts cannot masquerade as all three hosts\n  ---\n  duration_ms: 13060.575583\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not follow symlinked operations or parent directories\nok 11 - writeArchiveGate does not follow symlinked operations or parent directories\n  ---\n  duration_ms: 6508.993542\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 109091.124875\n# Subtest: managed runtime signing key supplies the trusted fact authority by default\nok 1 - managed runtime signing key supplies the trusted fact authority by default\n  ---\n  duration_ms: 14523.578\n  type: 'test'\n  ...\n# Subtest: full lane uses the same complete six-domain release and archive proof\nok 2 - full lane uses the same complete six-domain release and archive proof\n  ---\n  duration_ms: 9757.828375\n  type: 'test'\n  ...\n# Subtest: report render manifest is required and must bind the current report model\nok 3 - report render manifest is required and must bind the current report model\n  ---\n  duration_ms: 10532.105542\n  type: 'test'\n  ...\n# Subtest: current code, test, and environment fingerprint drift blocks release proof\nok 4 - current code, test, and environment fingerprint drift blocks release proof\n  ---\n  duration_ms: 30780.9735\n  type: 'test'\n  ...\n# Subtest: tampered clean-install receipt and a missing host fail closed\nok 5 - tampered clean-install receipt and a missing host fail closed\n  ---\n  duration_ms: 8083.785125\n  type: 'test'\n  ...\n# Subtest: release proof reconstructs exact sandbox plans and rejects permission drift\nok 6 - release proof reconstructs exact sandbox plans and rejects permission drift\n  ---\n  duration_ms: 53624.102917\n  type: 'test'\n  ...\n# Subtest: a rolled-back current pointer cannot disagree with its immutable copy\nok 7 - a rolled-back current pointer cannot disagree with its immutable copy\n  ---\n  duration_ms: 9185.806791\n  type: 'test'\n  ...\n# Subtest: specnav core environment overrides cannot execute trusted entry imports\nok 8 - specnav core environment overrides cannot execute trusted entry imports\n  ---\n  duration_ms: 109.778417\n  type: 'test'\n  ...\n# Subtest: explicit change ids cannot escape or bypass the active change registry\nok 9 - explicit change ids cannot escape or bypass the active change registry\n  ---\n  duration_ms: 296.37425\n  type: 'test'\n  ...\n# Subtest: host receipts and compatibility cannot be replayed across gate inputs\nok 10 - host receipts and compatibility cannot be replayed across gate inputs\n  ---\n  duration_ms: 9263.120583\n  type: 'test'\n  ...\n# Subtest: safe archive JSONL append is atomic and rejects a symlink target\nok 11 - safe archive JSONL append is atomic and rejects a symlink target\n  ---\n  duration_ms: 388.836459\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 146826.123042\n# Subtest: complete Kernel-derived release and archive proof passes and writes digests\nok 1 - complete Kernel-derived release and archive proof passes and writes digests\n  ---\n  duration_ms: 14597.015583\n  type: 'test'\n  ...\n# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority\nok 2 - reviewer source hashes and approval time are revalidated by the Kernel authority\n  ---\n  duration_ms: 30538.659417\n  type: 'test'\n  ...\n# Subtest: stale evidence and open failures block both persisted pass decisions\nok 3 - stale evidence and open failures block both persisted pass decisions\n  ---\n  duration_ms: 10485.670958\n  type: 'test'\n  ...\n# Subtest: missing canonical execution artifacts cannot reuse green gates and reports\nok 4 - missing canonical execution artifacts cannot reuse green gates and reports\n  ---\n  duration_ms: 30156.786083\n  type: 'test'\n  ...\n# Subtest: required migration needs one successful schema-valid apply receipt\nok 5 - required migration needs one successful schema-valid apply receipt\n  ---\n  duration_ms: 13126.7705\n  type: 'test'\n  ...\n# Subtest: cross-host compatibility blockers stop release and archive\nok 6 - cross-host compatibility blockers stop release and archive\n  ---\n  duration_ms: 9865.884875\n  type: 'test'\n  ...\n# Subtest: a tampered host execution envelope cannot manufacture trusted facts\nok 7 - a tampered host execution envelope cannot manufacture trusted facts\n  ---\n  duration_ms: 9642.418833\n  type: 'test'\n  ...\n# Subtest: host proof pointer rejects a forged predecessor digest\nok 8 - host proof pointer rejects a forged predecessor digest\n  ---\n  duration_ms: 10912.140166\n  type: 'test'\n  ...\n# Subtest: report model must bind to the release gate, readings, evidence index, and versions\nok 9 - report model must bind to the release gate, readings, evidence index, and versions\n  ---\n  duration_ms: 9188.19275\n  type: 'test'\n  ...\n# Subtest: duplicate host identities cannot satisfy the clean-install contract\nok 10 - duplicate host identities cannot satisfy the clean-install contract\n  ---\n  duration_ms: 9339.917875\n  type: 'test'\n  ...\n# Subtest: writeArchiveGate does not persist a gate or log when validation fails\nok 11 - writeArchiveGate does not persist a gate or log when validation fails\n  ---\n  duration_ms: 12440.246084\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 160557.504958\nverification v2 release and archive proof ok\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-12T05:30:18.480Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260812053018-7544abc1b7330919",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-08"
+        ],
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-12T05:30:18.449Z",
+        "started_at": "2026-08-12T05:30:18.478Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+        "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+        "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-12T05:30:18.480Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260812053018-7544abc1b7330919",
+        "run_id": "run-20260812053018-7544abc1b7330919",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-08",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-12T05:30:18.478Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-12T05:30:18.483Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-release.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 900000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:30:18.754Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.650Z",
+      "chunk": "# Subtest: production host artifact generator writes proof-consumable receipts\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.650Z",
+      "chunk": "ok 1 - production host artifact generator writes proof-consumable receipts\n  ---\n  duration_ms: 30217.041042\n  type: 'test'\n  ...\n# Subtest: remote or host command failure cannot publish official host artifacts\nok 2 - remote or host command failure cannot publish official host artifacts\n  ---\n  duration_ms: 20932.912166\n  type: 'test'\n  ...\n# Subtest: a stale writer cannot replace a newer host proof pointer\nok 3 - a stale writer cannot replace a newer host proof pointer\n  ---\n  duration_ms: 15763.223209\n  type: 'test'\n  ...\n# Subtest: runner source digest covers trusted execution dependencies\nok 4 - runner source digest covers trusted execution dependencies\n  ---\n  duration_ms: 684.588084\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.663Z",
+      "chunk": "# Subtest: sandbox and environment identities ignore mkdtemp root names\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.664Z",
+      "chunk": "ok 5 - sandbox and environment identities ignore mkdtemp root names\n  ---\n  duration_ms: 6.872541\n  type: 'test'\n  ...\n# Subtest: host-smoke sandbox cannot stat the managed runtime authority key\nok 6 - host-smoke sandbox cannot stat the managed runtime authority key\n  ---\n  duration_ms: 157.774542\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.664Z",
+      "chunk": "# Subtest: shard configuration is explicit and fails closed\nok 7 - shard configuration is explicit and fails closed\n  ---\n  duration_ms: 4.071917\n  type: 'test'\n  ...\n# Subtest: waitForExit removes exit listeners after success and timeout\nok 8 - waitForExit removes exit listeners after success and timeout\n  ---\n  duration_ms: 11.41125\n  type: 'test'\n  ...\n# Subtest: 43 release tests are assigned exactly once across four shards\nok 9 - 43 release tests are assigned exactly once across four shards\n  ---\n  duration_ms: 0.421292\n  type: 'test'\n  ...\n# Subtest: test registration selects only the current deterministic shard\nok 10 - test registration selects only the current deterministic shard\n  ---\n  duration_ms: 0.378917\n  type: 'test'\n  ...\n# Subtest: release suite launches four shards with isolated shard identities\nok 11 - release suite launches four shards with isolated shard identities\n  ---\n  duration_ms: 0.909625\n  type: 'test'\n  ...\n# Subtest: a failed shard fails the suite without hiding successful shards\nok 12 - a failed shard fails the suite without hiding successful shards\n  ---\n  duration_ms: 11.568458\n  type: 'test'\n  ...\n# Subtest: a failed shard terminates a hanging sibling\nok 13 - a failed shard terminates a hanging sibling\n  ---\n  duration_ms: 10.993291\n  type: 'test'\n  ...\n# Subtest: a synchronous spawn failure stops launch and terminates active shards\nok 14 - a synchronous spawn failure stops launch and terminates active shards\n  ---\n  duration_ms: 11.060709\n  type: 'test'\n  ...\n# Subtest: asynchronous spawn errors and child signals fail the suite\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.664Z",
+      "chunk": "ok 15 - asynchronous spawn errors and child signals fail the suite\n  ---\n  duration_ms: 10.60175\n  type: 'test'\n  ...\n# Subtest: parent termination is forwarded to every active shard\nok 16 - parent termination is forwarded to every active shard\n  ---\n  duration_ms: 11.854375\n  type: 'test'\n  ...\n# Subtest: ignored termination is escalated and forcibly settled\nok 17 - ignored termination is escalated and forcibly settled\n  ---\n  duration_ms: 10.590917\n  type: 'test'\n  ...\n# Subtest: process-group termination reaches a real test worker descendant\nok 18 - process-group termination reaches a real test worker descendant\n  ---\n  duration_ms: 73.030125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "# Subtest: SIGKILL escalation cleans a worker after its coordinator exits\nok 19 - SIGKILL escalation cleans a worker after its coordinator exits\n  ---\n  duration_ms: 165.758333\n  type: 'test'\n  ...\n# Subtest: managed owner drains registry data delivered after coordinator exit\nok 20 - managed owner drains registry data delivered after coordinator exit\n  ---\n  duration_ms: 17.915125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "# Subtest: managed owner sends TERM to a process group registered during shutdown\nok 21 - managed owner sends TERM to a process group registered during shutdown\n  ---\n  duration_ms: 15.838\n  type: 'test'\n  ...\n# Subtest: managed owner kills a registered detached group after coordinator exit\nok 22 - managed owner kills a registered detached group after coordinator exit\n  ---\n  duration_ms: 45.69725\n  type: 'test'\n  ...\n# Subtest: release shell forwards adapter termination to its active Node command\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "ok 23 - release shell forwards adapter termination to its active Node command\n  ---\n  duration_ms: 196.488958\n  type: 'test'\n  ...\n# Subtest: release shell terminates during managed Python preflight without continuing\nok 24 - release shell terminates during managed Python preflight without continuing\n  ---\n  duration_ms: 86.489\n  type: 'test'\n  ...\n# Subtest: release shell escalates a stubborn managed command to SIGKILL\nok 25 - release shell escalates a stubborn managed command to SIGKILL\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "  ---\n  duration_ms: 5106.365542\n  type: 'test'\n  ...\n# Subtest: release shell kills a stubborn descendant after its coordinator exits\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "ok 26 - release shell kills a stubborn descendant after its coordinator exits\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "  ---\n  duration_ms: 6201.470208\n  type: 'test'\n  ...\n# Subtest: release shell manages assertion emission after a failed command\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "ok 27 - release shell manages assertion emission after a failed command\n  ---\n  duration_ms: 223.627917\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "# Subtest: release shell emits failed assertions when Python is unavailable\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "ok 28 - release shell emits failed assertions when Python is unavailable\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "  ---\n  duration_ms: 90.539416\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "# Subtest: release shell dynamically includes support tests and excludes the sharded file\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "ok 29 - release shell dynamically includes support tests and excludes the sharded file\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.665Z",
+      "chunk": "  ---\n  duration_ms: 0.422792\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: descriptor-relative read rejects an ancestor swap without reading external bytes\nok 30 - descriptor-relative read rejects an ancestor swap without reading external bytes\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "  ---\n  duration_ms: 128.509625\n  type: 'test'\n  ...\n# Subtest: descriptor-relative tree copy rejects a source swap and deletes the partial backup\nok 31 - descriptor-relative tree copy rejects a source swap and deletes the partial backup\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "  ---\n  duration_ms: 72.418625\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 27,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: archive lock acquisition has one atomic winner and owner-bound release\n"
+    },
+    {
+      "sequence": 28,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "ok 32 - archive lock acquisition has one atomic winner and owner-bound release\n  ---\n  duration_ms: 131.284333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 29,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: atomic write compare-and-swap rejects a stale expected value\n"
+    },
+    {
+      "sequence": 30,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "ok 33 - atomic write compare-and-swap rejects a stale expected value\n  ---\n  duration_ms: 39.266083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 31,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: safe filesystem ignores an environment-selected Python executable\n"
+    },
+    {
+      "sequence": 32,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "ok 34 - safe filesystem ignores an environment-selected Python executable\n"
+    },
+    {
+      "sequence": 33,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "  ---\n  duration_ms: 217.124583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 34,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: trusted runtime resolves versioned sibling plugins in an installed cache\n"
+    },
+    {
+      "sequence": 35,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "ok 35 - trusted runtime resolves versioned sibling plugins in an installed cache\n  ---\n  duration_ms: 25.165458\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 36,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# Subtest: trusted local source roots take precedence over an environment override\n"
+    },
+    {
+      "sequence": 37,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "ok 36 - trusted local source roots take precedence over an environment override\n  ---\n  duration_ms: 7.334875\n  type: 'test'\n  ...\n# Subtest: installed runtime rejects an explicit root outside the discovered marketplace\nok 37 - installed runtime rejects an explicit root outside the discovered marketplace\n  ---\n  duration_ms: 5.274584\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 38,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "1..37\n"
+    },
+    {
+      "sequence": 39,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# tests 37\n"
+    },
+    {
+      "sequence": 40,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# suites 0\n"
+    },
+    {
+      "sequence": 41,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# pass 37\n"
+    },
+    {
+      "sequence": 42,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 43,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 44,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 45,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 46,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.666Z",
+      "chunk": "# duration_ms 67920.014459\n"
+    },
+    {
+      "sequence": 47,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.769Z",
+      "chunk": "TAP version 13\nTAP version 13\n"
+    },
+    {
+      "sequence": 48,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.771Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 49,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:31:26.771Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 50,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:32:57.058Z",
+      "chunk": "# Subtest: missing or non-human case approval blocks release\nok 1 - missing or non-human case approval blocks release\n  ---\n  duration_ms: 14605.783583\n  type: 'test'\n  ...\n# Subtest: standard-lane missing-domain input cannot use self-consistent forged pass gates\nok 2 - standard-lane missing-domain input cannot use self-consistent forged pass gates\n  ---\n  duration_ms: 9790.546583\n  type: 'test'\n  ...\n# Subtest: missing evidence index cannot reuse green gates and reports\nok 3 - missing evidence index cannot reuse green gates and reports\n  ---\n  duration_ms: 10474.526458\n  type: 'test'\n  ...\n# Subtest: release proof uses the same governance-excluding code fingerprint as execution\nok 4 - release proof uses the same governance-excluding code fingerprint as execution\n  ---\n  duration_ms: 496.467084\n  type: 'test'\n  ...\n# Subtest: placeholder clean-install claims fail closed\nok 5 - placeholder clean-install claims fail closed\n  ---\n  duration_ms: 10173.535125\n  type: 'test'\n  ...\n# Subtest: managed fixture manifest is bound to the trusted local corpus\nok 6 - managed fixture manifest is bound to the trusted local corpus\n  ---\n  duration_ms: 10491.589041\n  type: 'test'\n  ...\n# Subtest: host proof pointer generation semantics fail closed\nok 7 - host proof pointer generation semantics fail closed\n  ---\n  duration_ms: 20286.962584\n  type: 'test'\n  ...\n# Subtest: verification plugin root environment overrides cannot replace trusted code\nok 8 - verification plugin root environment overrides cannot replace trusted code\n  ---\n  duration_ms: 9951.985\n  type: 'test'\n  ...\n# Subtest: a symlinked change directory is rejected before any proof is written\nok 9 - a symlinked change directory is rejected before any proof is written\n  ---\n  duration_ms: 314.495167\n  type: 'test'\n  ...\n# Subtest: a symlinked operations directory cannot receive a blocked proof write\nok 10 - a symlinked operations directory cannot receive a blocked proof write\n  ---\n  duration_ms: 3467.044959\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 51,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:32:57.148Z",
+      "chunk": "1..10\n# tests 10\n"
+    },
+    {
+      "sequence": 52,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:32:57.150Z",
+      "chunk": "# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 90387.201208\n"
+    },
+    {
+      "sequence": 53,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "# Subtest: no-failure release proof rejects a forged closed repair state\n"
+    },
+    {
+      "sequence": 54,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "ok 1 - no-failure release proof rejects a forged closed repair state\n  ---\n  duration_ms: 14547.379083\n  type: 'test'\n  ...\n# Subtest: partial-domain and light-mode input cannot reuse a persisted green gate\nok 2 - partial-domain and light-mode input cannot reuse a persisted green gate\n  ---\n  duration_ms: 3342.601833\n  type: 'test'\n  ...\n# Subtest: all three HTML projections are required but never used as verdict authority\nok 3 - all three HTML projections are required but never used as verdict authority\n  ---\n  duration_ms: 9764.035083\n  type: 'test'\n  ...\n# Subtest: missing or tampered authority chain anchor blocks release proof\nok 4 - missing or tampered authority chain anchor blocks release proof\n  ---\n  duration_ms: 20923.253167\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 55,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "# Subtest: required migration accepts one successful schema-valid apply receipt\n"
+    },
+    {
+      "sequence": 56,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "ok 5 - required migration accepts one successful schema-valid apply receipt\n"
+    },
+    {
+      "sequence": 57,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "  ---\n  duration_ms: 10592.938666\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 58,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "# Subtest: all host executions must use the same managed fixture snapshot\n"
+    },
+    {
+      "sequence": 59,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "ok 6 - all host executions must use the same managed fixture snapshot\n"
+    },
+    {
+      "sequence": 60,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "  ---\n  duration_ms: 10060.503709\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 61,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.832Z",
+      "chunk": "# Subtest: the current pointer cannot mix artifacts from different proof runs\n"
+    },
+    {
+      "sequence": 62,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "ok 7 - the current pointer cannot mix artifacts from different proof runs\n"
+    },
+    {
+      "sequence": 63,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "  ---\n  duration_ms: 10027.236875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 64,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "# Subtest: host proof pointer accepts a complete generation-two chain\n"
+    },
+    {
+      "sequence": 65,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "ok 8 - host proof pointer accepts a complete generation-two chain\n"
+    },
+    {
+      "sequence": 66,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "  ---\n  duration_ms: 0.485666\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 67,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "# Subtest: persisted gate edits cannot bypass Kernel-owned gate identity\n"
+    },
+    {
+      "sequence": 68,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "ok 9 - persisted gate edits cannot bypass Kernel-owned gate identity\n"
+    },
+    {
+      "sequence": 69,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "  ---\n  duration_ms: 9995.363583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 70,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "# Subtest: duplicate compatibility hosts cannot masquerade as all three hosts\n"
+    },
+    {
+      "sequence": 71,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "ok 10 - duplicate compatibility hosts cannot masquerade as all three hosts\n"
+    },
+    {
+      "sequence": 72,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "  ---\n  duration_ms: 13060.575583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 73,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.833Z",
+      "chunk": "# Subtest: writeArchiveGate does not follow symlinked operations or parent directories\nok 11 - writeArchiveGate does not follow symlinked operations or parent directories\n  ---\n  duration_ms: 6508.993542\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 74,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:15.854Z",
+      "chunk": "1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 109091.124875\n"
+    },
+    {
+      "sequence": 75,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.628Z",
+      "chunk": "# Subtest: managed runtime signing key supplies the trusted fact authority by default\nok 1 - managed runtime signing key supplies the trusted fact authority by default\n  ---\n  duration_ms: 14523.578\n  type: 'test'\n  ...\n# Subtest: full lane uses the same complete six-domain release and archive proof\n"
+    },
+    {
+      "sequence": 76,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.628Z",
+      "chunk": "ok 2 - full lane uses the same complete six-domain release and archive proof\n  ---\n  duration_ms: 9757.828375\n  type: 'test'\n  ...\n# Subtest: report render manifest is required and must bind the current report model\nok 3 - report render manifest is required and must bind the current report model\n  ---\n  duration_ms: 10532.105542\n  type: 'test'\n  ...\n# Subtest: current code, test, and environment fingerprint drift blocks release proof\nok 4 - current code, test, and environment fingerprint drift blocks release proof\n  ---\n  duration_ms: 30780.9735\n  type: 'test'\n  ...\n# Subtest: tampered clean-install receipt and a missing host fail closed\nok 5 - tampered clean-install receipt and a missing host fail closed\n  ---\n  duration_ms: 8083.785125\n  type: 'test'\n  ...\n# Subtest: release proof reconstructs exact sandbox plans and rejects permission drift\nok 6 - release proof reconstructs exact sandbox plans and rejects permission drift\n  ---\n  duration_ms: 53624.102917\n  type: 'test'\n  ...\n# Subtest: a rolled-back current pointer cannot disagree with its immutable copy\nok 7 - a rolled-back current pointer cannot disagree with its immutable copy\n  ---\n  duration_ms: 9185.806791\n  type: 'test'\n  ...\n# Subtest: specnav core environment overrides cannot execute trusted entry imports\nok 8 - specnav core environment overrides cannot execute trusted entry imports\n  ---\n  duration_ms: 109.778417\n  type: 'test'\n  ...\n# Subtest: explicit change ids cannot escape or bypass the active change registry\n"
+    },
+    {
+      "sequence": 77,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.628Z",
+      "chunk": "ok 9 - explicit change ids cannot escape or bypass the active change registry\n"
+    },
+    {
+      "sequence": 78,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.629Z",
+      "chunk": "  ---\n  duration_ms: 296.37425\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 79,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.629Z",
+      "chunk": "# Subtest: host receipts and compatibility cannot be replayed across gate inputs\n"
+    },
+    {
+      "sequence": 80,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.629Z",
+      "chunk": "ok 10 - host receipts and compatibility cannot be replayed across gate inputs\n  ---\n  duration_ms: 9263.120583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 81,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.629Z",
+      "chunk": "# Subtest: safe archive JSONL append is atomic and rejects a symlink target\nok 11 - safe archive JSONL append is atomic and rejects a symlink target\n  ---\n  duration_ms: 388.836459\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 82,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.650Z",
+      "chunk": "1..11\n# tests 11\n# suites 0\n# pass 11\n"
+    },
+    {
+      "sequence": 83,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:33:53.651Z",
+      "chunk": "# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 146826.123042\n"
+    },
+    {
+      "sequence": 84,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.364Z",
+      "chunk": "# Subtest: complete Kernel-derived release and archive proof passes and writes digests\n"
+    },
+    {
+      "sequence": 85,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "ok 1 - complete Kernel-derived release and archive proof passes and writes digests\n"
+    },
+    {
+      "sequence": 86,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "  ---\n  duration_ms: 14597.015583\n  type: 'test'\n  ...\n# Subtest: reviewer source hashes and approval time are revalidated by the Kernel authority\n"
+    },
+    {
+      "sequence": 87,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "ok 2 - reviewer source hashes and approval time are revalidated by the Kernel authority\n"
+    },
+    {
+      "sequence": 88,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "  ---\n  duration_ms: 30538.659417\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 89,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "# Subtest: stale evidence and open failures block both persisted pass decisions\n"
+    },
+    {
+      "sequence": 90,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "ok 3 - stale evidence and open failures block both persisted pass decisions\n"
+    },
+    {
+      "sequence": 91,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "  ---\n  duration_ms: 10485.670958\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 92,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "# Subtest: missing canonical execution artifacts cannot reuse green gates and reports\n"
+    },
+    {
+      "sequence": 93,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "ok 4 - missing canonical execution artifacts cannot reuse green gates and reports\n"
+    },
+    {
+      "sequence": 94,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.365Z",
+      "chunk": "  ---\n  duration_ms: 30156.786083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 95,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: required migration needs one successful schema-valid apply receipt\n"
+    },
+    {
+      "sequence": 96,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 5 - required migration needs one successful schema-valid apply receipt\n"
+    },
+    {
+      "sequence": 97,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 13126.7705\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 98,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: cross-host compatibility blockers stop release and archive\n"
+    },
+    {
+      "sequence": 99,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 6 - cross-host compatibility blockers stop release and archive\n"
+    },
+    {
+      "sequence": 100,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 9865.884875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 101,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: a tampered host execution envelope cannot manufacture trusted facts\n"
+    },
+    {
+      "sequence": 102,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 7 - a tampered host execution envelope cannot manufacture trusted facts\n"
+    },
+    {
+      "sequence": 103,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 9642.418833\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 104,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: host proof pointer rejects a forged predecessor digest\n"
+    },
+    {
+      "sequence": 105,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 8 - host proof pointer rejects a forged predecessor digest\n"
+    },
+    {
+      "sequence": 106,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 10912.140166\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 107,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: report model must bind to the release gate, readings, evidence index, and versions\n"
+    },
+    {
+      "sequence": 108,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 9 - report model must bind to the release gate, readings, evidence index, and versions\n"
+    },
+    {
+      "sequence": 109,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 9188.19275\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 110,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: duplicate host identities cannot satisfy the clean-install contract\n"
+    },
+    {
+      "sequence": 111,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 10 - duplicate host identities cannot satisfy the clean-install contract\n"
+    },
+    {
+      "sequence": 112,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 9339.917875\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 113,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "# Subtest: writeArchiveGate does not persist a gate or log when validation fails\n"
+    },
+    {
+      "sequence": 114,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "ok 11 - writeArchiveGate does not persist a gate or log when validation fails\n"
+    },
+    {
+      "sequence": 115,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.366Z",
+      "chunk": "  ---\n  duration_ms: 12440.246084\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 116,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.382Z",
+      "chunk": "1..11\n"
+    },
+    {
+      "sequence": 117,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.382Z",
+      "chunk": "# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n"
+    },
+    {
+      "sequence": 118,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.382Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 119,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.382Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 120,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.382Z",
+      "chunk": "# duration_ms 160557.504958\n"
+    },
+    {
+      "sequence": 121,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:34:07.455Z",
+      "chunk": "verification v2 release and archive proof ok\n"
+    },
+    {
+      "sequence": 122,
+      "type": "command.terminal",
+      "at": "2026-08-12T05:34:07.519Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 123,
+      "type": "attempt.terminal",
+      "at": "2026-08-12T05:34:07.519Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260812053018-7544abc1b7330919",
+        "run_id": "run-20260812053018-7544abc1b7330919",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-08",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "scenario_hash": "49a621bc1d798d2b74d3973d703643f0f4fa0cf08337a51dda19a4cbbdbf0e7a",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "6482f82bc1bedc3583362c7512b13616cc9165039b4d45188590e8c1822abb23",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-12T05:30:18.478Z",
+        "completed_at": "2026-08-12T05:34:07.519Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 124,
+      "type": "run.terminal",
+      "at": "2026-08-12T05:34:07.519Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260812053018-7544abc1b7330919",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-08"
+        ],
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-12T05:30:18.449Z",
+        "started_at": "2026-08-12T05:30:18.478Z",
+        "completed_at": "2026-08-12T05:34:07.519Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+        "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+        "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}

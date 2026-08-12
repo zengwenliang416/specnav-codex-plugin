@@ -1,0 +1,766 @@
+{
+  "ok": true,
+  "status": "passed",
+  "run": {
+    "schema": "specnav.verification.run.v1",
+    "id": "run-20260812052835-37a10514dc77ffc0",
+    "change_id": "verification-2-0",
+    "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "case_ids": [
+      "CASE-06"
+    ],
+    "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+    "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "created_at": "2026-08-12T05:28:35.017Z",
+    "started_at": "2026-08-12T05:28:35.037Z",
+    "completed_at": "2026-08-12T05:28:38.576Z",
+    "kind": "regression",
+    "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+    "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+    "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+    "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+  },
+  "attempt": {
+    "schema": "specnav.verification.attempt.v1",
+    "id": "attempt-20260812052835-37a10514dc77ffc0",
+    "run_id": "run-20260812052835-37a10514dc77ffc0",
+    "change_id": "verification-2-0",
+    "case_id": "CASE-06",
+    "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+    "kind": "regression",
+    "sequence": 3,
+    "runner": "command",
+    "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+    "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+    "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+    "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+    "browser_project": "none",
+    "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+    "runtime_version": "2.0.0-alpha.2",
+    "kernel_version": "2.0.0-alpha.2",
+    "status": "passed",
+    "started_at": "2026-08-12T05:28:35.037Z",
+    "completed_at": "2026-08-12T05:28:38.576Z",
+    "exit_status": 0,
+    "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+  },
+  "run_states": [
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260812052835-37a10514dc77ffc0",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-06"
+      ],
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "created_at": "2026-08-12T05:28:35.017Z",
+      "started_at": "2026-08-12T05:28:35.037Z",
+      "completed_at": null,
+      "kind": "regression",
+      "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+      "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+      "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+    },
+    {
+      "schema": "specnav.verification.run.v1",
+      "id": "run-20260812052835-37a10514dc77ffc0",
+      "change_id": "verification-2-0",
+      "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "case_ids": [
+        "CASE-06"
+      ],
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "created_at": "2026-08-12T05:28:35.017Z",
+      "started_at": "2026-08-12T05:28:35.037Z",
+      "completed_at": "2026-08-12T05:28:38.576Z",
+      "kind": "regression",
+      "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+      "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+      "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+    }
+  ],
+  "attempt_states": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812052835-37a10514dc77ffc0",
+      "run_id": "run-20260812052835-37a10514dc77ffc0",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-06",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "running",
+      "started_at": "2026-08-12T05:28:35.037Z",
+      "completed_at": null,
+      "exit_status": null,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    },
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812052835-37a10514dc77ffc0",
+      "run_id": "run-20260812052835-37a10514dc77ffc0",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-06",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-12T05:28:35.037Z",
+      "completed_at": "2026-08-12T05:28:38.576Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    }
+  ],
+  "attempts": [
+    {
+      "schema": "specnav.verification.attempt.v1",
+      "id": "attempt-20260812052835-37a10514dc77ffc0",
+      "run_id": "run-20260812052835-37a10514dc77ffc0",
+      "change_id": "verification-2-0",
+      "case_id": "CASE-06",
+      "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+      "kind": "regression",
+      "sequence": 3,
+      "runner": "command",
+      "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+      "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+      "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+      "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+      "browser_project": "none",
+      "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+      "runtime_version": "2.0.0-alpha.2",
+      "kernel_version": "2.0.0-alpha.2",
+      "status": "passed",
+      "started_at": "2026-08-12T05:28:35.037Z",
+      "completed_at": "2026-08-12T05:28:38.576Z",
+      "exit_status": 0,
+      "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+    }
+  ],
+  "command": {
+    "exit_status": 0,
+    "signal": null,
+    "timed_out": false,
+    "canceled": false,
+    "spawn_error": null
+  },
+  "logs": {
+    "stdout": "TAP version 13\n# Subtest: CLI requires an explicit mode and request file\nok 1 - CLI requires an explicit mode and request file\n  ---\n  duration_ms: 110.024708\n  type: 'test'\n  ...\n# Subtest: CLI dry-run, apply, and rollback use the same Kernel migrator\nok 2 - CLI dry-run, apply, and rollback use the same Kernel migrator\n  ---\n  duration_ms: 2520.196209\n  type: 'test'\n  ...\n# Subtest: CLI invokes the real integrity checker for a legacy green reading\nok 3 - CLI invokes the real integrity checker for a legacy green reading\n  ---\n  duration_ms: 617.059333\n  type: 'test'\n  ...\n# Subtest: dry-run plans migration without writing any file\nok 4 - dry-run plans migration without writing any file\n  ---\n  duration_ms: 3.74625\n  type: 'test'\n  ...\n# Subtest: apply creates an exact backup, V2 projection, and validated receipt\nok 5 - apply creates an exact backup, V2 projection, and validated receipt\n  ---\n  duration_ms: 30.702292\n  type: 'test'\n  ...\n# Subtest: failed V1 bytes and verdict survive migration unchanged\nok 6 - failed V1 bytes and verdict survive migration unchanged\n  ---\n  duration_ms: 20.987167\n  type: 'test'\n  ...\n# Subtest: legacy green without evidence becomes blocked and requires rerun\nok 7 - legacy green without evidence becomes blocked and requires rerun\n  ---\n  duration_ms: 2.019458\n  type: 'test'\n  ...\n# Subtest: legacy green remains pass only with intact and fresh evidence\nok 8 - legacy green remains pass only with intact and fresh evidence\n  ---\n  duration_ms: 1.947042\n  type: 'test'\n  ...\n# Subtest: stale or broken evidence converts legacy green to blocked\nok 9 - stale or broken evidence converts legacy green to blocked\n  ---\n  duration_ms: 2.328958\n  type: 'test'\n  ...\n# Subtest: SQL and declared database artifacts are rejected\nok 10 - SQL and declared database artifacts are rejected\n  ---\n  duration_ms: 1.305583\n  type: 'test'\n  ...\n# Subtest: missing change root and duplicate sources are rejected before writes\nok 11 - missing change root and duplicate sources are rejected before writes\n  ---\n  duration_ms: 1.126042\n  type: 'test'\n  ...\n# Subtest: path traversal and symlink sources are rejected\nok 12 - path traversal and symlink sources are rejected\n  ---\n  duration_ms: 1.213125\n  type: 'test'\n  ...\n# Subtest: apply never overwrites an existing migration target\nok 13 - apply never overwrites an existing migration target\n  ---\n  duration_ms: 1.597167\n  type: 'test'\n  ...\n# Subtest: rollback removes only this migration projection and retains backup and receipts\nok 14 - rollback removes only this migration projection and retains backup and receipts\n  ---\n  duration_ms: 25.494709\n  type: 'test'\n  ...\n# Subtest: rollback blocks when a transformed artifact was tampered with\nok 15 - rollback blocks when a transformed artifact was tampered with\n  ---\n  duration_ms: 21.220292\n  type: 'test'\n  ...\n# Subtest: rollback rejects a forged receipt that targets an arbitrary in-root file\nok 16 - rollback rejects a forged receipt that targets an arbitrary in-root file\n  ---\n  duration_ms: 2.094\n  type: 'test'\n  ...\n# Subtest: apply compensates all partial outputs when receipt creation fails\nok 17 - apply compensates all partial outputs when receipt creation fails\n  ---\n  duration_ms: 18.17975\n  type: 'test'\n  ...\n# Subtest: rollback restores the projection when rollback receipt creation fails\nok 18 - rollback restores the projection when rollback receipt creation fails\n  ---\n  duration_ms: 26.647083\n  type: 'test'\n  ...\n# Subtest: schema-invalid receipts fail closed before apply writes\nok 19 - schema-invalid receipts fail closed before apply writes\n  ---\n  duration_ms: 1.119833\n  type: 'test'\n  ...\n1..19\n# tests 19\n# suites 0\n# pass 19\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 3333.835167\nTAP version 13\n# Subtest: kernel package exposes one versioned public entry and schema-only subpath\nok 1 - kernel package exposes one versioned public entry and schema-only subpath\n  ---\n  duration_ms: 0.889459\n  type: 'test'\n  ...\n# Subtest: public entry exposes immutable metadata and explicit service contracts\nok 2 - public entry exposes immutable metadata and explicit service contracts\n  ---\n  duration_ms: 23.564084\n  type: 'test'\n  ...\n# Subtest: service creation requires every adapter and never falls back\nok 3 - service creation requires every adapter and never falls back\n  ---\n  duration_ms: 0.296375\n  type: 'test'\n  ...\n# Subtest: kernel source contains no host runtime dependency\nok 4 - kernel source contains no host runtime dependency\n  ---\n  duration_ms: 15.409333\n  type: 'test'\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 83.57775\n",
+    "stderr": ""
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "type": "run.running",
+      "at": "2026-08-12T05:28:35.039Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260812052835-37a10514dc77ffc0",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-06"
+        ],
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "created_at": "2026-08-12T05:28:35.017Z",
+        "started_at": "2026-08-12T05:28:35.037Z",
+        "completed_at": null,
+        "kind": "regression",
+        "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+        "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+        "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+      }
+    },
+    {
+      "sequence": 2,
+      "type": "attempt.running",
+      "at": "2026-08-12T05:28:35.039Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260812052835-37a10514dc77ffc0",
+        "run_id": "run-20260812052835-37a10514dc77ffc0",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-06",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "running",
+        "started_at": "2026-08-12T05:28:35.037Z",
+        "completed_at": null,
+        "exit_status": null,
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+      }
+    },
+    {
+      "sequence": 3,
+      "type": "command.started",
+      "at": "2026-08-12T05:28:35.041Z",
+      "command": {
+        "argv": [
+          "bash",
+          "tests/run-verification-v2-migration.sh"
+        ],
+        "cwd": "/Volumes/zwl/AI/ai-coding/specnav-codex-plugin",
+        "env_keys": [
+          "PATH",
+          "SPECNAV_VERIFICATION_ASSERTION_IDS",
+          "SPECNAV_VERIFICATION_ASSERTION_RESULT_FILE"
+        ],
+        "timeout_ms": 300000
+      }
+    },
+    {
+      "sequence": 4,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:35.093Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 5,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.404Z",
+      "chunk": "# Subtest: CLI requires an explicit mode and request file\n"
+    },
+    {
+      "sequence": 6,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.405Z",
+      "chunk": "ok 1 - CLI requires an explicit mode and request file\n  ---\n  duration_ms: 110.024708\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 7,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.405Z",
+      "chunk": "# Subtest: CLI dry-run, apply, and rollback use the same Kernel migrator\n"
+    },
+    {
+      "sequence": 8,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.405Z",
+      "chunk": "ok 2 - CLI dry-run, apply, and rollback use the same Kernel migrator\n  ---\n  duration_ms: 2520.196209\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 9,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.405Z",
+      "chunk": "# Subtest: CLI invokes the real integrity checker for a legacy green reading\nok 3 - CLI invokes the real integrity checker for a legacy green reading\n"
+    },
+    {
+      "sequence": 10,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.405Z",
+      "chunk": "  ---\n  duration_ms: 617.059333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 11,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.418Z",
+      "chunk": "# Subtest: dry-run plans migration without writing any file\n"
+    },
+    {
+      "sequence": 12,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.418Z",
+      "chunk": "ok 4 - dry-run plans migration without writing any file\n  ---\n  duration_ms: 3.74625\n  type: 'test'\n  ...\n# Subtest: apply creates an exact backup, V2 projection, and validated receipt\nok 5 - apply creates an exact backup, V2 projection, and validated receipt\n  ---\n  duration_ms: 30.702292\n  type: 'test'\n  ...\n# Subtest: failed V1 bytes and verdict survive migration unchanged\n"
+    },
+    {
+      "sequence": 13,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.418Z",
+      "chunk": "ok 6 - failed V1 bytes and verdict survive migration unchanged\n  ---\n  duration_ms: 20.987167\n  type: 'test'\n  ...\n# Subtest: legacy green without evidence becomes blocked and requires rerun\nok 7 - legacy green without evidence becomes blocked and requires rerun\n"
+    },
+    {
+      "sequence": 14,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 2.019458\n  type: 'test'\n  ...\n# Subtest: legacy green remains pass only with intact and fresh evidence\n"
+    },
+    {
+      "sequence": 15,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 8 - legacy green remains pass only with intact and fresh evidence\n  ---\n  duration_ms: 1.947042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 16,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: stale or broken evidence converts legacy green to blocked\n"
+    },
+    {
+      "sequence": 17,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 9 - stale or broken evidence converts legacy green to blocked\n  ---\n  duration_ms: 2.328958\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 18,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: SQL and declared database artifacts are rejected\n"
+    },
+    {
+      "sequence": 19,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 10 - SQL and declared database artifacts are rejected\n"
+    },
+    {
+      "sequence": 20,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 1.305583\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 21,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: missing change root and duplicate sources are rejected before writes\n"
+    },
+    {
+      "sequence": 22,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 11 - missing change root and duplicate sources are rejected before writes\n"
+    },
+    {
+      "sequence": 23,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 1.126042\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 24,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: path traversal and symlink sources are rejected\n"
+    },
+    {
+      "sequence": 25,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 12 - path traversal and symlink sources are rejected\n"
+    },
+    {
+      "sequence": 26,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 1.213125\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 27,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: apply never overwrites an existing migration target\n"
+    },
+    {
+      "sequence": 28,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 13 - apply never overwrites an existing migration target\n"
+    },
+    {
+      "sequence": 29,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 1.597167\n  type: 'test'\n  ...\n# Subtest: rollback removes only this migration projection and retains backup and receipts\n"
+    },
+    {
+      "sequence": 30,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 14 - rollback removes only this migration projection and retains backup and receipts\n"
+    },
+    {
+      "sequence": 31,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 25.494709\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 32,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: rollback blocks when a transformed artifact was tampered with\n"
+    },
+    {
+      "sequence": 33,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 15 - rollback blocks when a transformed artifact was tampered with\n"
+    },
+    {
+      "sequence": 34,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 21.220292\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 35,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: rollback rejects a forged receipt that targets an arbitrary in-root file\n"
+    },
+    {
+      "sequence": 36,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 16 - rollback rejects a forged receipt that targets an arbitrary in-root file\n"
+    },
+    {
+      "sequence": 37,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 2.094\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 38,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: apply compensates all partial outputs when receipt creation fails\n"
+    },
+    {
+      "sequence": 39,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 17 - apply compensates all partial outputs when receipt creation fails\n"
+    },
+    {
+      "sequence": 40,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 18.17975\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 41,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "# Subtest: rollback restores the projection when rollback receipt creation fails\n"
+    },
+    {
+      "sequence": 42,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "ok 18 - rollback restores the projection when rollback receipt creation fails\n"
+    },
+    {
+      "sequence": 43,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.419Z",
+      "chunk": "  ---\n  duration_ms: 26.647083\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 44,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# Subtest: schema-invalid receipts fail closed before apply writes\n"
+    },
+    {
+      "sequence": 45,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "ok 19 - schema-invalid receipts fail closed before apply writes\n  ---\n  duration_ms: 1.119833\n  type: 'test'\n  ...\n1..19\n"
+    },
+    {
+      "sequence": 46,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# tests 19\n"
+    },
+    {
+      "sequence": 47,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# suites 0\n"
+    },
+    {
+      "sequence": 48,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# pass 19\n"
+    },
+    {
+      "sequence": 49,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 50,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 51,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 52,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 53,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.420Z",
+      "chunk": "# duration_ms 3333.835167\n"
+    },
+    {
+      "sequence": 54,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.461Z",
+      "chunk": "TAP version 13\n"
+    },
+    {
+      "sequence": 55,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.532Z",
+      "chunk": "# Subtest: kernel package exposes one versioned public entry and schema-only subpath\n"
+    },
+    {
+      "sequence": 56,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "ok 1 - kernel package exposes one versioned public entry and schema-only subpath\n"
+    },
+    {
+      "sequence": 57,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "  ---\n  duration_ms: 0.889459\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 58,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "# Subtest: public entry exposes immutable metadata and explicit service contracts\n"
+    },
+    {
+      "sequence": 59,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "ok 2 - public entry exposes immutable metadata and explicit service contracts\n"
+    },
+    {
+      "sequence": 60,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "  ---\n  duration_ms: 23.564084\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 61,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "# Subtest: service creation requires every adapter and never falls back\n"
+    },
+    {
+      "sequence": 62,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "ok 3 - service creation requires every adapter and never falls back\n"
+    },
+    {
+      "sequence": 63,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "  ---\n  duration_ms: 0.296375\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 64,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "# Subtest: kernel source contains no host runtime dependency\n"
+    },
+    {
+      "sequence": 65,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "ok 4 - kernel source contains no host runtime dependency\n"
+    },
+    {
+      "sequence": 66,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.533Z",
+      "chunk": "  ---\n  duration_ms: 15.409333\n  type: 'test'\n  ...\n"
+    },
+    {
+      "sequence": 67,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "1..4\n"
+    },
+    {
+      "sequence": 68,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# tests 4\n# suites 0\n"
+    },
+    {
+      "sequence": 69,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# pass 4\n"
+    },
+    {
+      "sequence": 70,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# fail 0\n"
+    },
+    {
+      "sequence": 71,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# cancelled 0\n"
+    },
+    {
+      "sequence": 72,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# skipped 0\n"
+    },
+    {
+      "sequence": 73,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# todo 0\n"
+    },
+    {
+      "sequence": 74,
+      "type": "command.stdout",
+      "at": "2026-08-12T05:28:38.538Z",
+      "chunk": "# duration_ms 83.57775\n"
+    },
+    {
+      "sequence": 75,
+      "type": "command.terminal",
+      "at": "2026-08-12T05:28:38.576Z",
+      "result": {
+        "exit_status": 0,
+        "signal": null,
+        "timed_out": false,
+        "canceled": false,
+        "spawn_error": null
+      }
+    },
+    {
+      "sequence": 76,
+      "type": "attempt.terminal",
+      "at": "2026-08-12T05:28:38.576Z",
+      "attempt": {
+        "schema": "specnav.verification.attempt.v1",
+        "id": "attempt-20260812052835-37a10514dc77ffc0",
+        "run_id": "run-20260812052835-37a10514dc77ffc0",
+        "change_id": "verification-2-0",
+        "case_id": "CASE-06",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "kind": "regression",
+        "sequence": 3,
+        "runner": "command",
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "scenario_hash": "09cefc234a66db0baebb746678da9b940b28d08b193915c0fd90768ba8ecf2cc",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "browser_project": "none",
+        "test_data_snapshot": "3c3a783b064ce9d806646d53e0708f8df4f1601bb59210047dc2ce56f7e87c78",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "started_at": "2026-08-12T05:28:35.037Z",
+        "completed_at": "2026-08-12T05:28:38.576Z",
+        "exit_status": 0,
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167"
+      },
+      "artifact_valid": true
+    },
+    {
+      "sequence": 77,
+      "type": "run.terminal",
+      "at": "2026-08-12T05:28:38.576Z",
+      "run": {
+        "schema": "specnav.verification.run.v1",
+        "id": "run-20260812052835-37a10514dc77ffc0",
+        "change_id": "verification-2-0",
+        "case_snapshot_id": "snapshot-5be49e798f6b94dcb4822a60",
+        "case_snapshot_hash": "5be49e798f6b94dcb4822a608397cf097a336cc73a319dd69aca25549bc48f5a",
+        "case_ids": [
+          "CASE-06"
+        ],
+        "code_sha": "9f3a55aad3203724e09be437f52a89884077cf6b",
+        "test_sha": "f465e6926f580652f06af7542378e9f2a93d9afc97199c9f63a4f10af8a90966",
+        "environment_hash": "b50105a3b291fc6ca6ac5740fa47147c990cd9997a069369154d375e671b9f8c",
+        "runtime_version": "2.0.0-alpha.2",
+        "kernel_version": "2.0.0-alpha.2",
+        "status": "passed",
+        "created_at": "2026-08-12T05:28:35.017Z",
+        "started_at": "2026-08-12T05:28:35.037Z",
+        "completed_at": "2026-08-12T05:28:38.576Z",
+        "kind": "regression",
+        "origin_run_id": "run-20260811022747-a6f726be7a86df82",
+        "parent_run_id": "run-20260812052507-e557a60e7b1e4167",
+        "parent_attempt_id": "attempt-20260812052507-e557a60e7b1e4167",
+        "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
+      },
+      "artifact_valid": true
+    }
+  ],
+  "blockers": []
+}
