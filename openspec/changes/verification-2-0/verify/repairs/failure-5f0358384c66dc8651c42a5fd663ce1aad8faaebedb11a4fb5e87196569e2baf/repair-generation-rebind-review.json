@@ -1,0 +1,34 @@
+{
+  "schema": "specnav.verification.repair-generation-rebind-review.v1",
+  "id": "repair-generation-rebind-review-failure-5f035838-v2",
+  "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf",
+  "change_id": "verification-2-0",
+  "classification": "test_defect",
+  "decision": "approved",
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-12T05:09:17Z",
+  "reason": "The original CASE-03 smoke-routing repair remains valid at the current committed revision; all reviewed smoke entrypoints and routing assertions retain the intended repair and are rebound to the current execution identity.",
+  "previous_repair_link_digest": "70f9f4ced2c13036715e02034739e60c9f157c771b1d183cde93cb9629c1a8e3",
+  "repair_revision_range": {
+    "before_revision": "2deebda04a805ff9561d0fb98528d9ff196703a8",
+    "after_revision": "efb3455fbd6229c789761fbf84fc083c29a6542f"
+  },
+  "reviewed_files": [
+    {
+      "file": "tests/run-smoke.sh",
+      "blob_sha": "9062a53314d39ddafc7fe4f9caa4fba1e54defb4"
+    },
+    {
+      "file": "tests/run-verification-v2-case-03.sh",
+      "blob_sha": "e5262ef256befb41e5524f1f74c488535123e0e9"
+    },
+    {
+      "file": "tests/verification-v2/production/case-03-smoke-routing.test.js",
+      "blob_sha": "e96ab35b0bd679adb7cb4f1fb4449f165b6c2d20"
+    }
+  ],
+  "expected_current_identity_digest": "d0aee3e7712fe09753a7cfec0a3ac7a22a8f81e431b956eca98468a524145b0c"
+}
