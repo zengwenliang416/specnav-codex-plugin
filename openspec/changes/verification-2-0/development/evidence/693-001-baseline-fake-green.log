@@ -1,0 +1,103 @@
+# command: node --test tests/verification-v2/baseline/*.test.js
+# exit_status: 0
+# duration_ms: 6419
+
+## stdout
+TAP version 13
+# Subtest: evidence runner never overwrites a prior system-executed log
+ok 1 - evidence runner never overwrites a prior system-executed log
+  ---
+  duration_ms: 58.7595
+  type: 'test'
+  ...
+# Subtest: legacy replay reruns a signed failure instead of returning a false green
+ok 2 - legacy replay reruns a signed failure instead of returning a false green
+  ---
+  duration_ms: 39.531084
+  type: 'test'
+  ...
+# Subtest: refresh-current-head reruns stale receipts and is idempotent per HEAD task command
+ok 3 - refresh-current-head reruns stale receipts and is idempotent per HEAD task command
+  ---
+  duration_ms: 704.784916
+  type: 'test'
+  ...
+# Subtest: refresh-current-head supports bounded batches without reporting false completion
+ok 4 - refresh-current-head supports bounded batches without reporting false completion
+  ---
+  duration_ms: 977.304333
+  type: 'test'
+  ...
+# Subtest: refresh-current-head rejects invalid bounded batch sizes before execution
+ok 5 - refresh-current-head rejects invalid bounded batch sizes before execution
+  ---
+  duration_ms: 287.414834
+  type: 'test'
+  ...
+# Subtest: refresh-current-head reruns when signed evidence content was changed
+ok 6 - refresh-current-head reruns when signed evidence content was changed
+  ---
+  duration_ms: 564.438959
+  type: 'test'
+  ...
+# Subtest: refresh-current-head allows current change lifecycle dirt but blocks implementation dirt
+ok 7 - refresh-current-head allows current change lifecycle dirt but blocks implementation dirt
+  ---
+  duration_ms: 807.726333
+  type: 'test'
+  ...
+# Subtest: refresh-current-head creates a new receipt when assertion ownership changes
+ok 8 - refresh-current-head creates a new receipt when assertion ownership changes
+  ---
+  duration_ms: 618.918042
+  type: 'test'
+  ...
+# Subtest: refresh-current-head reruns a failed current HEAD receipt until a signed pass exists
+ok 9 - refresh-current-head reruns a failed current HEAD receipt until a signed pass exists
+  ---
+  duration_ms: 776.909042
+  type: 'test'
+  ...
+# Subtest: refresh-current-head does not trust a handwritten system-executed receipt
+ok 10 - refresh-current-head does not trust a handwritten system-executed receipt
+  ---
+  duration_ms: 401.804792
+  type: 'test'
+  ...
+# Subtest: refresh-current-head blocks a symlinked change directory
+ok 11 - refresh-current-head blocks a symlinked change directory
+  ---
+  duration_ms: 194.521
+  type: 'test'
+  ...
+# Subtest: refresh-current-head blocks malformed JSONL before executing or appending
+ok 12 - refresh-current-head blocks malformed JSONL before executing or appending
+  ---
+  duration_ms: 285.310584
+  type: 'test'
+  ...
+# Subtest: refresh-current-head blocks a symlinked evidence directory
+ok 13 - refresh-current-head blocks a symlinked evidence directory
+  ---
+  duration_ms: 284.528083
+  type: 'test'
+  ...
+# Subtest: CLI and function dispatch require explicit refresh-current-head mode with no fallback
+ok 14 - CLI and function dispatch require explicit refresh-current-head mode with no fallback
+  ---
+  duration_ms: 362.398166
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6351.115459
+
+
+## stderr
+(empty)
