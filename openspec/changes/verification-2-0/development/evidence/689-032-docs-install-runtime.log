@@ -1,0 +1,49 @@
+# command: bash tests/run-verification-v2-docs.sh
+# exit_status: 0
+# duration_ms: 92
+
+## stdout
+TAP version 13
+# Subtest: README files route users to the same full Verification 2.0 flow
+ok 1 - README files route users to the same full Verification 2.0 flow
+  ---
+  duration_ms: 0.638959
+  type: 'test'
+  ...
+# Subtest: matched English and Chinese guides cover every user-visible contract
+ok 2 - matched English and Chinese guides cover every user-visible contract
+  ---
+  duration_ms: 0.803208
+  type: 'test'
+  ...
+# Subtest: documentation preserves runtime, report, and no-fallback authority
+ok 3 - documentation preserves runtime, report, and no-fallback authority
+  ---
+  duration_ms: 0.38675
+  type: 'test'
+  ...
+# Subtest: rerun skill uses only Verification 2.0 artifact paths
+ok 4 - rerun skill uses only Verification 2.0 artifact paths
+  ---
+  duration_ms: 0.168333
+  type: 'test'
+  ...
+# Subtest: release documentation records live runtime and host authority
+ok 5 - release documentation records live runtime and host authority
+  ---
+  duration_ms: 0.174542
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47.073458
+
+
+## stderr
+(empty)

@@ -1,0 +1,140 @@
+# command: node --test tests/verification-v2/browser/playwright-adapter.test.js
+# exit_status: 0
+# duration_ms: 40919
+
+## stdout
+TAP version 13
+# Subtest: playwright case schema requires scenario, browser, and access identity
+ok 1 - playwright case schema requires scenario, browser, and access identity
+  ---
+  duration_ms: 2550.503
+  type: 'test'
+  ...
+# Subtest: kernel exports the Playwright adapter and unified execution method
+ok 2 - kernel exports the Playwright adapter and unified execution method
+  ---
+  duration_ms: 546.652
+  type: 'test'
+  ...
+# Subtest: playwright preflight rejects scenario and browser mismatches before launch
+ok 3 - playwright preflight rejects scenario and browser mismatches before launch
+  ---
+  duration_ms: 538.126292
+  type: 'test'
+  ...
+# Subtest: playwright preflight binds source and attempt hashes to the approved scenario
+ok 4 - playwright preflight binds source and attempt hashes to the approved scenario
+  ---
+  duration_ms: 526.316333
+  type: 'test'
+  ...
+# Subtest: playwright adapter independently verifies the approved scenario hash
+ok 5 - playwright adapter independently verifies the approved scenario hash
+  ---
+  duration_ms: 542.968875
+  type: 'test'
+  ...
+# Subtest: real managed Playwright run captures deterministic browser artifacts
+ok 6 - real managed Playwright run captures deterministic browser artifacts
+  ---
+  duration_ms: 1873.029708
+  type: 'test'
+  ...
+# Subtest: Playwright cannot pass without a deterministic assertion
+ok 7 - Playwright cannot pass without a deterministic assertion
+  ---
+  duration_ms: 2417.791666
+  type: 'test'
+  ...
+# Subtest: Playwright assertion failure is terminal failed and retains artifacts
+ok 8 - Playwright assertion failure is terminal failed and retains artifacts
+  ---
+  duration_ms: 2165.120542
+  type: 'test'
+  ...
+# Subtest: Playwright artifact root must remain inside the project
+ok 9 - Playwright artifact root must remain inside the project
+  ---
+  duration_ms: 662.385791
+  type: 'test'
+  ...
+# Subtest: Playwright timeout and cancellation produce terminal attempts
+    # Subtest: timeout
+    ok 1 - timeout
+      ---
+      duration_ms: 712.301042
+      type: 'test'
+      ...
+    # Subtest: canceled
+    ok 2 - canceled
+      ---
+      duration_ms: 931.771917
+      type: 'test'
+      ...
+    1..2
+ok 10 - Playwright timeout and cancellation produce terminal attempts
+  ---
+  duration_ms: 1646.652375
+  type: 'test'
+  ...
+# Subtest: Playwright preserves the first stop cause
+ok 11 - Playwright preserves the first stop cause
+  ---
+  duration_ms: 753.515583
+  type: 'test'
+  ...
+# Subtest: Playwright rejects symlink escapes and nonempty artifact roots
+ok 12 - Playwright rejects symlink escapes and nonempty artifact roots
+  ---
+  duration_ms: 765.270583
+  type: 'test'
+  ...
+# Subtest: adapter-owned staging prevents runtime artifact-root symlink escape
+ok 13 - adapter-owned staging prevents runtime artifact-root symlink escape
+  ---
+  duration_ms: 2989.966875
+  type: 'test'
+  ...
+# Subtest: cancellation stops scenario side effects before terminal return
+ok 14 - cancellation stops scenario side effects before terminal return
+  ---
+  duration_ms: 2709.421417
+  type: 'test'
+  ...
+# Subtest: process confinement blocks host reads, writes, network, and detached children
+ok 15 - process confinement blocks host reads, writes, network, and detached children
+  ---
+  duration_ms: 1550.901208
+  type: 'test'
+  ...
+# Subtest: scenario cannot forge authenticated worker events or terminal results
+ok 16 - scenario cannot forge authenticated worker events or terminal results
+  ---
+  duration_ms: 1597.637125
+  type: 'test'
+  ...
+# Subtest: browser access violations block a caught scenario success
+ok 17 - browser access violations block a caught scenario success
+  ---
+  duration_ms: 2884.8245
+  type: 'test'
+  ...
+# Subtest: scenario cannot remove policy routes or create an unguarded context
+ok 18 - scenario cannot remove policy routes or create an unguarded context
+  ---
+  duration_ms: 13650.913
+  type: 'test'
+  ...
+1..18
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40881.177458
+
+
+## stderr
+(empty)

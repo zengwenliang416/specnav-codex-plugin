@@ -1,0 +1,253 @@
+# command: node --test tests/verification-v2/repair-loop/classifier.test.js tests/verification-v2/kernel/package-boundary.test.js tests/verification-v2/evaluation/reading-model.test.js tests/verification-v2/evaluation/aggregation.test.js
+# exit_status: 0
+# duration_ms: 1435
+
+## stdout
+TAP version 13
+# Subtest: six fixed domains derive stable frozen case, domain, and release pass
+ok 1 - six fixed domains derive stable frozen case, domain, and release pass
+  ---
+  duration_ms: 1299.203833
+  type: 'test'
+  ...
+# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed
+ok 2 - missing cases, readings, domains, and light or manual-green inputs fail closed
+  ---
+  duration_ms: 2.126042
+  type: 'test'
+  ...
+# Subtest: only schema-valid, identity-bound readings can contribute to green
+ok 3 - only schema-valid, identity-bound readings can contribute to green
+  ---
+  duration_ms: 0.402042
+  type: 'test'
+  ...
+# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green
+ok 4 - missing, mismatched, or non-intact evidence cannot contribute to green
+  ---
+  duration_ms: 0.949291
+  type: 'test'
+  ...
+# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states
+ok 5 - external terminal facts provide deterministic flaky and pass-after-fix states
+  ---
+  duration_ms: 3.284417
+  type: 'test'
+  ...
+# Subtest: a real failed reading is not overwritten by stale or canceled metadata
+ok 6 - a real failed reading is not overwritten by stale or canceled metadata
+  ---
+  duration_ms: 0.747917
+  type: 'test'
+  ...
+# Subtest: not-applicable consumes an external validated decision binding only
+ok 7 - not-applicable consumes an external validated decision binding only
+  ---
+  duration_ms: 1.275916
+  type: 'test'
+  ...
+# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+ok 8 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+  ---
+  duration_ms: 2.004792
+  type: 'test'
+  ...
+# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it
+ok 9 - DecisionEngine rejects a caller-authored aggregate instead of trusting it
+  ---
+  duration_ms: 0.394709
+  type: 'test'
+  ...
+# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+ok 10 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+  ---
+  duration_ms: 2.768
+  type: 'test'
+  ...
+# Subtest: deterministic assertion creates one evidence-bound reading per required domain
+ok 11 - deterministic assertion creates one evidence-bound reading per required domain
+  ---
+  duration_ms: 1253.639833
+  type: 'test'
+  ...
+# Subtest: failed deterministic assertion remains a valid failed reading set
+ok 12 - failed deterministic assertion remains a valid failed reading set
+  ---
+  duration_ms: 1.092708
+  type: 'test'
+  ...
+# Subtest: mixed assertion results preserve pass and fail readings under a failed case
+ok 13 - mixed assertion results preserve pass and fail readings under a failed case
+  ---
+  duration_ms: 0.683875
+  type: 'test'
+  ...
+# Subtest: a passing case may belong to a failed multi-case run
+ok 14 - a passing case may belong to a failed multi-case run
+  ---
+  duration_ms: 0.597
+  type: 'test'
+  ...
+# Subtest: Midscene observation without an authoritative oracle stays blocked
+ok 15 - Midscene observation without an authoritative oracle stays blocked
+  ---
+  duration_ms: 0.437417
+  type: 'test'
+  ...
+# Subtest: missing, stale, or broken evidence blocks an otherwise passing reading
+ok 16 - missing, stale, or broken evidence blocks an otherwise passing reading
+  ---
+  duration_ms: 1.272875
+  type: 'test'
+  ...
+# Subtest: approved human signoff becomes an inspectable non-deterministic oracle
+ok 17 - approved human signoff becomes an inspectable non-deterministic oracle
+  ---
+  duration_ms: 0.601
+  type: 'test'
+  ...
+# Subtest: forged assertion status and malformed requests fail closed
+ok 18 - forged assertion status and malformed requests fail closed
+  ---
+  duration_ms: 0.438375
+  type: 'test'
+  ...
+# Subtest: runner and terminal identity mismatches cannot create a passing reading
+ok 19 - runner and terminal identity mismatches cannot create a passing reading
+  ---
+  duration_ms: 0.620625
+  type: 'test'
+  ...
+# Subtest: run-owned attempt fingerprints must match before reading creation
+ok 20 - run-owned attempt fingerprints must match before reading creation
+  ---
+  duration_ms: 0.975292
+  type: 'test'
+  ...
+# Subtest: reading schema failures preserve their exact blocker and artifact
+ok 21 - reading schema failures preserve their exact blocker and artifact
+  ---
+  duration_ms: 0.699417
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 22 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.949417
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 23 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 34.244417
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 24 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.315
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 25 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 33.31725
+  type: 'test'
+  ...
+# Subtest: classifies all six failure categories using explicit policy
+ok 26 - classifies all six failure categories using explicit policy
+  ---
+  duration_ms: 1293.887417
+  type: 'test'
+  ...
+# Subtest: accepts only schema-valid failed or blocked readings
+ok 27 - accepts only schema-valid failed or blocked readings
+  ---
+  duration_ms: 2.504042
+  type: 'test'
+  ...
+# Subtest: requires every reading to share change run case and attempt identity
+ok 28 - requires every reading to share change run case and attempt identity
+  ---
+  duration_ms: 1.146959
+  type: 'test'
+  ...
+# Subtest: binds evidence ids to matching intact and fresh integrity facts
+ok 29 - binds evidence ids to matching intact and fresh integrity facts
+  ---
+  duration_ms: 0.836542
+  type: 'test'
+  ...
+# Subtest: produces a stable frozen packet id bound to reading and evidence content
+ok 30 - produces a stable frozen packet id bound to reading and evidence content
+  ---
+  duration_ms: 1.069292
+  type: 'test'
+  ...
+# Subtest: packet id covers frozen timestamps and clock requires RFC3339 timezone
+ok 31 - packet id covers frozen timestamps and clock requires RFC3339 timezone
+  ---
+  duration_ms: 0.7565
+  type: 'test'
+  ...
+# Subtest: missing classification freezes a schema-valid open packet and blocks
+ok 32 - missing classification freezes a schema-valid open packet and blocks
+  ---
+  duration_ms: 0.498625
+  type: 'test'
+  ...
+# Subtest: classifies an existing open failure without changing its incident id or frozen timestamps
+ok 33 - classifies an existing open failure without changing its incident id or frozen timestamps
+  ---
+  duration_ms: 0.759459
+  type: 'test'
+  ...
+# Subtest: rejects a source failure that is not the exact open incident being classified
+ok 34 - rejects a source failure that is not the exact open incident being classified
+  ---
+  duration_ms: 2.197709
+  type: 'test'
+  ...
+# Subtest: blocks when trusted root-cause check is unavailable or untrusted
+ok 35 - blocks when trusted root-cause check is unavailable or untrusted
+  ---
+  duration_ms: 0.736084
+  type: 'test'
+  ...
+# Subtest: failed assertion ids exactly match non-empty reading assertion ids
+ok 36 - failed assertion ids exactly match non-empty reading assertion ids
+  ---
+  duration_ms: 0.686167
+  type: 'test'
+  ...
+# Subtest: reading evidence, supplied evidence, and integrity ids are exact sets
+ok 37 - reading evidence, supplied evidence, and integrity ids are exact sets
+  ---
+  duration_ms: 0.990625
+  type: 'test'
+  ...
+# Subtest: clones trusted inputs so later external mutation cannot alter results
+ok 38 - clones trusted inputs so later external mutation cannot alter results
+  ---
+  duration_ms: 0.310708
+  type: 'test'
+  ...
+# Subtest: emits only break_loop_required when no-progress threshold is reached
+ok 39 - emits only break_loop_required when no-progress threshold is reached
+  ---
+  duration_ms: 0.318291
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1393.65475
+
+
+## stderr
+(empty)

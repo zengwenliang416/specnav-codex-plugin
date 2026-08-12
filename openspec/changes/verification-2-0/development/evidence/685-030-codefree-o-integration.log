@@ -1,0 +1,127 @@
+# command: bash /Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/tests/run-smoke.sh
+# exit_status: 0
+# duration_ms: 89940
+
+## stdout
+
+> specnav-codefree-o-plugin@0.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: manifest exposes seven isolated SpecNav modules
+ok 1 - manifest exposes seven isolated SpecNav modules
+  ---
+  duration_ms: 0.808417
+  type: 'test'
+  ...
+# Subtest: runtime environment uses package module roots
+ok 2 - runtime environment uses package module roots
+  ---
+  duration_ms: 0.843625
+  type: 'test'
+  ...
+# Subtest: CodeFree-O config hook registers commands and unique skill roots
+ok 3 - CodeFree-O config hook registers commands and unique skill roots
+  ---
+  duration_ms: 1.739583
+  type: 'test'
+  ...
+# Subtest: system transform reports inactive projects without writing artifacts
+ok 4 - system transform reports inactive projects without writing artifacts
+  ---
+  duration_ms: 1.114125
+  type: 'test'
+  ...
+# Subtest: strict pre-tool gate blocks writes for marked projects without OpenSpec
+ok 5 - strict pre-tool gate blocks writes for marked projects without OpenSpec
+  ---
+  duration_ms: 32.191958
+  type: 'test'
+  ...
+# Subtest: plugin suite resolves all modules from specnav.manifest.json
+ok 6 - plugin suite resolves all modules from specnav.manifest.json
+  ---
+  duration_ms: 33.994375
+  type: 'test'
+  ...
+# Subtest: CodeGraph setup previews CodeFree-O config without writing
+ok 7 - CodeGraph setup previews CodeFree-O config without writing
+  ---
+  duration_ms: 37.372208
+  type: 'test'
+  ...
+# Subtest: Operations module packages the Verification 2.0 proof and fails closed
+ok 8 - Operations module packages the Verification 2.0 proof and fails closed
+  ---
+  duration_ms: 108.746125
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 232.432625
+
+> specnav-codefree-o-plugin@0.1.0 test:codefree
+> bash tests/run-codefree-discovery.sh
+
+CodeFree-O discovery fixture passed.
+{
+  "schema": "specnav.codefreeDoctor.v1",
+  "generated_at": "2026-08-12T00:38:53.431Z",
+  "ok": true,
+  "host": "codefree-o",
+  "package_root": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin",
+  "project_root": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin",
+  "project_state": {
+    "openspec": false,
+    "marker": false
+  },
+  "checks": [
+    {
+      "id": "host-codefree-o",
+      "ok": true,
+      "detail": "1.5.2"
+    },
+    {
+      "id": "openspec-cli",
+      "ok": true,
+      "detail": "1.2.0"
+    },
+    {
+      "id": "package-manifest",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/specnav.manifest.json"
+    },
+    {
+      "id": "plugin-entry",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/plugin/index.mjs"
+    },
+    {
+      "id": "module-suite",
+      "ok": true,
+      "detail": "7 modules"
+    },
+    {
+      "id": "guard-selfcheck",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "id": "project-directory",
+      "ok": true,
+      "detail": "/Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin"
+    }
+  ],
+  "blockers": []
+}
+specnav CodeFree-O smoke ok
+
+
+## stderr
+(empty)

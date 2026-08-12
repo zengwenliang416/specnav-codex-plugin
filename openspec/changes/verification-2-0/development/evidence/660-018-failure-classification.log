@@ -1,0 +1,103 @@
+# command: node --test tests/verification-v2/repair-loop/classifier.test.js
+# exit_status: 0
+# duration_ms: 1168
+
+## stdout
+TAP version 13
+# Subtest: classifies all six failure categories using explicit policy
+ok 1 - classifies all six failure categories using explicit policy
+  ---
+  duration_ms: 1055.717916
+  type: 'test'
+  ...
+# Subtest: accepts only schema-valid failed or blocked readings
+ok 2 - accepts only schema-valid failed or blocked readings
+  ---
+  duration_ms: 1.647167
+  type: 'test'
+  ...
+# Subtest: requires every reading to share change run case and attempt identity
+ok 3 - requires every reading to share change run case and attempt identity
+  ---
+  duration_ms: 0.48625
+  type: 'test'
+  ...
+# Subtest: binds evidence ids to matching intact and fresh integrity facts
+ok 4 - binds evidence ids to matching intact and fresh integrity facts
+  ---
+  duration_ms: 1.065459
+  type: 'test'
+  ...
+# Subtest: produces a stable frozen packet id bound to reading and evidence content
+ok 5 - produces a stable frozen packet id bound to reading and evidence content
+  ---
+  duration_ms: 0.866584
+  type: 'test'
+  ...
+# Subtest: packet id covers frozen timestamps and clock requires RFC3339 timezone
+ok 6 - packet id covers frozen timestamps and clock requires RFC3339 timezone
+  ---
+  duration_ms: 0.929958
+  type: 'test'
+  ...
+# Subtest: missing classification freezes a schema-valid open packet and blocks
+ok 7 - missing classification freezes a schema-valid open packet and blocks
+  ---
+  duration_ms: 0.462375
+  type: 'test'
+  ...
+# Subtest: classifies an existing open failure without changing its incident id or frozen timestamps
+ok 8 - classifies an existing open failure without changing its incident id or frozen timestamps
+  ---
+  duration_ms: 0.539916
+  type: 'test'
+  ...
+# Subtest: rejects a source failure that is not the exact open incident being classified
+ok 9 - rejects a source failure that is not the exact open incident being classified
+  ---
+  duration_ms: 0.694209
+  type: 'test'
+  ...
+# Subtest: blocks when trusted root-cause check is unavailable or untrusted
+ok 10 - blocks when trusted root-cause check is unavailable or untrusted
+  ---
+  duration_ms: 0.602833
+  type: 'test'
+  ...
+# Subtest: failed assertion ids exactly match non-empty reading assertion ids
+ok 11 - failed assertion ids exactly match non-empty reading assertion ids
+  ---
+  duration_ms: 0.621291
+  type: 'test'
+  ...
+# Subtest: reading evidence, supplied evidence, and integrity ids are exact sets
+ok 12 - reading evidence, supplied evidence, and integrity ids are exact sets
+  ---
+  duration_ms: 0.860041
+  type: 'test'
+  ...
+# Subtest: clones trusted inputs so later external mutation cannot alter results
+ok 13 - clones trusted inputs so later external mutation cannot alter results
+  ---
+  duration_ms: 0.276458
+  type: 'test'
+  ...
+# Subtest: emits only break_loop_required when no-progress threshold is reached
+ok 14 - emits only break_loop_required when no-progress threshold is reached
+  ---
+  duration_ms: 0.271125
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1130.333541
+
+
+## stderr
+(empty)

@@ -1,0 +1,210 @@
+# command: bash tests/run-verification-runtime-doctor.sh
+# exit_status: 0
+# duration_ms: 1198
+
+## stdout
+{
+  "schema": "specnav.verification.runtime-status.v1",
+  "ok": true,
+  "readiness": "ready",
+  "runtime_version": "2.0.0-alpha.2",
+  "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
+  "requires_midscene": false,
+  "checks": {
+    "lock": {
+      "ok": true,
+      "schema": "specnav.verification.runtime-lock.v1",
+      "runtime_version": "2.0.0-alpha.2"
+    },
+    "runtime": {
+      "ok": true,
+      "root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2"
+    },
+    "receipt": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json",
+      "module_tree_integrity_ok": true
+    },
+    "authority": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/authority.key",
+      "algorithm": "hmac-sha256",
+      "key_sha256": "70702d78dd9c7be59b9ec85690e3805696ad1f2e557401243f224dcd8e278010",
+      "file_mode": "0600"
+    },
+    "permissions": [
+      {
+        "kind": "runtime-base",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification",
+        "ok": true
+      },
+      {
+        "kind": "runtime-root",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
+        "ok": true
+      }
+    ],
+    "packages": [
+      {
+        "name": "@playwright/test",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "playwright",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "@midscene/web",
+        "expected_version": "1.10.8",
+        "installed_version": "1.10.8",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv",
+        "expected_version": "8.20.0",
+        "installed_version": "8.20.0",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv-formats",
+        "expected_version": "3.0.1",
+        "installed_version": "3.0.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      }
+    ],
+    "browsers": [
+      {
+        "name": "chromium",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "chromium-headless-shell",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "ffmpeg",
+        "revision": "1011",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      }
+    ],
+    "provider": {
+      "configured": false,
+      "model_name_present": false,
+      "model_family_present": false,
+      "credential_source": null,
+      "base_url_present": false,
+      "configuration_fingerprint": null,
+      "secret_values_exposed": false
+    }
+  },
+  "blockers": [],
+  "warnings": [
+    {
+      "id": "verification-runtime:midscene-provider-not-configured",
+      "artifact": "environment",
+      "detail": null
+    }
+  ],
+  "actions": [],
+  "fallback_used": false
+}
+TAP version 13
+# Subtest: doctor probes FFmpeg with its supported version argument
+ok 1 - doctor probes FFmpeg with its supported version argument
+  ---
+  duration_ms: 1.046459
+  type: 'test'
+  ...
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 2 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 23.508334
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 3 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 13.511417
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 4 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 1.070583
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 5 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.479375
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 6 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 37.528417
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 7 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 12.941625
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 8 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 10.353
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 9 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 14.549
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 174.508125
+verification runtime doctor ok
+
+
+## stderr
+(empty)

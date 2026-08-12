@@ -1,0 +1,348 @@
+# command: bash tests/run-verification-v2-midscene-contract.sh
+# exit_status: 0
+# duration_ms: 12599
+
+## stdout
+TAP version 13
+# Subtest: midscene case schema requires prompt, start URL, scenario, and oracle linkage
+ok 1 - midscene case schema requires prompt, start URL, scenario, and oracle linkage
+  ---
+  duration_ms: 1284.728042
+  type: 'test'
+  ...
+# Subtest: kernel exports Midscene adapter and unified execution method
+ok 2 - kernel exports Midscene adapter and unified execution method
+  ---
+  duration_ms: 541.257
+  type: 'test'
+  ...
+# Subtest: missing provider configuration blocks before Midscene interaction
+ok 3 - missing provider configuration blocks before Midscene interaction
+  ---
+  duration_ms: 611.04625
+  type: 'test'
+  ...
+# Subtest: adapter redacts prompts, observations, logs, model metadata, and errors
+ok 4 - adapter redacts prompts, observations, logs, model metadata, and errors
+  ---
+  duration_ms: 621.667208
+  type: 'test'
+  ...
+# Subtest: adapter redacts generated Midscene text artifacts before publication
+ok 5 - adapter redacts generated Midscene text artifacts before publication
+  ---
+  duration_ms: 632.416375
+  type: 'test'
+  ...
+# Subtest: adapter delegates to the sandboxed Playwright worker without a raw Page
+ok 6 - adapter delegates to the sandboxed Playwright worker without a raw Page
+  ---
+  duration_ms: 611.010625
+  type: 'test'
+  ...
+# Subtest: execute-time provider overrides cannot change the approved provider target
+ok 7 - execute-time provider overrides cannot change the approved provider target
+  ---
+  duration_ms: 625.776125
+  type: 'test'
+  ...
+# Subtest: adapter blocks when doctor and adapter provider configurations differ
+ok 8 - adapter blocks when doctor and adapter provider configurations differ
+  ---
+  duration_ms: 626.342875
+  type: 'test'
+  ...
+# Subtest: human signoff mode reaches the worker without requiring assertions
+ok 9 - human signoff mode reaches the worker without requiring assertions
+  ---
+  duration_ms: 628.905
+  type: 'test'
+  ...
+# Subtest: adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+ok 10 - adapter fails closed for worker exceptions, timeout, cancellation, and missing screenshots
+  ---
+  duration_ms: 3120.041083
+  type: 'test'
+  ...
+# Subtest: adapter rejects malformed worker results and occupied artifact roots
+ok 11 - adapter rejects malformed worker results and occupied artifact roots
+  ---
+  duration_ms: 617.26575
+  type: 'test'
+  ...
+# Subtest: model-only success remains blocked without a worker assertion
+ok 12 - model-only success remains blocked without a worker assertion
+  ---
+  duration_ms: 1837.051666
+  type: 'test'
+  ...
+# Subtest: a sandboxed deterministic assertion can authorize PASS
+ok 13 - a sandboxed deterministic assertion can authorize PASS
+  ---
+  duration_ms: 600.180542
+  type: 'test'
+  ...
+# Subtest: kernel recomputes assertion status and rejects a forged PASS
+ok 14 - kernel recomputes assertion status and rejects a forged PASS
+  ---
+  duration_ms: 617.155209
+  type: 'test'
+  ...
+# Subtest: failed deterministic assertion produces a failed terminal attempt
+ok 15 - failed deterministic assertion produces a failed terminal attempt
+  ---
+  duration_ms: 635.398917
+  type: 'test'
+  ...
+# Subtest: human signoff passes only when contract and execution identity permit it
+ok 16 - human signoff passes only when contract and execution identity permit it
+  ---
+  duration_ms: 1237.654667
+  type: 'test'
+  ...
+# Subtest: human signoff can be requested only after the retained screenshot exists
+ok 17 - human signoff can be requested only after the retained screenshot exists
+  ---
+  duration_ms: 628.457542
+  type: 'test'
+  ...
+# Subtest: human signoff cannot approve a screenshot modified during review
+ok 18 - human signoff cannot approve a screenshot modified during review
+  ---
+  duration_ms: 628.112875
+  type: 'test'
+  ...
+# Subtest: Midscene result retains every published artifact and execution channel
+ok 19 - Midscene result retains every published artifact and execution channel
+  ---
+  duration_ms: 637.045542
+  type: 'test'
+  ...
+# Subtest: human signoff reviewer and evidence hash must match the approved execution
+ok 20 - human signoff reviewer and evidence hash must match the approved execution
+  ---
+  duration_ms: 1874.853542
+  type: 'test'
+  ...
+# Subtest: missing, forged, or tampered screenshots block before oracle evaluation
+ok 21 - missing, forged, or tampered screenshots block before oracle evaluation
+  ---
+  duration_ms: 1751.781167
+  type: 'test'
+  ...
+# Subtest: malformed and hostile adapter results fail closed
+ok 22 - malformed and hostile adapter results fail closed
+  ---
+  duration_ms: 1041.65025
+  type: 'test'
+  ...
+# Subtest: Midscene oracle guard permits reads and blocks page mutation
+ok 23 - Midscene oracle guard permits reads and blocks page mutation
+  ---
+  duration_ms: 1.605959
+  type: 'test'
+  ...
+# Subtest: doctor probes FFmpeg with its supported version argument
+ok 24 - doctor probes FFmpeg with its supported version argument
+  ---
+  duration_ms: 0.923625
+  type: 'test'
+  ...
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 25 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 33.763625
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 26 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 14.332916
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 27 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 0.632875
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 28 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.330292
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 29 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 40.200667
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 30 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 12.197375
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 31 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 12.623958
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 32 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 14.920333
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11562.313041
+{
+  "schema": "specnav.verification.runtime-status.v1",
+  "ok": false,
+  "readiness": "blocked",
+  "runtime_version": "2.0.0-alpha.2",
+  "runtime_root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
+  "requires_midscene": true,
+  "checks": {
+    "lock": {
+      "ok": true,
+      "schema": "specnav.verification.runtime-lock.v1",
+      "runtime_version": "2.0.0-alpha.2"
+    },
+    "runtime": {
+      "ok": true,
+      "root": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2"
+    },
+    "receipt": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json",
+      "module_tree_integrity_ok": true
+    },
+    "authority": {
+      "ok": true,
+      "path": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2/authority.key",
+      "algorithm": "hmac-sha256",
+      "key_sha256": "70702d78dd9c7be59b9ec85690e3805696ad1f2e557401243f224dcd8e278010",
+      "file_mode": "0600"
+    },
+    "permissions": [
+      {
+        "kind": "runtime-base",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification",
+        "ok": true
+      },
+      {
+        "kind": "runtime-root",
+        "file": "/Users/wenliang_zeng/.specnav/runtime/verification/2.0.0-alpha.2",
+        "ok": true
+      }
+    ],
+    "packages": [
+      {
+        "name": "@playwright/test",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "playwright",
+        "expected_version": "1.62.1",
+        "installed_version": "1.62.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "@midscene/web",
+        "expected_version": "1.10.8",
+        "installed_version": "1.10.8",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv",
+        "expected_version": "8.20.0",
+        "installed_version": "8.20.0",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      },
+      {
+        "name": "ajv-formats",
+        "expected_version": "3.0.1",
+        "installed_version": "3.0.1",
+        "lock_integrity_ok": true,
+        "loadable": true,
+        "error": null
+      }
+    ],
+    "browsers": [
+      {
+        "name": "chromium",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "chromium-headless-shell",
+        "revision": "1234",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      },
+      {
+        "name": "ffmpeg",
+        "revision": "1011",
+        "marker_exists": true,
+        "executable_exists": true,
+        "executable_integrity_ok": true,
+        "executable_allowed": true,
+        "probe_ok": true,
+        "probe_exit_status": 0
+      }
+    ],
+    "provider": {
+      "configured": false,
+      "model_name_present": false,
+      "model_family_present": false,
+      "credential_source": null,
+      "base_url_present": false,
+      "configuration_fingerprint": null,
+      "secret_values_exposed": false
+    }
+  },
+  "blockers": [
+    {
+      "id": "verification-runtime:midscene-provider-not-configured",
+      "artifact": "environment",
+      "detail": null
+    }
+  ],
+  "warnings": [],
+  "actions": [],
+  "fallback_used": false
+}
+verification v2 Midscene contract ok
+
+
+## stderr
+(empty)

@@ -1,0 +1,73 @@
+# command: node --test tests/verification-v2/runtime/doctor.test.js
+# exit_status: 0
+# duration_ms: 198
+
+## stdout
+TAP version 13
+# Subtest: doctor probes FFmpeg with its supported version argument
+ok 1 - doctor probes FFmpeg with its supported version argument
+  ---
+  duration_ms: 0.841959
+  type: 'test'
+  ...
+# Subtest: doctor reports a complete ready runtime without exposing provider secrets
+ok 2 - doctor reports a complete ready runtime without exposing provider secrets
+  ---
+  duration_ms: 22.418166
+  type: 'test'
+  ...
+# Subtest: doctor distinguishes optional and required Midscene provider configuration
+ok 3 - doctor distinguishes optional and required Midscene provider configuration
+  ---
+  duration_ms: 13.19325
+  type: 'test'
+  ...
+# Subtest: doctor returns an exact install action when the locked runtime is absent
+ok 4 - doctor returns an exact install action when the locked runtime is absent
+  ---
+  duration_ms: 0.691834
+  type: 'test'
+  ...
+# Subtest: doctor returns explicit remediation for corrupt locks and incompatible environments
+ok 5 - doctor returns explicit remediation for corrupt locks and incompatible environments
+  ---
+  duration_ms: 0.339458
+  type: 'test'
+  ...
+# Subtest: doctor blocks tampered locks, missing browsers, and unloadable packages
+ok 6 - doctor blocks tampered locks, missing browsers, and unloadable packages
+  ---
+  duration_ms: 33.367792
+  type: 'test'
+  ...
+# Subtest: doctor reports permission and receipt identity failures as exact blockers
+ok 7 - doctor reports permission and receipt identity failures as exact blockers
+  ---
+  duration_ms: 12.621125
+  type: 'test'
+  ...
+# Subtest: doctor returns the explicit runtime repair command for installed-runtime corruption
+ok 8 - doctor returns the explicit runtime repair command for installed-runtime corruption
+  ---
+  duration_ms: 10.54625
+  type: 'test'
+  ...
+# Subtest: explicit repair preserves the prior runtime and restores it if replacement fails
+ok 9 - explicit repair preserves the prior runtime and restores it if replacement fails
+  ---
+  duration_ms: 13.386416
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.475042
+
+
+## stderr
+(empty)

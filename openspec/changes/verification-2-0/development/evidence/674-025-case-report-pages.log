@@ -1,0 +1,49 @@
+# command: node --test tests/verification-v2/reports/case-pages.test.js
+# exit_status: 0
+# duration_ms: 1223
+
+## stdout
+TAP version 13
+# Subtest: catalog renders approved case contracts with shared navigation
+ok 1 - catalog renders approved case contracts with shared navigation
+  ---
+  duration_ms: 1083.226083
+  type: 'test'
+  ...
+# Subtest: results render immutable run attempt reading and evidence history
+ok 2 - results render immutable run attempt reading and evidence history
+  ---
+  duration_ms: 2.296292
+  type: 'test'
+  ...
+# Subtest: empty and blocked pages remain complete instead of hiding state
+ok 3 - empty and blocked pages remain complete instead of hiding state
+  ---
+  duration_ms: 1.951542
+  type: 'test'
+  ...
+# Subtest: all verdicts keep the same page responsibilities and hierarchy
+ok 4 - all verdicts keep the same page responsibilities and hierarchy
+  ---
+  duration_ms: 19.1575
+  type: 'test'
+  ...
+# Subtest: renderers reject invalid models and expose no fallback pages
+ok 5 - renderers reject invalid models and expose no fallback pages
+  ---
+  duration_ms: 0.455875
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1186.83275
+
+
+## stderr
+(empty)
