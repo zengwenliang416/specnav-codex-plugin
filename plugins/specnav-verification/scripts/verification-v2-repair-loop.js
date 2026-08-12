@@ -2414,7 +2414,13 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         context.projectRoot,
         context.snapshotValue,
         context.runtimeStatusValue,
-        context.runtimeAuthority
+        context.runtimeAuthority,
+        [path.posix.join(
+          'openspec',
+          'changes',
+          context.changeId,
+          reviewFile
+        )]
       );
       const afterIdentity = currentFingerprint(context, current);
       const existingRebind = rebindHistory.value.find((envelope) => {

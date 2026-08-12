@@ -1518,9 +1518,17 @@ test('repair CLI appends and replays a human-approved repair generation rebind',
       canonicalJson(currentIdentity)
     )
   });
+  let rebindAllowedDirtyFiles = null;
   const rebindDeps = {
     ...dependencies(),
-    fingerprints() {
+    fingerprints(
+      projectRoot,
+      snapshot,
+      runtimeStatus,
+      runtimeAuthority,
+      allowedDirtyFiles
+    ) {
+      rebindAllowedDirtyFiles = allowedDirtyFiles;
       return {
         codeSha: currentIdentity.code_sha,
         testSha: currentIdentity.test_sha,
@@ -1552,6 +1560,9 @@ test('repair CLI appends and replays a human-approved repair generation rebind',
   assert.equal(rebound.status, 'repair_rebound');
   assert.deepEqual(rebound.after_identity, currentIdentity);
   assert.equal(rebound.replayed, false);
+  assert.deepEqual(rebindAllowedDirtyFiles, [
+    path.relative(source.projectRoot, reviewFile)
+  ]);
   assert.equal(replayed.ok, true, JSON.stringify(replayed.blockers));
   assert.equal(replayed.replayed, true);
 
@@ -1991,6 +2002,24 @@ test('repair completion fingerprints allow only the named review receipts', () =
   );
   assert.match(updated.codeSha, /^[a-f0-9]{40}$/);
 
+  fs.writeFileSync(path.join(root, specReview), '{}\n');
+  const rebindReview = (
+    'openspec/changes/change-v2/verify/repairs/failure-minimal/'
+    + 'repair-generation-rebind-review.json'
+  );
+  fs.mkdirSync(path.dirname(path.join(root, rebindReview)), {
+    recursive: true
+  });
+  fs.writeFileSync(path.join(root, rebindReview), '{}\n');
+  const reviewOnly = repairCompletionFingerprints(
+    root,
+    { snapshot_hash: 'a'.repeat(64) },
+    { runtime_version: '2.0.0-alpha.2', runtime_root: '/runtime' },
+    { digest: 'b'.repeat(64) },
+    [rebindReview]
+  );
+  assert.match(reviewOnly.codeSha, /^[a-f0-9]{40}$/);
+
   fs.writeFileSync(path.join(root, 'tests', 'repair.test.js'), 'dirty\n');
   assert.throws(
     () => repairCompletionFingerprints(
@@ -1998,7 +2027,7 @@ test('repair completion fingerprints allow only the named review receipts', () =
       { snapshot_hash: 'a'.repeat(64) },
       { runtime_version: '2.0.0-alpha.2', runtime_root: '/runtime' },
       { digest: 'b'.repeat(64) },
-      [specReview, qualityReview]
+      [rebindReview]
     ),
     /verification-production:dirty-worktree/
   );
