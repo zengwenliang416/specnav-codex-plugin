@@ -210,11 +210,12 @@ plugin intentionally ships no global `PostToolUse` hook: edit tools invalidate
 verification in the unified pre-tool guard, while read-only Bash commands do
 not create hook noise. The unregistered `specnav-post-tool.js` file is an
 upgrade tombstone only: Codex tasks resumed from an older hook snapshot may
-still invoke the historical command after the installed cache is replaced, so
-the tombstone drains the payload and exits successfully without duplicating
-verification invalidation. Hook-removing releases must increment the
-`specnav-core` plugin version so Codex installs an immutable cache directory
-instead of replacing files that a resumed task still references.
+still invoke the historical command after an update, so every newer package
+keeps the tombstone to drain the payload and exit successfully without
+duplicating verification invalidation. Hook-removing releases must increment
+the `specnav-core` plugin version for correct update discovery, but must not
+assume older cache directories remain installed: Codex may prune the previous
+version during upgrade.
 
 Hook commands must use `PLUGIN_ROOT`:
 
