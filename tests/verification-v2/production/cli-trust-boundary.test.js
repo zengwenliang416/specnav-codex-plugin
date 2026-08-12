@@ -316,6 +316,85 @@ test('fingerprints reject dirty implementation and other-change artifacts', () =
   );
 });
 
+test('fingerprints allow only explicitly named dirty authority inputs', () => {
+  const source = cliProjectFixture();
+  fs.writeFileSync(path.join(source.projectRoot, 'implementation.js'), '\n');
+  initializeRepository(source.projectRoot);
+  const snapshot = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'case-snapshot.json'
+    ),
+    'utf8'
+  ));
+  const runtimeStatus = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'runtime-status.json'
+    ),
+    'utf8'
+  ));
+  const review = (
+    `openspec/changes/${source.changeId}/verify/repairs/failure-minimal/`
+    + 'repair-generation-rebind-review.json'
+  );
+  fs.mkdirSync(path.dirname(path.join(source.projectRoot, review)), {
+    recursive: true
+  });
+  fs.writeFileSync(path.join(source.projectRoot, review), '{}\n');
+
+  const allowed = fingerprints(
+    source.projectRoot,
+    snapshot,
+    runtimeStatus,
+    null,
+    null,
+    [review]
+  );
+  assert.match(allowed.codeSha, /^[a-f0-9]{40}$/);
+
+  fs.writeFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'unexpected.json'
+    ),
+    '{}\n'
+  );
+  assert.throws(
+    () => fingerprints(
+      source.projectRoot,
+      snapshot,
+      runtimeStatus,
+      null,
+      null,
+      [review]
+    ),
+    (error) => (
+      error.message === 'verification-production:dirty-worktree'
+      && error.blockers[0].detail.includes(
+        `openspec/changes/${source.changeId}/verify/unexpected.json`
+      )
+      && !error.blockers[0].detail.includes(
+        'repair-generation-rebind-review.json'
+      )
+    )
+  );
+});
+
 test('production CLI summarizes persisted execution data without embedding logs', () => {
   const result = summarizeCliResult({
     ok: false,

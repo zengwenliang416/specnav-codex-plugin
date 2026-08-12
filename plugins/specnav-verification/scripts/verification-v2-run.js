@@ -189,16 +189,20 @@ function fingerprints(
   snapshot,
   runtimeStatus,
   runtimeAuthority = null,
-  changeId = null
+  changeId = null,
+  allowedDirtyFiles = []
 ) {
   const head = git(projectRoot, ['rev-parse', 'HEAD']).trim();
   if (!/^[a-f0-9]{40}$/.test(head)) {
     throw new Error('verification-production:git-head-invalid');
   }
+  const allowedDirty = new Set(
+    allowedDirtyFiles.map((file) => normalizeRelative(file))
+  );
   const dirtyImplementation = dirtyImplementationPaths(
     projectRoot,
     changeId
-  );
+  ).filter((file) => !allowedDirty.has(normalizeRelative(file)));
   if (dirtyImplementation.length > 0) {
     const error = new Error('verification-production:dirty-worktree');
     error.blockers = [blocker(

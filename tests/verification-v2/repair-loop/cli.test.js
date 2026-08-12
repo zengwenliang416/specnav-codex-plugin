@@ -1526,6 +1526,7 @@ test('repair CLI appends and replays a human-approved repair generation rebind',
       snapshot,
       runtimeStatus,
       runtimeAuthority,
+      changeId,
       allowedDirtyFiles
     ) {
       rebindAllowedDirtyFiles = allowedDirtyFiles;

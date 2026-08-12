@@ -2415,6 +2415,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         context.snapshotValue,
         context.runtimeStatusValue,
         context.runtimeAuthority,
+        null,
         [path.posix.join(
           'openspec',
           'changes',
