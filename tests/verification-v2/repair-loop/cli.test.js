@@ -411,6 +411,78 @@ function addPassedRetry(source) {
   return retry;
 }
 
+function makeSecondRootClosureReady(source, second) {
+  const attemptsFile = path.join(
+    source.verificationRoot,
+    'v2',
+    'attempts.json'
+  );
+  const attempts = JSON.parse(fs.readFileSync(attemptsFile, 'utf8'));
+  const initial = {
+    ...source.attempt,
+    id: second.failure.attempt_id,
+    run_id: second.run.id,
+    case_id: second.failure.case_id
+  };
+  const retry = {
+    ...initial,
+    id: 'attempt-retry-second-root',
+    kind: 'retry',
+    sequence: 2,
+    parent_attempt_id: initial.id,
+    status: 'passed',
+    started_at: '2026-08-06T09:00:01.000Z',
+    completed_at: '2026-08-06T09:00:02.000Z',
+    exit_status: 0
+  };
+  writeJson(attemptsFile, [...attempts, initial, retry]);
+  const integrity = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'runs',
+    source.failure.run_id,
+    'attempts',
+    source.failure.attempt_id,
+    'integrity.json'
+  ), 'utf8'));
+  for (const attempt of [initial, retry]) {
+    writeJson(path.join(
+      source.verificationRoot,
+      'runs',
+      attempt.run_id,
+      'attempts',
+      attempt.id,
+      'integrity.json'
+    ), integrity);
+  }
+
+  const effectiveFailure = {
+    ...second.failure,
+    classification: 'environment_defect',
+    status: 'retry_allowed',
+    next_action: 'retry_allowed',
+    owner: 'verification'
+  };
+  const envelope = second.authority.seal('classification_result', {
+    ok: true,
+    status: 'classified',
+    packet: effectiveFailure,
+    signals: [],
+    blockers: []
+  }, {
+    failure_id: second.failure.id,
+    change_id: second.failure.change_id,
+    run_id: second.failure.run_id,
+    case_id: second.failure.case_id
+  });
+  writeJson(path.join(
+    source.verificationRoot,
+    'repairs',
+    second.failure.id,
+    'classification-envelope.json'
+  ), envelope);
+  return { effectiveFailure, envelope, retry };
+}
+
 function rerunScope(source, reasons = ['repaired-case']) {
   return {
     ok: true,
@@ -791,6 +863,97 @@ test('transition apply retains every independent root in global failure state', 
       entry.failure_id === second.failure.id
     )).logical_status,
     second.effectiveFailure.status
+  );
+});
+
+test('transition apply scopes historical receipts to the selected root', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const second = addClassifiedSecondRoot(source, deps);
+  const rootCause = JSON.parse(fs.readFileSync(
+    source.rootCauseFile,
+    'utf8'
+  ));
+  writeJson(source.rootCauseFile, {
+    ...rootCause,
+    classification: 'environment_defect',
+    summary: 'The execution environment produced a transient failure.',
+    root_cause: 'A diagnostic retry is required without source changes.'
+  });
+  addPassedRetry(source);
+  makeSecondRootClosureReady(source, second);
+
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+
+  const firstState = await run(baseArgs(source, 'state'), deps);
+  assert.equal(firstState.status, 'closure_ready');
+  const firstApplied = await run([
+    ...baseArgs(source, 'transition-apply'),
+    '--proposal-id',
+    firstState.transition_proposal.id,
+    '--idempotency-key',
+    'close-first-root-before-second'
+  ], deps);
+  assert.equal(firstApplied.ok, true, JSON.stringify(firstApplied.blockers));
+
+  const secondBaseArgs = [
+    '--project',
+    source.projectRoot,
+    '--change',
+    source.changeId,
+    '--reviewer-id',
+    'reviewer-1',
+    '--failure-id',
+    second.failure.id
+  ];
+  const secondState = await run(['state', ...secondBaseArgs], deps);
+  assert.equal(secondState.ok, true, JSON.stringify(secondState.blockers));
+  assert.equal(secondState.status, 'closure_ready');
+  const secondApplied = await run([
+    'transition-apply',
+    ...secondBaseArgs,
+    '--proposal-id',
+    secondState.transition_proposal.id,
+    '--idempotency-key',
+    'close-second-root-after-first'
+  ], deps);
+  assert.equal(secondApplied.ok, true, JSON.stringify(secondApplied.blockers));
+  assert.deepEqual(secondApplied.open_failure_ids, []);
+
+  const receiptEnvelopes = fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'transition-receipts.jsonl'
+  ), 'utf8').trim().split('\n').map((line) => JSON.parse(line));
+  assert.deepEqual(
+    receiptEnvelopes.map((envelope) => envelope.bindings.log_sequence),
+    [1, 2]
+  );
+  assert.equal(
+    receiptEnvelopes[1].bindings.previous_envelope_digest,
+    sha256(canonicalJson(receiptEnvelopes[0]))
+  );
+
+  const reduced = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failure-state.json'
+  ), 'utf8'));
+  assert.equal(reduced.ok, true, JSON.stringify(reduced.blockers));
+  assert.deepEqual(
+    reduced.states.map((entry) => [
+      entry.failure_id,
+      entry.logical_status
+    ]).sort(([left], [right]) => left.localeCompare(right)),
+    [
+      [source.failure.id, 'closed'],
+      [second.failure.id, 'closed']
+    ].sort(([left], [right]) => left.localeCompare(right))
   );
 });
 

@@ -806,6 +806,13 @@ function classificationEnvelopeInventory(context, root) {
   return envelopes;
 }
 
+function envelopesForFailure(envelopes, failureId) {
+  return envelopes.filter((envelope) => (
+    envelope?.bindings?.failure_id === failureId
+    && envelope?.payload?.failure_id === failureId
+  ));
+}
+
 function repairEnvelope(context, store, failureId) {
   const completed = readOptionalJson(
     store,
@@ -2396,8 +2403,14 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         effective_failure: classification.payload.packet,
         proposal_id: proposalId,
         idempotency_key: idempotencyKey,
-        proposal_envelopes: proposals.value,
-        receipt_envelopes: receipts.value
+        proposal_envelopes: envelopesForFailure(
+          proposals.value,
+          failure.id
+        ),
+        receipt_envelopes: envelopesForFailure(
+          receipts.value,
+          failure.id
+        )
       });
       if (!applied.ok) return { ...applied, fallback_used: false };
       let receiptLog = receipts.value;
