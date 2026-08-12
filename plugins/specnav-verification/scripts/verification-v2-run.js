@@ -59,18 +59,64 @@ function git(projectRoot, args) {
   return result.stdout;
 }
 
-function fingerprints(projectRoot, snapshot, runtimeStatus, runtimeAuthority = null) {
+function normalizeRelative(value) {
+  return String(value).split(path.sep).join('/').replace(/^\.\//, '');
+}
+
+function isLifecyclePath(relativePath, changeId) {
+  const normalized = normalizeRelative(relativePath);
+  const changePrefix = `openspec/changes/${changeId}/`;
+  return (
+    normalized.startsWith('openspec/.specnav/')
+    || ['development/', 'verify/', 'codegraph/', 'operations/']
+      .some((directory) => normalized.startsWith(
+        `${changePrefix}${directory}`
+      ))
+    || normalized.startsWith(`${changePrefix}verify-report.`)
+    || normalized === `${changePrefix}tasks.md`
+  );
+}
+
+function dirtyImplementationPaths(projectRoot, changeId) {
+  const changed = new Set([
+    ...git(projectRoot, [
+      'diff',
+      '--name-only',
+      'HEAD',
+      '--'
+    ]).split(/\r?\n/),
+    ...git(projectRoot, [
+      'ls-files',
+      '--others',
+      '--exclude-standard'
+    ]).split(/\r?\n/)
+  ].filter(Boolean));
+  return [...changed].filter((relativePath) => (
+    !changeId || !isLifecyclePath(relativePath, changeId)
+  ));
+}
+
+function fingerprints(
+  projectRoot,
+  snapshot,
+  runtimeStatus,
+  runtimeAuthority = null,
+  changeId = null
+) {
   const head = git(projectRoot, ['rev-parse', 'HEAD']).trim();
   if (!/^[a-f0-9]{40}$/.test(head)) {
     throw new Error('verification-production:git-head-invalid');
   }
-  const status = git(projectRoot, ['status', '--porcelain=v1', '--untracked-files=all']);
-  if (status.trim() !== '') {
+  const dirtyImplementation = dirtyImplementationPaths(
+    projectRoot,
+    changeId
+  );
+  if (dirtyImplementation.length > 0) {
     const error = new Error('verification-production:dirty-worktree');
     error.blockers = [blocker(
       'verification-production:dirty-worktree',
       projectRoot,
-      status.trim().split(/\r?\n/).slice(0, 20).join(',')
+      dirtyImplementation.slice(0, 20).join(',')
     )];
     throw error;
   }
@@ -499,7 +545,8 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       context.projectRoot,
       context.snapshotValue,
       context.runtimeStatusValue,
-      context.runtimeAuthority
+      context.runtimeAuthority,
+      context.changeId
     );
   } catch (error) {
     return {
@@ -814,7 +861,9 @@ if (require.main === module) {
 
 module.exports = {
   assertSelectedChange,
+  dirtyImplementationPaths,
   fingerprints,
+  isLifecyclePath,
   loadContext,
   loadScenarioRegistry,
   pathsFor,

@@ -9,6 +9,7 @@ const test = require('node:test');
 
 const {
   assertSelectedChange,
+  fingerprints,
   loadScenarioRegistry,
   pathsFor,
   run,
@@ -173,6 +174,145 @@ test('approved scenario registry restores pure scenario functions', async () => 
   assert.deepEqual(
     scenario.project,
     { viewport: { width: 1280, height: 720 } }
+  );
+});
+
+test('fingerprints allow current-change lifecycle artifacts to remain dirty', () => {
+  const source = cliProjectFixture();
+  initializeRepository(source.projectRoot);
+  const snapshot = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'case-snapshot.json'
+    ),
+    'utf8'
+  ));
+  const runtimeStatus = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'runtime-status.json'
+    ),
+    'utf8'
+  ));
+  const clean = fingerprints(
+    source.projectRoot,
+    snapshot,
+    runtimeStatus,
+    null,
+    source.changeId
+  );
+  fs.writeFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'freshness.json'
+    ),
+    '{"status":"stale"}\n'
+  );
+  fs.writeFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      '.specnav',
+      'runtime-note.json'
+    ),
+    '{}\n'
+  );
+
+  const lifecycleDirty = fingerprints(
+    source.projectRoot,
+    snapshot,
+    runtimeStatus,
+    null,
+    source.changeId
+  );
+
+  assert.deepEqual(lifecycleDirty, clean);
+});
+
+test('fingerprints reject dirty implementation and other-change artifacts', () => {
+  const source = cliProjectFixture();
+  fs.writeFileSync(path.join(source.projectRoot, 'implementation.js'), '\n');
+  initializeRepository(source.projectRoot);
+  const snapshot = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'case-snapshot.json'
+    ),
+    'utf8'
+  ));
+  const runtimeStatus = JSON.parse(fs.readFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      source.changeId,
+      'verify',
+      'v2',
+      'runtime-status.json'
+    ),
+    'utf8'
+  ));
+  fs.writeFileSync(
+    path.join(source.projectRoot, 'implementation.js'),
+    'module.exports = true;\n'
+  );
+  fs.mkdirSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      'other-change',
+      'verify'
+    ),
+    { recursive: true }
+  );
+  fs.writeFileSync(
+    path.join(
+      source.projectRoot,
+      'openspec',
+      'changes',
+      'other-change',
+      'verify',
+      'report.json'
+    ),
+    '{}\n'
+  );
+
+  assert.throws(
+    () => fingerprints(
+      source.projectRoot,
+      snapshot,
+      runtimeStatus,
+      null,
+      source.changeId
+    ),
+    (error) => (
+      error.message === 'verification-production:dirty-worktree'
+      && error.blockers[0].detail.includes('implementation.js')
+      && error.blockers[0].detail.includes(
+        'openspec/changes/other-change/verify/report.json'
+      )
+    )
   );
 });
 
