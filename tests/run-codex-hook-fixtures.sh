@@ -63,7 +63,20 @@ node --check "$ROOT/plugins/specnav-core/scripts/specnav-session-start.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-user-prompt-submit.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/cross-repo-guard.js"
+node --check "$ROOT/plugins/specnav-core/scripts/specnav-post-tool.js"
 node --check "$ROOT/plugins/specnav-core/scripts/tasks-md.js"
+
+# A resumed Codex task may retain the removed PostToolUse command in its hook
+# snapshot. Keep an unregistered, silent tombstone so cache upgrades do not
+# turn those historical snapshots into repeated hook failures.
+LEGACY_POST_OUTPUT="$TMP_DIR/legacy-post-tool.out"
+printf '%s' '{"tool_name":"Bash","tool_input":{"command":"pwd"}}' \
+  | node "$CORE/scripts/specnav-post-tool.js" >"$LEGACY_POST_OUTPUT"
+[[ ! -s "$LEGACY_POST_OUTPUT" ]] || {
+  echo "legacy PostToolUse tombstone must remain silent" >&2
+  cat "$LEGACY_POST_OUTPUT" >&2
+  exit 1
+}
 
 # Accounting-first default: legacy-entrypoint invocation warns; strict blocks.
 run_case bash-openspec-propose "$PROJECT" 0 "SpecNav gate warning"
