@@ -5,8 +5,8 @@
       "failure_id": "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a",
       "root_failure_digest": "fbbe389e173de69feeb38f56deef3258c863ca0253bf3c1569e8e6a659c6329a",
       "classification_envelope_id": "trusted-fact-2e9a7739f65a0c0cba1fa29272e72edf82f5a6f3b1dffefcff3b1799acc1cdc1",
-      "logical_status": "repair_required",
-      "transition_receipt_id": null
+      "logical_status": "closed",
+      "transition_receipt_id": "transition-application-d320333f3d5ffdd18ffa4f71447f146ae4bb874994267e8d83531725c6e919b9"
     },
     {
       "failure_id": "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf",
@@ -108,7 +108,7 @@
         "evidence-f6459fd79401479002a4398919a8a5c0107b621f9f69f7bb652f86c55b783eb8"
       ],
       "classification": "test_defect",
-      "status": "repair_required",
+      "status": "closed",
       "next_action": "repair_required",
       "summary": "The CASE-03 routing regression test fails only inside the formal runner because its simulated child smoke process inherits the real outer assertion-protocol owner identity.",
       "root_cause": "The routing-test harness copies SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_OWNER_PID and SPECNAV_VERIFICATION_ASSERTION_PROTOCOL_EMITTED from process.env. Its simulated run-smoke child then correctly declines ownership of the temporary assertion result file, while the isolated test expects that child to become the owner.",
@@ -276,7 +276,6 @@
     }
   ],
   "open_failure_ids": [
-    "failure-597468f632d06dd441daecdf17dcade6d6933bcf106d00ad29825290b9a5bf2a",
     "failure-5f0358384c66dc8651c42a5fd663ce1aad8faaebedb11a4fb5e87196569e2baf"
   ],
   "blockers": []

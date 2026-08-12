@@ -1,0 +1,48 @@
+status=passed
+exit_status=0
+--- stdout ---
+TAP version 13
+# Subtest: all report pages are responsive, keyboard operable, semantic, and printable
+ok 1 - all report pages are responsive, keyboard operable, semantic, and printable
+  ---
+  duration_ms: 34293.193666
+  type: 'test'
+  ...
+# Subtest: Chromium blocks an injected script while the approved catalog script still runs
+ok 2 - Chromium blocks an injected script while the approved catalog script still runs
+  ---
+  duration_ms: 32585.649625
+  type: 'test'
+  ...
+# {"artifact_directory":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260812051520-22e0a393d1601ca1/attempts/attempt-20260812051520-22e0a393d1601ca1/runner-artifacts/attempt-20260812051520-22e0a393d1601ca1","manifest":"/Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260812051520-22e0a393d1601ca1/attempts/attempt-20260812051520-22e0a393d1601ca1/runner-artifacts/attempt-20260812051520-22e0a393d1601ca1/manifest.json","manifest_sha256":"cecc53a1e8c4a9452b74598304f6a698b6517373d1803bb03af574bb22271c0f","artifact_count":12}
+# Subtest: real paginated PDFs preserve exact green and blocked report facts
+ok 3 - real paginated PDFs preserve exact green and blocked report facts
+  ---
+  duration_ms: 33680.177416
+  type: 'test'
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 4 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 19134.052334
+  type: 'test'
+  ...
+# Subtest: real Chromium preserves mobile, keyboard, and print report facts
+ok 5 - real Chromium preserves mobile, keyboard, and print report facts
+  ---
+  duration_ms: 19157.726292
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100693.075125
+verification v2 report artifacts: /Volumes/zwl/AI/ai-coding/specnav-codex-plugin/openspec/changes/verification-2-0/verify/runs/run-20260812051520-22e0a393d1601ca1/attempts/attempt-20260812051520-22e0a393d1601ca1/runner-artifacts/attempt-20260812051520-22e0a393d1601ca1
+verification v2 report browser and print ok
+
+--- stderr ---
