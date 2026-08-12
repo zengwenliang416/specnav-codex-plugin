@@ -1,27 +1,438 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "022-case-rerun-impact",
-  "recorded_at": "2026-07-31T21:51:21.041Z",
+  "generated_at": "2026-08-11T23:37:55.884Z",
+  "recorded_at": "2026-08-11T23:12:20.938Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-codegraph/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/repair/**",
+      "plugins/specnav-verification/scripts/rerun-scope.js",
+      "plugins/specnav-verification/skills/specnav-verify-rerun/**",
+      "tests/run-verification-v2-codegraph-rerun.sh",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/rerun/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-codegraph/.codex-plugin/plugin.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "55f4a9215f9d5c570e6b87ded97b3f2bc1286c51"
+      },
+      {
+        "path": "plugins/specnav-codegraph/assets/claims-map.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cd3c9e1863808cf45f2e382ba4b8ae288d0c84ec"
+      },
+      {
+        "path": "plugins/specnav-codegraph/assets/drift-report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5b6e93e0370a71effc284bca51f24d682b291cb2"
+      },
+      {
+        "path": "plugins/specnav-codegraph/assets/evidence-query-plan.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d53c23538590886cfc0e71fbd52985d76b886981"
+      },
+      {
+        "path": "plugins/specnav-codegraph/assets/icon.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9f69f81fb6eec32746d2c3dca052fe559c9fadd8"
+      },
+      {
+        "path": "plugins/specnav-codegraph/assets/logo.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f447874a62c1a5748a45197a9d858416650dbfb8"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-claim-planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0033d46b3147612cc6e3e3eadd98d2efe7af9a5"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-context-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "765852acd71e8a07d6daa36a69587a2127089b17"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-decision-engine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c51bd476e7492a19d7a0a8d2ec3acaf5ec8c285f"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-drift-detector.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f385397de0cad0870cda3ae672a3dec88c2ac18e"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "56dda12b36edd54f19f8bcdb995bec443e14e327"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-evidence-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a0c2815113bd3c03531ee5a2381f133d543b0713"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b134b09dd411d0c19cf4d2f7d3b9c89b18aae734"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-impact-report.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a2bb019cb775a33ebfe01c4ed26e9d204622ae96"
+      },
+      {
+        "path": "plugins/specnav-codegraph/core/codegraph-status-manager.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a122e89219270396ddcc214c7e4476bd79745896"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/claims-report.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f4fabe251802d2fcb639fac5780a12d70d06823e"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/claims.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a03f16b553fb05d3e396a83be8bc9f4303271983"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/decision.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "aba7049344e39c0ca951916fcc8db1ed201fb3ec"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/drift.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc70e91f1c57021b64c7b0174bbb1d80edb1af32"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/evidence-index.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9a1ac588b709a6e33204a08771d26baae096eb39"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/evidence-query-plan.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c17743540624e064582e659e00b8b3d351585a44"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/evidence.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "50b2e32dfb7c800f87832c6c66ce82e9c9b273c1"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/guard-report.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "522399b8e66de4efc28bb821fa89436bb1edd4d5"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/impact.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bbc64294ff334861cbb75a7b942b3690e2ee52e3"
+      },
+      {
+        "path": "plugins/specnav-codegraph/schemas/status.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4a887f0c3c518b6c20468a7fe77e8540682194eb"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-claims.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0dd293a355dae1ea72d757d4aa35e755698b8078"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-context.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6578ffb73c0c448b1d8db5990305e6791d1f52cb"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d1466cda9cd6e95d10213e2e723ca0048335618d"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7767ec05bbf1e164f86b5900c5eebbd91ebc1e0d"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-impact.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b9c8671885ac5f7288d3413f5dcde20f786b4c7d"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-init.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c73cf28aa410aa681ee3dc1ccaf1d31bca91ccf8"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-plan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "761fe30060c8790cc7a3102de25e205519560517"
+      },
+      {
+        "path": "plugins/specnav-codegraph/scripts/codegraph-setup.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8683757bcf0650ea8707bdd76718c2dec826d510"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-claims/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "21eeeba88ad6f7030fcaf945da2e65e62158ddd8"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-context/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "db3bc00a9ca5505916ba02c4bffd67460f45cd0b"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-impact/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b99fe699981894b21791f3fda1a8dd48fe9c922d"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-init/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "031ca07b2bc59f10179503333f55f5685f67d4b6"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-setup/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5d07d7c516cab238e2ef627562c426d57eff1820"
+      },
+      {
+        "path": "plugins/specnav-codegraph/skills/specnav-codegraph-status/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0a0ee571e3cc13d074d2c107ef05c349615665b"
+      },
+      {
+        "path": "plugins/specnav-codegraph/specnav-stage.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b911439cc9ff17d8eff27f121226dc89837a662c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/authority-log.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9dc39631fa348e0ddd5a24ca2da5b18ec731d90"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/case-rerun-planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c86504a0304733db543064c7531fa740bc7634f0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/development-repair-bridge.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f88e45c593a1f9423011ecfd792b327a4a5e0043"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-classifier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e58e1612565997855557a2e14f49e838446ddd3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-state-reducer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b350f4a1459c9e6befabeef534d4347b034661fd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "016d6897b4a2cd505ed370e7db0a418f684ee965"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b7a162fce1ebb31babfaf8431761de3e5122d5bb"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/transition-applier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ba90ac85322a37ce3daba63a18dc01a67020cdc9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/trusted-fact-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e5310d1f9fc59b43275135cad3540563db9b0ef8"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/rerun-scope.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6785da5b71e02326313fe1c909abecbad25befa2"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-rerun/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b4bf262028a71987d8444b322fd7dc59a0ee316"
+      },
+      {
+        "path": "tests/run-verification-v2-codegraph-rerun.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "acaeb05a6a78bfa72e6cc8bcf319604433332ed9"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/rerun/case-scope.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9e0ac6cd2814ebe66150e2b9b88128b5df74aba3"
+      },
+      {
+        "path": "tests/verification-v2/rerun/cli-integration.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "27639eb048990d498bb55909119a4212aa9a77a8"
+      },
+      {
+        "path": "tests/verification-v2/rerun/codegraph-impact-cli.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "602c1b8c816a488526efd79e0e92e3f0aeb0473a"
+      },
+      {
+        "path": "tests/verification-v2/rerun/codegraph-impact.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9af89d168d42c3a7e189a85c4d6d804c92646ffd"
+      }
+    ],
+    "sha256": "1d80b160a4c99831ecae73eed2d105093fc7a8c07a0335a5c96aa3a75aec6ff9"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/022-case-rerun-impact/context.json",
+      "sha256": "a48dcb133416bd6ba6d055529c011c144d926145bb48f6c0db42c2d635f16a49"
+    },
+    "report": {
+      "path": "development/tasks/022-case-rerun-impact/report.md",
+      "sha256": "c6e24e968913302d59353f76812c41ed617c50963e34cae7972364b06362a1b0",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/022-case-rerun-impact/spec-review.md",
+      "sha256": "432c789a8e6e76a0bec25ae1861973fa94c2f2b603d2f5b73a3c6f7f4a21138e",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/022-case-rerun-impact/quality-review.md",
+      "sha256": "92c8b588a36fa6e3866828935fc45d5a9ea672838e5a21455e29341d63a1db45",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-5fec20267f7b3857636f3624ac3f0e8c0a6f3d78b7505ca01526cc758b7fa4dc",
+      "command": "bash tests/run-verification-v2-codegraph-rerun.sh",
+      "assertion_ids": [
+        "AC-24",
+        "AC-26"
+      ],
+      "recorded_at": "2026-08-11T23:12:20.938Z",
+      "validation_receipt_sha256": "9545f1436eb28c287e2631fb3642dd1b1c5948c440af7eb13b3b350f6e351c2c",
+      "evidence_log": {
+        "path": "development/evidence/588-022-case-rerun-impact.log",
+        "sha256": "a47cd9b7b14383ea7c9647785963859c4f30f70c89c84d6061c52510e4e35492",
+        "size": 3583
+      }
+    },
+    {
+      "id": "receipt-cf753980e2f3f4a3f6167824fc312b907a005b07a2676ef253f7eaf13a37fd36",
+      "command": "node --test tests/verification-v2/rerun/*.test.js",
+      "assertion_ids": [
+        "AC-24",
+        "AC-26"
+      ],
+      "recorded_at": "2026-08-11T23:12:17.690Z",
+      "validation_receipt_sha256": "975d6399bc5e0ad70264a9951da8b2c257e641fd36ae1f372ef337951e17f758",
+      "evidence_log": {
+        "path": "development/evidence/587-022-case-rerun-impact.log",
+        "sha256": "3a9df9f59d03a9c56581c0623296d295c10b01b7df4a2d621911fc745dffc583",
+        "size": 3490
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-24",
       "parent_id": "AC-24",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/022-case-rerun-impact/report.md",
-        "development/tasks/022-case-rerun-impact/spec-review.md",
-        "development/tasks/022-case-rerun-impact/quality-review.md",
-        "development/evidence/192-022-case-rerun-impact.log",
-        "development/evidence/193-022-case-rerun-impact.log",
-        "development/evidence/194-022-case-rerun-impact.log",
-        "development/evidence/195-022-case-rerun-impact.log",
-        "development/evidence/196-022-case-rerun-impact.log",
-        "development/evidence/197-022-case-rerun-impact.log",
-        "development/evidence/198-022-case-rerun-impact.log",
-        "development/evidence/199-022-case-rerun-impact.log"
+      "test_run_ids": [
+        "receipt-5fec20267f7b3857636f3624ac3f0e8c0a6f3d78b7505ca01526cc758b7fa4dc",
+        "receipt-cf753980e2f3f4a3f6167824fc312b907a005b07a2676ef253f7eaf13a37fd36"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Rerun scope returns concrete affected case ids and reasons, not only domain names."
     },
@@ -29,19 +440,11 @@
       "id": "AC-26",
       "parent_id": "AC-26",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/022-case-rerun-impact/report.md",
-        "development/tasks/022-case-rerun-impact/spec-review.md",
-        "development/tasks/022-case-rerun-impact/quality-review.md",
-        "development/evidence/192-022-case-rerun-impact.log",
-        "development/evidence/193-022-case-rerun-impact.log",
-        "development/evidence/194-022-case-rerun-impact.log",
-        "development/evidence/195-022-case-rerun-impact.log",
-        "development/evidence/196-022-case-rerun-impact.log",
-        "development/evidence/197-022-case-rerun-impact.log",
-        "development/evidence/198-022-case-rerun-impact.log",
-        "development/evidence/199-022-case-rerun-impact.log"
+      "test_run_ids": [
+        "receipt-5fec20267f7b3857636f3624ac3f0e8c0a6f3d78b7505ca01526cc758b7fa4dc",
+        "receipt-cf753980e2f3f4a3f6167824fc312b907a005b07a2676ef253f7eaf13a37fd36"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Regression scope includes the repaired case, directly impacted cases, and policy-required baseline cases."
     }

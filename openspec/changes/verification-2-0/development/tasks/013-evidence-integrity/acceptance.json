@@ -1,38 +1,236 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "013-evidence-integrity",
-  "recorded_at": "2026-07-31T19:49:44.965Z",
+  "generated_at": "2026-08-11T23:37:55.354Z",
+  "recorded_at": "2026-08-11T23:10:58.205Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/evidence/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "tests/run-verification-v2-negative.sh",
+      "tests/verification-v2/evidence/**",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/negative/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/blockers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bee6e408d3f4f207167a1ba9ef57a03123fbfd6b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/case-freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66cdde546067694c9b91f504fa5ef9c0c02b2abf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/content-addressed-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d35ce720366bfa3003a26e5271c4d00d5e768c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f79b5914fee47fcaa0c9ba57dd80206ea3cf4e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/fingerprint-comparator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e85b18cc8a71bec43bad265f57fea785167fbf76"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6fb340c5eeb016743a66353702e4cf8741901e42"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/identity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "783dc04ca92817f58fff1ac12118372547856d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c2353b698e91ef0ca9e96b2c65fd9782df2db407"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "347131d433ddc1aab8dc1bc393f331ee1de1ce74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/integrity-checker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a520e21e3de723f5b865fc9d32b03fcaa824aed7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/object-reader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c38aee9f45c1c14c3e08ccbf6de5a0e6b56d38bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/paths.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e41d77111ff45995ae55bb8447d9f6b328370b1f"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/raw-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0f945b03093738a70e168bd94406cbdddb8ebbd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/redaction-constants.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf94cd326701935c84200008405d11a6f98cba6a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/repository-fingerprint.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c774bb9375e43db7b71f27e8d52184d8acc03169"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/secret-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c95cfb6c40dd8e575dd6cb7d40ce298decd3299"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/structured-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "eb96750d4afa9712737d1a54d935d8d11808bada"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/text-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44ac044d30e3595ba73e5196ea46d44dde6c9ec6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "tests/run-verification-v2-negative.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d5f509a65352c9f5d8adde62f0fd3592a35b45ca"
+      },
+      {
+        "path": "tests/verification-v2/evidence/evidence-store.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a125b946b1da9515fef46726e0e6b7c2ccef7150"
+      },
+      {
+        "path": "tests/verification-v2/evidence/integrity-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9aac25ae442770fa007c0daad7ef1afaa012d4f"
+      },
+      {
+        "path": "tests/verification-v2/evidence/integrity.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd4cf01940847acce74af25fa14f3a8ce2c7c626"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "9c0b12bdd0ebfdc581c9deb8d115ccd57fa1bd738f0a22b6d71ee771e1997054"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/013-evidence-integrity/context.json",
+      "sha256": "a39b76e65bd3faabe3972747fdda7fa806d38741b0996699523dc2c12898c13b"
+    },
+    "report": {
+      "path": "development/tasks/013-evidence-integrity/report.md",
+      "sha256": "fa29b6847292153edeb43963ea3e0a51fdf8bee872cf687876f1bf93b0d76121",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/013-evidence-integrity/spec-review.md",
+      "sha256": "2341e0bb12bfe29c90d3cf00d4c0e5fcc3beef9475675e5474296f77734b2e35",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/013-evidence-integrity/quality-review.md",
+      "sha256": "4a776770e11077ae75ca3246301a9cd761345087d9ae77900bd99ab21d15268c",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-10fe647876e25ccbaf4743b3ee451a0d5b3ee6804e0ac6d916a86b4cf9a70317",
+      "command": "node --test tests/verification-v2/evidence/integrity.test.js",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18:empty-evidence",
+        "AC-23:evidence-fingerprint-freshness",
+        "AC-28:evidence-integrity-blockers"
+      ],
+      "recorded_at": "2026-08-11T23:10:56.037Z",
+      "validation_receipt_sha256": "3bf3f73c41919728976194db1e9b0b4ff54d9abf6badb90e7577150d45670104",
+      "evidence_log": {
+        "path": "development/evidence/572-013-evidence-integrity.log",
+        "sha256": "b32c671582bccaba7875eb8bf0c78ca3942c38e6bfaf9a140790fedf98c88bf5",
+        "size": 6530
+      }
+    },
+    {
+      "id": "receipt-a378f106b30721c06e4c6316cb8a31cd172cbf170d4488d8fabe7e359406476d",
+      "command": "bash tests/run-verification-v2-negative.sh",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18:empty-evidence",
+        "AC-23:evidence-fingerprint-freshness",
+        "AC-28:evidence-integrity-blockers"
+      ],
+      "recorded_at": "2026-08-11T23:10:58.205Z",
+      "validation_receipt_sha256": "6a53aa950cfc1475918da2c854ffdf81d4b816820848c4c4ae6918cf22f7fe46",
+      "evidence_log": {
+        "path": "development/evidence/573-013-evidence-integrity.log",
+        "sha256": "2c3e67c8998ec45a47753d6ebb8aec8bfd5fc1f459266265efcc793961e48418",
+        "size": 6512
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-17",
       "parent_id": "AC-17",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/013-evidence-integrity/report.md",
-        "development/tasks/013-evidence-integrity/spec-review.md",
-        "development/tasks/013-evidence-integrity/quality-review.md",
-        "development/evidence/150-013-evidence-integrity.log",
-        "development/evidence/151-013-evidence-integrity.log",
-        "development/evidence/152-013-evidence-integrity.log",
-        "development/evidence/153-013-evidence-integrity.log",
-        "development/evidence/154-013-evidence-integrity.log",
-        "development/evidence/155-013-evidence-integrity.log",
-        "development/evidence/156-013-evidence-integrity.log",
-        "development/evidence/157-013-evidence-integrity.log",
-        "development/evidence/158-013-evidence-integrity.log",
-        "development/evidence/159-013-evidence-integrity.log",
-        "development/evidence/160-013-evidence-integrity.log",
-        "development/evidence/161-013-evidence-integrity.log",
-        "development/evidence/162-013-evidence-integrity.log",
-        "development/evidence/163-013-evidence-integrity.log",
-        "development/evidence/164-013-evidence-integrity.log",
-        "development/evidence/165-013-evidence-integrity.log",
-        "development/evidence/166-013-evidence-integrity.log",
-        "development/evidence/167-013-evidence-integrity.log",
-        "development/evidence/168-013-evidence-integrity.log"
+      "test_run_ids": [
+        "receipt-10fe647876e25ccbaf4743b3ee451a0d5b3ee6804e0ac6d916a86b4cf9a70317",
+        "receipt-a378f106b30721c06e4c6316cb8a31cd172cbf170d4488d8fabe7e359406476d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Missing evidence files, hash mismatch, size mismatch, stale SHA, unrecognized producer, or broken case/step references block green."
     },
@@ -40,30 +238,11 @@
       "id": "AC-18:empty-evidence",
       "parent_id": "AC-18",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/013-evidence-integrity/report.md",
-        "development/tasks/013-evidence-integrity/spec-review.md",
-        "development/tasks/013-evidence-integrity/quality-review.md",
-        "development/evidence/150-013-evidence-integrity.log",
-        "development/evidence/151-013-evidence-integrity.log",
-        "development/evidence/152-013-evidence-integrity.log",
-        "development/evidence/153-013-evidence-integrity.log",
-        "development/evidence/154-013-evidence-integrity.log",
-        "development/evidence/155-013-evidence-integrity.log",
-        "development/evidence/156-013-evidence-integrity.log",
-        "development/evidence/157-013-evidence-integrity.log",
-        "development/evidence/158-013-evidence-integrity.log",
-        "development/evidence/159-013-evidence-integrity.log",
-        "development/evidence/160-013-evidence-integrity.log",
-        "development/evidence/161-013-evidence-integrity.log",
-        "development/evidence/162-013-evidence-integrity.log",
-        "development/evidence/163-013-evidence-integrity.log",
-        "development/evidence/164-013-evidence-integrity.log",
-        "development/evidence/165-013-evidence-integrity.log",
-        "development/evidence/166-013-evidence-integrity.log",
-        "development/evidence/167-013-evidence-integrity.log",
-        "development/evidence/168-013-evidence-integrity.log"
+      "test_run_ids": [
+        "receipt-10fe647876e25ccbaf4743b3ee451a0d5b3ee6804e0ac6d916a86b4cf9a70317",
+        "receipt-a378f106b30721c06e4c6316cb8a31cd172cbf170d4488d8fabe7e359406476d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Contribution evidence for AC-18:empty-evidence, AC-23:evidence-fingerprint-freshness, and AC-28:evidence-integrity-blockers without claiming downstream gate closure"
     },
@@ -71,30 +250,11 @@
       "id": "AC-23:evidence-fingerprint-freshness",
       "parent_id": "AC-23",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/013-evidence-integrity/report.md",
-        "development/tasks/013-evidence-integrity/spec-review.md",
-        "development/tasks/013-evidence-integrity/quality-review.md",
-        "development/evidence/150-013-evidence-integrity.log",
-        "development/evidence/151-013-evidence-integrity.log",
-        "development/evidence/152-013-evidence-integrity.log",
-        "development/evidence/153-013-evidence-integrity.log",
-        "development/evidence/154-013-evidence-integrity.log",
-        "development/evidence/155-013-evidence-integrity.log",
-        "development/evidence/156-013-evidence-integrity.log",
-        "development/evidence/157-013-evidence-integrity.log",
-        "development/evidence/158-013-evidence-integrity.log",
-        "development/evidence/159-013-evidence-integrity.log",
-        "development/evidence/160-013-evidence-integrity.log",
-        "development/evidence/161-013-evidence-integrity.log",
-        "development/evidence/162-013-evidence-integrity.log",
-        "development/evidence/163-013-evidence-integrity.log",
-        "development/evidence/164-013-evidence-integrity.log",
-        "development/evidence/165-013-evidence-integrity.log",
-        "development/evidence/166-013-evidence-integrity.log",
-        "development/evidence/167-013-evidence-integrity.log",
-        "development/evidence/168-013-evidence-integrity.log"
+      "test_run_ids": [
+        "receipt-10fe647876e25ccbaf4743b3ee451a0d5b3ee6804e0ac6d916a86b4cf9a70317",
+        "receipt-a378f106b30721c06e4c6316cb8a31cd172cbf170d4488d8fabe7e359406476d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Contribution evidence for AC-18:empty-evidence, AC-23:evidence-fingerprint-freshness, and AC-28:evidence-integrity-blockers without claiming downstream gate closure"
     },
@@ -102,30 +262,11 @@
       "id": "AC-28:evidence-integrity-blockers",
       "parent_id": "AC-28",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/013-evidence-integrity/report.md",
-        "development/tasks/013-evidence-integrity/spec-review.md",
-        "development/tasks/013-evidence-integrity/quality-review.md",
-        "development/evidence/150-013-evidence-integrity.log",
-        "development/evidence/151-013-evidence-integrity.log",
-        "development/evidence/152-013-evidence-integrity.log",
-        "development/evidence/153-013-evidence-integrity.log",
-        "development/evidence/154-013-evidence-integrity.log",
-        "development/evidence/155-013-evidence-integrity.log",
-        "development/evidence/156-013-evidence-integrity.log",
-        "development/evidence/157-013-evidence-integrity.log",
-        "development/evidence/158-013-evidence-integrity.log",
-        "development/evidence/159-013-evidence-integrity.log",
-        "development/evidence/160-013-evidence-integrity.log",
-        "development/evidence/161-013-evidence-integrity.log",
-        "development/evidence/162-013-evidence-integrity.log",
-        "development/evidence/163-013-evidence-integrity.log",
-        "development/evidence/164-013-evidence-integrity.log",
-        "development/evidence/165-013-evidence-integrity.log",
-        "development/evidence/166-013-evidence-integrity.log",
-        "development/evidence/167-013-evidence-integrity.log",
-        "development/evidence/168-013-evidence-integrity.log"
+      "test_run_ids": [
+        "receipt-10fe647876e25ccbaf4743b3ee451a0d5b3ee6804e0ac6d916a86b4cf9a70317",
+        "receipt-a378f106b30721c06e4c6316cb8a31cd172cbf170d4488d8fabe7e359406476d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Contribution evidence for AC-18:empty-evidence, AC-23:evidence-fingerprint-freshness, and AC-28:evidence-integrity-blockers without claiming downstream gate closure"
     }

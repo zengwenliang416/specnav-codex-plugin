@@ -1,30 +1,195 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "001-baseline-fake-green",
-  "recorded_at": "2026-07-31T04:52:05.047Z",
+  "generated_at": "2026-08-11T23:37:54.779Z",
+  "recorded_at": "2026-08-11T23:07:42.094Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "docs/verification-v2-gap-analysis.md",
+      "plugins/specnav-development/scripts/development-contract.js",
+      "plugins/specnav-verification/scripts/evidence-runner.js",
+      "plugins/specnav-verification/scripts/validation-receipt-authority.js",
+      "tests/run-verification-plugin-fixtures.sh",
+      "tests/run-verification-v2-baseline.sh",
+      "tests/verification-v2/baseline/**"
+    ],
+    "entries": [
+      {
+        "path": "docs/verification-v2-gap-analysis.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1b48f6e39ae91889fcccdf34890290590fbebb05"
+      },
+      {
+        "path": "plugins/specnav-development/scripts/development-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6a51b92b296e2e5cde873ac1a8e8c1ace965d795"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/evidence-runner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5cd6eb9e9212c4651d35dca1c7b5662a0454e349"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/validation-receipt-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "97380799fc4030da09e9792e091f8d71bae34655"
+      },
+      {
+        "path": "tests/run-verification-plugin-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3ea361a778e69f7cfa4528455cdb358c04e6c19f"
+      },
+      {
+        "path": "tests/run-verification-v2-baseline.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b1ec160c28d573abddc18da2e3639096b7109f17"
+      },
+      {
+        "path": "tests/verification-v2/baseline/cases.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a75ba2ee4a95006c9c006401f2bb8ea2d561815c"
+      },
+      {
+        "path": "tests/verification-v2/baseline/evidence-runner-append-only.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2922e2c920778c80f57e996ee2d32dc17d336c8d"
+      },
+      {
+        "path": "tests/verification-v2/baseline/evidence-runner-refresh-current-head.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "88d77b5e72b2c1f238a42fea2480224cacb1684f"
+      },
+      {
+        "path": "tests/verification-v2/baseline/README.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d6180ce78fcd7d007b8db560a5d97bfdaa32a7a7"
+      },
+      {
+        "path": "tests/verification-v2/baseline/run.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b5bbb835a46833e7b78fe2484ada550186142869"
+      }
+    ],
+    "sha256": "295732a3b815960eb1d91254526f9c5d6bec6ab807420e5cdbb0ad49c67a5fd7"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/001-baseline-fake-green/context.json",
+      "sha256": "e729b72f96edb9692077a3d7ed2f53f742effb9b5c4f3d884b6540c9f091d74b"
+    },
+    "report": {
+      "path": "development/tasks/001-baseline-fake-green/report.md",
+      "sha256": "ce7dbb087e2769393156f158ff2d14b57ded8fbcefee83a235cabb05b902a1e8",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/001-baseline-fake-green/spec-review.md",
+      "sha256": "5a00b8bf127255870543d2b33fcbb61d238a51da6dc144a137c0836db26ce335",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/001-baseline-fake-green/quality-review.md",
+      "sha256": "407163573b425377a4d34883499e8050d4ece2d90a1757f4c90b4ed4af641711",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-49a889d9b299e124f7b5c250fa39fdaabdd361de316f6fbe4afa42a71ec6d650",
+      "command": "bash tests/run-verification-v2-baseline.sh",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18",
+        "AC-21",
+        "AC-29"
+      ],
+      "recorded_at": "2026-08-11T22:59:22.057Z",
+      "validation_receipt_sha256": "35ac77018d2c64491ae1b9b95f06b32e6bc032624c62e86592f1f51f9c85ee6f",
+      "evidence_log": {
+        "path": "development/evidence/552-001-baseline-fake-green.log",
+        "sha256": "fdf821daa1222342d8dfefc77abefa5031a3017b8f06b7da35cde539dd32bc7b",
+        "size": 3390
+      }
+    },
+    {
+      "id": "receipt-70ecae7487ed7f531c11295014587bddb47f07397f9ff6b739a38edf615b2f54",
+      "command": "bash tests/run-verification-plugin-fixtures.sh",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18",
+        "AC-21",
+        "AC-29"
+      ],
+      "recorded_at": "2026-08-11T22:58:55.158Z",
+      "validation_receipt_sha256": "b34e0213882736f7c3589555e0f3e06d02796c1ea3ca28c22c1ca639e58e07cf",
+      "evidence_log": {
+        "path": "development/evidence/551-001-baseline-fake-green.log",
+        "sha256": "38fcdccb6212ea8daa8a638bf56d5849491e6ba8a18ce53e0ca70324096257b2",
+        "size": 167
+      }
+    },
+    {
+      "id": "receipt-d3cccc6da1956a2bc007ab7e9049177a4b1e2adc4da6f48c266549af276b6403",
+      "command": "node --test tests/verification-v2/baseline/*.test.js",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18",
+        "AC-21",
+        "AC-29"
+      ],
+      "recorded_at": "2026-08-11T22:58:25.411Z",
+      "validation_receipt_sha256": "f341ac324daefe03f9db8350380f09ff40e94c3e5bd2467879132c785363af85",
+      "evidence_log": {
+        "path": "development/evidence/550-001-baseline-fake-green.log",
+        "sha256": "e1978c18af4659ed2a16ce015a8a258207132f0dbea441e7b6620a0467ff9e41",
+        "size": 3328
+      }
+    },
+    {
+      "id": "receipt-e19719c86941098f476cc3ee7b27f7fa30a78d6c6c03103401596c5cf2ee85b1",
+      "command": "npm test",
+      "assertion_ids": [
+        "AC-17",
+        "AC-18",
+        "AC-21",
+        "AC-29"
+      ],
+      "recorded_at": "2026-08-11T23:07:42.094Z",
+      "validation_receipt_sha256": "532d7cc5545910dcc03c10bd8ebe56777b6622489acfa397901158316c74a00f",
+      "evidence_log": {
+        "path": "development/evidence/553-001-baseline-fake-green.log",
+        "sha256": "640b2df2a95fecd4d736488fdfc3f46e8322ee0750d6a86cf2f598ad98d30ca4",
+        "size": 33737
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-17",
       "parent_id": "AC-17",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/001-baseline-fake-green/report.md",
-        "development/tasks/001-baseline-fake-green/spec-review.md",
-        "development/tasks/001-baseline-fake-green/quality-review.md",
-        "development/evidence/001-001-baseline-fake-green.log",
-        "development/evidence/002-001-baseline-fake-green.log",
-        "development/evidence/003-001-baseline-fake-green.log",
-        "development/evidence/004-001-baseline-fake-green.log",
-        "development/evidence/005-001-baseline-fake-green.log",
-        "development/evidence/006-001-baseline-fake-green.log",
-        "development/evidence/007-001-baseline-fake-green.log",
-        "development/evidence/008-001-baseline-fake-green.log",
-        "development/evidence/009-001-baseline-fake-green.log",
-        "development/evidence/010-001-baseline-fake-green.log",
-        "development/evidence/011-001-baseline-fake-green.log"
+      "test_run_ids": [
+        "receipt-49a889d9b299e124f7b5c250fa39fdaabdd361de316f6fbe4afa42a71ec6d650",
+        "receipt-70ecae7487ed7f531c11295014587bddb47f07397f9ff6b739a38edf615b2f54",
+        "receipt-d3cccc6da1956a2bc007ab7e9049177a4b1e2adc4da6f48c266549af276b6403",
+        "receipt-e19719c86941098f476cc3ee7b27f7fa30a78d6c6c03103401596c5cf2ee85b1"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Missing evidence files, hash mismatch, size mismatch, stale SHA, unrecognized producer, or broken case/step references block green."
     },
@@ -32,22 +197,13 @@
       "id": "AC-18",
       "parent_id": "AC-18",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/001-baseline-fake-green/report.md",
-        "development/tasks/001-baseline-fake-green/spec-review.md",
-        "development/tasks/001-baseline-fake-green/quality-review.md",
-        "development/evidence/001-001-baseline-fake-green.log",
-        "development/evidence/002-001-baseline-fake-green.log",
-        "development/evidence/003-001-baseline-fake-green.log",
-        "development/evidence/004-001-baseline-fake-green.log",
-        "development/evidence/005-001-baseline-fake-green.log",
-        "development/evidence/006-001-baseline-fake-green.log",
-        "development/evidence/007-001-baseline-fake-green.log",
-        "development/evidence/008-001-baseline-fake-green.log",
-        "development/evidence/009-001-baseline-fake-green.log",
-        "development/evidence/010-001-baseline-fake-green.log",
-        "development/evidence/011-001-baseline-fake-green.log"
+      "test_run_ids": [
+        "receipt-49a889d9b299e124f7b5c250fa39fdaabdd361de316f6fbe4afa42a71ec6d650",
+        "receipt-70ecae7487ed7f531c11295014587bddb47f07397f9ff6b739a38edf615b2f54",
+        "receipt-d3cccc6da1956a2bc007ab7e9049177a4b1e2adc4da6f48c266549af276b6403",
+        "receipt-e19719c86941098f476cc3ee7b27f7fa30a78d6c6c03103401596c5cf2ee85b1"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Empty evidence arrays, empty verification commands, or a manually edited green domain report cannot produce green."
     },
@@ -55,22 +211,13 @@
       "id": "AC-21",
       "parent_id": "AC-21",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/001-baseline-fake-green/report.md",
-        "development/tasks/001-baseline-fake-green/spec-review.md",
-        "development/tasks/001-baseline-fake-green/quality-review.md",
-        "development/evidence/001-001-baseline-fake-green.log",
-        "development/evidence/002-001-baseline-fake-green.log",
-        "development/evidence/003-001-baseline-fake-green.log",
-        "development/evidence/004-001-baseline-fake-green.log",
-        "development/evidence/005-001-baseline-fake-green.log",
-        "development/evidence/006-001-baseline-fake-green.log",
-        "development/evidence/007-001-baseline-fake-green.log",
-        "development/evidence/008-001-baseline-fake-green.log",
-        "development/evidence/009-001-baseline-fake-green.log",
-        "development/evidence/010-001-baseline-fake-green.log",
-        "development/evidence/011-001-baseline-fake-green.log"
+      "test_run_ids": [
+        "receipt-49a889d9b299e124f7b5c250fa39fdaabdd361de316f6fbe4afa42a71ec6d650",
+        "receipt-70ecae7487ed7f531c11295014587bddb47f07397f9ff6b739a38edf615b2f54",
+        "receipt-d3cccc6da1956a2bc007ab7e9049177a4b1e2adc4da6f48c266549af276b6403",
+        "receipt-e19719c86941098f476cc3ee7b27f7fa30a78d6c6c03103401596c5cf2ee85b1"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Domain status and release verdict are derived from case readings; no domain skill or agent prose can override the aggregate."
     },
@@ -78,22 +225,13 @@
       "id": "AC-29",
       "parent_id": "AC-29",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/001-baseline-fake-green/report.md",
-        "development/tasks/001-baseline-fake-green/spec-review.md",
-        "development/tasks/001-baseline-fake-green/quality-review.md",
-        "development/evidence/001-001-baseline-fake-green.log",
-        "development/evidence/002-001-baseline-fake-green.log",
-        "development/evidence/003-001-baseline-fake-green.log",
-        "development/evidence/004-001-baseline-fake-green.log",
-        "development/evidence/005-001-baseline-fake-green.log",
-        "development/evidence/006-001-baseline-fake-green.log",
-        "development/evidence/007-001-baseline-fake-green.log",
-        "development/evidence/008-001-baseline-fake-green.log",
-        "development/evidence/009-001-baseline-fake-green.log",
-        "development/evidence/010-001-baseline-fake-green.log",
-        "development/evidence/011-001-baseline-fake-green.log"
+      "test_run_ids": [
+        "receipt-49a889d9b299e124f7b5c250fa39fdaabdd361de316f6fbe4afa42a71ec6d650",
+        "receipt-70ecae7487ed7f531c11295014587bddb47f07397f9ff6b739a38edf615b2f54",
+        "receipt-d3cccc6da1956a2bc007ab7e9049177a4b1e2adc4da6f48c266549af276b6403",
+        "receipt-e19719c86941098f476cc3ee7b27f7fa30a78d6c6c03103401596c5cf2ee85b1"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Reports generate for green, red, and blocked states and never become the source of truth."
     }

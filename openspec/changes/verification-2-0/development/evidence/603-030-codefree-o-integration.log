@@ -1,0 +1,104 @@
+# command: bash tests/run-verification-v2-codefree-o-adapter.sh
+# exit_status: 0
+# duration_ms: 3051
+
+## stdout
+TAP version 13
+# Subtest: CodeFree-O describes the canonical full Verification contract
+ok 1 - CodeFree-O describes the canonical full Verification contract
+  ---
+  duration_ms: 1.0635
+  type: 'test'
+  ...
+# Subtest: CodeFree-O preserves shared blockers and artifacts
+ok 2 - CodeFree-O preserves shared blockers and artifacts
+  ---
+  duration_ms: 0.455833
+  type: 'test'
+  ...
+# Subtest: CodeFree-O blocks partial, fallback, and manual-green requests
+ok 3 - CodeFree-O blocks partial, fallback, and manual-green requests
+  ---
+  duration_ms: 0.209541
+  type: 'test'
+  ...
+# Subtest: CodeFree-O requires explicit approval for runtime and migration writes
+ok 4 - CodeFree-O requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.315208
+  type: 'test'
+  ...
+# Subtest: CodeFree-O exposes forbidden or undisclosed downstream fallback
+ok 5 - CodeFree-O exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.1845
+  type: 'test'
+  ...
+# Subtest: CodeFree-O fails closed for invalid requests and source results
+ok 6 - CodeFree-O fails closed for invalid requests and source results
+  ---
+  duration_ms: 0.233542
+  type: 'test'
+  ...
+# Subtest: CodeFree-O host wrapper remains invocation-only
+ok 7 - CodeFree-O host wrapper remains invocation-only
+  ---
+  duration_ms: 0.221333
+  type: 'test'
+  ...
+# Subtest: CodeFree-O repository consumes the canonical Verification Kernel
+ok 8 - CodeFree-O repository consumes the canonical Verification Kernel
+  ---
+  duration_ms: 129.660417
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+ok 9 - CodeFree-O synchronized entry surfaces use Verification 2.0 and native wording
+  ---
+  duration_ms: 0.415916
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization preserves unrelated dirty files
+ok 10 - CodeFree-O synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 698.518625
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization blocks owned-path conflicts
+ok 11 - CodeFree-O synchronization blocks owned-path conflicts
+  ---
+  duration_ms: 92.826584
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization removes undeclared module files
+ok 12 - CodeFree-O synchronization removes undeclared module files
+  ---
+  duration_ms: 708.159208
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization rejects ancestor symlink escapes
+ok 13 - CodeFree-O synchronization rejects ancestor symlink escapes
+  ---
+  duration_ms: 80.428333
+  type: 'test'
+  ...
+# Subtest: CodeFree-O synchronization failure leaves the module unchanged
+ok 14 - CodeFree-O synchronization failure leaves the module unchanged
+  ---
+  duration_ms: 735.4515
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2523.672209
+verification v2 CodeFree-O adapter ok
+
+
+## stderr
+(empty)

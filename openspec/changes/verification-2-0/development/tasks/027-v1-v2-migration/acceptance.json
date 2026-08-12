@@ -1,33 +1,198 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "027-v1-v2-migration",
-  "recorded_at": "2026-08-02T13:29:27.497Z",
+  "generated_at": "2026-08-11T23:37:56.136Z",
+  "recorded_at": "2026-08-11T23:13:13.373Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-development/schemas/task-acceptance-evidence.schema.json",
+      "plugins/specnav-development/scripts/development-contract.js",
+      "plugins/specnav-development/scripts/task-acceptance-evidence.js",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/migration/**",
+      "plugins/specnav-verification/scripts/verification-migrate.js",
+      "tests/helpers/development-contract-fixture.js",
+      "tests/run-development-plugin-fixtures.sh",
+      "tests/run-verification-v2-migration.sh",
+      "tests/verification-v2/development/task-acceptance-evidence.test.js",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/migration/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-development/schemas/task-acceptance-evidence.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "03fdd58933e90ba52a33238a6e8a7a074e3eeaab"
+      },
+      {
+        "path": "plugins/specnav-development/scripts/development-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6a51b92b296e2e5cde873ac1a8e8c1ace965d795"
+      },
+      {
+        "path": "plugins/specnav-development/scripts/task-acceptance-evidence.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4a4dbc1ef475f64d8f7b151bfa357cf2da9f811d"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/artifact-backup.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b2df7ad8cf49d36321335d31a35d9a7040a089e1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "537d0f1dd619d23a8ed044c168994d528c7ce4d0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/migrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6ec555cd1ad72bb5ea91de9f600e825f01db4835"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/transformation-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b531d3552575160f476b94547dde3aeb563f0b34"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-migrate.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab206f97f40fe9a73c85a1e430e3bac84fbe35f1"
+      },
+      {
+        "path": "tests/helpers/development-contract-fixture.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66d4d2bf75e996437d2eb923a06cb761c5625fb2"
+      },
+      {
+        "path": "tests/run-development-plugin-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8259b8be9431c7aad0e34998b6d0a721b92fae06"
+      },
+      {
+        "path": "tests/run-verification-v2-migration.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6aa3b2193a5d36c12b09e0ba03083e8e5c6e8a1d"
+      },
+      {
+        "path": "tests/verification-v2/development/task-acceptance-evidence.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bb104aa9f2ef074763374b9bc04ea15f17b1343a"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/migration/cli.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1349d7cc7e300715a85acfea8cbdfdd79ceb5539"
+      },
+      {
+        "path": "tests/verification-v2/migration/migrator.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee35ddecadb88decc6734b8ff77d40423134efd7"
+      },
+      {
+        "path": "tests/verification-v2/migration/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e864303d20f7321deb733455c4f1ee215a3d5495"
+      }
+    ],
+    "sha256": "c382b135600733a86006e6d1022f8604ee5bbd6983523a0fe0cc865817b4c079"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/027-v1-v2-migration/context.json",
+      "sha256": "652ca34e3645c0ac5ddd4d4a3da2c5acde52ad612a7812c1e683d52a2c970da3"
+    },
+    "report": {
+      "path": "development/tasks/027-v1-v2-migration/report.md",
+      "sha256": "ed90f203f2a6f7a85b6449af306602e5949bafdfa5e8f4a0dc72093d21ff180f",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/027-v1-v2-migration/spec-review.md",
+      "sha256": "81349db2640c9140880ffe94971c21bb0cb505593f40f696fa3ff9949e1a5e64",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/027-v1-v2-migration/quality-review.md",
+      "sha256": "bf6a4ebe6cd48c749d7ff553960fd3488883095d32f30745eacea82d64c63f8e",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-71d2e511b6895b4737ccd4785d2dc5162c1d6b6b417bd6b293daf8fc56859f34",
+      "command": "bash tests/run-verification-v2-migration.sh",
+      "assertion_ids": [
+        "AC-32",
+        "AC-33",
+        "AC-34"
+      ],
+      "recorded_at": "2026-08-11T23:13:13.373Z",
+      "validation_receipt_sha256": "695b8377e09bae319a0206f720a815e3aa31c584ab54dc4605fc897167fcdfbc",
+      "evidence_log": {
+        "path": "development/evidence/598-027-v1-v2-migration.log",
+        "sha256": "388b97bff548c6846dd676a548a657540224a8f17a84873d87180230cd31be07",
+        "size": 4797
+      }
+    },
+    {
+      "id": "receipt-9393c2b50b8171fcce563fa799b5fb939468337dbc9de7fc7fef6f6e398c0896",
+      "command": "node --test tests/verification-v2/migration/*.test.js",
+      "assertion_ids": [
+        "AC-32",
+        "AC-33",
+        "AC-34"
+      ],
+      "recorded_at": "2026-08-11T23:13:09.912Z",
+      "validation_receipt_sha256": "32b2c3c8e0d74c4234def6c63659d6288a63f0d2b7124408aed61b43cf51f4bb",
+      "evidence_log": {
+        "path": "development/evidence/597-027-v1-v2-migration.log",
+        "sha256": "d2a1983ba5b7947e1770108738e6ef544c7aad1bef7727a48f0964dc89bd53d1",
+        "size": 3902
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-32",
       "parent_id": "AC-32",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/027-v1-v2-migration/report.md",
-        "development/tasks/027-v1-v2-migration/spec-review.md",
-        "development/tasks/027-v1-v2-migration/quality-review.md",
-        "development/evidence/386-027-v1-v2-migration.log",
-        "development/evidence/387-027-v1-v2-migration.log",
-        "development/evidence/388-027-v1-v2-migration.log",
-        "development/evidence/389-027-v1-v2-migration.log",
-        "development/evidence/396-027-v1-v2-migration.log",
-        "development/evidence/397-027-v1-v2-migration.log",
-        "development/evidence/398-027-v1-v2-migration.log",
-        "development/evidence/399-027-v1-v2-migration.log",
-        "development/evidence/400-027-v1-v2-migration.log",
-        "development/evidence/401-027-v1-v2-migration.log",
-        "development/evidence/402-027-v1-v2-migration.log",
-        "development/evidence/403-027-v1-v2-migration.log",
-        "development/evidence/404-027-v1-v2-migration.log",
-        "development/evidence/405-027-v1-v2-migration.log"
+      "test_run_ids": [
+        "receipt-71d2e511b6895b4737ccd4785d2dc5162c1d6b6b417bd6b293daf8fc56859f34",
+        "receipt-9393c2b50b8171fcce563fa799b5fb939468337dbc9de7fc7fef6f6e398c0896"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Failed evidence is retained after retry, repair, migration, report regeneration, release, and archive."
     },
@@ -35,25 +200,11 @@
       "id": "AC-33",
       "parent_id": "AC-33",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/027-v1-v2-migration/report.md",
-        "development/tasks/027-v1-v2-migration/spec-review.md",
-        "development/tasks/027-v1-v2-migration/quality-review.md",
-        "development/evidence/386-027-v1-v2-migration.log",
-        "development/evidence/387-027-v1-v2-migration.log",
-        "development/evidence/388-027-v1-v2-migration.log",
-        "development/evidence/389-027-v1-v2-migration.log",
-        "development/evidence/396-027-v1-v2-migration.log",
-        "development/evidence/397-027-v1-v2-migration.log",
-        "development/evidence/398-027-v1-v2-migration.log",
-        "development/evidence/399-027-v1-v2-migration.log",
-        "development/evidence/400-027-v1-v2-migration.log",
-        "development/evidence/401-027-v1-v2-migration.log",
-        "development/evidence/402-027-v1-v2-migration.log",
-        "development/evidence/403-027-v1-v2-migration.log",
-        "development/evidence/404-027-v1-v2-migration.log",
-        "development/evidence/405-027-v1-v2-migration.log"
+      "test_run_ids": [
+        "receipt-71d2e511b6895b4737ccd4785d2dc5162c1d6b6b417bd6b293daf8fc56859f34",
+        "receipt-9393c2b50b8171fcce563fa799b5fb939468337dbc9de7fc7fef6f6e398c0896"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "V1-to-V2 migration provides dry-run output, backup references, migration receipt, validation results, and rollback instructions."
     },
@@ -61,25 +212,11 @@
       "id": "AC-34",
       "parent_id": "AC-34",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/027-v1-v2-migration/report.md",
-        "development/tasks/027-v1-v2-migration/spec-review.md",
-        "development/tasks/027-v1-v2-migration/quality-review.md",
-        "development/evidence/386-027-v1-v2-migration.log",
-        "development/evidence/387-027-v1-v2-migration.log",
-        "development/evidence/388-027-v1-v2-migration.log",
-        "development/evidence/389-027-v1-v2-migration.log",
-        "development/evidence/396-027-v1-v2-migration.log",
-        "development/evidence/397-027-v1-v2-migration.log",
-        "development/evidence/398-027-v1-v2-migration.log",
-        "development/evidence/399-027-v1-v2-migration.log",
-        "development/evidence/400-027-v1-v2-migration.log",
-        "development/evidence/401-027-v1-v2-migration.log",
-        "development/evidence/402-027-v1-v2-migration.log",
-        "development/evidence/403-027-v1-v2-migration.log",
-        "development/evidence/404-027-v1-v2-migration.log",
-        "development/evidence/405-027-v1-v2-migration.log"
+      "test_run_ids": [
+        "receipt-71d2e511b6895b4737ccd4785d2dc5162c1d6b6b417bd6b293daf8fc56859f34",
+        "receipt-9393c2b50b8171fcce563fa799b5fb939468337dbc9de7fc7fef6f6e398c0896"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Migration never interprets missing V1 evidence as V2 PASS."
     }

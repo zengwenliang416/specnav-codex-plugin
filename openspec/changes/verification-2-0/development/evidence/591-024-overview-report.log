@@ -1,0 +1,91 @@
+# command: node --test tests/verification-v2/reports/overview.test.js
+# exit_status: 0
+# duration_ms: 1205
+
+## stdout
+TAP version 13
+# Subtest: renders a standalone overview from one validated report model
+ok 1 - renders a standalone overview from one validated report model
+  ---
+  duration_ms: 1073.0185
+  type: 'test'
+  ...
+# Subtest: keeps the same information architecture for all eight verdicts
+ok 2 - keeps the same information architecture for all eight verdicts
+  ---
+  duration_ms: 7.011583
+  type: 'test'
+  ...
+# Subtest: uses shared link navigation for all three report pages
+ok 3 - uses shared link navigation for all three report pages
+  ---
+  duration_ms: 0.665459
+  type: 'test'
+  ...
+# Subtest: blocked, running, and empty models still render complete reports
+ok 4 - blocked, running, and empty models still render complete reports
+  ---
+  duration_ms: 1.028625
+  type: 'test'
+  ...
+# Subtest: shows exact blockers, freshness, integrity, repair, and source references
+ok 5 - shows exact blockers, freshness, integrity, repair, and source references
+  ---
+  duration_ms: 1.045792
+  type: 'test'
+  ...
+# Subtest: renders warning, stale reason, and repair ids instead of hiding report facts
+ok 6 - renders warning, stale reason, and repair ids instead of hiding report facts
+  ---
+  duration_ms: 1.6445
+  type: 'test'
+  ...
+# Subtest: escapes and redacts every dynamic blocker text value
+ok 7 - escapes and redacts every dynamic blocker text value
+  ---
+  duration_ms: 0.735208
+  type: 'test'
+  ...
+# Subtest: rejects invalid or unvalidated models without rendering a fallback page
+ok 8 - rejects invalid or unvalidated models without rendering a fallback page
+  ---
+  duration_ms: 0.268
+  type: 'test'
+  ...
+# Subtest: rejects forged schema registries and hostile status values
+ok 9 - rejects forged schema registries and hostile status values
+  ---
+  duration_ms: 0.567541
+  type: 'test'
+  ...
+# Subtest: output is deterministic and does not mutate the model
+ok 10 - output is deterministic and does not mutate the model
+  ---
+  duration_ms: 1.501625
+  type: 'test'
+  ...
+# Subtest: production overview renderer does not read raw verification artifacts
+ok 11 - production overview renderer does not read raw verification artifacts
+  ---
+  duration_ms: 0.260375
+  type: 'test'
+  ...
+# Subtest: report has no theme or runtime locale controls
+ok 12 - report has no theme or runtime locale controls
+  ---
+  duration_ms: 0.598875
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1168.6025
+
+
+## stderr
+(empty)

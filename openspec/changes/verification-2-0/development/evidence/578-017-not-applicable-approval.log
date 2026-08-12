@@ -1,0 +1,73 @@
+# command: node --test tests/verification-v2/evaluation/not-applicable.test.js
+# exit_status: 0
+# duration_ms: 1221
+
+## stdout
+TAP version 13
+# Subtest: current human approval creates one stable validator fact
+ok 1 - current human approval creates one stable validator fact
+  ---
+  duration_ms: 1109.726209
+  type: 'test'
+  ...
+# Subtest: approved fact is consumed by six-domain aggregation
+ok 2 - approved fact is consumed by six-domain aggregation
+  ---
+  duration_ms: 2.747584
+  type: 'test'
+  ...
+# Subtest: human identity, policy allowance, and approval freshness fail closed
+ok 3 - human identity, policy allowance, and approval freshness fail closed
+  ---
+  duration_ms: 3.045166
+  type: 'test'
+  ...
+# Subtest: missing, late, mismatched, or broken evidence blocks approval
+ok 4 - missing, late, mismatched, or broken evidence blocks approval
+  ---
+  duration_ms: 0.997834
+  type: 'test'
+  ...
+# Subtest: evidence must belong to an assertion and step owned by the domain
+ok 5 - evidence must belong to an assertion and step owned by the domain
+  ---
+  duration_ms: 0.355542
+  type: 'test'
+  ...
+# Subtest: fact identity changes when evidence content changes under the same id
+ok 6 - fact identity changes when evidence content changes under the same id
+  ---
+  duration_ms: 0.679375
+  type: 'test'
+  ...
+# Subtest: policy timestamps require an explicit RFC3339 timezone
+ok 7 - policy timestamps require an explicit RFC3339 timezone
+  ---
+  duration_ms: 0.369417
+  type: 'test'
+  ...
+# Subtest: validator snapshots trusted catalogs at construction time
+ok 8 - validator snapshots trusted catalogs at construction time
+  ---
+  duration_ms: 0.308709
+  type: 'test'
+  ...
+# Subtest: forged or stale fact identity cannot be revalidated
+ok 9 - forged or stale fact identity cannot be revalidated
+  ---
+  duration_ms: 1.042042
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1183.954792
+
+
+## stderr
+(empty)

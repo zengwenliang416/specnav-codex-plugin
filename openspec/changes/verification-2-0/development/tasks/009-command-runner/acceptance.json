@@ -1,50 +1,206 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "009-command-runner",
-  "recorded_at": "2026-07-31T13:56:57.467Z",
+  "generated_at": "2026-08-11T23:37:55.164Z",
+  "recorded_at": "2026-08-11T23:08:44.125Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/adapters/command-adapter.js",
+      "plugins/specnav-verification/kernel/execution/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/schemas/test-case.schema.json",
+      "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
+      "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+      "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+      "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+      "tests/verification-v2/execution/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/command-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e92ef6f1435841ea23009d2dbc4cf8aebba56a20"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/browser-access-policy.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02bc2185a39a90c2daa51de42273befd638ecf37"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/command-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82389f2f1cf707a88aee0cd91ba1cc35d88436bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/event-sequence.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "17071b69e44f5a2e0e937052e056bca9e5a2af8c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/host-proof-launcher.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25b326f8e74616eda4a405fd09dd91d0cbe58a74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f756d2ddd07eb8d34e6bd2afb127bc8e01aa645"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/lifecycle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e10a997d9582b9d3bc46ffd4a4f85f1c3f231bb1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-oracle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b92794dab039045d90b569b2a79bcb5da98ca866"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-prompt.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9638130ad6e04b596fea3224b0970c6b84c0383e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "89934c6b3ad09acf7f44c0ee31977b827fafa3e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09ee7cb0f70643696b2ff6bf7c786809e599b594"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-scenario.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bcdb6805340a65f13df2624edad778223c6dedc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fade8c254bb9129e2d1929087b7f3dcb37e6090a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/preflight.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3076a1b71257534773731e70ed245ebdb93904ca"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/test-case.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9392d0a93a3d8a4274b8e76fa668e6c8ad692571"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "458baab8bba94af6a5a9617e67dff87ac45aadbf"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90bf094ae2751a95aa9b6dbfe0e04b2f41027e2f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa48b559cba1158b963adcb4b90366768e786d49"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "19bd84d87687671c9cda1e8765c389c3226d5377"
+      },
+      {
+        "path": "tests/verification-v2/execution/command-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6863b782c1ae8b4c3376ef62a9b35b7edbadb48c"
+      },
+      {
+        "path": "tests/verification-v2/execution/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "672d4312930acbd78a28bf211a75ba12c389b351"
+      }
+    ],
+    "sha256": "44ce02d7c73e91d3d446c49f7cba34043f886a4d7990ec8ec49ce974b7354b25"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/009-command-runner/context.json",
+      "sha256": "3d8a76e01971632da75ad7f1b01de9b9a72658cc42b39bf47226aa4d9af71e17"
+    },
+    "report": {
+      "path": "development/tasks/009-command-runner/report.md",
+      "sha256": "6ffd2956cc082e550121d499e95164d2be7ad8f0be1da6b79e89bd6afac3a110",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/009-command-runner/spec-review.md",
+      "sha256": "4a642096f8b3d18f0b06392b87a77de4213837386884891a178afcd2465ab217",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/009-command-runner/quality-review.md",
+      "sha256": "b68064bd5d198451ff346a3e0cafdd0f1970d63c94221380a81cc22f55967706",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-b431b8df6a7a92df40d8b0d12c3554274c37f9f56063698b26a614dcdd1ada3f",
+      "command": "node --test tests/verification-v2/execution/command-adapter.test.js",
+      "assertion_ids": [
+        "AC-14"
+      ],
+      "recorded_at": "2026-08-11T23:08:44.125Z",
+      "validation_receipt_sha256": "d7cf08c1e277e9536b4f6ceb04b7928ef7426d0f7a05964a083c208798080a05",
+      "evidence_log": {
+        "path": "development/evidence/566-009-command-runner.log",
+        "sha256": "825b988788a957812a6e434e7da5c1876ee814d8482d13e4bf228bf5175b67f1",
+        "size": 5447
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-14",
       "parent_id": "AC-14",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/009-command-runner/report.md",
-        "development/tasks/009-command-runner/spec-review.md",
-        "development/tasks/009-command-runner/quality-review.md",
-        "development/evidence/067-009-command-runner.log",
-        "development/evidence/068-009-command-runner.log",
-        "development/evidence/069-009-command-runner.log",
-        "development/evidence/070-009-command-runner.log",
-        "development/evidence/071-009-command-runner.log",
-        "development/evidence/074-009-command-runner.log",
-        "development/evidence/075-009-command-runner.log",
-        "development/evidence/076-009-command-runner.log",
-        "development/evidence/077-009-command-runner.log",
-        "development/evidence/078-009-command-runner.log",
-        "development/evidence/080-009-command-runner.log",
-        "development/evidence/081-009-command-runner.log",
-        "development/evidence/082-009-command-runner.log",
-        "development/evidence/083-009-command-runner.log",
-        "development/evidence/084-009-command-runner.log",
-        "development/evidence/086-009-command-runner.log",
-        "development/evidence/087-009-command-runner.log",
-        "development/evidence/088-009-command-runner.log",
-        "development/evidence/089-009-command-runner.log",
-        "development/evidence/090-009-command-runner.log",
-        "development/evidence/092-009-command-runner.log",
-        "development/evidence/093-009-command-runner.log",
-        "development/evidence/094-009-command-runner.log",
-        "development/evidence/095-009-command-runner.log",
-        "development/evidence/096-009-command-runner.log",
-        "development/evidence/098-009-command-runner.log",
-        "development/evidence/099-009-command-runner.log",
-        "development/evidence/100-009-command-runner.log",
-        "development/evidence/101-009-command-runner.log",
-        "development/evidence/102-009-command-runner.log",
-        "development/evidence/103-009-command-runner.log"
+      "test_run_ids": [
+        "receipt-b431b8df6a7a92df40d8b0d12c3554274c37f9f56063698b26a614dcdd1ada3f"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Every attempt is bound to change id, case id, run id, attempt id, code SHA, test SHA, scenario hash, environment hash, browser project, and test data snapshot."
     }

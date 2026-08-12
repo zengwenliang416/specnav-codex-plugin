@@ -1,26 +1,212 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "029-claude-code-integration",
-  "recorded_at": "2026-08-02T15:13:06.788Z",
+  "generated_at": "2026-08-11T23:37:56.247Z",
+  "recorded_at": "2026-08-11T23:13:45.265Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "docs/host-integration-claude-code.md",
+      "integrations/claude-code/**",
+      "plugins/specnav-verification/scripts/codex-verification-adapter.js",
+      "plugins/specnav-verification/scripts/host-verification-adapter.js",
+      "plugins/specnav-verification/scripts/verification-runtime.js",
+      "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+      "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+      "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+      "tests/run-verification-v2-claude-adapter.sh",
+      "tests/verification-v2/cross-host/**"
+    ],
+    "entries": [
+      {
+        "path": "docs/host-integration-claude-code.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a639cb26ebfbdf433b85f2db2628b04861092eed"
+      },
+      {
+        "path": "integrations/claude-code/claude-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83cf8f655beada1bd73c034bbefbaf74a85debb6"
+      },
+      {
+        "path": "integrations/claude-code/sync-verification-plugin.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e27fbb82bcc32ef1a4d2207cbf3ef7436edf309d"
+      },
+      {
+        "path": "integrations/claude-code/templates/specnav-verification.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee5205ddc5e0fa9d6744b755c4f9c7da258560ff"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/codex-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "06f4fe0aa81851627876dcf9b737c5e5c6952142"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/host-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "acd6453315fa8ddc8504770ca1e8280ba24c87fb"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5c9d1436a3cfdc47037a32eb2915c0dc893ab3a"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf08c886ab7b392312acacbbd210d0a68e5e8b74"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1dec761bb49021eb4334958d21a92443bdfe1994"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7047de0f4e55da81fb30ffc7bc6a907a116e98a1"
+      },
+      {
+        "path": "tests/run-verification-v2-claude-adapter.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e418b2186843ab33604e19fd4330f180b7ffdd8"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/claude-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "812c3d493be69ea98e6d80440e192079980d7114"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codefree-o-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7258764410c45b539034fbb95a60004190b611f6"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codex-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bdf9c261bb550f53f22c1348e27ffdac4148021"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/drift-detector.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9651a6ea5fc5598c5895f031403caa3672ed0eb8"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d638e1c045b8061f80e0e628ac9b10a54883c77a"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority.integration.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7205616781b8890fa7375df0734b28ec1869d3ec"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b18d9b339aeacc8affde54b2bfe3ce99b7a3bd19"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/operations-proof-sync.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "72bec4e1c213a7bb131b9cd6d69d7d146ed7af7e"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/runner-authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f2dfc1cfc767a4e6660ea11b18cede18cb4e311"
+      }
+    ],
+    "sha256": "2cedd6539b8db360de6e4944906dd546ab9cb233eaab83459c6dd8af6dd16272"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/029-claude-code-integration/context.json",
+      "sha256": "2b5d318f370481d43cfc7fb03b3c548f6b9b04e8ef7672a18ed2dec6db46cc44"
+    },
+    "report": {
+      "path": "development/tasks/029-claude-code-integration/report.md",
+      "sha256": "c9ad52f85d7567dc3ba39233ca3f45f3f3fb4c64c7f1c21201156cfa2026b6d0",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/029-claude-code-integration/spec-review.md",
+      "sha256": "04ccb156d5dc608b0f0c365fb14d359a2d003d415e9ecc08f7909600503df781",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/029-claude-code-integration/quality-review.md",
+      "sha256": "02e2ea091ca8dcf6c7f434dc25f607add4a7cdff1012148507bc6c0a41a2b482",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-24fb022cb1ca9e327f1a2e283b884686cc8014d6d1310915c701167bf55f9eca",
+      "command": "bash /Volumes/zwl/AI/ai-coding/specnav-claude-plugin/tests/run-smoke.sh",
+      "assertion_ids": [
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:13:45.265Z",
+      "validation_receipt_sha256": "377c06ba82c8801898c2577921528092498a1950003a238701d2d6cb563111cb",
+      "evidence_log": {
+        "path": "development/evidence/602-029-claude-code-integration.log",
+        "sha256": "46b4b8879640dcb6599da47b3dd4f96b247784714170a4d8c270bc01a49ad700",
+        "size": 315
+      }
+    },
+    {
+      "id": "receipt-58539d986b46e79923108901b21f6c88d3bbfcedae2519803d586f26ff325858",
+      "command": "bash tests/run-verification-v2-claude-adapter.sh",
+      "assertion_ids": [
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:13:38.117Z",
+      "validation_receipt_sha256": "e110c12e097c66074f5ca6ed3721e7c41095d4aed832813ee64a7db40902f6dc",
+      "evidence_log": {
+        "path": "development/evidence/601-029-claude-code-integration.log",
+        "sha256": "25a3fd3a2e86ab71038eb62bb5a0da3ae8a8d3c13bd169bb9c57f324024c84ae",
+        "size": 3067
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-37",
       "parent_id": "AC-37",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/029-claude-code-integration/report.md",
-        "development/tasks/029-claude-code-integration/spec-review.md",
-        "development/tasks/029-claude-code-integration/quality-review.md",
-        "development/evidence/419-029-claude-code-integration.log",
-        "development/evidence/420-029-claude-code-integration.log",
-        "development/evidence/421-029-claude-code-integration.log",
-        "development/evidence/422-029-claude-code-integration.log",
-        "development/evidence/425-029-claude-code-integration.log",
-        "development/evidence/427-029-claude-code-integration.log",
-        "development/evidence/428-029-claude-code-integration.log"
+      "test_run_ids": [
+        "receipt-24fb022cb1ca9e327f1a2e283b884686cc8014d6d1310915c701167bf55f9eca",
+        "receipt-58539d986b46e79923108901b21f6c88d3bbfcedae2519803d586f26ff325858"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
     },
@@ -28,18 +214,11 @@
       "id": "AC-40",
       "parent_id": "AC-40",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/029-claude-code-integration/report.md",
-        "development/tasks/029-claude-code-integration/spec-review.md",
-        "development/tasks/029-claude-code-integration/quality-review.md",
-        "development/evidence/419-029-claude-code-integration.log",
-        "development/evidence/420-029-claude-code-integration.log",
-        "development/evidence/421-029-claude-code-integration.log",
-        "development/evidence/422-029-claude-code-integration.log",
-        "development/evidence/425-029-claude-code-integration.log",
-        "development/evidence/427-029-claude-code-integration.log",
-        "development/evidence/428-029-claude-code-integration.log"
+      "test_run_ids": [
+        "receipt-24fb022cb1ca9e327f1a2e283b884686cc8014d6d1310915c701167bf55f9eca",
+        "receipt-58539d986b46e79923108901b21f6c88d3bbfcedae2519803d586f26ff325858"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
     }

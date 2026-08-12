@@ -1,30 +1,199 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "019-development-repair-bridge",
-  "recorded_at": "2026-08-01T07:16:56.115Z",
+  "generated_at": "2026-08-11T23:37:55.662Z",
+  "recorded_at": "2026-08-11T23:11:40.932Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/repair/**",
+      "tests/run-verification-v2-repair-bridge.sh",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/repair-loop/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/authority-log.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9dc39631fa348e0ddd5a24ca2da5b18ec731d90"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/case-rerun-planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c86504a0304733db543064c7531fa740bc7634f0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/development-repair-bridge.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f88e45c593a1f9423011ecfd792b327a4a5e0043"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-classifier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e58e1612565997855557a2e14f49e838446ddd3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-state-reducer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b350f4a1459c9e6befabeef534d4347b034661fd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "016d6897b4a2cd505ed370e7db0a418f684ee965"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b7a162fce1ebb31babfaf8431761de3e5122d5bb"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/transition-applier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ba90ac85322a37ce3daba63a18dc01a67020cdc9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/trusted-fact-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e5310d1f9fc59b43275135cad3540563db9b0ef8"
+      },
+      {
+        "path": "tests/run-verification-v2-repair-bridge.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6558a11e6d0622f96bb90b335b4e31f77bd403fc"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/authority-transition.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "45cb6a756e15b7200442b173b64faa05344c0b58"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/classifier.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ced45a30a66e46f6a65ad6fa9bfda3301221e1e"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/cli.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bfdf3146306290dd502eeb8c620757b84961c11a"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/development-bridge.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "81ab2a9247ef5bc885bd60cdad58fa58c57871f6"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/failure-state-reducer.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c3db0d8f2e042ea847cec051579824db4d5c071"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/security-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4582703f16072c22c0340221c884cbbae823faa6"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/state-machine.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "99c04e6f255ed2d3a60f12c995ae730aa61a7f83"
+      }
+    ],
+    "sha256": "cfc6614765a014da9113b368c8a6947f8360d432134f54f7c2f51b6a36dd7104"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/019-development-repair-bridge/context.json",
+      "sha256": "526845821dc0dfec1cc16744ef0420c607f24f01e9cccb97423f4cf8509186ab"
+    },
+    "report": {
+      "path": "development/tasks/019-development-repair-bridge/report.md",
+      "sha256": "cd81c79188aafa788b9bb6b95bd7e4f5f7947ed73bc409f063a06abb923267ab",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/019-development-repair-bridge/spec-review.md",
+      "sha256": "99bd776ce03442e8e147012e69061e0448892a0d809cc02c0f07257fe5d55ab9",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/019-development-repair-bridge/quality-review.md",
+      "sha256": "14f4899f95d8a2e97406452741b56e072c20e89223899cb5f18f15b58bd8efe7",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-0aaff4205dbabaf45f9824d9f51a3294517693013d0e923bd5fc34ca736c9d99",
+      "command": "node --test tests/verification-v2/repair-loop/development-bridge.test.js",
+      "assertion_ids": [
+        "AC-25"
+      ],
+      "recorded_at": "2026-08-11T23:11:40.932Z",
+      "validation_receipt_sha256": "4b53cc586f926cecf3f399e0180109fcad68a1829caaa953bc4b6d7d6227ee3b",
+      "evidence_log": {
+        "path": "development/evidence/583-019-development-repair-bridge.log",
+        "sha256": "3be26fe9e4950f825a635655afdfb25ecc476eb870f51f59a5173b2368036636",
+        "size": 2536
+      }
+    },
+    {
+      "id": "receipt-f1c9b00581d4335e1667e172734a425ab3c90b60a58f2387a04784732815d546",
+      "command": "bash tests/run-verification-v2-repair-bridge.sh",
+      "assertion_ids": [
+        "AC-25"
+      ],
+      "recorded_at": "2026-08-11T23:11:39.536Z",
+      "validation_receipt_sha256": "28e00c648282ee44b2a178338cfc5cb5e6982a9829f6482082ea21dd0b835fe9",
+      "evidence_log": {
+        "path": "development/evidence/582-019-development-repair-bridge.log",
+        "sha256": "f8c49dc01277cc15be10a0ac34fe1232db8d0eb64046c43eb12fefd196282293",
+        "size": 3337
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-25",
       "parent_id": "AC-25",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/019-development-repair-bridge/report.md",
-        "development/tasks/019-development-repair-bridge/spec-review.md",
-        "development/tasks/019-development-repair-bridge/quality-review.md",
-        "development/evidence/281-019-development-repair-bridge.log",
-        "development/evidence/282-019-development-repair-bridge.log",
-        "development/evidence/285-019-development-repair-bridge.log",
-        "development/evidence/286-019-development-repair-bridge.log",
-        "development/evidence/287-019-development-repair-bridge.log",
-        "development/evidence/289-019-development-repair-bridge.log",
-        "development/evidence/290-019-development-repair-bridge.log",
-        "development/evidence/291-019-development-repair-bridge.log",
-        "development/evidence/292-019-development-repair-bridge.log",
-        "development/evidence/293-019-development-repair-bridge.log",
-        "development/evidence/294-019-development-repair-bridge.log"
+      "test_run_ids": [
+        "receipt-0aaff4205dbabaf45f9824d9f51a3294517693013d0e923bd5fc34ca736c9d99",
+        "receipt-f1c9b00581d4335e1667e172734a425ab3c90b60a58f2387a04784732815d546"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "A failed case creates a frozen failure packet and routes product or test repair to a standard development task packet."
     }

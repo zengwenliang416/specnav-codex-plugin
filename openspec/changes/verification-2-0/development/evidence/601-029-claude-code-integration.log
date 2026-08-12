@@ -1,0 +1,104 @@
+# command: bash tests/run-verification-v2-claude-adapter.sh
+# exit_status: 0
+# duration_ms: 4125
+
+## stdout
+TAP version 13
+# Subtest: Claude Code describes the same full Verification 2.0 Kernel contract
+ok 1 - Claude Code describes the same full Verification 2.0 Kernel contract
+  ---
+  duration_ms: 0.983458
+  type: 'test'
+  ...
+# Subtest: Claude Code preserves exact blockers and report artifact paths
+ok 2 - Claude Code preserves exact blockers and report artifact paths
+  ---
+  duration_ms: 0.479834
+  type: 'test'
+  ...
+# Subtest: Claude Code blocks partial verification, fallback, and manual green
+ok 3 - Claude Code blocks partial verification, fallback, and manual green
+  ---
+  duration_ms: 0.189208
+  type: 'test'
+  ...
+# Subtest: Claude Code requires explicit approval for runtime and migration writes
+ok 4 - Claude Code requires explicit approval for runtime and migration writes
+  ---
+  duration_ms: 0.206
+  type: 'test'
+  ...
+# Subtest: Claude Code exposes forbidden or undisclosed downstream fallback
+ok 5 - Claude Code exposes forbidden or undisclosed downstream fallback
+  ---
+  duration_ms: 0.220708
+  type: 'test'
+  ...
+# Subtest: Claude Code repository consumes the synchronized canonical Kernel
+ok 6 - Claude Code repository consumes the synchronized canonical Kernel
+  ---
+  duration_ms: 114.956083
+  type: 'test'
+  ...
+# Subtest: Claude synchronized entry surfaces use Verification 2.0 and Claude resolver semantics
+ok 7 - Claude synchronized entry surfaces use Verification 2.0 and Claude resolver semantics
+  ---
+  duration_ms: 0.573041
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects the wrong repository before writes
+ok 8 - Claude synchronizer rejects the wrong repository before writes
+  ---
+  duration_ms: 76.029125
+  type: 'test'
+  ...
+# Subtest: Claude synchronization preserves unrelated dirty files
+ok 9 - Claude synchronization preserves unrelated dirty files
+  ---
+  duration_ms: 631.5435
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer refuses owned-path conflicts and dirty overrides
+ok 10 - Claude synchronizer refuses owned-path conflicts and dirty overrides
+  ---
+  duration_ms: 126.964792
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer rejects ancestor symlink escapes
+ok 11 - Claude synchronizer rejects ancestor symlink escapes
+  ---
+  duration_ms: 73.889417
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer leaves no partial writes when staging fails
+ok 12 - Claude synchronizer leaves no partial writes when staging fails
+  ---
+  duration_ms: 656.896166
+  type: 'test'
+  ...
+# Subtest: Claude synchronizer commits one validated tree with host provenance
+ok 13 - Claude synchronizer commits one validated tree with host provenance
+  ---
+  duration_ms: 612.135375
+  type: 'test'
+  ...
+# Subtest: Claude host code remains invocation-only
+ok 14 - Claude host code remains invocation-only
+  ---
+  duration_ms: 0.301292
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2370.944792
+verification v2 claude adapter ok
+
+
+## stderr
+(empty)

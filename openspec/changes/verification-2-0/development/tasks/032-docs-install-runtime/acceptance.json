@@ -1,21 +1,605 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "032-docs-install-runtime",
-  "recorded_at": "2026-08-02T17:47:13.652Z",
+  "generated_at": "2026-08-11T23:37:56.396Z",
+  "recorded_at": "2026-08-11T23:23:20.506Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "README.md",
+      "README.zh-CN.md",
+      "docs/**",
+      "plugins/specnav-verification/skills/**",
+      "tests/run-readme-contract.sh",
+      "tests/run-verification-v2-docs.sh",
+      "tests/verification-v2/docs/**"
+    ],
+    "entries": [
+      {
+        "path": "docs/assets/readme/en/specnav-overview-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2110ba413ce2ed2f2a6edb2546b00f139099342b"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-1-bootstrap-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a129d5922dd4bb83784679cf7fe51da8a283fce7"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-2-discovery-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ddb7918f39cadc266d66a582cd78b5dd654f86be"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-3-requirements-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b472a28e99306f0e8c1e0613011064e041919039"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-4-prototype-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e4037be079e3de5d2c9c4835a0a135d337a62f3b"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-5-development-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "63e6f297e0a5d45be6d0553f9973367fb70c63de"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-6-verification-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "64c03df56cad8280a5094034d717cf04d4e48847"
+      },
+      {
+        "path": "docs/assets/readme/en/stage-7-operations-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d057434c66aeca6e0c50b9da1c0db07f6b611926"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/specnav-overview-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a11d7981f8b6e62f3b0fb7153b8c48a24afab015"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-1-bootstrap-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9a9a30aa8916b6fc9b94246de2e8fdf720fc2502"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-2-discovery-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa27817f505b5e10c611d202b6f8b557bfe545ee"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-3-requirements-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "39b0193fe63d1b206193063a6c886aa6b00df89e"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-4-prototype-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a4df21f441b568fc3e66ea2f6c4beb5529f3ace5"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-5-development-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d565d1a64c425d484389f463eddb6f53fec4458f"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-6-verification-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ac2b38ca24268170be97e4a46c372865fc128a1e"
+      },
+      {
+        "path": "docs/assets/readme/zh-CN/stage-7-operations-bd-2k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "478980efcde3aaeb2a6f537b5e87a5a7a16d8912"
+      },
+      {
+        "path": "docs/assets/specnav-logo-4k.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6f8ed817bd98e4eb59e69f6a43c069ee978a4d8a"
+      },
+      {
+        "path": "docs/assets/specnav-logo-readme.png",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "da525662e382bb82145187c940445b35c267c4ef"
+      },
+      {
+        "path": "docs/design.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "296626a54e2275a94a7b3fe7edccffbaeda6d3bb"
+      },
+      {
+        "path": "docs/host-integration-claude-code.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a639cb26ebfbdf433b85f2db2628b04861092eed"
+      },
+      {
+        "path": "docs/host-integration-codefree-o.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c7c3c4ef182510264fd9c25efefaaa886f38c746"
+      },
+      {
+        "path": "docs/memory/specnav-visual-style.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5d957867bae040d5462a64af9eaef02d01372472"
+      },
+      {
+        "path": "docs/release-verification-v2.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "180297d750577ea660f5308de70c50aed9f2d5a6"
+      },
+      {
+        "path": "docs/specnav-codegraph-design.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ab327220d90a6369cad85b5359b3f3af8e1e31e"
+      },
+      {
+        "path": "docs/verification-2-0.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa69768744b6c034795f97a44fb7bd05e86e44a0"
+      },
+      {
+        "path": "docs/verification-2-0.zh-CN.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a1f775cfb59930a7db598ebddd68832b8df8cff3"
+      },
+      {
+        "path": "docs/verification-kernel-packaging.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b155915c8c890ef62e761db87c39d47153412ce3"
+      },
+      {
+        "path": "docs/verification-v2-gap-analysis.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1b48f6e39ae91889fcccdf34890290590fbebb05"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-html-report/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc8e8cc81fbfa8551a0d7b6a30fdadc85a5e9f5c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf08c886ab7b392312acacbbd210d0a68e5e8b74"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1dec761bb49021eb4334958d21a92443bdfe1994"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7047de0f4e55da81fb30ffc7bc6a907a116e98a1"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e614e8fb454e3a9922d9cd4d0ff91dbbdaf52ec"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c4112d788eefe9bc06f6572febd517c44bbcdb33"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/references/e2e-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7c4bd6a963a4d12dd9907252f50741ec8b814843"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e8dd9b3cd3e4fe5556a768f4b81334374b07c474"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ef334b0b350596697fa2886137c9c32d30e1aaf"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "530c62516b57b7121f7cf466447ba9bc3c6905e4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/references/facticity-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e6ea6d64130b9a4eea58b63090499a765c95e8ff"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fb4e00ed44ff249ffe46bbca7008646f98731206"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f37ce44aa90e5b1605e9605c104f38840440045b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5d6ed6df5a64a720baf538f11242a57de170e4d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/scenarios.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "be46313aa558e5c758e8509a9afe0ef7245da096"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/transcripts/verify-runs-six-domains.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd9d97d6c421ba215d261d33dc6a40088be643ea"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/blocker-classification.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/domain-case-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5403363a010edbc22cb1ead97ab1478c340a33c4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/evidence-index.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e0cdaa8be9e1b06635647d2a587d2d57d4e27ba4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02122e93ca16f524f6ff85cbfcfadce3e01e9879"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "11f95a9e35f5bc7dbc4e123e8fc6e941eb32216b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e48fd96e73795cefc77f55febf99031c6331d25c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "247865a09ba42f52261813196071c7670c70b5d3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/root-cause-checks.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "911f8d1c65ae9030a32ff359106ccc711683578e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/runtime-evidence.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b90385aa09a1bcc80a88c76c3a423f41ae7b8736"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/traceability-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1f003056da2bdc5fa36c8e2f48b97a42ff95ccee"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-case-signoff.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ec082ed4a0c88d3eb1daf08e509fccdf1a1c8c11"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d0a1f7cbf116066bef9f9ff7c0d25fb5d606b3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0492c5a20968d765791b5bd9c5276e789ad10824"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/domain-report-schema.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "886023012b2ec0475ea47c66095e7a46f207a36e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/review-report-style.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "358c51979a4b880f290643a0a3803a2f8e8a5714"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/verification-model.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8ef2d625daa110327efe5c80f7b5f53c0b7b6b7a"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/case-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80e12ca694b784fd946fbc8230c6c9a7cf260ca9"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/create-verify-plan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "22c2d9c12021ccb21210d75a7d01ec4b066a5a7d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd83afce762565bbbb95acec94f85c74694c6beb"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ad15f80a6371e1755e62a848986c90ae34fa26d5"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "19ffa4e86817abd080056650ed2ea2ef7414a7a7"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/references/redteam-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1538719f4dc9b97a796da34a09ef44a2f09089c6"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82a5493ad42779ce4170db31955cedaae5e4edfc"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-rerun/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b4bf262028a71987d8444b322fd7dc59a0ee316"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7d80ee7d54e5a024a898a0ebf7c1b7cc7f32ed8d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "328ffdbbd11217df6e946ddbfd5eaf4341154c61"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/references/sensory-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "908cf0dcc3877a8d232dc2633a6584eefbec2d82"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1415a7c28822a8d839171341cdf5e06a24a919f2"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bfd767bc46b29b230b0b33d752ca5f95b438ef36"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ebfc4413ad1b0226fc60cb61aa8620333af6a25"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/references/static-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b3a64d95999bd3263179a34d86fad6ef7213c5f"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83dbaeb97ca3ab369ceecdbebd900103f2c44b9d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "da2bc92161c919ba1374466ea76f3299f29691fa"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ecceef6d9d4cf189b709959a71aab3293071b67"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/references/unit-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6edf9ba79c415a5fec3111aa6270cc1f47f0076c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "784ba39bc35615269a2706ccfacc0f62d40ec0e0"
+      },
+      {
+        "path": "README.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0539fb1ce4980e4b89301b574cfc36bebf39f03d"
+      },
+      {
+        "path": "README.zh-CN.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "08268f2f106269e971f7776bc390100c2a7abd75"
+      },
+      {
+        "path": "tests/run-readme-contract.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a0675e157f51d263c783c7b7d6c27a522b21336c"
+      },
+      {
+        "path": "tests/run-verification-v2-docs.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "728e833dfec2a530edca14854d8f7d558fdb7a1f"
+      },
+      {
+        "path": "tests/verification-v2/docs/documentation.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "999254b3b6d64b163dd328a651c47132b4b58996"
+      }
+    ],
+    "sha256": "55c5505819467c1173c23ae834dc6f4c63bad877135afe53e17f92db23a92b21"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/032-docs-install-runtime/context.json",
+      "sha256": "39af20f0d3c47c58b093b8b7d821759f1447947bef34371ce948d559e8c685e9"
+    },
+    "report": {
+      "path": "development/tasks/032-docs-install-runtime/report.md",
+      "sha256": "efe57c70f23835a096316c73d60986142edefec516b8ddfc2cc52f7036e13957",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/032-docs-install-runtime/spec-review.md",
+      "sha256": "bfc6e437b107ed7a7c6b603d91dd3c3fd94007b4c6e8a3151bf345a942f4c44d",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/032-docs-install-runtime/quality-review.md",
+      "sha256": "82c3071fcf11482e26d8a2096de1f69155c6e9cdc24d43bf8b13ab1b5ae09d9e",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+      "command": "bash tests/run-verification-v2-docs.sh",
+      "assertion_ids": [
+        "AC-04",
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "recorded_at": "2026-08-11T23:23:20.506Z",
+      "validation_receipt_sha256": "efc445602766cf53950b9d03f884b99039fc524b55121ad73821126712bcf03b",
+      "evidence_log": {
+        "path": "development/evidence/608-032-docs-install-runtime.log",
+        "sha256": "a70c9df93a1d936cea590f52fc9548813c5d8a5b72cfeac747dbae37f077dd90",
+        "size": 1212
+      }
+    },
+    {
+      "id": "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21",
+      "command": "bash tests/run-readme-contract.sh",
+      "assertion_ids": [
+        "AC-04",
+        "AC-05",
+        "AC-08",
+        "AC-09",
+        "AC-10"
+      ],
+      "recorded_at": "2026-08-11T23:23:01.921Z",
+      "validation_receipt_sha256": "0416b0edb3635e14c65d36d465843ed22905b29c37ef4efd17cb1042a0058cfb",
+      "evidence_log": {
+        "path": "development/evidence/607-032-docs-install-runtime.log",
+        "sha256": "d8689b37de4457446f104e217f40b6e8790963be6042e4e2712cf1784ed6ec0e",
+        "size": 425
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-04",
       "parent_id": "AC-04",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/032-docs-install-runtime/report.md",
-        "development/tasks/032-docs-install-runtime/spec-review.md",
-        "development/tasks/032-docs-install-runtime/quality-review.md",
-        "development/evidence/462-032-docs-install-runtime.log",
-        "development/evidence/463-032-docs-install-runtime.log"
+      "test_run_ids": [
+        "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+        "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."
     },
@@ -23,13 +607,11 @@
       "id": "AC-05",
       "parent_id": "AC-05",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/032-docs-install-runtime/report.md",
-        "development/tasks/032-docs-install-runtime/spec-review.md",
-        "development/tasks/032-docs-install-runtime/quality-review.md",
-        "development/evidence/462-032-docs-install-runtime.log",
-        "development/evidence/463-032-docs-install-runtime.log"
+      "test_run_ids": [
+        "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+        "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
     },
@@ -37,13 +619,11 @@
       "id": "AC-08",
       "parent_id": "AC-08",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/032-docs-install-runtime/report.md",
-        "development/tasks/032-docs-install-runtime/spec-review.md",
-        "development/tasks/032-docs-install-runtime/quality-review.md",
-        "development/evidence/462-032-docs-install-runtime.log",
-        "development/evidence/463-032-docs-install-runtime.log"
+      "test_run_ids": [
+        "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+        "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "overview.html shows lifecycle readiness, six-domain status, blocker counts, freshness, integrity, repair-loop state, and release verdict."
     },
@@ -51,13 +631,11 @@
       "id": "AC-09",
       "parent_id": "AC-09",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/032-docs-install-runtime/report.md",
-        "development/tasks/032-docs-install-runtime/spec-review.md",
-        "development/tasks/032-docs-install-runtime/quality-review.md",
-        "development/evidence/462-032-docs-install-runtime.log",
-        "development/evidence/463-032-docs-install-runtime.log"
+      "test_run_ids": [
+        "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+        "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "test-case-catalog.html shows the approved case contract and domain coverage."
     },
@@ -65,13 +643,11 @@
       "id": "AC-10",
       "parent_id": "AC-10",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/032-docs-install-runtime/report.md",
-        "development/tasks/032-docs-install-runtime/spec-review.md",
-        "development/tasks/032-docs-install-runtime/quality-review.md",
-        "development/evidence/462-032-docs-install-runtime.log",
-        "development/evidence/463-032-docs-install-runtime.log"
+      "test_run_ids": [
+        "receipt-52792a39c7609028fcc02e318512932f68d301456f47d25754531c6681ae79a0",
+        "receipt-d5daf8d728bc885dbd07613b041c88c60917461baf959943194249839b673a21"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "test-case-results.html shows runs, attempts, readings, commands, evidence, hashes, freshness, and repair history."
     }

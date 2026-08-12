@@ -1,25 +1,280 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "014-evidence-redaction",
-  "recorded_at": "2026-07-31T20:40:27.177Z",
+  "generated_at": "2026-08-11T23:37:55.396Z",
+  "recorded_at": "2026-08-11T23:10:58.341Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/evidence/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/reporting/**",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/security/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/blockers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bee6e408d3f4f207167a1ba9ef57a03123fbfd6b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/case-freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66cdde546067694c9b91f504fa5ef9c0c02b2abf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/content-addressed-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d35ce720366bfa3003a26e5271c4d00d5e768c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f79b5914fee47fcaa0c9ba57dd80206ea3cf4e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/fingerprint-comparator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e85b18cc8a71bec43bad265f57fea785167fbf76"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6fb340c5eeb016743a66353702e4cf8741901e42"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/identity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "783dc04ca92817f58fff1ac12118372547856d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c2353b698e91ef0ca9e96b2c65fd9782df2db407"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "347131d433ddc1aab8dc1bc393f331ee1de1ce74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/integrity-checker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a520e21e3de723f5b865fc9d32b03fcaa824aed7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/object-reader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c38aee9f45c1c14c3e08ccbf6de5a0e6b56d38bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/paths.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e41d77111ff45995ae55bb8447d9f6b328370b1f"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/raw-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0f945b03093738a70e168bd94406cbdddb8ebbd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/redaction-constants.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf94cd326701935c84200008405d11a6f98cba6a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/repository-fingerprint.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c774bb9375e43db7b71f27e8d52184d8acc03169"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/secret-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c95cfb6c40dd8e575dd6cb7d40ce298decd3299"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/structured-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "eb96750d4afa9712737d1a54d935d8d11808bada"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/text-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44ac044d30e3595ba73e5196ea46d44dde6c9ec6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/case-page-renderers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2507074ca44add08cc0b15f88c9afb7ccd28823e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/evidence-link-resolver.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e943b1b21114c5d18228ad9db90a7662345c724a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0ee1ffff347d6545bf7699ce5fffc840ff4f6808"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/overview-renderer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c46d3b2e46043cff10ee78648d3a83df8e8d7fd1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f97d13fde3aba2043dff86c7caedc2927e8a9c55"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-authorities.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b372fdb097419635b3037ad04677972d35c9c702"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-components.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d4b5b4e991d3b96b300b33d2751048e876193529"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-model-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91004d6bf8f2adef4bb5035a7b996a0759d70807"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-script-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f649e8489a0bcfe12e044e8643f227313cef4d3c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-security.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d105145b536f3be1dd30bf96e7decf14f8619221"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-selectors.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7a8fb3115a4dc2d5ef3273376de5f6801f7bd243"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-shell.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d3234fe3d618ae5ee99ca65fb1644882a2318555"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/safe-html-text.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fbfb429be8d05ac1b50136214d56941681a59708"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/security/redaction.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f698581834ce2b322b6fbba2199096acc46a0f6"
+      },
+      {
+        "path": "tests/verification-v2/security/report-security.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "651b23ee709e550f37aa5ad900f0054d229ce963"
+      }
+    ],
+    "sha256": "8e2f57ceb44417d2da64ac42e9beb9a5809a9e1c9a6c846f8f7d53726047954e"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/014-evidence-redaction/context.json",
+      "sha256": "78f66173f2635fcffc675bb7a8c343c1e7e538868635b853c1e69b5e664b6d1b"
+    },
+    "report": {
+      "path": "development/tasks/014-evidence-redaction/report.md",
+      "sha256": "efe270431047cfb6d2d21ab0b95669255fda30f35dd6e7399844cfd4d01eb7fd",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/014-evidence-redaction/spec-review.md",
+      "sha256": "6a98bcdf1d292a9ce8902ee6857271c74ee87b23fb841177764b928d342b7c78",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/014-evidence-redaction/quality-review.md",
+      "sha256": "f4f58e7c36a573c416a9e2d920acef4cce597c30df61959b4d4f563de2c0a515",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-25450c432a1b5ba6c5030e9c32150a1195d5ac6b2b811e1c45ab66ebbe88bb08",
+      "command": "node --test tests/verification-v2/security/redaction.test.js",
+      "assertion_ids": [
+        "AC-30"
+      ],
+      "recorded_at": "2026-08-11T23:10:58.341Z",
+      "validation_receipt_sha256": "8cd85c1879fd08dd0d84e7226a7215edaf85520ee4b32468b12d1b3ad5e8c271",
+      "evidence_log": {
+        "path": "development/evidence/574-014-evidence-redaction.log",
+        "sha256": "01382da0e61485569825fa78fa536494018e57fac7d7978e7527cff7308623d0",
+        "size": 4668
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-30",
       "parent_id": "AC-30",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/014-evidence-redaction/report.md",
-        "development/tasks/014-evidence-redaction/spec-review.md",
-        "development/tasks/014-evidence-redaction/quality-review.md",
-        "development/evidence/174-014-evidence-redaction.log",
-        "development/evidence/175-014-evidence-redaction.log",
-        "development/evidence/176-014-evidence-redaction.log",
-        "development/evidence/177-014-evidence-redaction.log",
-        "development/evidence/178-014-evidence-redaction.log",
-        "development/evidence/179-014-evidence-redaction.log"
+      "test_run_ids": [
+        "receipt-25450c432a1b5ba6c5030e9c32150a1195d5ac6b2b811e1c45ab66ebbe88bb08"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "HTML rendering escapes artifact content and never exposes provider secrets."
     }

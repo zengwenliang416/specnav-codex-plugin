@@ -1,28 +1,748 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "004-contract-cross-references",
-  "recorded_at": "2026-07-31T09:43:58.172Z",
+  "generated_at": "2026-08-11T23:37:54.915Z",
+  "recorded_at": "2026-08-11T23:08:11.776Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/contracts/**",
+      "tests/verification-v2/contracts/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/artifact-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f17df820d7680562f9f1660134fe711f234861c4"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/attempt-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bbb6b078baa6ec73078f595fdb6e803f43551057"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/case-internal-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fcb401a9015a17c2656a0213c7d677e95bd4f4ec"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/case-member-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "38019cf019575749bde3a159c2865cf421e0152b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/cross-reference-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90ccbad10c90e302171e7f7a52696e0f6ee9a2e6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/graph-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5cc49000539500cd5247808ec954632130248fd4"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/reading-evidence-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "81989ad9a0955271c5bc1f6bc593116f949e2a25"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/reference-utils.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "993fa8bb57a25bdedf605e8675d883f5aa2988cf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/retry-identity-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "97cb3cad2a40688da689a3938eaddcd4c21efc81"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/schema-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d7a69cbf19882219e575086cad432bc654c97aa9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/validate-fixtures.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "92a82214d20bf47efeb4203a2cb021ffa512938e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25424a737d1b244bc3283c4d02a6ebff08123a1d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/artifact-bindings.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6bd26d4c96a900e857f0bd683b7e6890ef4ba5c0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/baseline.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a7e6f9450df13fa60f395044c524385df267cd3c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/fail-closed.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "be2bf206c7cd448ce4c28a59388651cf6d819224"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e034705a35740f9ac095e92060dd805270158d10"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/reference-utils.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "542dec602449b12c881c11fa051f3b27a3e76e54"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/retry.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5afb1783ade9e5214778563c87e4e5483018a066"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/schema-and-immutability.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5f80e946d1469abc04fc3043339638e13bd91eb1"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7047dee9e3fc9100bc6a2f8a8300cd6d68fccc0d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6d3d3ca1d06e4f550cefdf4245f4ef4049860551"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-attempt-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a092ec6a74677aae72933f8a70f699bcd365deda"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-captured-at.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cb16b54db3465f62a2dec2d07eb9ce7fe07aad5f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-case-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5579a77dda0f23b23816c45bd9d2762158c1c97a"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-change-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "77b7751a66d2acfed0e5bcdffc8ee834d9a104c6"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-code-sha.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "de5d948c831e6f4926cd41b5a1347bc5738824db"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-environment-hash.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f2cbdcb92fea08c16956a3e491b33877b6f146aa"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "403c6c31592f168615cae748883ddd6554b5873c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-kernel-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a85d5103303686df203c157a64f7a856daca5821"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-kind.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ae8c3f19353e6544a667c95a93f21f10814288bd"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-path.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09505e23d1e5822cc9670e86c0358b8ab9e6c766"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-producer.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "20022a6849288e165d7b343fd8ad49d9a1420279"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-redaction.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "066c4bcd53180f40035375d99fb0da1a7a82b240"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-run-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a4b60ca3c85a708701c1192d04692c763db0567e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-runtime-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e4202d70d4f83458b1e930394e3700175b0868a0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6850448f24b452db363c8bbb23b1ef6a08676e9f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-sha256.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b6247672c91fcb28d4e890f971bb79e867b2ef8"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-size.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e942898787114cbc5c654bb9fdf8a37005c59623"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-step-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "31e2709322dc9c23dc8fba6dde74d405a3789f21"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-test-sha.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "510510a64da84ab1a37b8939ba277a55503f81ff"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5218210c8883627df3a0897a3ff80836c6173574"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-blockers.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dbd0cc680c2697ed818b50e3b8c5a3093cbf1a60"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-change-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bc978e47bb89085e823e6e569ddcfbc23d7de32"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-decided-at.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4c715fc064df730e91bc023d2ea7a2895d728e46"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-decision.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ecd6822e1645ac669d9e455511f917a8186362d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-evidence-index-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "829cf9ad9eb544116a099f856f29a54f8a1bffd3"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-freshness.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e505b16e0047af3e328fd40984af70deee43a9c2"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c0aeb8824c1a45e94197de8b7de2d91a4427a8e2"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-integrity-status.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9d02bd4e11d677301fdf297dc7b3753697c88181"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-kernel-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fab7c8fe4b36852e8af05a1eb3f6a492a0536805"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-policy-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1433f426836af4b17aa905087b6b5d184e1635c7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-runtime-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "200c8860a4ecb89483f4659769dc7c553139d125"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8ca37c27a7308a0499942f6f839c280724dd8727"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-source-case-ids.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2035b150d32fb1b5368ea61f21d2cb1a6046466e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-source-reading-ids.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7bc3fb7ccedc7f39cc4685012b3a7f12a8c286c7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-stage.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3f815a8844ff505d0dbbffb58dd5276317fd57be"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-warnings.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d2ce19d5920c5b5f2bb24b05691a9eb8f701ead4"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/manifest.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "807481248a9bb6a0b891d9b3b4848a6fe0eaacd1"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/attempt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "928683941fcffebec8eaf74b15a15cdc92898b27"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/authority-chain-anchor-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "163cd107bf8bfefe05654ce680a6d66b7c7379e5"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/case-approval-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "aecd75cfe0156312d492cdc26f8118ebefbd7d16"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "458baab8bba94af6a5a9617e67dff87ac45aadbf"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/cross-host-lock-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "51e5ceadb67d57820e1a87254a6ae211cb9e4ae9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/cross-host-release-result-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "84a5398b3585d4668e55e0d9b32b7f0abf822ffe"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/evidence-index-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02f7de69857f99eb7529c3fb37586039712c8827"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/failure-packet-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d49991e796c4bf197ded3631d782bf0ef29d93a6"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-execution-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "28d6b2c8c698e2500fff7e38f0ed76ad21024aaa"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-install-receipt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83912c590ec494a086f745e59cad4c10012eaa65"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-installation-index-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "84a5398b3585d4668e55e0d9b32b7f0abf822ffe"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-proof-pointer-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab8a74cf2ca4de400bdced0965e2bb7b44dcafae"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/migration-receipt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b0b48d6b105d567365085755f192c82bdf2dfb9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/reading-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6a63a58d3568be3fb3070f403d97b672b5965717"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/repair-link-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee0bf2df24fd525bddeae327ed3767fe4c0baa28"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/repair-review-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee60cf5e80598c6916b0e3db6024c03c08a9cbc0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/report-model-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f893027f5fc24a92177ce5502946614145f81d95"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/root-cause-review-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab51c6fa6e031b2be699a88855206f761d91df9d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/runtime-status-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "230eb0992c1a1be4cbdee2ffa605600101243945"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90bf094ae2751a95aa9b6dbfe0e04b2f41027e2f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/transition-application-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80d3328d53295953e4dc32845364ae5535586c09"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/transition-proposal-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8e27b404fd5415c4e2592c8ba4b248b445b6ccc9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/trusted-fact-envelope-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a3f6fe644c31b018a086f3b9e99720b5c4f1802b"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/verification-run-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b909b6d9283ddb3ab3023830e66e219f346dce98"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/attempt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "00f731c64ed7d102f931ced167261811b0f8414d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/authority-chain-anchor.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "14407bac7271396c42f0c949450d83fa1cfe987e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/case-approval.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5856f99def146a2091d0c015c69c13753e296c81"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa48b559cba1158b963adcb4b90366768e786d49"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/cross-host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d098ad9b199ff251dbcab3aa1d08a076bb76323d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/cross-host-release-result.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "383217f0b535394e2e9f6095503208a77102b725"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/evidence-index.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "98552f00765d5970e0f6dc5267700e82328f9177"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/failure-packet.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c892159f3b2b4ced9ee942d8163f328a0eda55db"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-execution.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3f5a64ed6c4ff29e13ca06df6206a651bf76e836"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-install-receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4c5ece4159bacc97ae0c030ec3d15fbb519ad966"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-installation-index.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e62fe10f757fb876b4be352f8ddb6009fa63b8b7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-proof-pointer.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a80425dfe614b716ff8476b8945fafbb3ed1f050"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/migration-receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8bce8482e01d52afc1ff9ceb0209c00120f90cf0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/reading.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3ee3bfbcd93318bea5f4b90d6ffbbc64bbfe0d18"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "76a564c95a8281198b773c0230569bde857cea9c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-lineage-recovery-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ea0d0eeb4ff241bac35be5d9609292dacd44f397"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-lineage-recovery.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ddea66945245c78cc517b624b32b8acc62a25e63"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-link.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "26a4ae45bb9809d7208cd1e948261ffce0b66e9d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6b53b3c8691a20f4ce7ae75efadfd6431bd8d76c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/report-model.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c216542af6fc15e2729f6c6899e3f9e8b4eb4b8f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/root-cause-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "511064a8e15b05d9118b49369217e0fd81075464"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/runtime-status.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3afa7bebd6c221ef7861ecc2c15ff71ae5d71251"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "19bd84d87687671c9cda1e8765c389c3226d5377"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/transition-application.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0c8bcae310e4fedb9a11c65a7287862088e09c67"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/transition-proposal.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0bd6bf651571b9d435a50924d7542e8758958167"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/trusted-fact-envelope.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cacf5c1607e7ea512928ca81a8b51b7bb91b0f1e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/verification-run.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "866059455d6ec50abd2521cf4ab85c38144ef2c8"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/special/attempt-unresolved-references.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fadff9edff3153e9ba603ae03f7cbf7fbba0e911"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/special/host-cross-host-negative-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "774b10bade98072fa3ecb981cc02e61410cf5ca7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/package-content.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5c045ec8ec81e927f9a20246092175afeec6d19b"
+      },
+      {
+        "path": "tests/verification-v2/contracts/schema-registry.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4bb9e472efa45b6434a4c43ab57ec188b8e5b02f"
+      }
+    ],
+    "sha256": "2242ecdfe0e19fc3cba2b885aecfa6ca66e3706f4a3a89b0d554523fb837bfa3"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/004-contract-cross-references/context.json",
+      "sha256": "2618bc08833c00342bc7606bdd626afdcfe9047a6bb3ccef6372f484cd24a1d7"
+    },
+    "report": {
+      "path": "development/tasks/004-contract-cross-references/report.md",
+      "sha256": "5d563a18fa8654d5fc4557dd1824b138297eb3b05077043334a34810573d3ba7",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/004-contract-cross-references/spec-review.md",
+      "sha256": "68b975fe22dc209beb69331886976709ca5d2ac5975cae10fd1c5f4d6cb241d7",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/004-contract-cross-references/quality-review.md",
+      "sha256": "4fdae2dfeba59afa5dc93c5e9c66e5013ff25501a88efac8577bbc3a5a20db6c",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-a3a4359f78e740635646f04b9a76b7147965df08c523c1552a7ac898465aac9a",
+      "command": "node --test tests/verification-v2/contracts/cross-reference.test.js",
+      "assertion_ids": [
+        "AC-14",
+        "AC-15",
+        "AC-17",
+        "AC-31"
+      ],
+      "recorded_at": "2026-08-11T23:08:11.776Z",
+      "validation_receipt_sha256": "f8f6f97b9dd5eace7876b413e144bffdf11b64f2c6334bc92ac1628772f8deb5",
+      "evidence_log": {
+        "path": "development/evidence/558-004-contract-cross-references.log",
+        "sha256": "592e719ae6285e6c5743b583f550b29e8552d548d688b113130451091b73c330",
+        "size": 17967
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-14",
       "parent_id": "AC-14",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/004-contract-cross-references/report.md",
-        "development/tasks/004-contract-cross-references/spec-review.md",
-        "development/tasks/004-contract-cross-references/quality-review.md",
-        "development/evidence/040-004-contract-cross-references.log",
-        "development/evidence/041-004-contract-cross-references.log",
-        "development/evidence/042-004-contract-cross-references.log",
-        "development/evidence/043-004-contract-cross-references.log",
-        "development/evidence/044-004-contract-cross-references.log",
-        "development/evidence/045-004-contract-cross-references.log",
-        "development/evidence/046-004-contract-cross-references.log",
-        "development/evidence/047-004-contract-cross-references.log",
-        "development/evidence/048-004-contract-cross-references.log"
+      "test_run_ids": [
+        "receipt-a3a4359f78e740635646f04b9a76b7147965df08c523c1552a7ac898465aac9a"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Every attempt is bound to change id, case id, run id, attempt id, code SHA, test SHA, scenario hash, environment hash, browser project, and test data snapshot."
     },
@@ -30,20 +750,10 @@
       "id": "AC-15",
       "parent_id": "AC-15",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/004-contract-cross-references/report.md",
-        "development/tasks/004-contract-cross-references/spec-review.md",
-        "development/tasks/004-contract-cross-references/quality-review.md",
-        "development/evidence/040-004-contract-cross-references.log",
-        "development/evidence/041-004-contract-cross-references.log",
-        "development/evidence/042-004-contract-cross-references.log",
-        "development/evidence/043-004-contract-cross-references.log",
-        "development/evidence/044-004-contract-cross-references.log",
-        "development/evidence/045-004-contract-cross-references.log",
-        "development/evidence/046-004-contract-cross-references.log",
-        "development/evidence/047-004-contract-cross-references.log",
-        "development/evidence/048-004-contract-cross-references.log"
+      "test_run_ids": [
+        "receipt-a3a4359f78e740635646f04b9a76b7147965df08c523c1552a7ac898465aac9a"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Retry is rejected when any retry identity fingerprint changes."
     },
@@ -51,20 +761,10 @@
       "id": "AC-17",
       "parent_id": "AC-17",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/004-contract-cross-references/report.md",
-        "development/tasks/004-contract-cross-references/spec-review.md",
-        "development/tasks/004-contract-cross-references/quality-review.md",
-        "development/evidence/040-004-contract-cross-references.log",
-        "development/evidence/041-004-contract-cross-references.log",
-        "development/evidence/042-004-contract-cross-references.log",
-        "development/evidence/043-004-contract-cross-references.log",
-        "development/evidence/044-004-contract-cross-references.log",
-        "development/evidence/045-004-contract-cross-references.log",
-        "development/evidence/046-004-contract-cross-references.log",
-        "development/evidence/047-004-contract-cross-references.log",
-        "development/evidence/048-004-contract-cross-references.log"
+      "test_run_ids": [
+        "receipt-a3a4359f78e740635646f04b9a76b7147965df08c523c1552a7ac898465aac9a"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Missing evidence files, hash mismatch, size mismatch, stale SHA, unrecognized producer, or broken case/step references block green."
     },
@@ -72,20 +772,10 @@
       "id": "AC-31",
       "parent_id": "AC-31",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/004-contract-cross-references/report.md",
-        "development/tasks/004-contract-cross-references/spec-review.md",
-        "development/tasks/004-contract-cross-references/quality-review.md",
-        "development/evidence/040-004-contract-cross-references.log",
-        "development/evidence/041-004-contract-cross-references.log",
-        "development/evidence/042-004-contract-cross-references.log",
-        "development/evidence/043-004-contract-cross-references.log",
-        "development/evidence/044-004-contract-cross-references.log",
-        "development/evidence/045-004-contract-cross-references.log",
-        "development/evidence/046-004-contract-cross-references.log",
-        "development/evidence/047-004-contract-cross-references.log",
-        "development/evidence/048-004-contract-cross-references.log"
+      "test_run_ids": [
+        "receipt-a3a4359f78e740635646f04b9a76b7147965df08c523c1552a7ac898465aac9a"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA."
     }

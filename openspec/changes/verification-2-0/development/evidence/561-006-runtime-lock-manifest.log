@@ -1,0 +1,49 @@
+# command: node --test tests/verification-v2/runtime/lock-manifest.test.js
+# exit_status: 0
+# duration_ms: 87
+
+## stdout
+TAP version 13
+# Subtest: runtime lock pins every required package and browser artifact
+ok 1 - runtime lock pins every required package and browser artifact
+  ---
+  duration_ms: 1.417292
+  type: 'test'
+  ...
+# Subtest: resolver accepts only the exact lock and compatible environment
+ok 2 - resolver accepts only the exact lock and compatible environment
+  ---
+  duration_ms: 0.33825
+  type: 'test'
+  ...
+# Subtest: resolver rejects unknown runtime versions without fallback
+ok 3 - resolver rejects unknown runtime versions without fallback
+  ---
+  duration_ms: 0.137417
+  type: 'test'
+  ...
+# Subtest: resolver returns exact compatibility blockers
+ok 4 - resolver returns exact compatibility blockers
+  ---
+  duration_ms: 0.287542
+  type: 'test'
+  ...
+# Subtest: resolver blocks missing or mismatched kernel identity without defaults
+ok 5 - resolver blocks missing or mismatched kernel identity without defaults
+  ---
+  duration_ms: 0.411708
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 50.573667
+
+
+## stderr
+(empty)

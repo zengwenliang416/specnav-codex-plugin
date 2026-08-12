@@ -1,49 +1,259 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "010-playwright-runner",
-  "recorded_at": "2026-07-31T17:32:59.039Z",
+  "generated_at": "2026-08-11T23:37:55.217Z",
+  "recorded_at": "2026-08-11T23:10:26.516Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/assets/runtime/verification-runtime-lock.json",
+      "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+      "plugins/specnav-verification/kernel/execution/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/runtime/doctor.js",
+      "plugins/specnav-verification/kernel/runtime/installer.js",
+      "plugins/specnav-verification/schemas/test-case.schema.json",
+      "tests/run-verification-v2-playwright.sh",
+      "tests/verification-v2/browser/**",
+      "tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js",
+      "tests/verification-v2/runtime/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/assets/runtime/verification-runtime-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "583d169710dd7af4c361c601b894a1372bb8548c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9e55feb14cb48e22a2f66df3218dbfb754851c5"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/browser-access-policy.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02bc2185a39a90c2daa51de42273befd638ecf37"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/command-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82389f2f1cf707a88aee0cd91ba1cc35d88436bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/event-sequence.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "17071b69e44f5a2e0e937052e056bca9e5a2af8c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/host-proof-launcher.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25b326f8e74616eda4a405fd09dd91d0cbe58a74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f756d2ddd07eb8d34e6bd2afb127bc8e01aa645"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/lifecycle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e10a997d9582b9d3bc46ffd4a4f85f1c3f231bb1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-oracle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b92794dab039045d90b569b2a79bcb5da98ca866"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-prompt.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9638130ad6e04b596fea3224b0970c6b84c0383e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "89934c6b3ad09acf7f44c0ee31977b827fafa3e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09ee7cb0f70643696b2ff6bf7c786809e599b594"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-scenario.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bcdb6805340a65f13df2624edad778223c6dedc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fade8c254bb9129e2d1929087b7f3dcb37e6090a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/preflight.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3076a1b71257534773731e70ed245ebdb93904ca"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc08f543e2fb293fe44a782344ca7a389e062759"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/installer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5553627605283d862cc60d78136344c3deae33b0"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/test-case.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9392d0a93a3d8a4274b8e76fa668e6c8ad692571"
+      },
+      {
+        "path": "tests/run-verification-v2-playwright.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0e6b8c8ee2d0c4658d43cb0c23e3fbfa4d4dfd54"
+      },
+      {
+        "path": "tests/verification-v2/browser/browser-access-policy.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fff880b7fa09aaa9586682f61b7c1eadbbcfce92"
+      },
+      {
+        "path": "tests/verification-v2/browser/playwright-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5b769c1a3b882f4c761ae176224a13a164303b73"
+      },
+      {
+        "path": "tests/verification-v2/browser/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "92a4ae60d8034527d8cb9ca1323b1b4cbb33647a"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e034705a35740f9ac095e92060dd805270158d10"
+      },
+      {
+        "path": "tests/verification-v2/runtime/authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "42239b2bfb0323255765c1d32b321da7a677f2b1"
+      },
+      {
+        "path": "tests/verification-v2/runtime/doctor.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ac986f622ed9c4e6a2c59cecc39e4d6397e0d1a"
+      },
+      {
+        "path": "tests/verification-v2/runtime/installer.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cf692981aa14addf58867ffa767a063c07e6dc83"
+      },
+      {
+        "path": "tests/verification-v2/runtime/lock-manifest.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c72c59fa8481cfa85324d04856b802632fb57eda"
+      }
+    ],
+    "sha256": "33c27a75edcf14e908895a8c7b808e598abd90a48fde05b16d1e6eadf762d69b"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/010-playwright-runner/context.json",
+      "sha256": "f9a7857a4d05e6e6912fbe75ffe46d3d3b0b7835f6ceb3c8c6c2869e58aac0b1"
+    },
+    "report": {
+      "path": "development/tasks/010-playwright-runner/report.md",
+      "sha256": "f888b3657ab5917dd88817894510e7f35a5a6973c24c22aed14517943c558f92",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/010-playwright-runner/spec-review.md",
+      "sha256": "c87af88cde4d65df44271233db970da9181530be44e5d01308c925adae7be60a",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/010-playwright-runner/quality-review.md",
+      "sha256": "e28c3879b9181d3d34fba52dab5a19c961447cbe57e8558623d944b3c091acd7",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-1f52cb9fe4b67663e7e2f82487c1c69ac115bcaf84e7e9957dc7b77ff5688da8",
+      "command": "node --test tests/verification-v2/browser/playwright-adapter.test.js",
+      "assertion_ids": [
+        "AC-39:playwright-adapter-boundary"
+      ],
+      "recorded_at": "2026-08-11T23:10:26.516Z",
+      "validation_receipt_sha256": "cde020b9b9dce85747c27ce930ba3ba40cf8e432c72898de726dff4aa42dc906",
+      "evidence_log": {
+        "path": "development/evidence/568-010-playwright-runner.log",
+        "sha256": "67a1e82ffbced43ae58c9c02fe60264a962c068a6d731a61dce8f768a1645bc4",
+        "size": 4170
+      }
+    },
+    {
+      "id": "receipt-30a8032559be5c43405c6ac97dc2915a2e9043229546fe64f7e8ad76e31cdff5",
+      "command": "bash tests/run-verification-v2-playwright.sh",
+      "assertion_ids": [
+        "AC-39:playwright-adapter-boundary"
+      ],
+      "recorded_at": "2026-08-11T23:09:24.224Z",
+      "validation_receipt_sha256": "ef87a3e8d9326f634899758bf09eeebe7c02382e965b34078158d04c61195529",
+      "evidence_log": {
+        "path": "development/evidence/567-010-playwright-runner.log",
+        "sha256": "f78fbb614a64480ebf0e171a55f8ec47aaee2403afdffb473181c42fcaa98a06",
+        "size": 4140
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-39:playwright-adapter-boundary",
       "parent_id": "AC-39",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/010-playwright-runner/report.md",
-        "development/tasks/010-playwright-runner/spec-review.md",
-        "development/tasks/010-playwright-runner/quality-review.md",
-        "development/evidence/105-010-playwright-runner.log",
-        "development/evidence/106-010-playwright-runner.log",
-        "development/evidence/107-010-playwright-runner.log",
-        "development/evidence/108-010-playwright-runner.log",
-        "development/evidence/109-010-playwright-runner.log",
-        "development/evidence/110-010-playwright-runner.log",
-        "development/evidence/111-010-playwright-runner.log",
-        "development/evidence/112-010-playwright-runner.log",
-        "development/evidence/117-010-playwright-runner.log",
-        "development/evidence/118-010-playwright-runner.log",
-        "development/evidence/119-010-playwright-runner.log",
-        "development/evidence/120-010-playwright-runner.log",
-        "development/evidence/121-010-playwright-runner.log",
-        "development/evidence/122-010-playwright-runner.log",
-        "development/evidence/123-010-playwright-runner.log",
-        "development/evidence/124-010-playwright-runner.log",
-        "development/evidence/125-010-playwright-runner.log",
-        "development/evidence/126-010-playwright-runner.log",
-        "development/evidence/127-010-playwright-runner.log",
-        "development/evidence/128-010-playwright-runner.log",
-        "development/evidence/129-010-playwright-runner.log",
-        "development/evidence/130-010-playwright-runner.log",
-        "development/evidence/131-010-playwright-runner.log",
-        "development/evidence/132-010-playwright-runner.log",
-        "development/evidence/133-010-playwright-runner.log",
-        "development/evidence/134-010-playwright-runner.log",
-        "development/evidence/135-010-playwright-runner.log",
-        "development/evidence/136-010-playwright-runner.log",
-        "development/evidence/137-010-playwright-runner.log",
-        "development/evidence/138-010-playwright-runner.log"
+      "test_run_ids": [
+        "receipt-1f52cb9fe4b67663e7e2f82487c1c69ac115bcaf84e7e9957dc7b77ff5688da8",
+        "receipt-30a8032559be5c43405c6ac97dc2915a2e9043229546fe64f7e8ad76e31cdff5"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Direct task-slice evidence for tasks.md 4.2 and AC-39:playwright-adapter-boundary; no full AC closure"
     }

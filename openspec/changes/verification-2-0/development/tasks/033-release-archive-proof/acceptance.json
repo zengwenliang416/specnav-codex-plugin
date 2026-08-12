@@ -1,113 +1,702 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
+  "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "033-release-archive-proof",
-  "recorded_at": "2026-08-02T20:12:20Z",
+  "generated_at": "2026-08-11T23:37:56.456Z",
+  "recorded_at": "2026-08-11T23:35:26.932Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      ".github/workflows/ci.yml",
+      "docs/release-verification-v2.md",
+      "openspec/changes/verification-2-0/acceptance.json",
+      "plugins/specnav-operations/**",
+      "tests/run-light-compact-gate-fixtures.sh",
+      "tests/run-operations-archive-action-fixtures.sh",
+      "tests/run-operations-plugin-fixtures.sh",
+      "tests/run-smoke.sh",
+      "tests/run-verification-v2-cross-host.sh",
+      "tests/run-verification-v2-development-contract-maintenance.sh",
+      "tests/run-verification-v2-release.sh",
+      "tests/verification-v2/cross-host/host-lock.json",
+      "tests/verification-v2/release/**"
+    ],
+    "entries": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c14c5cc7d0c9a03ccbae59ed30f7a6823712a1e4"
+      },
+      {
+        "path": "docs/release-verification-v2.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "180297d750577ea660f5308de70c50aed9f2d5a6"
+      },
+      {
+        "path": "openspec/changes/verification-2-0/acceptance.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7f1011ecdb45ab1d4292e815a0e1b63f18b9dd6f"
+      },
+      {
+        "path": "plugins/specnav-operations/.codex-plugin/plugin.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "08a2e5b8838e1a57700bf695f3d4b5234c5f7b50"
+      },
+      {
+        "path": "plugins/specnav-operations/assets/icon.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9f69f81fb6eec32746d2c3dca052fe559c9fadd8"
+      },
+      {
+        "path": "plugins/specnav-operations/assets/logo.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f447874a62c1a5748a45197a9d858416650dbfb8"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/.gitkeep",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/archive-change.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ced48395e3b0fdf22d76521b876ba4bad0f25d6"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/archive-gate.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4b29412aa4d3d2cfcef69ab992f28db3d82e95f0"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/archive-transaction.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "56f8d946b52640c53f8827b2f8ebc7f38b031117"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/operations-gate.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0b64ac5b46688030f291f0fb6312529377def33"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/plugin-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6ab0c2716944483bd2de41c09274ca4eac8397c8"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/promotion-dry-run.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02c7cf255a7f521cba70f4bc5e4e5f5a8dc96505"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/safe-filesystem.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4e0bf90bdf605f05ce51704971b7977f8ef42981"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/safe-filesystem.py",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "15f4c75ab75e261b666be5e56dce4917b8e8aa2a"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/verification-v2-host-artifacts.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80e0238f986afe579ff08ae22e5bff8c73ecb42b"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/verification-v2-host-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0ede8579d9bd613ea8389c8093693d445ce8b0cc"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/verification-v2-pointer-chain.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "24edca0ee99779f569125080bc46376d69e85e78"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/verification-v2-proof.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a7d305a4354579a73332ec8ece294c80c66ba82c"
+      },
+      {
+        "path": "plugins/specnav-operations/scripts/verification-v2-trusted-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "840cdf0ae2302fe451765113cf1d0bf36c0fe89f"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-branch-finish/assets/branch-finish.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "45c21bab3dc792357ea7b840364c246ae6b93954"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-branch-finish/references/branch-finish.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ca91d2c33348c628f05eaae9ebb535934408adc"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-branch-finish/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6550018ebfc6dce349a9d8466a75e447f3edcd87"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-compatibility-matrix/assets/compatibility-matrix.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2c7b340b2c70229599c18ccd3ea207ef9cbe0e6b"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-compatibility-matrix/references/compatibility-matrix.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bb5b9928030206d9491958b80e34870a1a1c52b0"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-compatibility-matrix/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "948d4d5f35a9504cea794202c01d0dda6708f011"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-deploy/assets/deploy-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "93b85cf4e22351cbb8e0307290eac328e73b0818"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-deploy/assets/migration-deployment.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4553d06576673a1be9dc414a47114e540c39eb80"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-deploy/references/deploy-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "94805b95dff9f7cf8ede082063464db1da6390b1"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-deploy/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0a468d7dbfe0ff2464cc8a8f67781237afe113e1"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-install-verify/assets/install-verification.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "017d375850155d4b908386aa503d731d91c74b2b"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-install-verify/references/install-verification.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dfe6eff507a3be156c016233d289b38fa422ccbe"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-install-verify/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cf7d99d73e1b2b5108da7a8c844dc6c97823d512"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-monitor/assets/monitor-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4615f18c8f663def4623b2ac19db4057fc16ecc4"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-monitor/references/monitor-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "016b59ca7ee1a043a4d5d00c63cfa198be29d790"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-monitor/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "57d2a172da51ac9a54c460486906d4088e577a9e"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-ops-readiness/assets/readiness.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "29f2252cf0f0a268082875e4b5fcb515415418b9"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-ops-readiness/assets/readiness.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b5a0b7af778343993ebef4415c4d7e05818b1d17"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-ops-readiness/references/operations-readiness.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1733a14ed6d63e906d015217b412a24421db3303"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-ops-readiness/scripts/create-readiness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5a119f82a69b6e5774feb651c83df6e4433a558"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-ops-readiness/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "779f272e80c208fbfe849c8ba7fad4afe729fba2"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-postmortem/assets/postmortem.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "76580bece453aceb5b779d415687a447fe8d76f2"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-postmortem/references/postmortem.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0489228e71fb3bf6f45dcf3edbadaeb36581741c"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-postmortem/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b568fc15366ab239aff479455513148fca312c2"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-promote-check/assets/promoted-check.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fb288905acd021085c03ca8e5c318c0835e1a8f7"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-promote-check/references/promote-check.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "420010f563d44efcd63998adfb35927bd0eb1772"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-promote-check/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4e05c2be2cd0616f6591f0fd5062844486cdc56e"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/assets/changelog.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3955cf795686e3d010d87f8903d50bf412b2fb5b"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/assets/release-checklist.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0fabb4c016b05f5a00d0f9545d5e3b3b000a36c6"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/assets/release-notes.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "28850b44b45bb3a20f1d96c92735a000bc0975af"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/assets/release-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a30bc2a6c19a567a375d46e1e39e33cbccb34639"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/references/release-targets.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "107bd00de681d2dee8299c816dd8131887141d29"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/scripts/create-release-plan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ca344a61a3ffd87eb172ba20de2f588378c1244f"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-release-plan/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d2d0c9649f57f23f0ae27e8fc5ba605389bc83ea"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-rollback/assets/rollback-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "07477dd9ede6ada769a2ad66e1f144e94a4aba72"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-rollback/references/rollback-plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f681ebaaa592e7c40a3748f3399b3ede229c30bb"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-rollback/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d3bc75617403ecbc19b95e27858dc950acd7d4f9"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-policy/assets/update-policy.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "da6eb4e98795af270d97e0e819cdf503a6016bd3"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-policy/references/update-policy.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3b9280e234b22b5413829cee5b26ec67de1c13d7"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-policy/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "182a7619316d106eef4be5676f7a5e08c9ed4add"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-spec/assets/update-spec.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "768e9717be915e0f2089d9996d1b53ec2c2590ac"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-spec/references/update-spec.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "208599489cb6c107ca82662318e87c0f9944311a"
+      },
+      {
+        "path": "plugins/specnav-operations/skills/specnav-update-spec/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "17ea34d40265e6e7a997f6458ac02c0bf176c97a"
+      },
+      {
+        "path": "plugins/specnav-operations/specnav-stage.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9e01458b3d7ee6d586d79897c0d7e240dc3eb593"
+      },
+      {
+        "path": "tests/run-light-compact-gate-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d9c7caff0591f3fb7ffa2587b0a6dd4e90343cfd"
+      },
+      {
+        "path": "tests/run-operations-archive-action-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d27a27b8c3c241d430631ab526c09579df78a0c0"
+      },
+      {
+        "path": "tests/run-operations-plugin-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f4ef23d4334f1d074e5658d08f23ac555f4fcffd"
+      },
+      {
+        "path": "tests/run-smoke.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9062a53314d39ddafc7fe4f9caa4fba1e54defb4"
+      },
+      {
+        "path": "tests/run-verification-v2-cross-host.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1264a414326d4a185bfaa098cf984588d68288d1"
+      },
+      {
+        "path": "tests/run-verification-v2-development-contract-maintenance.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0058b37b62eef104f9443dd4586b26f9399c725d"
+      },
+      {
+        "path": "tests/run-verification-v2-release.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "85df50093861adf67a1d31263a2707e7805c0a3e"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b18d9b339aeacc8affde54b2bfe3ce99b7a3bd19"
+      },
+      {
+        "path": "tests/verification-v2/release/host-artifacts.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dcc04d8364129ad559f1165f682e11aa914eba67"
+      },
+      {
+        "path": "tests/verification-v2/release/host-proof-launcher.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "574beb5f054d5651a4e19b195e7f4d51d723c92c"
+      },
+      {
+        "path": "tests/verification-v2/release/live-authority-fixture.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "696d04cc38c1eabee5e61155404a0ffa81b86e34"
+      },
+      {
+        "path": "tests/verification-v2/release/populate-project.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "081003ea911d5b76d2e6b0f0f80b2c8bae062446"
+      },
+      {
+        "path": "tests/verification-v2/release/release-proof.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "087fb44d2b5de963115a68bedaf529e4b5451f01"
+      },
+      {
+        "path": "tests/verification-v2/release/release-suite-runner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c1ae3586e7cb17829ce046b8e9135fa3653ec809"
+      },
+      {
+        "path": "tests/verification-v2/release/release-suite-runner.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd178af2ac77bbaf8251320aa8b7787c72338fcb"
+      },
+      {
+        "path": "tests/verification-v2/release/safe-filesystem.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa1a650539e1a9c79349bb90f34fc33c995bf111"
+      },
+      {
+        "path": "tests/verification-v2/release/trusted-runtime.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d44f5966ce3352866be944a1c6acdd45ae5a6097"
+      }
+    ],
+    "sha256": "14315fca0963607bbb341ab93e2c8437ce79bb731d8c169367894f5b8ec81b9e"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/033-release-archive-proof/context.json",
+      "sha256": "b5eaf51b4eac978de2bac643e1fdb882247609e329ac2ca66b209c114116c0c0"
+    },
+    "report": {
+      "path": "development/tasks/033-release-archive-proof/report.md",
+      "sha256": "134f7d22c9b40193c19d95630c7f6676b346c753e4195dcea2fb37541723f39a",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/033-release-archive-proof/spec-review.md",
+      "sha256": "07918f5b045a62a0fa786fd995ff02874f7ca6e04148160579ff97bf48efe1de",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/033-release-archive-proof/quality-review.md",
+      "sha256": "fc4a610e3983c337d7c3b7fbb67b91a52be8feb93d2da0d31a69c279a40eb3e3",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+      "command": "bash tests/run-verification-v2-release.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-28",
+        "AC-29",
+        "AC-33",
+        "AC-35",
+        "AC-37"
+      ],
+      "recorded_at": "2026-08-11T23:27:49.639Z",
+      "validation_receipt_sha256": "c50173e16a6f82ba7dcfbe323ade522a892966ce15a4172038ed9c8d30180a19",
+      "evidence_log": {
+        "path": "development/evidence/609-033-release-archive-proof.log",
+        "sha256": "4859f23293dc1d5c87e67d72d8de95236b606b003a2030a70b318c5c785ba24a",
+        "size": 17249
+      }
+    },
+    {
+      "id": "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+      "command": "bash tests/run-operations-archive-action-fixtures.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-28",
+        "AC-29",
+        "AC-33",
+        "AC-35",
+        "AC-37"
+      ],
+      "recorded_at": "2026-08-11T23:30:34.548Z",
+      "validation_receipt_sha256": "37933ff324528ecd00a9e0af3c040e7145ad01456bd308d13ec71811d1497b0a",
+      "evidence_log": {
+        "path": "development/evidence/611-033-release-archive-proof.log",
+        "sha256": "6f5538a2ee05c448d6314d1175c5b7bd0ca3b81530fbcd54778a68d2586a2c2b",
+        "size": 172
+      }
+    },
+    {
+      "id": "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+      "command": "bash tests/run-verification-v2-cross-host.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-28",
+        "AC-29",
+        "AC-33",
+        "AC-35",
+        "AC-37"
+      ],
+      "recorded_at": "2026-08-11T23:28:20.236Z",
+      "validation_receipt_sha256": "aee3dc11346850b0d3f8a348e6612712e9b8dbff9a584156da7b9e43a5c679b8",
+      "evidence_log": {
+        "path": "development/evidence/610-033-release-archive-proof.log",
+        "sha256": "9741828895c2ac2f11bd0b6a75250d108bbd93b13ba72c59be85d89952193a0f",
+        "size": 16193
+      }
+    },
+    {
+      "id": "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa",
+      "command": "bash tests/run-operations-plugin-fixtures.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-28",
+        "AC-29",
+        "AC-33",
+        "AC-35",
+        "AC-37"
+      ],
+      "recorded_at": "2026-08-11T23:35:26.932Z",
+      "validation_receipt_sha256": "b0480ede7e9320860d45f23f451a0bcf750c0b7b32c4f4bbd32ebe2b5fe5f76e",
+      "evidence_log": {
+        "path": "development/evidence/612-033-release-archive-proof.log",
+        "sha256": "f26c4cabf6325688af5d9423ccd40677da3d449e52a53826366928acedd7f39d",
+        "size": 164
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-03",
+      "parent_id": "AC-03",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "development/evidence/479-033-release-archive-proof.log",
-        "tests/run-light-compact-gate-fixtures.sh",
-        "tests/verification-v2/release/release-proof.test.js"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md",
-        "development/tasks/016-six-domain-aggregation/spec-review.md"
-      ],
-      "claim": "Every release and archive lane rejects light, compact, fallback, partial-domain, and forged persisted-gate paths."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path."
     },
     {
       "id": "AC-28",
+      "parent_id": "AC-28",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "development/evidence/483-033-release-archive-proof.log",
-        "plugins/specnav-operations/scripts/verification-v2-proof.js",
-        "plugins/specnav-operations/scripts/archive-transaction.js",
-        "plugins/specnav-operations/scripts/safe-filesystem.js",
-        "plugins/specnav-operations/scripts/safe-filesystem.py",
-        "tests/verification-v2/release/safe-filesystem.test.js",
-        "tests/run-operations-archive-action-fixtures.sh"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/020-retest-regression-loop/report.md",
-        "development/tasks/026-report-accessibility-security/report.md",
-        "development/tasks/027-v1-v2-migration/report.md"
-      ],
-      "claim": "Release and archive fail closed for incomplete gates or evidence, and archive-time failures restore the complete pre-archive state."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "Release and archive block on unapproved cases, incomplete readings, stale or tampered evidence, open failures, missing reports, or red or blocked gates."
     },
     {
       "id": "AC-29",
+      "parent_id": "AC-29",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "tests/verification-v2/release/release-proof.test.js"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/023-report-model/report.md",
-        "development/tasks/024-overview-report/report.md",
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/026-report-accessibility-security/report.md"
-      ],
-      "claim": "All three HTML reports are required release artifacts, while Kernel JSON and evidence remain the only verdict authority."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "Reports generate for green, red, and blocked states and never become the source of truth."
     },
     {
       "id": "AC-33",
+      "parent_id": "AC-33",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "plugins/specnav-operations/scripts/verification-v2-proof.js"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/027-v1-v2-migration/report.md",
-        "development/tasks/027-v1-v2-migration/spec-review.md",
-        "development/evidence/396-027-v1-v2-migration.log",
-        "development/evidence/400-027-v1-v2-migration-spec-review-approved.md",
-        "development/evidence/401-027-v1-v2-migration-quality-review-approved.md"
-      ],
-      "claim": "The release proof consumes the successful migration receipt and rollback contract implemented and approved by Task 027."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "V1-to-V2 migration provides dry-run output, backup references, migration receipt, validation results, and rollback instructions."
     },
     {
       "id": "AC-35",
+      "parent_id": "AC-35",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "development/evidence/483-033-release-archive-proof.log",
-        "plugins/specnav-operations/scripts/verification-v2-proof.js",
-        "tests/verification-v2/release/release-proof.test.js"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md"
-      ],
-      "claim": "Persisted release and archive gates are identity-validated, rebound to their source versions, and independently recomputed through the Kernel."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "Gate decisions name source case readings, evidence index version, runtime version, kernel version, and freshness result."
     },
     {
       "id": "AC-37",
+      "parent_id": "AC-37",
       "status": "passing",
-      "direct_evidence": [
-        "development/evidence/478-033-release-archive-proof.log",
-        "development/evidence/479-033-release-archive-proof.log",
-        "development/evidence/480-033-release-archive-proof.log"
+      "test_run_ids": [
+        "receipt-3979c168287460ae60468a71c3c079121471402ed7b2c14cd948c714b27bdd40",
+        "receipt-4f1fe55f3f6edbae4170fc710a78892b1662f2fb52c7bc14b59fb75d237074c5",
+        "receipt-b28d1874c75b73cc11e58057d449690d88ad2a4eea408f4a49a3e2e52d877119",
+        "receipt-b4da5d785f503063e9935b11277ae51677df790f3d084e56a352ea5e30c8a3fa"
       ],
-      "reused_evidence": [
-        "development/tasks/031-cross-host-drift-ci/report.md",
-        "development/evidence/457-031-cross-host-drift-ci.log",
-        "development/evidence/464-031-cross-host-drift-ci.log",
-        "development/evidence/465-031-cross-host-drift-ci-quality-security-review-approved.md",
-        "development/evidence/466-031-cross-host-drift-ci-spec-review-approved.md"
-      ],
-      "claim": "Codex, Claude Code, and CodeFree-O are bound to distinct clean host identities and the same immutable Kernel contract."
+      "direct_evidence": [],
+      "reused_evidence": [],
+      "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
     }
-  ],
-  "reused_task_range": [
-    "023-report-model",
-    "024-overview-report",
-    "025-case-report-pages",
-    "026-report-accessibility-security",
-    "027-v1-v2-migration"
   ],
   "fallback_used": false
 }

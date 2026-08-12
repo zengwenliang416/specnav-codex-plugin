@@ -1,28 +1,171 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "030-codefree-o-integration",
-  "recorded_at": "2026-08-02T16:14:08.673Z",
+  "generated_at": "2026-08-11T23:37:56.297Z",
+  "recorded_at": "2026-08-11T23:15:18.150Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "docs/host-integration-codefree-o.md",
+      "integrations/codefree-o/**",
+      "plugins/specnav-verification/scripts/verification-runtime.js",
+      "tests/run-verification-v2-codefree-o-adapter.sh",
+      "tests/verification-v2/cross-host/**"
+    ],
+    "entries": [
+      {
+        "path": "docs/host-integration-codefree-o.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c7c3c4ef182510264fd9c25efefaaa886f38c746"
+      },
+      {
+        "path": "integrations/codefree-o/codefree-o-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "671e27017ef977f652cd055bbb914fc9d526ac99"
+      },
+      {
+        "path": "integrations/codefree-o/sync-verification-module.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ab88caabbd682fa28484cd8a37791177392adc6"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5c9d1436a3cfdc47037a32eb2915c0dc893ab3a"
+      },
+      {
+        "path": "tests/run-verification-v2-codefree-o-adapter.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "72fbe882b6b2c5b4654ff8cf409581baa3bf6c0d"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/claude-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "812c3d493be69ea98e6d80440e192079980d7114"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codefree-o-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7258764410c45b539034fbb95a60004190b611f6"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codex-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bdf9c261bb550f53f22c1348e27ffdac4148021"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/drift-detector.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9651a6ea5fc5598c5895f031403caa3672ed0eb8"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d638e1c045b8061f80e0e628ac9b10a54883c77a"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority.integration.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7205616781b8890fa7375df0734b28ec1869d3ec"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b18d9b339aeacc8affde54b2bfe3ce99b7a3bd19"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/operations-proof-sync.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "72bec4e1c213a7bb131b9cd6d69d7d146ed7af7e"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/runner-authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f2dfc1cfc767a4e6660ea11b18cede18cb4e311"
+      }
+    ],
+    "sha256": "a4f1da10cae99ef236a370a416a993ca588e1667da9967e90bff9fdd3f20357a"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/030-codefree-o-integration/context.json",
+      "sha256": "6a0d69a91d82836e5ec554fe9af0f163439d320fd6b9452a980365faefae45ef"
+    },
+    "report": {
+      "path": "development/tasks/030-codefree-o-integration/report.md",
+      "sha256": "d5b84e8f0aa7017ececfb6bc7fd2966be8c61eac8950a129ab9988ad21a154a1",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/030-codefree-o-integration/spec-review.md",
+      "sha256": "ac0c11baf5b89ffa7fc6238ba8ea4507ae4a7be0b34b25f73ed7886be93356e6",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/030-codefree-o-integration/quality-review.md",
+      "sha256": "f5835127b9f7e0b85922a9c118603da278a9d312d11507a299f6e45d6891108c",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-9f62bf4a0decf5aad86dc6992570d6e96a63449dc7ab97c91c15a7bde97e1bf9",
+      "command": "bash tests/run-verification-v2-codefree-o-adapter.sh",
+      "assertion_ids": [
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:13:48.322Z",
+      "validation_receipt_sha256": "710647af8f32d1bbea7a3ad7316da479647944f5526ed920939233890bcc966e",
+      "evidence_log": {
+        "path": "development/evidence/603-030-codefree-o-integration.log",
+        "sha256": "14fb816d8fee1ca6a98902e577e1307c78a593f79eb0a6c61f4671cb1756ca1e",
+        "size": 2994
+      }
+    },
+    {
+      "id": "receipt-c9a752990e605b6d0cd86de44f704e8fb7a3e58547393e9f2fcfe07a32232faf",
+      "command": "bash /Volumes/zwl/AI/ai-coding/specnav-codefree-o-plugin/tests/run-smoke.sh",
+      "assertion_ids": [
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:15:18.150Z",
+      "validation_receipt_sha256": "f57853f6598ae2123f8aa17ace8b4985b0c577c02989950228ed3b9214f64329",
+      "evidence_log": {
+        "path": "development/evidence/604-030-codefree-o-integration.log",
+        "sha256": "07571c7daecee6ca67bc9025f71986b36994d49988b4ad92f87d05399b247925",
+        "size": 3191
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-37",
       "parent_id": "AC-37",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/030-codefree-o-integration/report.md",
-        "development/tasks/030-codefree-o-integration/spec-review.md",
-        "development/tasks/030-codefree-o-integration/quality-review.md",
-        "development/evidence/430-030-codefree-o-integration.log",
-        "development/evidence/432-030-codefree-o-integration.log",
-        "development/evidence/433-030-codefree-o-integration.log",
-        "development/evidence/434-030-codefree-o-integration.log",
-        "development/evidence/436-030-codefree-o-integration.log",
-        "development/evidence/437-030-codefree-o-integration.log",
-        "development/evidence/438-030-codefree-o-integration.log",
-        "development/evidence/439-030-codefree-o-integration.log",
-        "development/evidence/440-030-codefree-o-integration.log"
+      "test_run_ids": [
+        "receipt-9f62bf4a0decf5aad86dc6992570d6e96a63449dc7ab97c91c15a7bde97e1bf9",
+        "receipt-c9a752990e605b6d0cd86de44f704e8fb7a3e58547393e9f2fcfe07a32232faf"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
     },
@@ -30,20 +173,11 @@
       "id": "AC-40",
       "parent_id": "AC-40",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/030-codefree-o-integration/report.md",
-        "development/tasks/030-codefree-o-integration/spec-review.md",
-        "development/tasks/030-codefree-o-integration/quality-review.md",
-        "development/evidence/430-030-codefree-o-integration.log",
-        "development/evidence/432-030-codefree-o-integration.log",
-        "development/evidence/433-030-codefree-o-integration.log",
-        "development/evidence/434-030-codefree-o-integration.log",
-        "development/evidence/436-030-codefree-o-integration.log",
-        "development/evidence/437-030-codefree-o-integration.log",
-        "development/evidence/438-030-codefree-o-integration.log",
-        "development/evidence/439-030-codefree-o-integration.log",
-        "development/evidence/440-030-codefree-o-integration.log"
+      "test_run_ids": [
+        "receipt-9f62bf4a0decf5aad86dc6992570d6e96a63449dc7ab97c91c15a7bde97e1bf9",
+        "receipt-c9a752990e605b6d0cd86de44f704e8fb7a3e58547393e9f2fcfe07a32232faf"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
     }

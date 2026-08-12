@@ -1,31 +1,308 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "005-case-planning-approval",
-  "recorded_at": "2026-07-31T12:10:39.663Z",
+  "generated_at": "2026-08-11T23:37:54.963Z",
+  "recorded_at": "2026-08-11T23:08:40.305Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/cases/**",
+      "plugins/specnav-verification/skills/specnav-verify-plan/**",
+      "tests/run-verification-v2-case-approval.sh",
+      "tests/verification-v2/cases/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-checks.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5e2ed86376e419ceead478b7061a1c9c80cec4a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c06e5a61af8f989646eb2c6affe4ee8ed68e1e03"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/canonical.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8564ec380eb57713791ce691050e4f6c7abe0138"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/case-validation.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6e8c5fcfc4ab229b656eb06b1237b1d4c98e13a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd71435fefb48815e195d90fa219365de12876c9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/normalize.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "65754ea03557015d4874bb2e1d556a41ea51c144"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "40aaf41756565e7d2c335fd88640427418cb557d"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/snapshot-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a1e8c770ffffbec41b725a02dee4e4ee9ee992a5"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f37ce44aa90e5b1605e9605c104f38840440045b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5d6ed6df5a64a720baf538f11242a57de170e4d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/scenarios.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "be46313aa558e5c758e8509a9afe0ef7245da096"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/transcripts/verify-runs-six-domains.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd9d97d6c421ba215d261d33dc6a40088be643ea"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/blocker-classification.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/domain-case-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5403363a010edbc22cb1ead97ab1478c340a33c4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/evidence-index.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e0cdaa8be9e1b06635647d2a587d2d57d4e27ba4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02122e93ca16f524f6ff85cbfcfadce3e01e9879"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "11f95a9e35f5bc7dbc4e123e8fc6e941eb32216b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e48fd96e73795cefc77f55febf99031c6331d25c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "247865a09ba42f52261813196071c7670c70b5d3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/root-cause-checks.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "911f8d1c65ae9030a32ff359106ccc711683578e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/runtime-evidence.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b90385aa09a1bcc80a88c76c3a423f41ae7b8736"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/traceability-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1f003056da2bdc5fa36c8e2f48b97a42ff95ccee"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-case-signoff.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ec082ed4a0c88d3eb1daf08e509fccdf1a1c8c11"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d0a1f7cbf116066bef9f9ff7c0d25fb5d606b3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0492c5a20968d765791b5bd9c5276e789ad10824"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/domain-report-schema.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "886023012b2ec0475ea47c66095e7a46f207a36e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/review-report-style.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "358c51979a4b880f290643a0a3803a2f8e8a5714"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/verification-model.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8ef2d625daa110327efe5c80f7b5f53c0b7b6b7a"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/case-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80e12ca694b784fd946fbc8230c6c9a7cf260ca9"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/create-verify-plan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "22c2d9c12021ccb21210d75a7d01ec4b066a5a7d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd83afce762565bbbb95acec94f85c74694c6beb"
+      },
+      {
+        "path": "tests/run-verification-v2-case-approval.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0938bfa4ac94a94d4ba8128c91fd072605833940"
+      },
+      {
+        "path": "tests/verification-v2/cases/approval.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "45f4ddc3cf461841fc60b166e37d376c4d10b02c"
+      },
+      {
+        "path": "tests/verification-v2/cases/cli-integration.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2768fdb0a51252b6bcb65908470671a7d7aa0de1"
+      },
+      {
+        "path": "tests/verification-v2/cases/planning.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9494710ecb70b3e101403ad82a8e86ad00b250c9"
+      },
+      {
+        "path": "tests/verification-v2/cases/snapshot.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "320dbf54994b784018fd71fba5af3e40578281d7"
+      },
+      {
+        "path": "tests/verification-v2/cases/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f640a7226aaf34075282b0486b76a0e4fe183687"
+      }
+    ],
+    "sha256": "df2a4de07a84457d0d677c081f12d35842af7e1aac51a63e9927bf2dc6f02c43"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/005-case-planning-approval/context.json",
+      "sha256": "554fd6881183e00d2802e2cb202633fde810efd9e7e0c5e4112089de9c571c0f"
+    },
+    "report": {
+      "path": "development/tasks/005-case-planning-approval/report.md",
+      "sha256": "9f567c2c307268c14e617e21c81a52f7f5a8bf23c4d9d441c0895520b736c8d9",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/005-case-planning-approval/spec-review.md",
+      "sha256": "dbbdda8dbbe364d6fb424dde8f75ecfb58c3c552498dba1ac1698d81d18d42f5",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/005-case-planning-approval/quality-review.md",
+      "sha256": "facc2b64888aaf31c73ef35bbf083aa63ad38645c78601f55004e2a9af26c999",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-0edbc0dd35bf8769b5fd1e319a1bb14e2166d1f5df4589b80d683b12cc1fb7c3",
+      "command": "node --test tests/verification-v2/cases/*.test.js",
+      "assertion_ids": [
+        "AC-01",
+        "AC-02"
+      ],
+      "recorded_at": "2026-08-11T23:08:13.241Z",
+      "validation_receipt_sha256": "d97722d40d5ce802b165888f657e083e9aad2937b4dba7d039f0bc231b6af26f",
+      "evidence_log": {
+        "path": "development/evidence/559-005-case-planning-approval.log",
+        "sha256": "072e984064bd99afc82cebd3f0574e101708140426c9db2deea02338fb304302",
+        "size": 5618
+      }
+    },
+    {
+      "id": "receipt-e8ee9552581b37879bb45bc00bf7cccc0d7a3e98b3086517cbb8a47d5f311cb5",
+      "command": "bash tests/run-verification-v2-case-approval.sh",
+      "assertion_ids": [
+        "AC-01",
+        "AC-02"
+      ],
+      "recorded_at": "2026-08-11T23:08:40.305Z",
+      "validation_receipt_sha256": "af061da97ac38b9074417c69a230c6b992cfbb5422d1d0928e5dcf75b4c3d7bc",
+      "evidence_log": {
+        "path": "development/evidence/560-005-case-planning-approval.log",
+        "sha256": "3977798271725545de794331348e6430e03268185b067252d0235766c3b028fa",
+        "size": 164
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-01",
       "parent_id": "AC-01",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/005-case-planning-approval/report.md",
-        "development/tasks/005-case-planning-approval/spec-review.md",
-        "development/tasks/005-case-planning-approval/quality-review.md",
-        "development/evidence/051-005-case-planning-approval.log",
-        "development/evidence/052-005-case-planning-approval.log",
-        "development/evidence/053-005-case-planning-approval.log",
-        "development/evidence/055-005-case-planning-approval.log",
-        "development/evidence/056-005-case-planning-approval.log",
-        "development/evidence/057-005-case-planning-approval.log",
-        "development/evidence/060-005-case-planning-approval.log",
-        "development/evidence/061-005-case-planning-approval.log",
-        "development/evidence/062-005-case-planning-approval.log",
-        "development/evidence/063-005-case-planning-approval.log",
-        "development/evidence/064-005-case-planning-approval.log",
-        "development/evidence/065-005-case-planning-approval.log"
+      "test_run_ids": [
+        "receipt-0edbc0dd35bf8769b5fd1e319a1bb14e2166d1f5df4589b80d683b12cc1fb7c3",
+        "receipt-e8ee9552581b37879bb45bc00bf7cccc0d7a3e98b3086517cbb8a47d5f311cb5"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "A reviewer can inspect all proposed test cases, steps, assertions, six-domain mappings, runner choices, and evidence requirements before any case executes."
     },
@@ -33,23 +310,11 @@
       "id": "AC-02",
       "parent_id": "AC-02",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/005-case-planning-approval/report.md",
-        "development/tasks/005-case-planning-approval/spec-review.md",
-        "development/tasks/005-case-planning-approval/quality-review.md",
-        "development/evidence/051-005-case-planning-approval.log",
-        "development/evidence/052-005-case-planning-approval.log",
-        "development/evidence/053-005-case-planning-approval.log",
-        "development/evidence/055-005-case-planning-approval.log",
-        "development/evidence/056-005-case-planning-approval.log",
-        "development/evidence/057-005-case-planning-approval.log",
-        "development/evidence/060-005-case-planning-approval.log",
-        "development/evidence/061-005-case-planning-approval.log",
-        "development/evidence/062-005-case-planning-approval.log",
-        "development/evidence/063-005-case-planning-approval.log",
-        "development/evidence/064-005-case-planning-approval.log",
-        "development/evidence/065-005-case-planning-approval.log"
+      "test_run_ids": [
+        "receipt-0edbc0dd35bf8769b5fd1e319a1bb14e2166d1f5df4589b80d683b12cc1fb7c3",
+        "receipt-e8ee9552581b37879bb45bc00bf7cccc0d7a3e98b3086517cbb8a47d5f311cb5"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Verification is blocked until the current case snapshot has explicit user approval."
     }

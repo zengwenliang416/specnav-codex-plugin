@@ -1,27 +1,184 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "017-not-applicable-approval",
-  "recorded_at": "2026-08-01T04:40:39.262Z",
+  "generated_at": "2026-08-11T23:37:55.549Z",
+  "recorded_at": "2026-08-11T23:11:28.727Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/cases/**",
+      "plugins/specnav-verification/kernel/evaluation/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "tests/verification-v2/evaluation/**",
+      "tests/verification-v2/kernel/package-boundary.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-checks.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5e2ed86376e419ceead478b7061a1c9c80cec4a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c06e5a61af8f989646eb2c6affe4ee8ed68e1e03"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/canonical.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8564ec380eb57713791ce691050e4f6c7abe0138"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/case-validation.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6e8c5fcfc4ab229b656eb06b1237b1d4c98e13a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd71435fefb48815e195d90fa219365de12876c9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/normalize.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "65754ea03557015d4874bb2e1d556a41ea51c144"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "40aaf41756565e7d2c335fd88640427418cb557d"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/snapshot-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a1e8c770ffffbec41b725a02dee4e4ee9ee992a5"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d40b91e939b71744bbb854541bf76111a62a46bd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/not-applicable-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b76f3897c2652ee4407e3def8c0bdc22123755c1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/oracle-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1ebc8e542672387a05e8be85ccd85e16e6a93de3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/reading-evaluator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "559d4e780ccdd602b5e8374340785da3da8d76b6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/six-domain-aggregator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1edd084a566debc95ca61cd72334e7b28b16c745"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/terminal-state.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "32063139b0ea82c6abb1c7a731080faae04884d7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/aggregation.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "804b1699bc2530f19fac75380bd60fb198c0df09"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/not-applicable.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a267a1a77d0d36c144a2a810e3d10aaa2d4cfa46"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/reading-model.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "50328c31ffe24bf16e4a72fec89f2f1f99910e17"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "897e0df4891c7d67742c38ce0d4d8e477b02dba08ec144ba9aeaa6a820b64748"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/017-not-applicable-approval/context.json",
+      "sha256": "8843fa4e3fcfa4a4a30ddd9fcc69e9f8e659488f4a00d41d44186fb981e2b566"
+    },
+    "report": {
+      "path": "development/tasks/017-not-applicable-approval/report.md",
+      "sha256": "00ed1fa2110e30c9cdc5c435e3b505fbea5d40bd7601d3a2c4e5c50107edeef5",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/017-not-applicable-approval/spec-review.md",
+      "sha256": "656b01f0ad245a6e86a73a40c0d129a518601f8b2644216d74e7735dab8be306",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/017-not-applicable-approval/quality-review.md",
+      "sha256": "53c9f5a3d7403b846190590090d0a526758fdcb20724cd7114ef44eb2b0b499a",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-deec7cff2f08f6bfcbf3998799e9c5f8769fb658d0ac3b0d3953ba0df6dcc516",
+      "command": "node --test tests/verification-v2/evaluation/not-applicable.test.js",
+      "assertion_ids": [
+        "AC-20"
+      ],
+      "recorded_at": "2026-08-11T23:11:28.727Z",
+      "validation_receipt_sha256": "a3cb71d1ba7ea4374ff2d119ef3b4b58fb01ae9ac359e78f5e06be97a89a6eb3",
+      "evidence_log": {
+        "path": "development/evidence/578-017-not-applicable-approval.log",
+        "sha256": "512c0b3b79b565f2208ac4f7150f68221f6e08fa23b9542be46e563eddba096f",
+        "size": 1973
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-20",
       "parent_id": "AC-20",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/017-not-applicable-approval/report.md",
-        "development/tasks/017-not-applicable-approval/spec-review.md",
-        "development/tasks/017-not-applicable-approval/quality-review.md",
-        "development/evidence/256-017-not-applicable-approval.log",
-        "development/evidence/258-017-not-applicable-approval.log",
-        "development/evidence/259-017-not-applicable-approval.log",
-        "development/evidence/260-017-not-applicable-approval.log",
-        "development/evidence/261-017-not-applicable-approval.log",
-        "development/evidence/262-017-not-applicable-approval.log",
-        "development/evidence/263-017-not-applicable-approval.log",
-        "development/evidence/264-017-not-applicable-approval.log"
+      "test_run_ids": [
+        "receipt-deec7cff2f08f6bfcbf3998799e9c5f8769fb658d0ac3b0d3953ba0df6dcc516"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "not_applicable requires a reason, evidence, reviewer identity, approval timestamp, and policy allowance."
     }

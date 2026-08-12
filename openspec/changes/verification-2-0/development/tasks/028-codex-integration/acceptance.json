@@ -1,24 +1,816 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "028-codex-integration",
-  "recorded_at": "2026-08-02T14:11:23.980Z",
+  "generated_at": "2026-08-11T23:37:56.189Z",
+  "recorded_at": "2026-08-11T23:13:33.984Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-core/**",
+      "plugins/specnav-verification/.codex-plugin/**",
+      "plugins/specnav-verification/scripts/**",
+      "plugins/specnav-verification/skills/**",
+      "tests/run-codex-*.sh",
+      "tests/verification-v2/cross-host/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-core/.codex-plugin/plugin.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ac925b222b3da341a6fdb9bbda246e60757aecf"
+      },
+      {
+        "path": "plugins/specnav-core/agents/explorer.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cb981e28cac894bcd844de397dedf50e9bc2d6dd"
+      },
+      {
+        "path": "plugins/specnav-core/agents/verifier.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "080e973318b794fa2fa49081ea25c8471705cb7b"
+      },
+      {
+        "path": "plugins/specnav-core/assets/icon.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9f69f81fb6eec32746d2c3dca052fe559c9fadd8"
+      },
+      {
+        "path": "plugins/specnav-core/assets/logo.svg",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f447874a62c1a5748a45197a9d858416650dbfb8"
+      },
+      {
+        "path": "plugins/specnav-core/hooks/hooks.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "96658ac73faf1c0089858604bd01a689609d8db3"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/affordances.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "440d215017e71e3265c86fdfcb15110536eb2027"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/archive-gate.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3ed488d306d450067435af0593f9ed9333147643"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/change-triage.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "886b15a091e32cda7b9f72773d3df7473dacff25"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/cross-repo-announce.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83429fabd7bdaa159fbdf9f8878a97d5bdfb624a"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/cross-repo-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fb5ca05d1bda9e7ae4805bc24f0709073845cef8"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/gate-effectiveness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1d9127fe5359818bcc508aa0e9798008cf1d1b1a"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/override.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0c022a28325c9e5708cba87d5cfe38c9ab03fa81"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/plugin-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6ab0c2716944483bd2de41c09274ca4eac8397c8"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/plugin-suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7ac6f7db800b4fb47829f4ddb6b66975db3d4d94"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/resolve-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f7d7160363c2e8669dd64d7214931a441652d68"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/risk-tier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "33aec9a444e06b0f7fad0d0b5edfe6be566968ca"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/scaffold-lib.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "05e53331fd802958808f57b0037494da01876783"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-bootstrap.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f6ddef526c124f4ecf1f1cd1d5660cbb367b60fa"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6869741e4e926b1fd1c43ef592981a555113f83e"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ce46cf09548dc77f22bbbc461aebcd10f839d32a"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-lib.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a4e890a84cc3a0a03f8d61223fe7411df964bd33"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-post-tool-failure.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6d3685170ce28785f8c5f4be4c13522d14b621e6"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-post-tool.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4b246857137b34766f79285f4f7ba3d967f36567"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-pre-compact.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "da3280a57a6ff89f72353b1b76bb5f381c08c66c"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-route.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "099d7c194d1f36fe057ea1c6a9a45c4d43f10f57"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-session-start.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5ac4631d6ecbe3e3ebf020da497820048fe57aed"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-stop-check.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1ef7d3236455abb49ecdca94f8ab4285e1e47b8b"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/specnav-user-prompt-submit.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44afbd97828e15576da6ab77e9bba37a4e39fd04"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/tasks-md.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c81ab207d4668176532c604eca8f2ccd1f252071"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/verify.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "65df7ee2911ff2c53ccd353ecf9cf27203209de2"
+      },
+      {
+        "path": "plugins/specnav-core/scripts/workflow-state.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4a5828cde9bf89fdfc3d9df089dd888f7c852f3c"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-bootstrap/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6dcc74adf15699e797504241854c435312a9d63a"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-debug/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c090cad8da3873c0631fc8c6b3a52f930a1e2ed7"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-doctor/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f92e53333915ca60e2003c848dd0ecad9881860f"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-recovery/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7644da3df374f06707e34618087b79ca12351965"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-route/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dcd0921c41ea00174025ad3a305120a720bf4c39"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-status/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "15cc2cd645828dd2d14968fd9d48fd6498237a31"
+      },
+      {
+        "path": "plugins/specnav-core/skills/specnav-workflow/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e6e7160cdfa857934bf53cf354e50ffb98b9be91"
+      },
+      {
+        "path": "plugins/specnav-core/specnav-stage.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5462816aa04e5978f8a9d867e49bef44bafdb95c"
+      },
+      {
+        "path": "plugins/specnav-verification/.codex-plugin/plugin.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e762439f03c4b16feeedbfe6ff08c35294f85d7d"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/.gitkeep",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/anchor-scan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fdf0512a2ff6964332d9d6c3c5e0b6e62ebc5506"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/codex-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "06f4fe0aa81851627876dcf9b737c5e5c6952142"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/evidence-runner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5cd6eb9e9212c4651d35dca1c7b5662a0454e349"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/host-verification-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "acd6453315fa8ddc8504770ca1e8280ba24c87fb"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/plugin-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6ab0c2716944483bd2de41c09274ca4eac8397c8"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/rerun-scope.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6785da5b71e02326313fe1c909abecbad25befa2"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/scenario-registry-loader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "455c233cea47d9843b41fd2fd3a2a8176b511230"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/validation-receipt-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "97380799fc4030da09e9792e091f8d71bae34655"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-migrate.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab206f97f40fe9a73c85a1e430e3bac84fbe35f1"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5c9d1436a3cfdc47037a32eb2915c0dc893ab3a"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "362590d3c602d29904f70a684ddf316e8a01715b"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-v2-run.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "28113dcd7317b51e1d467ed4690d02dea2ae4921"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verify-domains.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "88c70e12ec8a16ab86ec07f2c72b50a95591bbfa"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-html-report/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc8e8cc81fbfa8551a0d7b6a30fdadc85a5e9f5c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf08c886ab7b392312acacbbd210d0a68e5e8b74"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-status/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1dec761bb49021eb4334958d21a92443bdfe1994"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7047de0f4e55da81fb30ffc7bc6a907a116e98a1"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e614e8fb454e3a9922d9cd4d0ff91dbbdaf52ec"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c4112d788eefe9bc06f6572febd517c44bbcdb33"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/references/e2e-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7c4bd6a963a4d12dd9907252f50741ec8b814843"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-e2e/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e8dd9b3cd3e4fe5556a768f4b81334374b07c474"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ef334b0b350596697fa2886137c9c32d30e1aaf"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "530c62516b57b7121f7cf466447ba9bc3c6905e4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/references/facticity-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e6ea6d64130b9a4eea58b63090499a765c95e8ff"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-facticity/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fb4e00ed44ff249ffe46bbca7008646f98731206"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f37ce44aa90e5b1605e9605c104f38840440045b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5d6ed6df5a64a720baf538f11242a57de170e4d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/scenarios.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "be46313aa558e5c758e8509a9afe0ef7245da096"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/behavior-evals/transcripts/verify-runs-six-domains.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd9d97d6c421ba215d261d33dc6a40088be643ea"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/blocker-classification.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/domain-case-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5403363a010edbc22cb1ead97ab1478c340a33c4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/evidence-index.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e0cdaa8be9e1b06635647d2a587d2d57d4e27ba4"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02122e93ca16f524f6ff85cbfcfadce3e01e9879"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/plan.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "11f95a9e35f5bc7dbc4e123e8fc6e941eb32216b"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e48fd96e73795cefc77f55febf99031c6331d25c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/receipt.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "247865a09ba42f52261813196071c7670c70b5d3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/root-cause-checks.jsonl",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "911f8d1c65ae9030a32ff359106ccc711683578e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/runtime-evidence.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b90385aa09a1bcc80a88c76c3a423f41ae7b8736"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/traceability-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1f003056da2bdc5fa36c8e2f48b97a42ff95ccee"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-case-signoff.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ec082ed4a0c88d3eb1daf08e509fccdf1a1c8c11"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d0a1f7cbf116066bef9f9ff7c0d25fb5d606b3"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/assets/user-test-cases.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0492c5a20968d765791b5bd9c5276e789ad10824"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/domain-report-schema.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "886023012b2ec0475ea47c66095e7a46f207a36e"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/review-report-style.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "358c51979a4b880f290643a0a3803a2f8e8a5714"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/references/verification-model.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8ef2d625daa110327efe5c80f7b5f53c0b7b6b7a"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/case-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80e12ca694b784fd946fbc8230c6c9a7cf260ca9"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/scripts/create-verify-plan.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "22c2d9c12021ccb21210d75a7d01ec4b066a5a7d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-plan/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd83afce762565bbbb95acec94f85c74694c6beb"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ad15f80a6371e1755e62a848986c90ae34fa26d5"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "19ffa4e86817abd080056650ed2ea2ef7414a7a7"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/references/redteam-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1538719f4dc9b97a796da34a09ef44a2f09089c6"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-redteam/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82a5493ad42779ce4170db31955cedaae5e4edfc"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-rerun/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b4bf262028a71987d8444b322fd7dc59a0ee316"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7d80ee7d54e5a024a898a0ebf7c1b7cc7f32ed8d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "328ffdbbd11217df6e946ddbfd5eaf4341154c61"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/references/sensory-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "908cf0dcc3877a8d232dc2633a6584eefbec2d82"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-sensory/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1415a7c28822a8d839171341cdf5e06a24a919f2"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bfd767bc46b29b230b0b33d752ca5f95b438ef36"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ebfc4413ad1b0226fc60cb61aa8620333af6a25"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/references/static-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b3a64d95999bd3263179a34d86fad6ef7213c5f"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-static/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83dbaeb97ca3ab369ceecdbebd900103f2c44b9d"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/assets/report.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "da2bc92161c919ba1374466ea76f3299f29691fa"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/assets/report.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ecceef6d9d4cf189b709959a71aab3293071b67"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/references/unit-rubric.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6edf9ba79c415a5fec3111aa6270cc1f47f0076c"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verify-unit/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "784ba39bc35615269a2706ccfacc0f62d40ec0e0"
+      },
+      {
+        "path": "tests/run-codex-development-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c4d345c7e2ce1ea970324ce44cb3e24f43a5e0bd"
+      },
+      {
+        "path": "tests/run-codex-hook-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c105aa0ac73a3d32ca9273a2106fea14483709ef"
+      },
+      {
+        "path": "tests/run-codex-marketplace-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d4a3f9c49812808aaca1f7c85601b98f66705c73"
+      },
+      {
+        "path": "tests/run-codex-plugin-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "421be059f3b0c8ff2b617cb8b08b4f0affe19e3c"
+      },
+      {
+        "path": "tests/run-codex-skill-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c58b237a15fb78847616aea12d2a4ed3112a3c75"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/claude-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "812c3d493be69ea98e6d80440e192079980d7114"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codefree-o-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7258764410c45b539034fbb95a60004190b611f6"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codex-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bdf9c261bb550f53f22c1348e27ffdac4148021"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/drift-detector.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9651a6ea5fc5598c5895f031403caa3672ed0eb8"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d638e1c045b8061f80e0e628ac9b10a54883c77a"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority.integration.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7205616781b8890fa7375df0734b28ec1869d3ec"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b18d9b339aeacc8affde54b2bfe3ce99b7a3bd19"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/operations-proof-sync.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "72bec4e1c213a7bb131b9cd6d69d7d146ed7af7e"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/runner-authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f2dfc1cfc767a4e6660ea11b18cede18cb4e311"
+      }
+    ],
+    "sha256": "250298fe8b1d646b8c859d6c7a78b650690d31dce78569e5b5429161eb8f8574"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/028-codex-integration/context.json",
+      "sha256": "b3f36c72485e358a46335a929f91edd55294deecb6042aa1eab1b9e5e5faf2ba"
+    },
+    "report": {
+      "path": "development/tasks/028-codex-integration/report.md",
+      "sha256": "bc97742b49fee2e4a2f43b38813b0ee7364b69baff68912cb8d7b3dc0ac5d171",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/028-codex-integration/spec-review.md",
+      "sha256": "1462d27c8dc3409fd954b78ac3dd82523d676582afb279d62ad30d9e37a8e321",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/028-codex-integration/quality-review.md",
+      "sha256": "6f254eb64b4a4dda6e09cd1b4548602044853d0976c08a75ebe67e61f0b3c0b7",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-4682024d22f560142c6285d999984d5c9ea13b083f24eeb4c5a9db190be3cf5e",
+      "command": "bash tests/run-codex-plugin-fixtures.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:13:13.581Z",
+      "validation_receipt_sha256": "72b5aa2ed003396dc42e2fd17cac8bcb8605193899134f03c95f5f1f7f02437c",
+      "evidence_log": {
+        "path": "development/evidence/599-028-codex-integration.log",
+        "sha256": "77438f26e5da96e00b355f2d2210261f780169164caf926adac0dddbe8648f30",
+        "size": 143
+      }
+    },
+    {
+      "id": "receipt-707157801baae268477708c9faf89a1121715c6dfbed588e3205e88dafc1ac6b",
+      "command": "bash tests/run-verification-v2-codex.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-37",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:13:33.984Z",
+      "validation_receipt_sha256": "a2c60208ad2c40294c59dcb60e811a7cc4f4c09b98f7d74ae87d2d23fe9d114c",
+      "evidence_log": {
+        "path": "development/evidence/600-028-codex-integration.log",
+        "sha256": "4321096538f9e36420cd49754d8c0b10b37cbdd5e9a4f31a35216c0102ad59cf",
+        "size": 2270
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-03",
       "parent_id": "AC-03",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/028-codex-integration/report.md",
-        "development/tasks/028-codex-integration/spec-review.md",
-        "development/tasks/028-codex-integration/quality-review.md",
-        "development/evidence/410-028-codex-integration.log",
-        "development/evidence/411-028-codex-integration.log",
-        "development/evidence/412-028-codex-integration.log",
-        "development/evidence/413-028-codex-integration.log",
-        "development/evidence/414-028-codex-integration.log"
+      "test_run_ids": [
+        "receipt-4682024d22f560142c6285d999984d5c9ea13b083f24eeb4c5a9db190be3cf5e",
+        "receipt-707157801baae268477708c9faf89a1121715c6dfbed588e3205e88dafc1ac6b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path."
     },
@@ -26,16 +818,11 @@
       "id": "AC-37",
       "parent_id": "AC-37",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/028-codex-integration/report.md",
-        "development/tasks/028-codex-integration/spec-review.md",
-        "development/tasks/028-codex-integration/quality-review.md",
-        "development/evidence/410-028-codex-integration.log",
-        "development/evidence/411-028-codex-integration.log",
-        "development/evidence/412-028-codex-integration.log",
-        "development/evidence/413-028-codex-integration.log",
-        "development/evidence/414-028-codex-integration.log"
+      "test_run_ids": [
+        "receipt-4682024d22f560142c6285d999984d5c9ea13b083f24eeb4c5a9db190be3cf5e",
+        "receipt-707157801baae268477708c9faf89a1121715c6dfbed588e3205e88dafc1ac6b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
     },
@@ -43,16 +830,11 @@
       "id": "AC-40",
       "parent_id": "AC-40",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/028-codex-integration/report.md",
-        "development/tasks/028-codex-integration/spec-review.md",
-        "development/tasks/028-codex-integration/quality-review.md",
-        "development/evidence/410-028-codex-integration.log",
-        "development/evidence/411-028-codex-integration.log",
-        "development/evidence/412-028-codex-integration.log",
-        "development/evidence/413-028-codex-integration.log",
-        "development/evidence/414-028-codex-integration.log"
+      "test_run_ids": [
+        "receipt-4682024d22f560142c6285d999984d5c9ea13b083f24eeb4c5a9db190be3cf5e",
+        "receipt-707157801baae268477708c9faf89a1121715c6dfbed588e3205e88dafc1ac6b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
     }

@@ -1,25 +1,250 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "025-case-report-pages",
-  "recorded_at": "2026-08-02T10:30:19.147Z",
+  "generated_at": "2026-08-11T23:37:56.012Z",
+  "recorded_at": "2026-08-11T23:12:59.357Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/assets/report/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/reporting/**",
+      "tests/run-verification-v2-report-pages.sh",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/reports/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/assets/report/report-security-contract.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "640eef5b7d3785850d9313f05bc6135877b8c558"
+      },
+      {
+        "path": "plugins/specnav-verification/assets/report/report.css",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e3526b1ebb6d6a7ea60e4a4924888f3abe499f24"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/case-page-renderers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2507074ca44add08cc0b15f88c9afb7ccd28823e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/evidence-link-resolver.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e943b1b21114c5d18228ad9db90a7662345c724a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0ee1ffff347d6545bf7699ce5fffc840ff4f6808"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/overview-renderer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c46d3b2e46043cff10ee78648d3a83df8e8d7fd1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f97d13fde3aba2043dff86c7caedc2927e8a9c55"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-authorities.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b372fdb097419635b3037ad04677972d35c9c702"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-components.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d4b5b4e991d3b96b300b33d2751048e876193529"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-model-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91004d6bf8f2adef4bb5035a7b996a0759d70807"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-script-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f649e8489a0bcfe12e044e8643f227313cef4d3c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-security.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d105145b536f3be1dd30bf96e7decf14f8619221"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-selectors.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7a8fb3115a4dc2d5ef3273376de5f6801f7bd243"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-shell.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d3234fe3d618ae5ee99ca65fb1644882a2318555"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/safe-html-text.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fbfb429be8d05ac1b50136214d56941681a59708"
+      },
+      {
+        "path": "tests/run-verification-v2-report-pages.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5d7a52a39f356cdf93dd6b9e7e53fa98029972e6"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/reports/accessibility-security-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cee89703ea0a667d8ba2e99759fbd48a3f626b0a"
+      },
+      {
+        "path": "tests/verification-v2/reports/case-pages-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "117d0c566738dcbf69daa71f1ea2fcc1b722f2f0"
+      },
+      {
+        "path": "tests/verification-v2/reports/case-pages.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1a14961a783638e3c235e5ab1431571e0369c539"
+      },
+      {
+        "path": "tests/verification-v2/reports/overview-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "03b7608581e193be23b9d7220c23776618c77ced"
+      },
+      {
+        "path": "tests/verification-v2/reports/overview.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "484a3f44191bc4974da46a005fa9db4506914e75"
+      },
+      {
+        "path": "tests/verification-v2/reports/report-model.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91f5d33a270facc94c835af86cb742366d93a9c5"
+      },
+      {
+        "path": "tests/verification-v2/reports/report-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b684b91462bf4d6606fa027bdc6a8c57f5815f77"
+      },
+      {
+        "path": "tests/verification-v2/reports/three-line-table.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ad7e945dac0b81c1f769bc87e0a671ed2d2dd52"
+      }
+    ],
+    "sha256": "3871bc6ff763b4f14cebd70145e8cd2d2b7bdbb4aaaef7e3920bc3d325649b25"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/025-case-report-pages/context.json",
+      "sha256": "5e07373fd3585297dd89d58486faabc7434d650515acdc8a1ab692fad808b4cd"
+    },
+    "report": {
+      "path": "development/tasks/025-case-report-pages/report.md",
+      "sha256": "f98db545d669ba9c4b3fa75d1167e550f81af153ee996bcbed825f053c49fb04",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/025-case-report-pages/spec-review.md",
+      "sha256": "8f191b9537315ac6bc7df361b2e376121a43e7fb5d34be1b15aeafbdd419992e",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/025-case-report-pages/quality-review.md",
+      "sha256": "fd98c47402c953c59d51e206bde3e699775feca9c67def67c93c1ade383fc6b4",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+      "command": "node --test tests/verification-v2/reports/case-pages.test.js",
+      "assertion_ids": [
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-29",
+        "AC-38"
+      ],
+      "recorded_at": "2026-08-11T23:12:56.652Z",
+      "validation_receipt_sha256": "9e2a3d311d196efa63a9f214ed0f3fd402e5c044324eae1caa6518d66b47185d",
+      "evidence_log": {
+        "path": "development/evidence/593-025-case-report-pages.log",
+        "sha256": "699126bec982a8a9320829c64be5dfd16290967998184c337d2d29ecbd8f0b3a",
+        "size": 1240
+      }
+    },
+    {
+      "id": "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6",
+      "command": "bash tests/run-verification-v2-report-pages.sh",
+      "assertion_ids": [
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-29",
+        "AC-38"
+      ],
+      "recorded_at": "2026-08-11T23:12:59.357Z",
+      "validation_receipt_sha256": "237532047c9c13753e81bc52cf046ae04340727216c7a2fae9103fe6f7fbf88b",
+      "evidence_log": {
+        "path": "development/evidence/594-025-case-report-pages.log",
+        "sha256": "9fdb1a93cc76bcfbb155354069d21039aee15d6918621b05de02dab85fbeccb7",
+        "size": 10277
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-09",
       "parent_id": "AC-09",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/025-case-report-pages/spec-review.md",
-        "development/tasks/025-case-report-pages/quality-review.md",
-        "development/evidence/342-025-case-report-pages.log",
-        "development/evidence/343-025-case-report-pages.log",
-        "development/evidence/344-025-case-report-pages.log",
-        "development/evidence/345-025-case-report-pages.log",
-        "development/evidence/346-025-case-report-pages.log",
-        "development/evidence/347-025-case-report-pages.log"
+      "test_run_ids": [
+        "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+        "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "test-case-catalog.html shows the approved case contract and domain coverage."
     },
@@ -27,17 +252,11 @@
       "id": "AC-10",
       "parent_id": "AC-10",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/025-case-report-pages/spec-review.md",
-        "development/tasks/025-case-report-pages/quality-review.md",
-        "development/evidence/342-025-case-report-pages.log",
-        "development/evidence/343-025-case-report-pages.log",
-        "development/evidence/344-025-case-report-pages.log",
-        "development/evidence/345-025-case-report-pages.log",
-        "development/evidence/346-025-case-report-pages.log",
-        "development/evidence/347-025-case-report-pages.log"
+      "test_run_ids": [
+        "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+        "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "test-case-results.html shows runs, attempts, readings, commands, evidence, hashes, freshness, and repair history."
     },
@@ -45,17 +264,11 @@
       "id": "AC-11",
       "parent_id": "AC-11",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/025-case-report-pages/spec-review.md",
-        "development/tasks/025-case-report-pages/quality-review.md",
-        "development/evidence/342-025-case-report-pages.log",
-        "development/evidence/343-025-case-report-pages.log",
-        "development/evidence/344-025-case-report-pages.log",
-        "development/evidence/345-025-case-report-pages.log",
-        "development/evidence/346-025-case-report-pages.log",
-        "development/evidence/347-025-case-report-pages.log"
+      "test_run_ids": [
+        "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+        "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Green, red, blocked, running, canceled, stale, flaky, and pass-after-fix reports share the same navigation and information hierarchy."
     },
@@ -63,17 +276,11 @@
       "id": "AC-29",
       "parent_id": "AC-29",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/025-case-report-pages/spec-review.md",
-        "development/tasks/025-case-report-pages/quality-review.md",
-        "development/evidence/342-025-case-report-pages.log",
-        "development/evidence/343-025-case-report-pages.log",
-        "development/evidence/344-025-case-report-pages.log",
-        "development/evidence/345-025-case-report-pages.log",
-        "development/evidence/346-025-case-report-pages.log",
-        "development/evidence/347-025-case-report-pages.log"
+      "test_run_ids": [
+        "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+        "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Reports generate for green, red, and blocked states and never become the source of truth."
     },
@@ -81,17 +288,11 @@
       "id": "AC-38",
       "parent_id": "AC-38",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/025-case-report-pages/report.md",
-        "development/tasks/025-case-report-pages/spec-review.md",
-        "development/tasks/025-case-report-pages/quality-review.md",
-        "development/evidence/342-025-case-report-pages.log",
-        "development/evidence/343-025-case-report-pages.log",
-        "development/evidence/344-025-case-report-pages.log",
-        "development/evidence/345-025-case-report-pages.log",
-        "development/evidence/346-025-case-report-pages.log",
-        "development/evidence/347-025-case-report-pages.log"
+      "test_run_ids": [
+        "receipt-ba56526472933fd6d940cf05dd59feb4399d09364676e9d4646950d43edf866d",
+        "receipt-fe99462b333a4bb8dec70e1c8daf83d3f735a98182566704348089f335df47b6"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Shared report components are reused across all three HTML pages."
     }

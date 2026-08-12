@@ -1,26 +1,170 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "007-runtime-installer",
-  "recorded_at": "2026-07-31T06:12:28.503Z",
+  "generated_at": "2026-08-11T23:37:55.061Z",
+  "recorded_at": "2026-08-11T23:08:40.832Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/runtime/**",
+      "plugins/specnav-verification/scripts/verification-runtime.js",
+      "plugins/specnav-verification/skills/specnav-verification-runtime-setup/**",
+      "tests/verification-v2/runtime/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority-key.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "47c441d92f1ea60d29cff90a274634aa3e173668"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7283718344d5913eb97eab8f4580610bb5366223"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc08f543e2fb293fe44a782344ca7a389e062759"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/installer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5553627605283d862cc60d78136344c3deae33b0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/lock-manifest.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "63e23536961e5a6a0a33e20818e9b7d08ad28cb3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "baf4b6e42135b7537417b8144bd5e9d31bcc2276"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/repair.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a517f99560b5a7509afcb8ede0e6bab981200e60"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/runtime-integrity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7941645143bec2402eec4ae43950a11824c1dffb"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verification-runtime.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c5c9d1436a3cfdc47037a32eb2915c0dc893ab3a"
+      },
+      {
+        "path": "plugins/specnav-verification/skills/specnav-verification-runtime-setup/SKILL.md",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf08c886ab7b392312acacbbd210d0a68e5e8b74"
+      },
+      {
+        "path": "tests/verification-v2/runtime/authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "42239b2bfb0323255765c1d32b321da7a677f2b1"
+      },
+      {
+        "path": "tests/verification-v2/runtime/doctor.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ac986f622ed9c4e6a2c59cecc39e4d6397e0d1a"
+      },
+      {
+        "path": "tests/verification-v2/runtime/installer.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cf692981aa14addf58867ffa767a063c07e6dc83"
+      },
+      {
+        "path": "tests/verification-v2/runtime/lock-manifest.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c72c59fa8481cfa85324d04856b802632fb57eda"
+      }
+    ],
+    "sha256": "409d5c6f9b8394cf7fbcdee8167f4bede9825d54ad158827c7e853797c076cc3"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/007-runtime-installer/context.json",
+      "sha256": "e1c17173698be68665af3e7089158a22546e54c1f2968f43c8ab8e7a638ef3c8"
+    },
+    "report": {
+      "path": "development/tasks/007-runtime-installer/report.md",
+      "sha256": "4e7592be64fa73554011c2a7928d4caf675e37b67d79b153a9601b548b3fbd60",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/007-runtime-installer/spec-review.md",
+      "sha256": "f267157cfa3c39518c6280b9d8761e3af76596f6d4da99e63cb3ff14a7f02c86",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/007-runtime-installer/quality-review.md",
+      "sha256": "6458e8ba250b570316dfb1fae2ce8dc6f5936805c393a1eefd733688f0c27800",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-06d6f66d9b4520c9290dae730c9cd0fe180ef086b5b5b2b643df8fd579a3f7f2",
+      "command": "node --test tests/verification-v2/runtime/installer.test.js",
+      "assertion_ids": [
+        "AC-04",
+        "AC-05"
+      ],
+      "recorded_at": "2026-08-11T23:08:40.832Z",
+      "validation_receipt_sha256": "e0027c9b9e7e92d766c5ac2e72c4ed5f9c7c3f79460c896effc27e4c48dd17ae",
+      "evidence_log": {
+        "path": "development/evidence/563-007-runtime-installer.log",
+        "sha256": "3d6f06ecafee4e287c7711be964262cfb2547cb780ab7a06a402aca62d41ce97",
+        "size": 1728
+      }
+    },
+    {
+      "id": "receipt-79e26b7d6f79a63bda423b72312ecf78caf2886f5cd013dd375d81d25d8b3550",
+      "command": "bash tests/run-verification-runtime-install.sh",
+      "assertion_ids": [
+        "AC-04",
+        "AC-05"
+      ],
+      "recorded_at": "2026-08-11T23:08:40.658Z",
+      "validation_receipt_sha256": "a90766d6cc9debb111ddfe9901baea265350fc3401f3672243aae62312d86c17",
+      "evidence_log": {
+        "path": "development/evidence/562-007-runtime-installer.log",
+        "sha256": "d7253de31333dfc9e4e19d4e04d5ccb6a965d6132a7b3a68de20850b6de04d07",
+        "size": 1759
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-04",
       "parent_id": "AC-04",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/007-runtime-installer/report.md",
-        "development/tasks/007-runtime-installer/spec-review.md",
-        "development/tasks/007-runtime-installer/quality-review.md",
-        "development/evidence/019-007-runtime-installer.log",
-        "development/evidence/020-007-runtime-installer.log",
-        "development/evidence/022-007-runtime-installer.log",
-        "development/evidence/023-007-runtime-installer.log",
-        "development/evidence/024-007-runtime-installer.log",
-        "development/evidence/025-007-runtime-installer.log",
-        "development/evidence/026-007-runtime-installer.log"
+      "test_run_ids": [
+        "receipt-06d6f66d9b4520c9290dae730c9cd0fe180ef086b5b5b2b643df8fd579a3f7f2",
+        "receipt-79e26b7d6f79a63bda423b72312ecf78caf2886f5cd013dd375d81d25d8b3550"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."
     },
@@ -28,18 +172,11 @@
       "id": "AC-05",
       "parent_id": "AC-05",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/007-runtime-installer/report.md",
-        "development/tasks/007-runtime-installer/spec-review.md",
-        "development/tasks/007-runtime-installer/quality-review.md",
-        "development/evidence/019-007-runtime-installer.log",
-        "development/evidence/020-007-runtime-installer.log",
-        "development/evidence/022-007-runtime-installer.log",
-        "development/evidence/023-007-runtime-installer.log",
-        "development/evidence/024-007-runtime-installer.log",
-        "development/evidence/025-007-runtime-installer.log",
-        "development/evidence/026-007-runtime-installer.log"
+      "test_run_ids": [
+        "receipt-06d6f66d9b4520c9290dae730c9cd0fe180ef086b5b5b2b643df8fd579a3f7f2",
+        "receipt-79e26b7d6f79a63bda423b72312ecf78caf2886f5cd013dd375d81d25d8b3550"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
     }

@@ -1,21 +1,147 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "006-runtime-lock-manifest",
-  "recorded_at": "2026-07-31T05:31:22.141Z",
+  "generated_at": "2026-08-11T23:37:55.013Z",
+  "recorded_at": "2026-08-11T23:08:40.399Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/assets/runtime/**",
+      "plugins/specnav-verification/kernel/runtime/**",
+      "tests/verification-v2/runtime/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/assets/runtime/verification-runtime-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "583d169710dd7af4c361c601b894a1372bb8548c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority-key.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "47c441d92f1ea60d29cff90a274634aa3e173668"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7283718344d5913eb97eab8f4580610bb5366223"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc08f543e2fb293fe44a782344ca7a389e062759"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/installer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5553627605283d862cc60d78136344c3deae33b0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/lock-manifest.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "63e23536961e5a6a0a33e20818e9b7d08ad28cb3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "baf4b6e42135b7537417b8144bd5e9d31bcc2276"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/repair.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a517f99560b5a7509afcb8ede0e6bab981200e60"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/runtime-integrity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7941645143bec2402eec4ae43950a11824c1dffb"
+      },
+      {
+        "path": "tests/verification-v2/runtime/authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "42239b2bfb0323255765c1d32b321da7a677f2b1"
+      },
+      {
+        "path": "tests/verification-v2/runtime/doctor.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ac986f622ed9c4e6a2c59cecc39e4d6397e0d1a"
+      },
+      {
+        "path": "tests/verification-v2/runtime/installer.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cf692981aa14addf58867ffa767a063c07e6dc83"
+      },
+      {
+        "path": "tests/verification-v2/runtime/lock-manifest.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c72c59fa8481cfa85324d04856b802632fb57eda"
+      }
+    ],
+    "sha256": "a33fad1ff22ad3e21437cd4cc290e47b43b582ffda9f1832690989e90d3ab941"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/006-runtime-lock-manifest/context.json",
+      "sha256": "139a8e9f558f6c3cce6253459fd3625049a1cca9a9fdce7e9aea599fef43d06e"
+    },
+    "report": {
+      "path": "development/tasks/006-runtime-lock-manifest/report.md",
+      "sha256": "992abfcc46a9ab04fc6bcda4c49c48ba4bbde2b4d94c72245fa1ffd296bdefd1",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/006-runtime-lock-manifest/spec-review.md",
+      "sha256": "fc7f3ed0b237a994229a5bd533f015b7a3b8bc30da2f68aa9131f418c97c19ad",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/006-runtime-lock-manifest/quality-review.md",
+      "sha256": "9a05762eb9ebd1e792e1a9740bf9a625a1f9f4d3316c066b19e7452e7f5bd079",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-c78e4b963c761817cd96f83530bfb0a6dacb9786fb5dfc85a99f95ae616c6978",
+      "command": "node --test tests/verification-v2/runtime/lock-manifest.test.js",
+      "assertion_ids": [
+        "AC-04",
+        "AC-05"
+      ],
+      "recorded_at": "2026-08-11T23:08:40.399Z",
+      "validation_receipt_sha256": "e405a6887701778621d44c9204c1cba22a2748e2ee8b54a44e56b26327c84a4d",
+      "evidence_log": {
+        "path": "development/evidence/561-006-runtime-lock-manifest.log",
+        "sha256": "8a951bcfef769462860c5fb1ba6239c1a1b53b61f8a9f484ab2ab0efdfc5f815",
+        "size": 1207
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-04",
       "parent_id": "AC-04",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/006-runtime-lock-manifest/report.md",
-        "development/tasks/006-runtime-lock-manifest/spec-review.md",
-        "development/tasks/006-runtime-lock-manifest/quality-review.md",
-        "development/evidence/014-006-runtime-lock-manifest.log",
-        "development/evidence/017-006-runtime-lock-manifest.log"
+      "test_run_ids": [
+        "receipt-c78e4b963c761817cd96f83530bfb0a6dacb9786fb5dfc85a99f95ae616c6978"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "The runtime setup command installs the locked Verification Runtime outside the business repository and shows exact installed versions and browser status."
     },
@@ -23,13 +149,10 @@
       "id": "AC-05",
       "parent_id": "AC-05",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/006-runtime-lock-manifest/report.md",
-        "development/tasks/006-runtime-lock-manifest/spec-review.md",
-        "development/tasks/006-runtime-lock-manifest/quality-review.md",
-        "development/evidence/014-006-runtime-lock-manifest.log",
-        "development/evidence/017-006-runtime-lock-manifest.log"
+      "test_run_ids": [
+        "receipt-c78e4b963c761817cd96f83530bfb0a6dacb9786fb5dfc85a99f95ae616c6978"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Runtime doctor reports missing Node, packages, browser binaries, Midscene provider configuration, corrupt locks, and permission failures as exact blockers."
     }

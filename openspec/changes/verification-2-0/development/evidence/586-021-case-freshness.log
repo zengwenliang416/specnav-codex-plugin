@@ -1,0 +1,181 @@
+# command: node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js
+# exit_status: 0
+# duration_ms: 178
+
+## stdout
+TAP version 13
+# Subtest: matching run and case fingerprints produce a fresh case fact
+ok 1 - matching run and case fingerprints produce a fresh case fact
+  ---
+  duration_ms: 1.749291
+  type: 'test'
+  ...
+# Subtest: changed case_snapshot_hash makes the concrete case stale
+ok 2 - changed case_snapshot_hash makes the concrete case stale
+  ---
+  duration_ms: 0.415167
+  type: 'test'
+  ...
+# Subtest: changed code_sha makes the concrete case stale
+ok 3 - changed code_sha makes the concrete case stale
+  ---
+  duration_ms: 0.271084
+  type: 'test'
+  ...
+# Subtest: changed test_sha makes the concrete case stale
+ok 4 - changed test_sha makes the concrete case stale
+  ---
+  duration_ms: 0.249458
+  type: 'test'
+  ...
+# Subtest: changed environment_hash makes the concrete case stale
+ok 5 - changed environment_hash makes the concrete case stale
+  ---
+  duration_ms: 0.33425
+  type: 'test'
+  ...
+# Subtest: changed runtime_version makes the concrete case stale
+ok 6 - changed runtime_version makes the concrete case stale
+  ---
+  duration_ms: 0.322667
+  type: 'test'
+  ...
+# Subtest: changed kernel_version makes the concrete case stale
+ok 7 - changed kernel_version makes the concrete case stale
+  ---
+  duration_ms: 0.23675
+  type: 'test'
+  ...
+# Subtest: changed browser_project makes the concrete case stale
+ok 8 - changed browser_project makes the concrete case stale
+  ---
+  duration_ms: 0.163083
+  type: 'test'
+  ...
+# Subtest: changed test_data_snapshot makes the concrete case stale
+ok 9 - changed test_data_snapshot makes the concrete case stale
+  ---
+  duration_ms: 0.479958
+  type: 'test'
+  ...
+# Subtest: missing current case fingerprint is unknown and blocks freshness
+ok 10 - missing current case fingerprint is unknown and blocks freshness
+  ---
+  duration_ms: 0.658792
+  type: 'test'
+  ...
+# Subtest: mtime-only input cannot produce fresh
+ok 11 - mtime-only input cannot produce fresh
+  ---
+  duration_ms: 0.432875
+  type: 'test'
+  ...
+# Subtest: latest attempt is selected independently for every approved case
+ok 12 - latest attempt is selected independently for every approved case
+  ---
+  duration_ms: 1.103
+  type: 'test'
+  ...
+# Subtest: snapshot artifact and run hash mismatch blocks every case
+ok 13 - snapshot artifact and run hash mismatch blocks every case
+  ---
+  duration_ms: 0.240584
+  type: 'test'
+  ...
+# Subtest: tied latest attempts are ambiguous instead of selected by id
+ok 14 - tied latest attempts are ambiguous instead of selected by id
+  ---
+  duration_ms: 0.30875
+  type: 'test'
+  ...
+# Subtest: an empty approved snapshot cannot produce a fresh summary
+ok 15 - an empty approved snapshot cannot produce a fresh summary
+  ---
+  duration_ms: 0.148958
+  type: 'test'
+  ...
+# Subtest: shared evidence freshness fails closed when source fingerprints are missing
+ok 16 - shared evidence freshness fails closed when source fingerprints are missing
+  ---
+  duration_ms: 0.299375
+  type: 'test'
+  ...
+# Subtest: attempts from another run or change cannot become the latest case source
+ok 17 - attempts from another run or change cannot become the latest case source
+  ---
+  duration_ms: 0.163458
+  type: 'test'
+  ...
+# Subtest: missing run fingerprints cannot be supplied implicitly by an attempt
+ok 18 - missing run fingerprints cannot be supplied implicitly by an attempt
+  ---
+  duration_ms: 1.119084
+  type: 'test'
+  ...
+# Subtest: missing run and attempt identities cannot compare as equal
+ok 19 - missing run and attempt identities cannot compare as equal
+  ---
+  duration_ms: 0.231333
+  type: 'test'
+  ...
+# Subtest: a selected attempt without a stable id blocks the case
+ok 20 - a selected attempt without a stable id blocks the case
+  ---
+  duration_ms: 0.181792
+  type: 'test'
+  ...
+# Subtest: string or non-positive attempt sequences fail closed
+ok 21 - string or non-positive attempt sequences fail closed
+  ---
+  duration_ms: 0.650834
+  type: 'test'
+  ...
+# Subtest: evaluation never mutates caller-owned artifacts
+ok 22 - evaluation never mutates caller-owned artifacts
+  ---
+  duration_ms: 0.375583
+  type: 'test'
+  ...
+# Subtest: hostile request values fail closed without throwing
+ok 23 - hostile request values fail closed without throwing
+  ---
+  duration_ms: 0.19925
+  type: 'test'
+  ...
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 24 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 1.000917
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 25 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 36.296583
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 26 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.384833
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 27 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 30.578791
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 125.29625
+
+
+## stderr
+(empty)

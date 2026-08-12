@@ -1,31 +1,135 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "015-reading-model",
-  "recorded_at": "2026-08-01T02:56:44.617Z",
+  "generated_at": "2026-08-11T23:37:55.445Z",
+  "recorded_at": "2026-08-11T23:10:59.583Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/evaluation/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "tests/verification-v2/evaluation/**",
+      "tests/verification-v2/kernel/package-boundary.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d40b91e939b71744bbb854541bf76111a62a46bd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/not-applicable-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b76f3897c2652ee4407e3def8c0bdc22123755c1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/oracle-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1ebc8e542672387a05e8be85ccd85e16e6a93de3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/reading-evaluator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "559d4e780ccdd602b5e8374340785da3da8d76b6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/six-domain-aggregator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1edd084a566debc95ca61cd72334e7b28b16c745"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/terminal-state.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "32063139b0ea82c6abb1c7a731080faae04884d7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/aggregation.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "804b1699bc2530f19fac75380bd60fb198c0df09"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/not-applicable.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a267a1a77d0d36c144a2a810e3d10aaa2d4cfa46"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/reading-model.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "50328c31ffe24bf16e4a72fec89f2f1f99910e17"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "861b2bc5c36084aa00702132b6bac9c60cae774eed1d93cd5a4d3150c176c7af"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/015-reading-model/context.json",
+      "sha256": "468f9424ea1ff64d166f85ed14d1170555b858907aa09db91f8cec4e6d6dcfa6"
+    },
+    "report": {
+      "path": "development/tasks/015-reading-model/report.md",
+      "sha256": "2f65a4b5781adc6fca08e2670004a3f61985e831e132b852bc803b1a6597278a",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/015-reading-model/spec-review.md",
+      "sha256": "895645c079cb2e6c544e02640f6a64cd89e4ffcd352f9411820e9021aaa4f7a8",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/015-reading-model/quality-review.md",
+      "sha256": "ff104fdd4b32ec07d27d48e2d7f43771eb6a8fefcf644a7958bfcd7ee3cb3e0b",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-65e1e4e809ed339c94fab806ea3f404fd36de67c618dc3137c0dca0baf3a574b",
+      "command": "node --test tests/verification-v2/evaluation/reading-model.test.js",
+      "assertion_ids": [
+        "AC-16"
+      ],
+      "recorded_at": "2026-08-11T23:10:59.583Z",
+      "validation_receipt_sha256": "b54cab407260dcd4a4963d15fa11873b839aae728b41524d9c5607822943ac31",
+      "evidence_log": {
+        "path": "development/evidence/575-015-reading-model.log",
+        "sha256": "addb96293dd2fbb3cf353348f8c1e7826767e023aef330dadc3123728c1b4746",
+        "size": 2521
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-16",
       "parent_id": "AC-16",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/015-reading-model/report.md",
-        "development/tasks/015-reading-model/spec-review.md",
-        "development/tasks/015-reading-model/quality-review.md",
-        "development/evidence/233-015-reading-model.log",
-        "development/evidence/234-015-reading-model.log",
-        "development/evidence/235-015-reading-model.log",
-        "development/evidence/236-015-reading-model.log",
-        "development/evidence/237-015-reading-model.log",
-        "development/evidence/239-015-reading-model.log",
-        "development/evidence/240-015-reading-model.log",
-        "development/evidence/241-015-reading-model.log",
-        "development/evidence/242-015-reading-model.log",
-        "development/evidence/243-015-reading-model.log",
-        "development/evidence/244-015-reading-model.log",
-        "development/evidence/245-015-reading-model.log"
+      "test_run_ids": [
+        "receipt-65e1e4e809ed339c94fab806ea3f404fd36de67c618dc3137c0dca0baf3a574b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Midscene output cannot produce PASS without a deterministic assertion, structured fact, or explicit human signoff."
     }

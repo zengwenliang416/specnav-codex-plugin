@@ -1,41 +1,230 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "011-midscene-runner",
-  "recorded_at": "2026-08-01T02:16:07.645Z",
+  "generated_at": "2026-08-11T23:37:55.265Z",
+  "recorded_at": "2026-08-11T23:10:52.074Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/adapters/midscene-adapter.js",
+      "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+      "plugins/specnav-verification/kernel/execution/index.js",
+      "plugins/specnav-verification/kernel/execution/midscene-*.js",
+      "plugins/specnav-verification/kernel/execution/orchestrator.js",
+      "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+      "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+      "plugins/specnav-verification/kernel/execution/preflight.js",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/runtime/doctor.js",
+      "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+      "plugins/specnav-verification/schemas/test-case.schema.json",
+      "tests/run-verification-v2-midscene-contract.sh",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/midscene/**",
+      "tests/verification-v2/runtime/doctor.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/midscene-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cbcd1169a37f0f75f236f69dffce23d622385834"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9e55feb14cb48e22a2f66df3218dbfb754851c5"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f756d2ddd07eb8d34e6bd2afb127bc8e01aa645"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-oracle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b92794dab039045d90b569b2a79bcb5da98ca866"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-prompt.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9638130ad6e04b596fea3224b0970c6b84c0383e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "89934c6b3ad09acf7f44c0ee31977b827fafa3e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09ee7cb0f70643696b2ff6bf7c786809e599b594"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fade8c254bb9129e2d1929087b7f3dcb37e6090a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/preflight.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3076a1b71257534773731e70ed245ebdb93904ca"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc08f543e2fb293fe44a782344ca7a389e062759"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "baf4b6e42135b7537417b8144bd5e9d31bcc2276"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/test-case.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9392d0a93a3d8a4274b8e76fa668e6c8ad692571"
+      },
+      {
+        "path": "tests/run-verification-v2-midscene-contract.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "46c97c2b22d3ea0422dcaabfc9be24fb80a7abf3"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/midscene/live-provider-run.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4c6d76c421733c5e10ab3940bff066d47f50bda5"
+      },
+      {
+        "path": "tests/verification-v2/midscene/midscene-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b82aa27a3c3bb29f2a150278f0398bcdf67a1bc5"
+      },
+      {
+        "path": "tests/verification-v2/midscene/oracle-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "725369cc12000ee59b7e7dbf04ac754e8eaf1e5d"
+      },
+      {
+        "path": "tests/verification-v2/midscene/provider-proxy.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dc56c685080af2ab23356f547934f7b951ded04c"
+      },
+      {
+        "path": "tests/verification-v2/midscene/read-only-oracle.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ffe374c5d7e4961ab24644158fd247a3f664876"
+      },
+      {
+        "path": "tests/verification-v2/midscene/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bb7eb00fc8e17722a6d9d5bbb631ff94556ec632"
+      },
+      {
+        "path": "tests/verification-v2/runtime/doctor.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ac986f622ed9c4e6a2c59cecc39e4d6397e0d1a"
+      }
+    ],
+    "sha256": "caaeb104cd77122f3d2fbab5f09f84a42f98ddc5c020be1e326dce406ec35e81"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/011-midscene-runner/context.json",
+      "sha256": "56a26e545a1a90d6a878dd3f536559f93f10b1939f4be6409b3a72268bb00a49"
+    },
+    "report": {
+      "path": "development/tasks/011-midscene-runner/report.md",
+      "sha256": "8d57bc67f71aa367eee9f55998b22cdc570dac7c644c134ad6cecbabd3992c1b",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/011-midscene-runner/spec-review.md",
+      "sha256": "73f568a2147eefb2cf0192f55e3b3572bdcf1060f3cdb44fb7aec3c83d7f6b8d",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/011-midscene-runner/quality-review.md",
+      "sha256": "6ccdb35ae1cbeb830981dc8ee4995b571bed8268b7bc590d75e0efbde8d8f807",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-0b3961216259db5cca43f94017e645d8ba9901cbf1cd25020297b14a1f8d4eae",
+      "command": "bash tests/run-verification-v2-midscene-contract.sh",
+      "assertion_ids": [
+        "AC-16",
+        "AC-39:midscene-adapter-boundary"
+      ],
+      "recorded_at": "2026-08-11T23:10:52.074Z",
+      "validation_receipt_sha256": "57afefe4d4761aa21cf228519de9c61e052636455ebf69a30408039f62912faf",
+      "evidence_log": {
+        "path": "development/evidence/570-011-midscene-runner.log",
+        "sha256": "6570dda53c75ffbc69908d20fbe3670d464651cc66adde2462070d6ff1971c5b",
+        "size": 10773
+      }
+    },
+    {
+      "id": "receipt-4721ebaf67273d7ad0be9796361aa6e463a9b9664497fee384e7a899250ca413",
+      "command": "node --test tests/verification-v2/midscene/*.test.js tests/verification-v2/runtime/doctor.test.js",
+      "assertion_ids": [
+        "AC-16",
+        "AC-39:midscene-adapter-boundary"
+      ],
+      "recorded_at": "2026-08-11T23:10:38.840Z",
+      "validation_receipt_sha256": "83813055437ea3261a8214f4414ce9968e6b5955df9dec99deff7f2efa31b459",
+      "evidence_log": {
+        "path": "development/evidence/569-011-midscene-runner.log",
+        "sha256": "5e67c73fc3b24cf20974ce572d1e50b2e433b12fc414b379ab193d1e8ed37087",
+        "size": 7463
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-16",
       "parent_id": "AC-16",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/011-midscene-runner/report.md",
-        "development/tasks/011-midscene-runner/spec-review.md",
-        "development/tasks/011-midscene-runner/quality-review.md",
-        "development/evidence/207-011-midscene-runner.log",
-        "development/evidence/208-011-midscene-runner.log",
-        "development/evidence/209-011-midscene-runner.log",
-        "development/evidence/210-011-midscene-runner.log",
-        "development/evidence/211-011-midscene-runner.log",
-        "development/evidence/212-011-midscene-runner.log",
-        "development/evidence/213-011-midscene-runner.log",
-        "development/evidence/214-011-midscene-runner.log",
-        "development/evidence/215-011-midscene-runner.log",
-        "development/evidence/216-011-midscene-runner.log",
-        "development/evidence/217-011-midscene-runner.log",
-        "development/evidence/218-011-midscene-runner.log",
-        "development/evidence/219-011-midscene-runner.log",
-        "development/evidence/222-011-midscene-runner.log",
-        "development/evidence/223-011-midscene-runner.log",
-        "development/evidence/224-011-midscene-runner.log",
-        "development/evidence/225-011-midscene-runner.log",
-        "development/evidence/226-011-midscene-runner.log",
-        "development/evidence/228-011-midscene-runner.log",
-        "development/evidence/229-011-midscene-runner.log",
-        "development/evidence/230-011-midscene-runner.log",
-        "development/evidence/231-011-midscene-runner.log"
+      "test_run_ids": [
+        "receipt-0b3961216259db5cca43f94017e645d8ba9901cbf1cd25020297b14a1f8d4eae",
+        "receipt-4721ebaf67273d7ad0be9796361aa6e463a9b9664497fee384e7a899250ca413"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Midscene output cannot produce PASS without a deterministic assertion, structured fact, or explicit human signoff."
     },
@@ -43,33 +232,11 @@
       "id": "AC-39:midscene-adapter-boundary",
       "parent_id": "AC-39",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/011-midscene-runner/report.md",
-        "development/tasks/011-midscene-runner/spec-review.md",
-        "development/tasks/011-midscene-runner/quality-review.md",
-        "development/evidence/207-011-midscene-runner.log",
-        "development/evidence/208-011-midscene-runner.log",
-        "development/evidence/209-011-midscene-runner.log",
-        "development/evidence/210-011-midscene-runner.log",
-        "development/evidence/211-011-midscene-runner.log",
-        "development/evidence/212-011-midscene-runner.log",
-        "development/evidence/213-011-midscene-runner.log",
-        "development/evidence/214-011-midscene-runner.log",
-        "development/evidence/215-011-midscene-runner.log",
-        "development/evidence/216-011-midscene-runner.log",
-        "development/evidence/217-011-midscene-runner.log",
-        "development/evidence/218-011-midscene-runner.log",
-        "development/evidence/219-011-midscene-runner.log",
-        "development/evidence/222-011-midscene-runner.log",
-        "development/evidence/223-011-midscene-runner.log",
-        "development/evidence/224-011-midscene-runner.log",
-        "development/evidence/225-011-midscene-runner.log",
-        "development/evidence/226-011-midscene-runner.log",
-        "development/evidence/228-011-midscene-runner.log",
-        "development/evidence/229-011-midscene-runner.log",
-        "development/evidence/230-011-midscene-runner.log",
-        "development/evidence/231-011-midscene-runner.log"
+      "test_run_ids": [
+        "receipt-0b3961216259db5cca43f94017e645d8ba9901cbf1cd25020297b14a1f8d4eae",
+        "receipt-4721ebaf67273d7ad0be9796361aa6e463a9b9664497fee384e7a899250ca413"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Direct evidence for AC-16 and AC-39:midscene-adapter-boundary"
     }

@@ -1,34 +1,823 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "031-cross-host-drift-ci",
-  "recorded_at": "2026-08-02T17:51:27.970Z",
+  "generated_at": "2026-08-11T23:37:56.350Z",
+  "recorded_at": "2026-08-11T23:23:01.828Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      ".github/workflows/ci.yml",
+      "integrations/claude-code/sync-verification-plugin.js",
+      "integrations/codefree-o/sync-verification-module.js",
+      "plugins/specnav-verification/kernel/**",
+      "tests/run-smoke.sh",
+      "tests/run-verification-v2-cross-host.sh",
+      "tests/verification-v2/cross-host/**"
+    ],
+    "entries": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c14c5cc7d0c9a03ccbae59ed30f7a6823712a1e4"
+      },
+      {
+        "path": "integrations/claude-code/sync-verification-plugin.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e27fbb82bcc32ef1a4d2207cbf3ef7436edf309d"
+      },
+      {
+        "path": "integrations/codefree-o/sync-verification-module.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ab88caabbd682fa28484cd8a37791177392adc6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/command-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e92ef6f1435841ea23009d2dbc4cf8aebba56a20"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/midscene-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cbcd1169a37f0f75f236f69dffce23d622385834"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/adapters/playwright-adapter.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9e55feb14cb48e22a2f66df3218dbfb754851c5"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-checks.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5e2ed86376e419ceead478b7061a1c9c80cec4a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/approval-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c06e5a61af8f989646eb2c6affe4ee8ed68e1e03"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/canonical.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8564ec380eb57713791ce691050e4f6c7abe0138"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/case-validation.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6e8c5fcfc4ab229b656eb06b1237b1d4c98e13a0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dd71435fefb48815e195d90fa219365de12876c9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/normalize.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "65754ea03557015d4874bb2e1d556a41ea51c144"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "40aaf41756565e7d2c335fd88640427418cb557d"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/cases/snapshot-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a1e8c770ffffbec41b725a02dee4e4ee9ee992a5"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a5d808b834f4ec422527dd534930fad4628f2064"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/artifact-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f17df820d7680562f9f1660134fe711f234861c4"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/attempt-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bbb6b078baa6ec73078f595fdb6e803f43551057"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/case-internal-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fcb401a9015a17c2656a0213c7d677e95bd4f4ec"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/case-member-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "38019cf019575749bde3a159c2865cf421e0152b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/cross-reference-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90ccbad10c90e302171e7f7a52696e0f6ee9a2e6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/graph-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5cc49000539500cd5247808ec954632130248fd4"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/reading-evidence-binding-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "81989ad9a0955271c5bc1f6bc593116f949e2a25"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/reference-utils.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "993fa8bb57a25bdedf605e8675d883f5aa2988cf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/retry-identity-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "97cb3cad2a40688da689a3938eaddcd4c21efc81"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/schema-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d7a69cbf19882219e575086cad432bc654c97aa9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/contracts/validate-fixtures.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "92a82214d20bf47efeb4203a2cb021ffa512938e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d40b91e939b71744bbb854541bf76111a62a46bd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/not-applicable-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b76f3897c2652ee4407e3def8c0bdc22123755c1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/oracle-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1ebc8e542672387a05e8be85ccd85e16e6a93de3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/reading-evaluator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "559d4e780ccdd602b5e8374340785da3da8d76b6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/six-domain-aggregator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1edd084a566debc95ca61cd72334e7b28b16c745"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/terminal-state.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "32063139b0ea82c6abb1c7a731080faae04884d7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/blockers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bee6e408d3f4f207167a1ba9ef57a03123fbfd6b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/case-freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66cdde546067694c9b91f504fa5ef9c0c02b2abf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/content-addressed-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d35ce720366bfa3003a26e5271c4d00d5e768c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f79b5914fee47fcaa0c9ba57dd80206ea3cf4e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/fingerprint-comparator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e85b18cc8a71bec43bad265f57fea785167fbf76"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6fb340c5eeb016743a66353702e4cf8741901e42"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/identity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "783dc04ca92817f58fff1ac12118372547856d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c2353b698e91ef0ca9e96b2c65fd9782df2db407"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "347131d433ddc1aab8dc1bc393f331ee1de1ce74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/integrity-checker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a520e21e3de723f5b865fc9d32b03fcaa824aed7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/object-reader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c38aee9f45c1c14c3e08ccbf6de5a0e6b56d38bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/paths.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e41d77111ff45995ae55bb8447d9f6b328370b1f"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/raw-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0f945b03093738a70e168bd94406cbdddb8ebbd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/redaction-constants.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf94cd326701935c84200008405d11a6f98cba6a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/repository-fingerprint.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c774bb9375e43db7b71f27e8d52184d8acc03169"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/secret-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c95cfb6c40dd8e575dd6cb7d40ce298decd3299"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/structured-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "eb96750d4afa9712737d1a54d935d8d11808bada"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/text-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44ac044d30e3595ba73e5196ea46d44dde6c9ec6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/browser-access-policy.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02bc2185a39a90c2daa51de42273befd638ecf37"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/command-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82389f2f1cf707a88aee0cd91ba1cc35d88436bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/event-sequence.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "17071b69e44f5a2e0e937052e056bca9e5a2af8c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/host-proof-launcher.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25b326f8e74616eda4a405fd09dd91d0cbe58a74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f756d2ddd07eb8d34e6bd2afb127bc8e01aa645"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/lifecycle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e10a997d9582b9d3bc46ffd4a4f85f1c3f231bb1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-oracle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b92794dab039045d90b569b2a79bcb5da98ca866"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-prompt.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9638130ad6e04b596fea3224b0970c6b84c0383e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "89934c6b3ad09acf7f44c0ee31977b827fafa3e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09ee7cb0f70643696b2ff6bf7c786809e599b594"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-scenario.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bcdb6805340a65f13df2624edad778223c6dedc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fade8c254bb9129e2d1929087b7f3dcb37e6090a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/preflight.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3076a1b71257534773731e70ed245ebdb93904ca"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/gates/decision-engine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f00792a4a2497b07ab7e56113426e826c55dfc5c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/gates/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab8b2bb6c0f437469977f6b7d064aada7ab044ea"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/governance/compatibility-snapshot.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c28fb0257575715fb21f960d6e0411296508a2fb"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/governance/cross-host-drift.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "63d4ce9bddb4251b47284b4b6ce94570d71e2d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/governance/host-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "248b70ccbe522f5270ac4835de04dd4a61c56956"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/governance/host-provenance.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a3c4d15891885ed90730d054286ec95c79dfbe74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/governance/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "601fa638c4549bbe56281f6ef4733f9fb6fcb88a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/metadata.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a26ad8ba1376f3b641ab2367016214ce186b4a15"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/artifact-backup.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b2df7ad8cf49d36321335d31a35d9a7040a089e1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "537d0f1dd619d23a8ed044c168994d528c7ce4d0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/migrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6ec555cd1ad72bb5ea91de9f600e825f01db4835"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/migration/transformation-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b531d3552575160f476b94547dde3aeb563f0b34"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/persistence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dfdde3835a8104340dc4d53a60fe64d2c0d097ab"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/persistence/verification-artifact-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fe114fb394f4c27955b54fbc830f3d01ccc13c55"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/pipeline/artifact-pipeline.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "10714b5afbb08f65ad40af99d903f15aaaddc0d9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/pipeline/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d430cff130cd7ed7c0d4cb1ecc73c290e58328aa"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/pipeline/production-runner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "796dc652ea3345ce00e9c9544afc73df8b1de123"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/authority-log.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9dc39631fa348e0ddd5a24ca2da5b18ec731d90"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/case-rerun-planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c86504a0304733db543064c7531fa740bc7634f0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/development-repair-bridge.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f88e45c593a1f9423011ecfd792b327a4a5e0043"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-classifier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e58e1612565997855557a2e14f49e838446ddd3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-state-reducer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b350f4a1459c9e6befabeef534d4347b034661fd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "016d6897b4a2cd505ed370e7db0a418f684ee965"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b7a162fce1ebb31babfaf8431761de3e5122d5bb"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/transition-applier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ba90ac85322a37ce3daba63a18dc01a67020cdc9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/trusted-fact-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e5310d1f9fc59b43275135cad3540563db9b0ef8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/case-page-renderers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2507074ca44add08cc0b15f88c9afb7ccd28823e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/evidence-link-resolver.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e943b1b21114c5d18228ad9db90a7662345c724a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0ee1ffff347d6545bf7699ce5fffc840ff4f6808"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/overview-renderer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c46d3b2e46043cff10ee78648d3a83df8e8d7fd1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f97d13fde3aba2043dff86c7caedc2927e8a9c55"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-authorities.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b372fdb097419635b3037ad04677972d35c9c702"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-components.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d4b5b4e991d3b96b300b33d2751048e876193529"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-model-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91004d6bf8f2adef4bb5035a7b996a0759d70807"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-script-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f649e8489a0bcfe12e044e8643f227313cef4d3c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-security.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d105145b536f3be1dd30bf96e7decf14f8619221"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-selectors.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7a8fb3115a4dc2d5ef3273376de5f6801f7bd243"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-shell.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d3234fe3d618ae5ee99ca65fb1644882a2318555"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/safe-html-text.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fbfb429be8d05ac1b50136214d56941681a59708"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority-key.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "47c441d92f1ea60d29cff90a274634aa3e173668"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7283718344d5913eb97eab8f4580610bb5366223"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/doctor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cc08f543e2fb293fe44a782344ca7a389e062759"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/installer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5553627605283d862cc60d78136344c3deae33b0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/lock-manifest.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "63e23536961e5a6a0a33e20818e9b7d08ad28cb3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/provider-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "baf4b6e42135b7537417b8144bd5e9d31bcc2276"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/repair.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a517f99560b5a7509afcb8ede0e6bab981200e60"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/runtime/runtime-integrity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7941645143bec2402eec4ae43950a11824c1dffb"
+      },
+      {
+        "path": "tests/run-smoke.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9062a53314d39ddafc7fe4f9caa4fba1e54defb4"
+      },
+      {
+        "path": "tests/run-verification-v2-cross-host.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1264a414326d4a185bfaa098cf984588d68288d1"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/claude-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "812c3d493be69ea98e6d80440e192079980d7114"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codefree-o-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7258764410c45b539034fbb95a60004190b611f6"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/codex-adapter.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bdf9c261bb550f53f22c1348e27ffdac4148021"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/drift-detector.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9651a6ea5fc5598c5895f031403caa3672ed0eb8"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d638e1c045b8061f80e0e628ac9b10a54883c77a"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-authority.integration.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7205616781b8890fa7375df0734b28ec1869d3ec"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b18d9b339aeacc8affde54b2bfe3ce99b7a3bd19"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/operations-proof-sync.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "72bec4e1c213a7bb131b9cd6d69d7d146ed7af7e"
+      },
+      {
+        "path": "tests/verification-v2/cross-host/runner-authority.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f2dfc1cfc767a4e6660ea11b18cede18cb4e311"
+      }
+    ],
+    "sha256": "911ad06af79998bbc5ff981ec874f21c745e28e0af66c2b7a89bb80c5bd06a3c"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/031-cross-host-drift-ci/context.json",
+      "sha256": "05f040e20e0286ab6bf51cd9119e53d58524d9a92af89df1777bf49a082646a8"
+    },
+    "report": {
+      "path": "development/tasks/031-cross-host-drift-ci/report.md",
+      "sha256": "aaa3f5671e694dbb49956c0c7557e866c9e63573630e1c58fbbb771b86b1b969",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/031-cross-host-drift-ci/spec-review.md",
+      "sha256": "8d687382cd76c5d5735530aef513cef59514a89e6a709710f470b31b3187a9f4",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/031-cross-host-drift-ci/quality-review.md",
+      "sha256": "6d880637590517299153aeb1dce0fcfa13a39e50c90c404efefef88d160afe32",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-e0a6c81abbc789a3b7adf356bb67d8aae4ebadad2c9729db4480306085550b07",
+      "command": "npm test",
+      "assertion_ids": [
+        "AC-37",
+        "AC-39",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:23:01.828Z",
+      "validation_receipt_sha256": "78f0b7ca97468dc7a4d4d8d477d240b3a006c8472b86af6753d2d4b3b03815bf",
+      "evidence_log": {
+        "path": "development/evidence/606-031-cross-host-drift-ci.log",
+        "sha256": "a2f39ea7bacac093ba253abda1fd2bfda067c5d4dd759848b791b94089d662ee",
+        "size": 33732
+      }
+    },
+    {
+      "id": "receipt-faaf02e48fda0fc9fbc9f42f112af1dc70a5f5b5a69c0cf2c9570e981077988b",
+      "command": "bash tests/run-verification-v2-cross-host.sh",
+      "assertion_ids": [
+        "AC-37",
+        "AC-39",
+        "AC-40"
+      ],
+      "recorded_at": "2026-08-11T23:15:39.040Z",
+      "validation_receipt_sha256": "b6066c233a9e28ce96f4dd7cd05cc9e5f5acf83209f89d215ef9993ee6a4f1d9",
+      "evidence_log": {
+        "path": "development/evidence/605-031-cross-host-drift-ci.log",
+        "sha256": "2b3e013e9f82fb8b3a3d5e761a6bcc08b4009ee233ef81fff874b6ca581c5e0c",
+        "size": 16172
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-37",
       "parent_id": "AC-37",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/031-cross-host-drift-ci/report.md",
-        "development/tasks/031-cross-host-drift-ci/spec-review.md",
-        "development/tasks/031-cross-host-drift-ci/quality-review.md",
-        "development/evidence/442-031-cross-host-drift-ci.log",
-        "development/evidence/445-031-cross-host-drift-ci.log",
-        "development/evidence/446-031-cross-host-drift-ci.log",
-        "development/evidence/447-031-cross-host-drift-ci.log",
-        "development/evidence/448-031-cross-host-drift-ci.log",
-        "development/evidence/450-031-cross-host-drift-ci.log",
-        "development/evidence/451-031-cross-host-drift-ci.log",
-        "development/evidence/452-031-cross-host-drift-ci.log",
-        "development/evidence/453-031-cross-host-drift-ci.log",
-        "development/evidence/454-031-cross-host-drift-ci.log",
-        "development/evidence/457-031-cross-host-drift-ci.log",
-        "development/evidence/459-031-cross-host-drift-ci.log",
-        "development/evidence/460-031-cross-host-drift-ci.log",
-        "development/evidence/461-031-cross-host-drift-ci.log",
-        "development/evidence/464-031-cross-host-drift-ci.log"
+      "test_run_ids": [
+        "receipt-e0a6c81abbc789a3b7adf356bb67d8aae4ebadad2c9729db4480306085550b07",
+        "receipt-faaf02e48fda0fc9fbc9f42f112af1dc70a5f5b5a69c0cf2c9570e981077988b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Codex, Claude Code, and CodeFree-O adapters pass the same kernel contract and fixture suite."
     },
@@ -36,26 +825,11 @@
       "id": "AC-39",
       "parent_id": "AC-39",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/031-cross-host-drift-ci/report.md",
-        "development/tasks/031-cross-host-drift-ci/spec-review.md",
-        "development/tasks/031-cross-host-drift-ci/quality-review.md",
-        "development/evidence/442-031-cross-host-drift-ci.log",
-        "development/evidence/445-031-cross-host-drift-ci.log",
-        "development/evidence/446-031-cross-host-drift-ci.log",
-        "development/evidence/447-031-cross-host-drift-ci.log",
-        "development/evidence/448-031-cross-host-drift-ci.log",
-        "development/evidence/450-031-cross-host-drift-ci.log",
-        "development/evidence/451-031-cross-host-drift-ci.log",
-        "development/evidence/452-031-cross-host-drift-ci.log",
-        "development/evidence/453-031-cross-host-drift-ci.log",
-        "development/evidence/454-031-cross-host-drift-ci.log",
-        "development/evidence/457-031-cross-host-drift-ci.log",
-        "development/evidence/459-031-cross-host-drift-ci.log",
-        "development/evidence/460-031-cross-host-drift-ci.log",
-        "development/evidence/461-031-cross-host-drift-ci.log",
-        "development/evidence/464-031-cross-host-drift-ci.log"
+      "test_run_ids": [
+        "receipt-e0a6c81abbc789a3b7adf356bb67d8aae4ebadad2c9729db4480306085550b07",
+        "receipt-faaf02e48fda0fc9fbc9f42f112af1dc70a5f5b5a69c0cf2c9570e981077988b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Playwright, Midscene, command execution, EvidenceStore, failure classification, and report rendering use explicit adapter or service boundaries."
     },
@@ -63,26 +837,11 @@
       "id": "AC-40",
       "parent_id": "AC-40",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/031-cross-host-drift-ci/report.md",
-        "development/tasks/031-cross-host-drift-ci/spec-review.md",
-        "development/tasks/031-cross-host-drift-ci/quality-review.md",
-        "development/evidence/442-031-cross-host-drift-ci.log",
-        "development/evidence/445-031-cross-host-drift-ci.log",
-        "development/evidence/446-031-cross-host-drift-ci.log",
-        "development/evidence/447-031-cross-host-drift-ci.log",
-        "development/evidence/448-031-cross-host-drift-ci.log",
-        "development/evidence/450-031-cross-host-drift-ci.log",
-        "development/evidence/451-031-cross-host-drift-ci.log",
-        "development/evidence/452-031-cross-host-drift-ci.log",
-        "development/evidence/453-031-cross-host-drift-ci.log",
-        "development/evidence/454-031-cross-host-drift-ci.log",
-        "development/evidence/457-031-cross-host-drift-ci.log",
-        "development/evidence/459-031-cross-host-drift-ci.log",
-        "development/evidence/460-031-cross-host-drift-ci.log",
-        "development/evidence/461-031-cross-host-drift-ci.log",
-        "development/evidence/464-031-cross-host-drift-ci.log"
+      "test_run_ids": [
+        "receipt-e0a6c81abbc789a3b7adf356bb67d8aae4ebadad2c9729db4480306085550b07",
+        "receipt-faaf02e48fda0fc9fbc9f42f112af1dc70a5f5b5a69c0cf2c9570e981077988b"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Duplicate verification logic across host repositories is removed or replaced by generated or synchronized kernel consumption with drift detection."
     }

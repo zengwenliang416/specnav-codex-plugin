@@ -1,27 +1,197 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "016-six-domain-aggregation",
-  "recorded_at": "2026-08-01T04:11:06.824Z",
+  "generated_at": "2026-08-11T23:37:55.498Z",
+  "recorded_at": "2026-08-11T23:11:27.498Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/evaluation/**",
+      "plugins/specnav-verification/kernel/gates/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/scripts/verify-domains.js",
+      "tests/run-light-change-v2-fixtures.sh",
+      "tests/run-light-compact-gate-fixtures.sh",
+      "tests/run-verification-v2-no-light.sh",
+      "tests/verification-v2/evaluation/**",
+      "tests/verification-v2/kernel/package-boundary.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d40b91e939b71744bbb854541bf76111a62a46bd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/not-applicable-validator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b76f3897c2652ee4407e3def8c0bdc22123755c1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/oracle-registry.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1ebc8e542672387a05e8be85ccd85e16e6a93de3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/reading-evaluator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "559d4e780ccdd602b5e8374340785da3da8d76b6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/six-domain-aggregator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1edd084a566debc95ca61cd72334e7b28b16c745"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evaluation/terminal-state.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "32063139b0ea82c6abb1c7a731080faae04884d7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/gates/decision-engine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f00792a4a2497b07ab7e56113426e826c55dfc5c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/gates/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab8b2bb6c0f437469977f6b7d064aada7ab044ea"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/verify-domains.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "88c70e12ec8a16ab86ec07f2c72b50a95591bbfa"
+      },
+      {
+        "path": "tests/run-light-change-v2-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "885f7f42948729a6c67ca3d878461016755fcd04"
+      },
+      {
+        "path": "tests/run-light-compact-gate-fixtures.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d9c7caff0591f3fb7ffa2587b0a6dd4e90343cfd"
+      },
+      {
+        "path": "tests/run-verification-v2-no-light.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c8a0cada7d443b21532b88284ecdb33fb4cf462b"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/aggregation.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "804b1699bc2530f19fac75380bd60fb198c0df09"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/not-applicable.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a267a1a77d0d36c144a2a810e3d10aaa2d4cfa46"
+      },
+      {
+        "path": "tests/verification-v2/evaluation/reading-model.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "50328c31ffe24bf16e4a72fec89f2f1f99910e17"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "d49479a63ee044c8a0a70951875e51301253a509e479878c14df86bab7f10681"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/016-six-domain-aggregation/context.json",
+      "sha256": "65baeab611c90d429350df965319f0171c15267678d1f629a44bd7bf6009df7b"
+    },
+    "report": {
+      "path": "development/tasks/016-six-domain-aggregation/report.md",
+      "sha256": "952fedc76a395051d89d8e305a8eff1335e6530b37d792ab3f7a1094def1cadf",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/016-six-domain-aggregation/spec-review.md",
+      "sha256": "7880182f6657aba273e529f6c39cba7208f1ecc474bb5ca85a8c6e256acb6ebc",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/016-six-domain-aggregation/quality-review.md",
+      "sha256": "10f9db05112bdd56cf2486ae16944744c33fbbb8ec16e7318a544cbc15b7d0b3",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-1c438d61fef3084514c3f3ab4d5c739ba470bbdf07baebef5e77a223cd5774d1",
+      "command": "bash tests/run-verification-v2-no-light.sh",
+      "assertion_ids": [
+        "AC-03",
+        "AC-18",
+        "AC-19",
+        "AC-21"
+      ],
+      "recorded_at": "2026-08-11T23:11:27.498Z",
+      "validation_receipt_sha256": "db65184ea54fad25efb7135143a20fd6182828a307de565ba85dc2052613d571",
+      "evidence_log": {
+        "path": "development/evidence/577-016-six-domain-aggregation.log",
+        "sha256": "ff5da1b6e6103a4c84bafa137e72e1e7dc8b9bd38bdeb738a452db6906d45f1c",
+        "size": 158
+      }
+    },
+    {
+      "id": "receipt-7d27c599f36f7ed3e8a37952cd785673244a08e7a242b40bd809ba2cc8dac345",
+      "command": "node --test tests/verification-v2/evaluation/aggregation.test.js",
+      "assertion_ids": [
+        "AC-03",
+        "AC-18",
+        "AC-19",
+        "AC-21"
+      ],
+      "recorded_at": "2026-08-11T23:11:26.867Z",
+      "validation_receipt_sha256": "001500f902fea61c35f2f927a7a4b7cbf55c7a8c3b65f921536c5222529219ef",
+      "evidence_log": {
+        "path": "development/evidence/576-016-six-domain-aggregation.log",
+        "sha256": "fa0c1361185a565e49a7596dbbe85b254f655c5f9ba7888669117b04fc45142c",
+        "size": 2416
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-03",
       "parent_id": "AC-03",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md",
-        "development/tasks/016-six-domain-aggregation/spec-review.md",
-        "development/tasks/016-six-domain-aggregation/quality-review.md",
-        "development/evidence/247-016-six-domain-aggregation.log",
-        "development/evidence/248-016-six-domain-aggregation.log",
-        "development/evidence/249-016-six-domain-aggregation.log",
-        "development/evidence/250-016-six-domain-aggregation.log",
-        "development/evidence/251-016-six-domain-aggregation.log",
-        "development/evidence/252-016-six-domain-aggregation.log",
-        "development/evidence/253-016-six-domain-aggregation.log",
-        "development/evidence/254-016-six-domain-aggregation.log"
+      "test_run_ids": [
+        "receipt-1c438d61fef3084514c3f3ab4d5c739ba470bbdf07baebef5e77a223cd5774d1",
+        "receipt-7d27c599f36f7ed3e8a37952cd785673244a08e7a242b40bd809ba2cc8dac345"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Every change follows the full Verification 2.0 gate; no request can select a light, compact, or simplified verification path."
     },
@@ -29,19 +199,11 @@
       "id": "AC-18",
       "parent_id": "AC-18",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md",
-        "development/tasks/016-six-domain-aggregation/spec-review.md",
-        "development/tasks/016-six-domain-aggregation/quality-review.md",
-        "development/evidence/247-016-six-domain-aggregation.log",
-        "development/evidence/248-016-six-domain-aggregation.log",
-        "development/evidence/249-016-six-domain-aggregation.log",
-        "development/evidence/250-016-six-domain-aggregation.log",
-        "development/evidence/251-016-six-domain-aggregation.log",
-        "development/evidence/252-016-six-domain-aggregation.log",
-        "development/evidence/253-016-six-domain-aggregation.log",
-        "development/evidence/254-016-six-domain-aggregation.log"
+      "test_run_ids": [
+        "receipt-1c438d61fef3084514c3f3ab4d5c739ba470bbdf07baebef5e77a223cd5774d1",
+        "receipt-7d27c599f36f7ed3e8a37952cd785673244a08e7a242b40bd809ba2cc8dac345"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Empty evidence arrays, empty verification commands, or a manually edited green domain report cannot produce green."
     },
@@ -49,19 +211,11 @@
       "id": "AC-19",
       "parent_id": "AC-19",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md",
-        "development/tasks/016-six-domain-aggregation/spec-review.md",
-        "development/tasks/016-six-domain-aggregation/quality-review.md",
-        "development/evidence/247-016-six-domain-aggregation.log",
-        "development/evidence/248-016-six-domain-aggregation.log",
-        "development/evidence/249-016-six-domain-aggregation.log",
-        "development/evidence/250-016-six-domain-aggregation.log",
-        "development/evidence/251-016-six-domain-aggregation.log",
-        "development/evidence/252-016-six-domain-aggregation.log",
-        "development/evidence/253-016-six-domain-aggregation.log",
-        "development/evidence/254-016-six-domain-aggregation.log"
+      "test_run_ids": [
+        "receipt-1c438d61fef3084514c3f3ab4d5c739ba470bbdf07baebef5e77a223cd5774d1",
+        "receipt-7d27c599f36f7ed3e8a37952cd785673244a08e7a242b40bd809ba2cc8dac345"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "All six domains receive a terminal result for every approved case."
     },
@@ -69,19 +223,11 @@
       "id": "AC-21",
       "parent_id": "AC-21",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/016-six-domain-aggregation/report.md",
-        "development/tasks/016-six-domain-aggregation/spec-review.md",
-        "development/tasks/016-six-domain-aggregation/quality-review.md",
-        "development/evidence/247-016-six-domain-aggregation.log",
-        "development/evidence/248-016-six-domain-aggregation.log",
-        "development/evidence/249-016-six-domain-aggregation.log",
-        "development/evidence/250-016-six-domain-aggregation.log",
-        "development/evidence/251-016-six-domain-aggregation.log",
-        "development/evidence/252-016-six-domain-aggregation.log",
-        "development/evidence/253-016-six-domain-aggregation.log",
-        "development/evidence/254-016-six-domain-aggregation.log"
+      "test_run_ids": [
+        "receipt-1c438d61fef3084514c3f3ab4d5c739ba470bbdf07baebef5e77a223cd5774d1",
+        "receipt-7d27c599f36f7ed3e8a37952cd785673244a08e7a242b40bd809ba2cc8dac345"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Domain status and release verdict are derived from case readings; no domain skill or agent prose can override the aggregate."
     }

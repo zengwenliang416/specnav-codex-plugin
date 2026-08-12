@@ -1,25 +1,204 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "021-case-freshness",
-  "recorded_at": "2026-07-31T21:15:20.457Z",
+  "generated_at": "2026-08-11T23:37:55.798Z",
+  "recorded_at": "2026-08-11T23:12:17.527Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/evidence/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/scripts/rerun-scope.js",
+      "tests/verification-v2/freshness/**",
+      "tests/verification-v2/kernel/package-boundary.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/blockers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bee6e408d3f4f207167a1ba9ef57a03123fbfd6b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/case-freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66cdde546067694c9b91f504fa5ef9c0c02b2abf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/content-addressed-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d35ce720366bfa3003a26e5271c4d00d5e768c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f79b5914fee47fcaa0c9ba57dd80206ea3cf4e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/fingerprint-comparator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e85b18cc8a71bec43bad265f57fea785167fbf76"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6fb340c5eeb016743a66353702e4cf8741901e42"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/identity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "783dc04ca92817f58fff1ac12118372547856d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c2353b698e91ef0ca9e96b2c65fd9782df2db407"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "347131d433ddc1aab8dc1bc393f331ee1de1ce74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/integrity-checker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a520e21e3de723f5b865fc9d32b03fcaa824aed7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/object-reader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c38aee9f45c1c14c3e08ccbf6de5a0e6b56d38bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/paths.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e41d77111ff45995ae55bb8447d9f6b328370b1f"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/raw-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0f945b03093738a70e168bd94406cbdddb8ebbd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/redaction-constants.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf94cd326701935c84200008405d11a6f98cba6a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/repository-fingerprint.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c774bb9375e43db7b71f27e8d52184d8acc03169"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/secret-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c95cfb6c40dd8e575dd6cb7d40ce298decd3299"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/structured-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "eb96750d4afa9712737d1a54d935d8d11808bada"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/text-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44ac044d30e3595ba73e5196ea46d44dde6c9ec6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/scripts/rerun-scope.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6785da5b71e02326313fe1c909abecbad25befa2"
+      },
+      {
+        "path": "tests/verification-v2/freshness/freshness.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fde3c3c9ca16212f2b6b5a83b12b02055057a7ed"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "ce9c98b562a0af312b57cab5f1604e89cc55f14fd75d1d2625872b754ab69287"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/021-case-freshness/context.json",
+      "sha256": "5aaf3234e7c6c89335561b6806a8f70abdf69fe1dfc1aa4b0e74eb9501b9241f"
+    },
+    "report": {
+      "path": "development/tasks/021-case-freshness/report.md",
+      "sha256": "ad449bfd071b3069a70814b5329bd3c315bed5a0967ff8add33f1f61ca924e39",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/021-case-freshness/spec-review.md",
+      "sha256": "8b33bd7ae8c85f559a14f91cd19293dc9dfac295c8c007756a703f132cb588e7",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/021-case-freshness/quality-review.md",
+      "sha256": "8f1ed7c1c9f731d9037b64a9d4bdd6016d63d24bed8179c1f8bcc08f1e4e7ca2",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-03a84d3f130e5d513e9da60947596b120321c69964aff42adfa4eacbffd2b5e0",
+      "command": "node --test tests/verification-v2/freshness/freshness.test.js tests/verification-v2/kernel/package-boundary.test.js",
+      "assertion_ids": [
+        "AC-23",
+        "AC-17:stale-sha",
+        "AC-35:freshness-result-source"
+      ],
+      "recorded_at": "2026-08-11T23:12:17.527Z",
+      "validation_receipt_sha256": "4a3c38487ef1a64e38d52def6a2189042f61153e6988f9ff756f5ac636b4888d",
+      "evidence_log": {
+        "path": "development/evidence/586-021-case-freshness.log",
+        "sha256": "93c73d751a4b6d7efc3ab79d56520c8bb82adea5baf3383b814e817445ba3104",
+        "size": 5333
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-23",
       "parent_id": "AC-23",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/021-case-freshness/report.md",
-        "development/tasks/021-case-freshness/spec-review.md",
-        "development/tasks/021-case-freshness/quality-review.md",
-        "development/evidence/185-021-case-freshness.log",
-        "development/evidence/186-021-case-freshness.log",
-        "development/evidence/187-021-case-freshness.log",
-        "development/evidence/188-021-case-freshness.log",
-        "development/evidence/189-021-case-freshness.log",
-        "development/evidence/190-021-case-freshness.log"
+      "test_run_ids": [
+        "receipt-03a84d3f130e5d513e9da60947596b120321c69964aff42adfa4eacbffd2b5e0"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Case-level freshness uses SHA and execution fingerprints rather than mtime alone."
     },
@@ -27,17 +206,10 @@
       "id": "AC-17:stale-sha",
       "parent_id": "AC-17",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/021-case-freshness/report.md",
-        "development/tasks/021-case-freshness/spec-review.md",
-        "development/tasks/021-case-freshness/quality-review.md",
-        "development/evidence/185-021-case-freshness.log",
-        "development/evidence/186-021-case-freshness.log",
-        "development/evidence/187-021-case-freshness.log",
-        "development/evidence/188-021-case-freshness.log",
-        "development/evidence/189-021-case-freshness.log",
-        "development/evidence/190-021-case-freshness.log"
+      "test_run_ids": [
+        "receipt-03a84d3f130e5d513e9da60947596b120321c69964aff42adfa4eacbffd2b5e0"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. (AC-17:stale-sha)"
     },
@@ -45,17 +217,10 @@
       "id": "AC-35:freshness-result-source",
       "parent_id": "AC-35",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/021-case-freshness/report.md",
-        "development/tasks/021-case-freshness/spec-review.md",
-        "development/tasks/021-case-freshness/quality-review.md",
-        "development/evidence/185-021-case-freshness.log",
-        "development/evidence/186-021-case-freshness.log",
-        "development/evidence/187-021-case-freshness.log",
-        "development/evidence/188-021-case-freshness.log",
-        "development/evidence/189-021-case-freshness.log",
-        "development/evidence/190-021-case-freshness.log"
+      "test_run_ids": [
+        "receipt-03a84d3f130e5d513e9da60947596b120321c69964aff42adfa4eacbffd2b5e0"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Reviewer can see case freshness derived from SHA and execution fingerprints instead of mtime. (AC-35:freshness-result-source)"
     }

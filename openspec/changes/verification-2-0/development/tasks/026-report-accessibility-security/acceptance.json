@@ -1,48 +1,243 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "026-report-accessibility-security",
-  "recorded_at": "2026-08-02T12:29:07.467Z",
+  "generated_at": "2026-08-11T23:37:56.087Z",
+  "recorded_at": "2026-08-11T23:13:06.797Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/assets/report/**",
+      "plugins/specnav-verification/kernel/reporting/**",
+      "tests/run-verification-v2-report-browser.sh",
+      "tests/verification-v2/reports/**",
+      "tests/verification-v2/security/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/assets/report/report-security-contract.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "640eef5b7d3785850d9313f05bc6135877b8c558"
+      },
+      {
+        "path": "plugins/specnav-verification/assets/report/report.css",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e3526b1ebb6d6a7ea60e4a4924888f3abe499f24"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/case-page-renderers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2507074ca44add08cc0b15f88c9afb7ccd28823e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/evidence-link-resolver.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e943b1b21114c5d18228ad9db90a7662345c724a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0ee1ffff347d6545bf7699ce5fffc840ff4f6808"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/overview-renderer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c46d3b2e46043cff10ee78648d3a83df8e8d7fd1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f97d13fde3aba2043dff86c7caedc2927e8a9c55"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-authorities.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b372fdb097419635b3037ad04677972d35c9c702"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-components.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d4b5b4e991d3b96b300b33d2751048e876193529"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-model-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91004d6bf8f2adef4bb5035a7b996a0759d70807"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-script-assets.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f649e8489a0bcfe12e044e8643f227313cef4d3c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-security.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d105145b536f3be1dd30bf96e7decf14f8619221"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-selectors.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7a8fb3115a4dc2d5ef3273376de5f6801f7bd243"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/report-shell.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d3234fe3d618ae5ee99ca65fb1644882a2318555"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/reporting/safe-html-text.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fbfb429be8d05ac1b50136214d56941681a59708"
+      },
+      {
+        "path": "tests/run-verification-v2-report-browser.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09e64d35d22904f3a2e921c87d4871e55ebda5f1"
+      },
+      {
+        "path": "tests/verification-v2/reports/accessibility-security-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cee89703ea0a667d8ba2e99759fbd48a3f626b0a"
+      },
+      {
+        "path": "tests/verification-v2/reports/case-pages-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "117d0c566738dcbf69daa71f1ea2fcc1b722f2f0"
+      },
+      {
+        "path": "tests/verification-v2/reports/case-pages.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1a14961a783638e3c235e5ab1431571e0369c539"
+      },
+      {
+        "path": "tests/verification-v2/reports/overview-browser.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "03b7608581e193be23b9d7220c23776618c77ced"
+      },
+      {
+        "path": "tests/verification-v2/reports/overview.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "484a3f44191bc4974da46a005fa9db4506914e75"
+      },
+      {
+        "path": "tests/verification-v2/reports/report-model.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "91f5d33a270facc94c835af86cb742366d93a9c5"
+      },
+      {
+        "path": "tests/verification-v2/reports/report-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b684b91462bf4d6606fa027bdc6a8c57f5815f77"
+      },
+      {
+        "path": "tests/verification-v2/reports/three-line-table.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2ad7e945dac0b81c1f769bc87e0a671ed2d2dd52"
+      },
+      {
+        "path": "tests/verification-v2/security/redaction.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f698581834ce2b322b6fbba2199096acc46a0f6"
+      },
+      {
+        "path": "tests/verification-v2/security/report-security.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "651b23ee709e550f37aa5ad900f0054d229ce963"
+      }
+    ],
+    "sha256": "bf1a0a374ed9c82125066241db38c11bc24c782e8d8cd917b1023077479f1ab0"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/026-report-accessibility-security/context.json",
+      "sha256": "fc6410241cbf06cb819e37597b6c2597e52a7bd691f86dd20ab36b7c5df1e4bd"
+    },
+    "report": {
+      "path": "development/tasks/026-report-accessibility-security/report.md",
+      "sha256": "5da36a2882d3409cef50fc120d79b370fc6600c50b3826d9173f79cfb4ffa426",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/026-report-accessibility-security/spec-review.md",
+      "sha256": "9b383d340cf57a4942da711844900cae52d1d47a10628a212971203795587e5b",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/026-report-accessibility-security/quality-review.md",
+      "sha256": "d3b618fb46d709102f67a46b900b216880a35726cca5998cde179e0cab4681a1",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-2df7406f814a493806c840c2ee4450c347476fcac5c34e612a7ece0a079f81f2",
+      "command": "node --test tests/verification-v2/security/report-security.test.js",
+      "assertion_ids": [
+        "AC-12",
+        "AC-30"
+      ],
+      "recorded_at": "2026-08-11T23:13:06.797Z",
+      "validation_receipt_sha256": "3098eaf9542fabe6863b6f6b81a62c67eb99dfb70a0673b5f9fbccb63da678c9",
+      "evidence_log": {
+        "path": "development/evidence/596-026-report-accessibility-security.log",
+        "sha256": "ad00f4bd32c7d726d67d7c4c8f3349ea063cafa4d76343b48459575805922087",
+        "size": 1344
+      }
+    },
+    {
+      "id": "receipt-f3ee8a9af684fdcead2a47257513217b4cefbdc78bc1eab7bb16eb729eb32d3d",
+      "command": "bash tests/run-verification-v2-report-browser.sh",
+      "assertion_ids": [
+        "AC-12",
+        "AC-30"
+      ],
+      "recorded_at": "2026-08-11T23:13:05.545Z",
+      "validation_receipt_sha256": "5df332a8f08ef549c900a55b42ee2ed9a7e650c9004467379d32287c2057052e",
+      "evidence_log": {
+        "path": "development/evidence/595-026-report-accessibility-security.log",
+        "sha256": "b9b410ca29c4e765f7af037056d272b032d5ab396fdadd66b75bc70098b069b7",
+        "size": 1981
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-12",
       "parent_id": "AC-12",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/026-report-accessibility-security/report.md",
-        "development/tasks/026-report-accessibility-security/spec-review.md",
-        "development/tasks/026-report-accessibility-security/quality-review.md",
-        "development/evidence/352-026-report-accessibility-security.log",
-        "development/evidence/353-026-report-accessibility-security.log",
-        "development/evidence/354-026-report-accessibility-security.log",
-        "development/evidence/355-026-report-accessibility-security.log",
-        "development/evidence/356-026-report-accessibility-security.log",
-        "development/evidence/357-026-report-accessibility-security.log",
-        "development/evidence/358-026-report-accessibility-security.log",
-        "development/evidence/359-026-report-accessibility-security.log",
-        "development/evidence/360-026-report-accessibility-security.log",
-        "development/evidence/361-026-report-accessibility-security.log",
-        "development/evidence/362-026-report-accessibility-security.log",
-        "development/evidence/363-026-report-accessibility-security.log",
-        "development/evidence/364-026-report-accessibility-security.log",
-        "development/evidence/365-026-report-accessibility-security.log",
-        "development/evidence/366-026-report-accessibility-security.log",
-        "development/evidence/367-026-report-accessibility-security.log",
-        "development/evidence/368-026-report-accessibility-security.log",
-        "development/evidence/369-026-report-accessibility-security.log",
-        "development/evidence/370-026-report-accessibility-security.log",
-        "development/evidence/371-026-report-accessibility-security.log",
-        "development/evidence/372-026-report-accessibility-security.log",
-        "development/evidence/373-026-report-accessibility-security.log",
-        "development/evidence/374-026-report-accessibility-security.log",
-        "development/evidence/375-026-report-accessibility-security.log",
-        "development/evidence/376-026-report-accessibility-security.log",
-        "development/evidence/377-026-report-accessibility-security.log",
-        "development/evidence/378-026-report-accessibility-security.log",
-        "development/evidence/379-026-report-accessibility-security.log",
-        "development/evidence/380-026-report-accessibility-security.log"
+      "test_run_ids": [
+        "receipt-2df7406f814a493806c840c2ee4450c347476fcac5c34e612a7ece0a079f81f2",
+        "receipt-f3ee8a9af684fdcead2a47257513217b4cefbdc78bc1eab7bb16eb729eb32d3d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Report pages work on desktop and mobile, are keyboard operable, and preserve verdict and evidence information in print output."
     },
@@ -50,40 +245,11 @@
       "id": "AC-30",
       "parent_id": "AC-30",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/026-report-accessibility-security/report.md",
-        "development/tasks/026-report-accessibility-security/spec-review.md",
-        "development/tasks/026-report-accessibility-security/quality-review.md",
-        "development/evidence/352-026-report-accessibility-security.log",
-        "development/evidence/353-026-report-accessibility-security.log",
-        "development/evidence/354-026-report-accessibility-security.log",
-        "development/evidence/355-026-report-accessibility-security.log",
-        "development/evidence/356-026-report-accessibility-security.log",
-        "development/evidence/357-026-report-accessibility-security.log",
-        "development/evidence/358-026-report-accessibility-security.log",
-        "development/evidence/359-026-report-accessibility-security.log",
-        "development/evidence/360-026-report-accessibility-security.log",
-        "development/evidence/361-026-report-accessibility-security.log",
-        "development/evidence/362-026-report-accessibility-security.log",
-        "development/evidence/363-026-report-accessibility-security.log",
-        "development/evidence/364-026-report-accessibility-security.log",
-        "development/evidence/365-026-report-accessibility-security.log",
-        "development/evidence/366-026-report-accessibility-security.log",
-        "development/evidence/367-026-report-accessibility-security.log",
-        "development/evidence/368-026-report-accessibility-security.log",
-        "development/evidence/369-026-report-accessibility-security.log",
-        "development/evidence/370-026-report-accessibility-security.log",
-        "development/evidence/371-026-report-accessibility-security.log",
-        "development/evidence/372-026-report-accessibility-security.log",
-        "development/evidence/373-026-report-accessibility-security.log",
-        "development/evidence/374-026-report-accessibility-security.log",
-        "development/evidence/375-026-report-accessibility-security.log",
-        "development/evidence/376-026-report-accessibility-security.log",
-        "development/evidence/377-026-report-accessibility-security.log",
-        "development/evidence/378-026-report-accessibility-security.log",
-        "development/evidence/379-026-report-accessibility-security.log",
-        "development/evidence/380-026-report-accessibility-security.log"
+      "test_run_ids": [
+        "receipt-2df7406f814a493806c840c2ee4450c347476fcac5c34e612a7ece0a079f81f2",
+        "receipt-f3ee8a9af684fdcead2a47257513217b4cefbdc78bc1eab7bb16eb729eb32d3d"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "HTML rendering escapes artifact content and never exposes provider secrets."
     }

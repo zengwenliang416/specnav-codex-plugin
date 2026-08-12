@@ -1,0 +1,79 @@
+# command: node --test tests/verification-v2/evaluation/aggregation.test.js
+# exit_status: 0
+# duration_ms: 1402
+
+## stdout
+TAP version 13
+# Subtest: six fixed domains derive stable frozen case, domain, and release pass
+ok 1 - six fixed domains derive stable frozen case, domain, and release pass
+  ---
+  duration_ms: 1270.478917
+  type: 'test'
+  ...
+# Subtest: missing cases, readings, domains, and light or manual-green inputs fail closed
+ok 2 - missing cases, readings, domains, and light or manual-green inputs fail closed
+  ---
+  duration_ms: 2.187417
+  type: 'test'
+  ...
+# Subtest: only schema-valid, identity-bound readings can contribute to green
+ok 3 - only schema-valid, identity-bound readings can contribute to green
+  ---
+  duration_ms: 0.411667
+  type: 'test'
+  ...
+# Subtest: missing, mismatched, or non-intact evidence cannot contribute to green
+ok 4 - missing, mismatched, or non-intact evidence cannot contribute to green
+  ---
+  duration_ms: 0.934125
+  type: 'test'
+  ...
+# Subtest: external terminal facts provide deterministic flaky and pass-after-fix states
+ok 5 - external terminal facts provide deterministic flaky and pass-after-fix states
+  ---
+  duration_ms: 1.425125
+  type: 'test'
+  ...
+# Subtest: a real failed reading is not overwritten by stale or canceled metadata
+ok 6 - a real failed reading is not overwritten by stale or canceled metadata
+  ---
+  duration_ms: 0.602042
+  type: 'test'
+  ...
+# Subtest: not-applicable consumes an external validated decision binding only
+ok 7 - not-applicable consumes an external validated decision binding only
+  ---
+  duration_ms: 0.966333
+  type: 'test'
+  ...
+# Subtest: DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+ok 8 - DecisionEngine emits a schema-valid stable gate bound to aggregate sources
+  ---
+  duration_ms: 2.050792
+  type: 'test'
+  ...
+# Subtest: DecisionEngine rejects a caller-authored aggregate instead of trusting it
+ok 9 - DecisionEngine rejects a caller-authored aggregate instead of trusting it
+  ---
+  duration_ms: 0.545333
+  type: 'test'
+  ...
+# Subtest: DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+ok 10 - DecisionEngine blocks stale, broken, open-failure, and non-pass aggregates
+  ---
+  duration_ms: 2.90025
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1356.208541
+
+
+## stderr
+(empty)

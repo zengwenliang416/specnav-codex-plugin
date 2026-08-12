@@ -1,30 +1,216 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "012-evidence-store",
-  "recorded_at": "2026-07-31T18:27:58.059Z",
+  "generated_at": "2026-08-11T23:37:55.310Z",
+  "recorded_at": "2026-08-11T23:10:53.873Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/contracts.js",
+      "plugins/specnav-verification/kernel/evidence/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "tests/verification-v2/evidence/**",
+      "tests/verification-v2/kernel/package-boundary.test.js"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/contracts.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a5d808b834f4ec422527dd534930fad4628f2064"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/blockers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bee6e408d3f4f207167a1ba9ef57a03123fbfd6b"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/case-freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "66cdde546067694c9b91f504fa5ef9c0c02b2abf"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/content-addressed-writer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "13d35ce720366bfa3003a26e5271c4d00d5e768c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/evidence-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8f79b5914fee47fcaa0c9ba57dd80206ea3cf4e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/fingerprint-comparator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e85b18cc8a71bec43bad265f57fea785167fbf76"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/freshness.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6fb340c5eeb016743a66353702e4cf8741901e42"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/identity.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "783dc04ca92817f58fff1ac12118372547856d40"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index-builder.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c2353b698e91ef0ca9e96b2c65fd9782df2db407"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "347131d433ddc1aab8dc1bc393f331ee1de1ce74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/integrity-checker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a520e21e3de723f5b865fc9d32b03fcaa824aed7"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/object-reader.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c38aee9f45c1c14c3e08ccbf6de5a0e6b56d38bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/paths.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e41d77111ff45995ae55bb8447d9f6b328370b1f"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/raw-store.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f0f945b03093738a70e168bd94406cbdddb8ebbd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/redaction-constants.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bf94cd326701935c84200008405d11a6f98cba6a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/repository-fingerprint.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c774bb9375e43db7b71f27e8d52184d8acc03169"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/secret-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c95cfb6c40dd8e575dd6cb7d40ce298decd3299"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/structured-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "eb96750d4afa9712737d1a54d935d8d11808bada"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/evidence/text-redactor.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "44ac044d30e3595ba73e5196ea46d44dde6c9ec6"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "tests/verification-v2/evidence/evidence-store.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a125b946b1da9515fef46726e0e6b7c2ccef7150"
+      },
+      {
+        "path": "tests/verification-v2/evidence/integrity-test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9aac25ae442770fa007c0daad7ef1afaa012d4f"
+      },
+      {
+        "path": "tests/verification-v2/evidence/integrity.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bd4cf01940847acce74af25fa14f3a8ce2c7c626"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      }
+    ],
+    "sha256": "18e40be2e494088198ee61802620fb2b02bf916b61c4ec8e3eb837e26c2e3d27"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/012-evidence-store/context.json",
+      "sha256": "ddbec3fc2e8fed75f693da12f5470ffec52f7e00fa524eb791cd2642776cb20d"
+    },
+    "report": {
+      "path": "development/tasks/012-evidence-store/report.md",
+      "sha256": "c03db7928293ca26a07abe4000bdad993555411e8701ff33c0cec508915939cc",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/012-evidence-store/spec-review.md",
+      "sha256": "74c9147ecf75c4c4e991c06700d3aa957e9e2bafde62187d18834edef6769682",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/012-evidence-store/quality-review.md",
+      "sha256": "43a2b22724dacf39a38675e186c89c5d2085b990931b93f044b84149d860a6f3",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-b558caa83a3d17011426d4ec0eb7374a907b1db01011edeccd9236a99bd20b38",
+      "command": "node --test tests/verification-v2/evidence/evidence-store.test.js",
+      "assertion_ids": [
+        "AC-22",
+        "AC-31",
+        "AC-32:evidence-store-retention"
+      ],
+      "recorded_at": "2026-08-11T23:10:53.873Z",
+      "validation_receipt_sha256": "0815c2991a7ab3c00b305998df079084e454aa46a29be598cbccb97db5a8ba64",
+      "evidence_log": {
+        "path": "development/evidence/571-012-evidence-store.log",
+        "sha256": "029647bdb8690ca5dbdc34d4acad37aecc0db4b3bc2bbcbdb5dbf2ef7f6b8d0e",
+        "size": 5288
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-22",
       "parent_id": "AC-22",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/012-evidence-store/report.md",
-        "development/tasks/012-evidence-store/spec-review.md",
-        "development/tasks/012-evidence-store/quality-review.md",
-        "development/evidence/139-012-evidence-store.log",
-        "development/evidence/140-012-evidence-store.log",
-        "development/evidence/141-012-evidence-store.log",
-        "development/evidence/142-012-evidence-store.log",
-        "development/evidence/143-012-evidence-store.log",
-        "development/evidence/144-012-evidence-store.log",
-        "development/evidence/145-012-evidence-store.log",
-        "development/evidence/146-012-evidence-store.log",
-        "development/evidence/147-012-evidence-store.log",
-        "development/evidence/148-012-evidence-store.log",
-        "development/evidence/149-012-evidence-store.log"
+      "test_run_ids": [
+        "receipt-b558caa83a3d17011426d4ec0eb7374a907b1db01011edeccd9236a99bd20b38"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Raw evidence is append-only, the summary index is rebuildable, and cache loss does not lose source truth."
     },
@@ -32,22 +218,10 @@
       "id": "AC-31",
       "parent_id": "AC-31",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/012-evidence-store/report.md",
-        "development/tasks/012-evidence-store/spec-review.md",
-        "development/tasks/012-evidence-store/quality-review.md",
-        "development/evidence/139-012-evidence-store.log",
-        "development/evidence/140-012-evidence-store.log",
-        "development/evidence/141-012-evidence-store.log",
-        "development/evidence/142-012-evidence-store.log",
-        "development/evidence/143-012-evidence-store.log",
-        "development/evidence/144-012-evidence-store.log",
-        "development/evidence/145-012-evidence-store.log",
-        "development/evidence/146-012-evidence-store.log",
-        "development/evidence/147-012-evidence-store.log",
-        "development/evidence/148-012-evidence-store.log",
-        "development/evidence/149-012-evidence-store.log"
+      "test_run_ids": [
+        "receipt-b558caa83a3d17011426d4ec0eb7374a907b1db01011edeccd9236a99bd20b38"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Evidence records contain stable id, kind, path, hash, size, producer, timestamp, change, run, case, attempt, step or assertion, code SHA, and test SHA."
     },
@@ -55,22 +229,10 @@
       "id": "AC-32:evidence-store-retention",
       "parent_id": "AC-32",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/012-evidence-store/report.md",
-        "development/tasks/012-evidence-store/spec-review.md",
-        "development/tasks/012-evidence-store/quality-review.md",
-        "development/evidence/139-012-evidence-store.log",
-        "development/evidence/140-012-evidence-store.log",
-        "development/evidence/141-012-evidence-store.log",
-        "development/evidence/142-012-evidence-store.log",
-        "development/evidence/143-012-evidence-store.log",
-        "development/evidence/144-012-evidence-store.log",
-        "development/evidence/145-012-evidence-store.log",
-        "development/evidence/146-012-evidence-store.log",
-        "development/evidence/147-012-evidence-store.log",
-        "development/evidence/148-012-evidence-store.log",
-        "development/evidence/149-012-evidence-store.log"
+      "test_run_ids": [
+        "receipt-b558caa83a3d17011426d4ec0eb7374a907b1db01011edeccd9236a99bd20b38"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Contribution evidence for AC-32:evidence-store-retention without full AC-32 closure"
     }

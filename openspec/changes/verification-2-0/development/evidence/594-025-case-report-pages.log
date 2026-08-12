@@ -1,0 +1,320 @@
+# command: bash tests/run-verification-v2-report-pages.sh
+# exit_status: 0
+# duration_ms: 2699
+
+## stdout
+TAP version 13
+# Subtest: kernel package exposes one versioned public entry and schema-only subpath
+ok 1 - kernel package exposes one versioned public entry and schema-only subpath
+  ---
+  duration_ms: 0.977959
+  type: 'test'
+  ...
+# Subtest: public entry exposes immutable metadata and explicit service contracts
+ok 2 - public entry exposes immutable metadata and explicit service contracts
+  ---
+  duration_ms: 40.81875
+  type: 'test'
+  ...
+# Subtest: service creation requires every adapter and never falls back
+ok 3 - service creation requires every adapter and never falls back
+  ---
+  duration_ms: 0.331625
+  type: 'test'
+  ...
+# Subtest: kernel source contains no host runtime dependency
+ok 4 - kernel source contains no host runtime dependency
+  ---
+  duration_ms: 29.516666
+  type: 'test'
+  ...
+# Subtest: real Chromium renders and filters catalog and immutable results
+ok 5 - real Chromium renders and filters catalog and immutable results
+  ---
+  duration_ms: 2558.403542
+  type: 'test'
+  ...
+# Subtest: catalog renders approved case contracts with shared navigation
+ok 6 - catalog renders approved case contracts with shared navigation
+  ---
+  duration_ms: 1666.44125
+  type: 'test'
+  ...
+# Subtest: results render immutable run attempt reading and evidence history
+ok 7 - results render immutable run attempt reading and evidence history
+  ---
+  duration_ms: 2.233917
+  type: 'test'
+  ...
+# Subtest: empty and blocked pages remain complete instead of hiding state
+ok 8 - empty and blocked pages remain complete instead of hiding state
+  ---
+  duration_ms: 2.493375
+  type: 'test'
+  ...
+# Subtest: all verdicts keep the same page responsibilities and hierarchy
+ok 9 - all verdicts keep the same page responsibilities and hierarchy
+  ---
+  duration_ms: 24.021625
+  type: 'test'
+  ...
+# Subtest: renderers reject invalid models and expose no fallback pages
+ok 10 - renderers reject invalid models and expose no fallback pages
+  ---
+  duration_ms: 0.519125
+  type: 'test'
+  ...
+# Subtest: renders a standalone overview from one validated report model
+ok 11 - renders a standalone overview from one validated report model
+  ---
+  duration_ms: 1644.80775
+  type: 'test'
+  ...
+# Subtest: keeps the same information architecture for all eight verdicts
+ok 12 - keeps the same information architecture for all eight verdicts
+  ---
+  duration_ms: 6.901416
+  type: 'test'
+  ...
+# Subtest: uses shared link navigation for all three report pages
+ok 13 - uses shared link navigation for all three report pages
+  ---
+  duration_ms: 0.655375
+  type: 'test'
+  ...
+# Subtest: blocked, running, and empty models still render complete reports
+ok 14 - blocked, running, and empty models still render complete reports
+  ---
+  duration_ms: 1.0415
+  type: 'test'
+  ...
+# Subtest: shows exact blockers, freshness, integrity, repair, and source references
+ok 15 - shows exact blockers, freshness, integrity, repair, and source references
+  ---
+  duration_ms: 1.083666
+  type: 'test'
+  ...
+# Subtest: renders warning, stale reason, and repair ids instead of hiding report facts
+ok 16 - renders warning, stale reason, and repair ids instead of hiding report facts
+  ---
+  duration_ms: 1.433334
+  type: 'test'
+  ...
+# Subtest: escapes and redacts every dynamic blocker text value
+ok 17 - escapes and redacts every dynamic blocker text value
+  ---
+  duration_ms: 0.69675
+  type: 'test'
+  ...
+# Subtest: rejects invalid or unvalidated models without rendering a fallback page
+ok 18 - rejects invalid or unvalidated models without rendering a fallback page
+  ---
+  duration_ms: 0.270125
+  type: 'test'
+  ...
+# Subtest: rejects forged schema registries and hostile status values
+ok 19 - rejects forged schema registries and hostile status values
+  ---
+  duration_ms: 0.605625
+  type: 'test'
+  ...
+# Subtest: output is deterministic and does not mutate the model
+ok 20 - output is deterministic and does not mutate the model
+  ---
+  duration_ms: 1.581583
+  type: 'test'
+  ...
+# Subtest: production overview renderer does not read raw verification artifacts
+ok 21 - production overview renderer does not read raw verification artifacts
+  ---
+  duration_ms: 0.234958
+  type: 'test'
+  ...
+# Subtest: report has no theme or runtime locale controls
+ok 22 - report has no theme or runtime locale controls
+  ---
+  duration_ms: 0.618875
+  type: 'test'
+  ...
+# Subtest: builds one deterministic immutable rich model for all three pages
+ok 23 - builds one deterministic immutable rich model for all three pages
+  ---
+  duration_ms: 1681.965792
+  type: 'test'
+  ...
+# Subtest: derives every verdict without accepting caller-authored summary state
+ok 24 - derives every verdict without accepting caller-authored summary state
+  ---
+  duration_ms: 47.728833
+  type: 'test'
+  ...
+# Subtest: preserves failed and repaired history and derives pass after fix
+ok 25 - preserves failed and repaired history and derives pass after fix
+  ---
+  duration_ms: 8.625334
+  type: 'test'
+  ...
+# Subtest: missing or broken evidence produces no valid-looking link
+ok 26 - missing or broken evidence produces no valid-looking link
+  ---
+  duration_ms: 6.411958
+  type: 'test'
+  ...
+# Subtest: rejects mismatched source bindings and duplicate immutable ids
+ok 27 - rejects mismatched source bindings and duplicate immutable ids
+  ---
+  duration_ms: 4.286125
+  type: 'test'
+  ...
+# Subtest: trusted recomputation rejects caller-forged aggregate and gate green
+ok 28 - trusted recomputation rejects caller-forged aggregate and gate green
+  ---
+  duration_ms: 4.275917
+  type: 'test'
+  ...
+# Subtest: controlled evidence locator rejects URI schemes and encoded traversal
+ok 29 - controlled evidence locator rejects URI schemes and encoded traversal
+  ---
+  duration_ms: 16.195917
+  type: 'test'
+  ...
+# Subtest: duplicate evidence ids block instead of folding immutable history
+ok 30 - duplicate evidence ids block instead of folding immutable history
+  ---
+  duration_ms: 4.208792
+  type: 'test'
+  ...
+# Subtest: rejects missing and forged authority collaborators without fallback
+ok 31 - rejects missing and forged authority collaborators without fallback
+  ---
+  duration_ms: 3.229833
+  type: 'test'
+  ...
+# Subtest: failure history must bind to current run attempt readings and evidence
+ok 32 - failure history must bind to current run attempt readings and evidence
+  ---
+  duration_ms: 3.892292
+  type: 'test'
+  ...
+# Subtest: repair history must resolve to a verified same-change failure
+ok 33 - repair history must resolve to a verified same-change failure
+  ---
+  duration_ms: 5.193958
+  type: 'test'
+  ...
+# Subtest: binds the Evidence Index to the exact change and canonical raw source
+ok 34 - binds the Evidence Index to the exact change and canonical raw source
+  ---
+  duration_ms: 7.460083
+  type: 'test'
+  ...
+# Subtest: gate stage and policy come from independent authority
+ok 35 - gate stage and policy come from independent authority
+  ---
+  duration_ms: 3.923959
+  type: 'test'
+  ...
+# Subtest: redacts command secrets in every projection and never exposes absolute cwd
+ok 36 - redacts command secrets in every projection and never exposes absolute cwd
+  ---
+  duration_ms: 7.910916
+  type: 'test'
+  ...
+# Subtest: rejects a modified case snapshot that retains an old snapshot hash
+ok 37 - rejects a modified case snapshot that retains an old snapshot hash
+  ---
+  duration_ms: 5.3415
+  type: 'test'
+  ...
+# Subtest: structural blockers override pass-after-fix and every terminal verdict
+ok 38 - structural blockers override pass-after-fix and every terminal verdict
+  ---
+  duration_ms: 7.744542
+  type: 'test'
+  ...
+# Subtest: one chronological run order drives gate, history, and summary versions
+ok 39 - one chronological run order drives gate, history, and summary versions
+  ---
+  duration_ms: 3.936166
+  type: 'test'
+  ...
+# Subtest: rejects caller-injected pass after fix without repair-loop history
+ok 40 - rejects caller-injected pass after fix without repair-loop history
+  ---
+  duration_ms: 4.310459
+  type: 'test'
+  ...
+# Subtest: reuses complete cross-reference validation for attempt runner bindings
+ok 41 - reuses complete cross-reference validation for attempt runner bindings
+  ---
+  duration_ms: 4.80075
+  type: 'test'
+  ...
+# Subtest: rejects integrity freshness and raw digest changes outside authorities
+ok 42 - rejects integrity freshness and raw digest changes outside authorities
+  ---
+  duration_ms: 3.816125
+  type: 'test'
+  ...
+# Subtest: malformed authoritative freshness fails closed instead of normalizing green
+ok 43 - malformed authoritative freshness fails closed instead of normalizing green
+  ---
+  duration_ms: 3.814833
+  type: 'test'
+  ...
+# Subtest: report-model schema independently rejects unsafe evidence paths and hrefs
+ok 44 - report-model schema independently rejects unsafe evidence paths and hrefs
+  ---
+  duration_ms: 3.844917
+  type: 'test'
+  ...
+# Subtest: repair review evidence must come from the successful post-fix chain
+ok 45 - repair review evidence must come from the successful post-fix chain
+  ---
+  duration_ms: 9.23175
+  type: 'test'
+  ...
+# Subtest: redacts separated CLI credential flags and values
+ok 46 - redacts separated CLI credential flags and values
+  ---
+  duration_ms: 3.78725
+  type: 'test'
+  ...
+# Subtest: orders RFC3339 offsets by epoch instead of text
+ok 47 - orders RFC3339 offsets by epoch instead of text
+  ---
+  duration_ms: 4.666833
+  type: 'test'
+  ...
+# Subtest: all report pages embed the shared three-line table contract
+ok 48 - all report pages embed the shared three-line table contract
+  ---
+  duration_ms: 1695.516083
+  type: 'test'
+  ...
+# Subtest: print styles preserve the academic three-line table weights
+ok 49 - print styles preserve the academic three-line table weights
+  ---
+  duration_ms: 7.160708
+  type: 'test'
+  ...
+# Subtest: rendered tables retain captions, scoped headers, and keyboard scroll regions
+ok 50 - rendered tables retain captions, scoped headers, and keyboard scroll regions
+  ---
+  duration_ms: 2.956041
+  type: 'test'
+  ...
+1..50
+# tests 50
+# suites 0
+# pass 50
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2650.27725
+verification v2 case report pages ok
+
+
+## stderr
+(empty)

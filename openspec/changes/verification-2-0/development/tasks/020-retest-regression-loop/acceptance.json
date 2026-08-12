@@ -1,30 +1,1076 @@
 {
-  "schema": "specnav.task-acceptance-evidence.v1",
+  "schema": "specnav.task-acceptance-evidence.v2",
   "generated_by": "specnav-development/task-acceptance-evidence",
   "task_id": "020-retest-regression-loop",
-  "recorded_at": "2026-08-01T08:10:15.197Z",
+  "generated_at": "2026-08-11T23:37:55.729Z",
+  "recorded_at": "2026-08-11T23:12:17.340Z",
   "status": "approved",
+  "reviewed_git_head": "b69733f58d046805265e209262e5b1eba2242d22",
+  "reviewed_git_tree": "05652843024080719480ff6a62cefced8efd2982",
+  "implementation_scope": {
+    "included_patterns": [
+      "plugins/specnav-verification/kernel/execution/**",
+      "plugins/specnav-verification/kernel/index.js",
+      "plugins/specnav-verification/kernel/repair/**",
+      "plugins/specnav-verification/schemas/**",
+      "tests/run-verification-v2-repair-loop.sh",
+      "tests/verification-v2/contracts/**",
+      "tests/verification-v2/kernel/package-boundary.test.js",
+      "tests/verification-v2/repair-loop/**"
+    ],
+    "entries": [
+      {
+        "path": "plugins/specnav-verification/kernel/execution/browser-access-policy.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02bc2185a39a90c2daa51de42273befd638ecf37"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/command-contract.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "82389f2f1cf707a88aee0cd91ba1cc35d88436bc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/event-sequence.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "17071b69e44f5a2e0e937052e056bca9e5a2af8c"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/host-proof-launcher.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25b326f8e74616eda4a405fd09dd91d0cbe58a74"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2f756d2ddd07eb8d34e6bd2afb127bc8e01aa645"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/lifecycle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e10a997d9582b9d3bc46ffd4a4f85f1c3f231bb1"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-oracle.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b92794dab039045d90b569b2a79bcb5da98ca866"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/midscene-prompt.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9638130ad6e04b596fea3224b0970c6b84c0383e"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/orchestrator.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "89934c6b3ad09acf7f44c0ee31977b827fafa3e8"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09ee7cb0f70643696b2ff6bf7c786809e599b594"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-scenario.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bcdb6805340a65f13df2624edad778223c6dedc"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/playwright-worker.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fade8c254bb9129e2d1929087b7f3dcb37e6090a"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/execution/preflight.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3076a1b71257534773731e70ed245ebdb93904ca"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3128132c5f968a3c79702429b589fd69a6dae758"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/authority-log.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e9dc39631fa348e0ddd5a24ca2da5b18ec731d90"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/case-rerun-planner.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c86504a0304733db543064c7531fa740bc7634f0"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/development-repair-bridge.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f88e45c593a1f9423011ecfd792b327a4a5e0043"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-classifier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3e58e1612565997855557a2e14f49e838446ddd3"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/failure-state-reducer.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b350f4a1459c9e6befabeef534d4347b034661fd"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/index.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "016d6897b4a2cd505ed370e7db0a418f684ee965"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b7a162fce1ebb31babfaf8431761de3e5122d5bb"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/transition-applier.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ba90ac85322a37ce3daba63a18dc01a67020cdc9"
+      },
+      {
+        "path": "plugins/specnav-verification/kernel/repair/trusted-fact-authority.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e5310d1f9fc59b43275135cad3540563db9b0ef8"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/attempt.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "773d993b4c3f8996d5695ce14a823739ca9ee862"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/authority-chain-anchor.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e13a1e2a9b0b9d01090988615d6bd1f0c9abf3b7"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/case-approval.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e5ebbc7c5b11e8f21114042aa3694a1553c28eb8"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/case-snapshot.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ba5daf3328a2121bd46272293f8d89478b1a5833"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/common.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c6cb2298e0663de7a02f9025bc91288af6fac517"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/cross-host-lock.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ad97bbe757a4a92b8390d55556ba3d4b910694fe"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/cross-host-release-result.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2670784a3901cbaf4ed6ed4a5f8e4559825ac8c8"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/evidence-index.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "59a36f773289a247e73fb755dea398ffb88b26c1"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/evidence.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "238a47eb54a3dc430b18d5cf53a10705ef8a967a"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/failure-packet.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "98d2d751fc1ba50fb494932b95d1bebcd45f4d6b"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/gate-decision.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "96951ea4395084304dbdb51838a36f7663ac2c77"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/host-execution.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1244f1f448023e1f62ac5d80d2da72cc9cd865b5"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/host-install-receipt.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "995f51692882727da646157d35db23fd671e2cc3"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/host-installation-index.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "76e562c247ef8db9d4a38a20cad888b1d3790580"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/host-proof-pointer.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cafa49443f58deca9e401aa8d3b7238617440d8d"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/migration-receipt.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "105eea2c5b1f18de923105f019e59b4162d7fe46"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/reading.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5629a3e40625ee11fca539abc9a8de975a20d879"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/repair-baseline.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f25eb9c310a3fa1bcca5951e49194e0e91e301ca"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/repair-lineage-recovery-review.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dccdc5f6a46b4f33fb44414af7122097d1f3b198"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/repair-lineage-recovery.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4484ea7820d9633b75dfbe00cc93285b89dbc1e5"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/repair-link.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "522c776d0bcb615f56fecfe28d34def7564d1ce9"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/repair-review.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90806951abbde940a0bd57949feed4d6b6a57300"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/report-model.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1780b2d02da254d8715a982996e3d14f9005105e"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/root-cause-review.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "70911846efb062d2e6144488ff3149435298de05"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/runtime-status.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d98d5066996f920874763e8903bd415cb47d6742"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/test-case.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9392d0a93a3d8a4274b8e76fa668e6c8ad692571"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/transition-application.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "113275a06535eb202b3e1ca363fa8b8cec397349"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/transition-proposal.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "921b5d1e67bfadfd19531e2d916834464a23817e"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/trusted-fact-envelope.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "92ed79a137be0f782004577ec651e8ecec4c2c5a"
+      },
+      {
+        "path": "plugins/specnav-verification/schemas/verification-run.schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0793bc65778269e4f49be3bb93cc38726e6a8d72"
+      },
+      {
+        "path": "tests/run-verification-v2-repair-loop.sh",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "40fe12e63f92dff7eac8dd82c9a83ee37f31377c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "25424a737d1b244bc3283c4d02a6ebff08123a1d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/artifact-bindings.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6bd26d4c96a900e857f0bd683b7e6890ef4ba5c0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/baseline.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a7e6f9450df13fa60f395044c524385df267cd3c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/fail-closed.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "be2bf206c7cd448ce4c28a59388651cf6d819224"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/identity-bindings.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e034705a35740f9ac095e92060dd805270158d10"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/reference-utils.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "542dec602449b12c881c11fa051f3b27a3e76e54"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/retry.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5afb1783ade9e5214778563c87e4e5483018a066"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/schema-and-immutability.suite.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5f80e946d1469abc04fc3043339638e13bd91eb1"
+      },
+      {
+        "path": "tests/verification-v2/contracts/cross-reference/test-helpers.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7047dee9e3fc9100bc6a2f8a8300cd6d68fccc0d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6d3d3ca1d06e4f550cefdf4245f4ef4049860551"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-attempt-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a092ec6a74677aae72933f8a70f699bcd365deda"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-captured-at.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cb16b54db3465f62a2dec2d07eb9ce7fe07aad5f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-case-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5579a77dda0f23b23816c45bd9d2762158c1c97a"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-change-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "77b7751a66d2acfed0e5bcdffc8ee834d9a104c6"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-code-sha.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "de5d948c831e6f4926cd41b5a1347bc5738824db"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-environment-hash.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f2cbdcb92fea08c16956a3e491b33877b6f146aa"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "403c6c31592f168615cae748883ddd6554b5873c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-kernel-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a85d5103303686df203c157a64f7a856daca5821"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-kind.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ae8c3f19353e6544a667c95a93f21f10814288bd"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-path.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "09505e23d1e5822cc9670e86c0358b8ab9e6c766"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-producer.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "20022a6849288e165d7b343fd8ad49d9a1420279"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-redaction.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "066c4bcd53180f40035375d99fb0da1a7a82b240"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-run-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a4b60ca3c85a708701c1192d04692c763db0567e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-runtime-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e4202d70d4f83458b1e930394e3700175b0868a0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6850448f24b452db363c8bbb23b1ef6a08676e9f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-sha256.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b6247672c91fcb28d4e890f971bb79e867b2ef8"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-size.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e942898787114cbc5c654bb9fdf8a37005c59623"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-step-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "31e2709322dc9c23dc8fba6dde74d405a3789f21"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac31/evidence-missing-test-sha.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "510510a64da84ab1a37b8939ba277a55503f81ff"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5218210c8883627df3a0897a3ff80836c6173574"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-blockers.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "dbd0cc680c2697ed818b50e3b8c5a3093cbf1a60"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-change-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3bc978e47bb89085e823e6e569ddcfbc23d7de32"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-decided-at.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4c715fc064df730e91bc023d2ea7a2895d728e46"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-decision.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9ecd6822e1645ac669d9e455511f917a8186362d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-evidence-index-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "829cf9ad9eb544116a099f856f29a54f8a1bffd3"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-freshness.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e505b16e0047af3e328fd40984af70deee43a9c2"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-id.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c0aeb8824c1a45e94197de8b7de2d91a4427a8e2"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-integrity-status.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "9d02bd4e11d677301fdf297dc7b3753697c88181"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-kernel-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fab7c8fe4b36852e8af05a1eb3f6a492a0536805"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-policy-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "1433f426836af4b17aa905087b6b5d184e1635c7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-runtime-version.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "200c8860a4ecb89483f4659769dc7c553139d125"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8ca37c27a7308a0499942f6f839c280724dd8727"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-source-case-ids.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2035b150d32fb1b5368ea61f21d2cb1a6046466e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-source-reading-ids.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "7bc3fb7ccedc7f39cc4685012b3a7f12a8c286c7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-stage.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3f815a8844ff505d0dbbffb58dd5276317fd57be"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/ac35/gate-missing-warnings.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d2ce19d5920c5b5f2bb24b05691a9eb8f701ead4"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/manifest.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "807481248a9bb6a0b891d9b3b4848a6fe0eaacd1"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/attempt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "928683941fcffebec8eaf74b15a15cdc92898b27"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/authority-chain-anchor-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "163cd107bf8bfefe05654ce680a6d66b7c7379e5"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/case-approval-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "aecd75cfe0156312d492cdc26f8118ebefbd7d16"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/case-snapshot-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "458baab8bba94af6a5a9617e67dff87ac45aadbf"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/cross-host-lock-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "51e5ceadb67d57820e1a87254a6ae211cb9e4ae9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/cross-host-release-result-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "84a5398b3585d4668e55e0d9b32b7f0abf822ffe"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/evidence-index-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "02f7de69857f99eb7529c3fb37586039712c8827"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/failure-packet-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d49991e796c4bf197ded3631d782bf0ef29d93a6"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-execution-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "28d6b2c8c698e2500fff7e38f0ed76ad21024aaa"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-install-receipt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "83912c590ec494a086f745e59cad4c10012eaa65"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-installation-index-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "84a5398b3585d4668e55e0d9b32b7f0abf822ffe"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/host-proof-pointer-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab8a74cf2ca4de400bdced0965e2bb7b44dcafae"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/migration-receipt-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "2b0b48d6b105d567365085755f192c82bdf2dfb9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/reading-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6a63a58d3568be3fb3070f403d97b672b5965717"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/repair-link-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee0bf2df24fd525bddeae327ed3767fe4c0baa28"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/repair-review-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ee60cf5e80598c6916b0e3db6024c03c08a9cbc0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/report-model-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "f893027f5fc24a92177ce5502946614145f81d95"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/root-cause-review-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ab51c6fa6e031b2be699a88855206f761d91df9d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/runtime-status-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "230eb0992c1a1be4cbdee2ffa605600101243945"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/test-case-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "90bf094ae2751a95aa9b6dbfe0e04b2f41027e2f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/transition-application-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "80d3328d53295953e4dc32845364ae5535586c09"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/transition-proposal-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8e27b404fd5415c4e2592c8ba4b248b445b6ccc9"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/trusted-fact-envelope-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a3f6fe644c31b018a086f3b9e99720b5c4f1802b"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/negative/verification-run-missing-schema.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "b909b6d9283ddb3ab3023830e66e219f346dce98"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/attempt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "00f731c64ed7d102f931ced167261811b0f8414d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/authority-chain-anchor.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "14407bac7271396c42f0c949450d83fa1cfe987e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/case-approval.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5856f99def146a2091d0c015c69c13753e296c81"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/case-snapshot.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fa48b559cba1158b963adcb4b90366768e786d49"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/cross-host-lock.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "d098ad9b199ff251dbcab3aa1d08a076bb76323d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/cross-host-release-result.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "383217f0b535394e2e9f6095503208a77102b725"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/evidence-index.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "98552f00765d5970e0f6dc5267700e82328f9177"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/failure-packet.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c892159f3b2b4ced9ee942d8163f328a0eda55db"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-execution.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3f5a64ed6c4ff29e13ca06df6206a651bf76e836"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-install-receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4c5ece4159bacc97ae0c030ec3d15fbb519ad966"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-installation-index.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "e62fe10f757fb876b4be352f8ddb6009fa63b8b7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/host-proof-pointer.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "a80425dfe614b716ff8476b8945fafbb3ed1f050"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/migration-receipt.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "8bce8482e01d52afc1ff9ceb0209c00120f90cf0"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/reading.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3ee3bfbcd93318bea5f4b90d6ffbbc64bbfe0d18"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-baseline.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "76a564c95a8281198b773c0230569bde857cea9c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-lineage-recovery-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ea0d0eeb4ff241bac35be5d9609292dacd44f397"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-lineage-recovery.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "ddea66945245c78cc517b624b32b8acc62a25e63"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-link.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "26a4ae45bb9809d7208cd1e948261ffce0b66e9d"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/repair-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "6b53b3c8691a20f4ce7ae75efadfd6431bd8d76c"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/report-model.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "c216542af6fc15e2729f6c6899e3f9e8b4eb4b8f"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/root-cause-review.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "511064a8e15b05d9118b49369217e0fd81075464"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/runtime-status.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3afa7bebd6c221ef7861ecc2c15ff71ae5d71251"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/test-case.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "19bd84d87687671c9cda1e8765c389c3226d5377"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/transition-application.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0c8bcae310e4fedb9a11c65a7287862088e09c67"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/transition-proposal.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "0bd6bf651571b9d435a50924d7542e8758958167"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/trusted-fact-envelope.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "cacf5c1607e7ea512928ca81a8b51b7bb91b0f1e"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/positive/verification-run.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "866059455d6ec50abd2521cf4ab85c38144ef2c8"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/special/attempt-unresolved-references.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "fadff9edff3153e9ba603ae03f7cbf7fbba0e911"
+      },
+      {
+        "path": "tests/verification-v2/contracts/fixtures/special/host-cross-host-negative-matrix.json",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "774b10bade98072fa3ecb981cc02e61410cf5ca7"
+      },
+      {
+        "path": "tests/verification-v2/contracts/package-content.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "5c045ec8ec81e927f9a20246092175afeec6d19b"
+      },
+      {
+        "path": "tests/verification-v2/contracts/schema-registry.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4bb9e472efa45b6434a4c43ab57ec188b8e5b02f"
+      },
+      {
+        "path": "tests/verification-v2/kernel/package-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "61c31fbe8abd87ad83c1073f0e73a42a0c4fd8ba"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/authority-transition.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "45cb6a756e15b7200442b173b64faa05344c0b58"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/classifier.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4ced45a30a66e46f6a65ad6fa9bfda3301221e1e"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/cli.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "bfdf3146306290dd502eeb8c620757b84961c11a"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/development-bridge.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "81ab2a9247ef5bc885bd60cdad58fa58c57871f6"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/failure-state-reducer.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "3c3db0d8f2e042ea847cec051579824db4d5c071"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/security-boundary.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "4582703f16072c22c0340221c884cbbae823faa6"
+      },
+      {
+        "path": "tests/verification-v2/repair-loop/state-machine.test.js",
+        "mode": "100644",
+        "type": "blob",
+        "object_id": "99c04e6f255ed2d3a60f12c995ae730aa61a7f83"
+      }
+    ],
+    "sha256": "b37b89930e22b7d36a1d2ab0bd4caf3b878923ae0a94d4b7b7332c70108ff457"
+  },
+  "artifacts": {
+    "context": {
+      "path": "development/tasks/020-retest-regression-loop/context.json",
+      "sha256": "29eba9cfe374f5233048387ea58567394e801a2157b334b19ac1c31c736a49d6"
+    },
+    "report": {
+      "path": "development/tasks/020-retest-regression-loop/report.md",
+      "sha256": "43d755567f756c02007c848e9c17588f9e41a5e8829becf0b46fea1c6ba04279",
+      "status": "DONE"
+    },
+    "spec_review": {
+      "path": "development/tasks/020-retest-regression-loop/spec-review.md",
+      "sha256": "337af3cd0b2bc420fa3ca80a14f296afe5e1684553aa2306edac155f451d44a2",
+      "verdict": "approved"
+    },
+    "quality_review": {
+      "path": "development/tasks/020-retest-regression-loop/quality-review.md",
+      "sha256": "5bdefc25479a5beb70a96e2f316adfd0431f79701971434df081a65ddf884dd0",
+      "verdict": "approved"
+    }
+  },
+  "test_runs": [
+    {
+      "id": "receipt-f7467926054216d5726e33a26ac23d06ac63f691cb936ff47ca09829adfa7a9f",
+      "command": "node --test tests/verification-v2/repair-loop/state-machine.test.js",
+      "assertion_ids": [
+        "AC-06",
+        "AC-07",
+        "AC-27"
+      ],
+      "recorded_at": "2026-08-11T23:12:10.719Z",
+      "validation_receipt_sha256": "c29fa34ee9001357bfc503a7a86f91173dc5e0fab972a4944d30d366ac3bffd1",
+      "evidence_log": {
+        "path": "development/evidence/584-020-retest-regression-loop.log",
+        "sha256": "5195a0a545024fda4a90327cd346043b8aade59c6a29bcb04cc4a2280690e6da",
+        "size": 4132
+      }
+    },
+    {
+      "id": "receipt-ffcd75fb226e43b978ef1691d8c9311538d0488780101150a7b4e4bf6244a553",
+      "command": "bash tests/run-verification-v2-repair-loop.sh",
+      "assertion_ids": [
+        "AC-06",
+        "AC-07",
+        "AC-27"
+      ],
+      "recorded_at": "2026-08-11T23:12:17.340Z",
+      "validation_receipt_sha256": "45a2e192f4f6191cb3f7f6c69eb1a255dcc5066cab2fab00e122d277f2888963",
+      "evidence_log": {
+        "path": "development/evidence/585-020-retest-regression-loop.log",
+        "sha256": "73ca57b5d6be283e7af185de8ec528603b484b9818e80a130b99532bb30a5c19",
+        "size": 12587
+      }
+    }
+  ],
   "assertions": [
     {
       "id": "AC-06",
       "parent_id": "AC-06",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/020-retest-regression-loop/report.md",
-        "development/tasks/020-retest-regression-loop/spec-review.md",
-        "development/tasks/020-retest-regression-loop/quality-review.md",
-        "development/evidence/296-020-retest-regression-loop.log",
-        "development/evidence/297-020-retest-regression-loop.log",
-        "development/evidence/298-020-retest-regression-loop.log",
-        "development/evidence/299-020-retest-regression-loop.log",
-        "development/evidence/300-020-retest-regression-loop.log",
-        "development/evidence/301-020-retest-regression-loop.log",
-        "development/evidence/302-020-retest-regression-loop.log",
-        "development/evidence/303-020-retest-regression-loop.log",
-        "development/evidence/304-020-retest-regression-loop.log",
-        "development/evidence/305-020-retest-regression-loop.log",
-        "development/evidence/306-020-retest-regression-loop.log"
+      "test_run_ids": [
+        "receipt-f7467926054216d5726e33a26ac23d06ac63f691cb936ff47ca09829adfa7a9f",
+        "receipt-ffcd75fb226e43b978ef1691d8c9311538d0488780101150a7b4e4bf6244a553"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "A reviewer can see first failure, retry, repair, retest, and regression attempts without earlier evidence being overwritten."
     },
@@ -32,22 +1078,11 @@
       "id": "AC-07",
       "parent_id": "AC-07",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/020-retest-regression-loop/report.md",
-        "development/tasks/020-retest-regression-loop/spec-review.md",
-        "development/tasks/020-retest-regression-loop/quality-review.md",
-        "development/evidence/296-020-retest-regression-loop.log",
-        "development/evidence/297-020-retest-regression-loop.log",
-        "development/evidence/298-020-retest-regression-loop.log",
-        "development/evidence/299-020-retest-regression-loop.log",
-        "development/evidence/300-020-retest-regression-loop.log",
-        "development/evidence/301-020-retest-regression-loop.log",
-        "development/evidence/302-020-retest-regression-loop.log",
-        "development/evidence/303-020-retest-regression-loop.log",
-        "development/evidence/304-020-retest-regression-loop.log",
-        "development/evidence/305-020-retest-regression-loop.log",
-        "development/evidence/306-020-retest-regression-loop.log"
+      "test_run_ids": [
+        "receipt-f7467926054216d5726e33a26ac23d06ac63f691cb936ff47ca09829adfa7a9f",
+        "receipt-ffcd75fb226e43b978ef1691d8c9311538d0488780101150a7b4e4bf6244a553"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "A retry that passes is labeled FLAKY; a repaired case that passes is labeled PASS AFTER FIX."
     },
@@ -55,22 +1090,11 @@
       "id": "AC-27",
       "parent_id": "AC-27",
       "status": "passing",
-      "direct_evidence": [
-        "development/tasks/020-retest-regression-loop/report.md",
-        "development/tasks/020-retest-regression-loop/spec-review.md",
-        "development/tasks/020-retest-regression-loop/quality-review.md",
-        "development/evidence/296-020-retest-regression-loop.log",
-        "development/evidence/297-020-retest-regression-loop.log",
-        "development/evidence/298-020-retest-regression-loop.log",
-        "development/evidence/299-020-retest-regression-loop.log",
-        "development/evidence/300-020-retest-regression-loop.log",
-        "development/evidence/301-020-retest-regression-loop.log",
-        "development/evidence/302-020-retest-regression-loop.log",
-        "development/evidence/303-020-retest-regression-loop.log",
-        "development/evidence/304-020-retest-regression-loop.log",
-        "development/evidence/305-020-retest-regression-loop.log",
-        "development/evidence/306-020-retest-regression-loop.log"
+      "test_run_ids": [
+        "receipt-f7467926054216d5726e33a26ac23d06ac63f691cb936ff47ca09829adfa7a9f",
+        "receipt-ffcd75fb226e43b978ef1691d8c9311538d0488780101150a7b4e4bf6244a553"
       ],
+      "direct_evidence": [],
       "reused_evidence": [],
       "claim": "Repeated no-progress repair attempts route to break-loop governance instead of silently retrying."
     }
