@@ -1918,8 +1918,7 @@ function atomicWriteJson(changeDir, relative, value) {
 
 function createReleaseProofValidator(options = {}) {
   const clock = options.clock || (() => new Date().toISOString());
-  const runtimeAuthority = options.runtimeAuthority
-    || kernel.createRuntimeAuthority();
+  const runtimeAuthority = options.runtimeAuthority || null;
   const expectedHostRunnerSourceSha256 = options.expectedHostRunnerSourceSha256
     || hostProofRunnerSourceDigest(LOCAL_REPOSITORY_ROOT);
   const expectedFixtureManifestSha256 = options.expectedFixtureManifestSha256
@@ -1950,9 +1949,11 @@ function createReleaseProofValidator(options = {}) {
       'verify/v2/runtime-status.json',
       blockers
     );
+    const selectedRuntimeAuthority = runtimeAuthority
+      || kernel.createRuntimeAuthority({ projectRoot: root });
     const runtimeResolution = resolveRuntimeAuthority(
       runtimeStatusRead.value,
-      runtimeAuthority,
+      selectedRuntimeAuthority,
       blockers
     );
     const schemaRegistry = options.schemaRegistry || (

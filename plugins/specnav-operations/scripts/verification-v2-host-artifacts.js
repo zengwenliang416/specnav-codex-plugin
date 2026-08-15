@@ -233,7 +233,9 @@ function assertPublishInputsCurrent(context, lockFile, hostLockSha) {
     path.join(context.changeDir, 'verify', 'v2', 'runtime-status.json'),
     'verification-host-artifacts:publish-runtime-status-invalid'
   );
-  const runtimeResolution = kernel.createRuntimeAuthority().resolve(
+  const runtimeResolution = kernel.createRuntimeAuthority({
+    projectRoot: context.projectRoot
+  }).resolve(
     runtimeStatusRead.value
   );
   const gateInputRead = readSafeJson(
@@ -356,7 +358,9 @@ function loadContext(request) {
     path.join(verifyV2, 'runtime-status.json'),
     'verification-host-artifacts:runtime-status-invalid'
   );
-  const runtimeResolution = kernel.createRuntimeAuthority().resolve(
+  const runtimeResolution = kernel.createRuntimeAuthority({
+    projectRoot
+  }).resolve(
     runtimeStatusRead.value
   );
   if (!runtimeResolution.ok) {
