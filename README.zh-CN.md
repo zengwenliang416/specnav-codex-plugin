@@ -263,11 +263,25 @@ Verification 2.0 没有 light、compact、部分测试域、人工改绿或 fall
 运行 `specnav-verification-runtime-setup`；然后使用 `specnav-verify-plan`
 并执行全部六个测试域。
 
-锁定运行时会把 Playwright、Midscene、AJV、托管 Chromium 和 FFmpeg 安装到
-`~/.specnav/runtime/verification/<version>/`，不会修改业务仓库。Midscene
-可以辅助 UI 交互，但 PASS 必须由确定性断言或明确人工 signoff 决定。HTML
-报告只是审阅投影；机器权威由 `verify/v2/report-model.json`、release/archive
-gate decision 和 `verify/v2/report-render-manifest.json` 共同绑定。
+Runtime 作用域检查会同时报告项目级
+`<project>/.specnav/runtime/verification` 和用户级
+`~/.specnav/runtime/verification`。默认推荐 `project`，但不得自动选择任一
+候选。用户必须显式选择 `project` 或 `user`，选择结果写入
+`<project>/.specnav/config.json`。在完成选择前，runtime doctor、install 和
+repair 均为 `BLOCKED`，且没有 fallback；完成选择后，所有 Runtime 操作必须
+使用选定 base。
+
+锁定运行时会把 Playwright、Midscene、AJV、托管 Chromium 和 FFmpeg 按版本
+安装到选定 base。普通机器中安装在其他位置的 Playwright、Midscene 和浏览器
+只能作为诊断信息，不能被认定为受管 Runtime。Midscene 可以辅助 UI 交互，
+项目级作用域只从 `<project>/.specnav/secrets/verification.env` 读取
+Midscene provider 配置；用户级作用域只从
+`~/.specnav/secrets/verification.env` 读取。文件权限必须为 `0600`，不同
+作用域之间以及 shell 启动文件之间都不允许 fallback。
+但 PASS 必须由确定性断言或明确人工 signoff 决定。敏感 provider 配置只能
+报告 presence，不能报告名称或值。HTML 报告只是审阅投影；机器权威由
+`verify/v2/report-model.json`、release/archive gate decision 和
+`verify/v2/report-render-manifest.json` 共同绑定。
 
 运行时 readiness 必须从实时文件重新建立，不能直接信任已保存状态。doctor
 与 release proof 会校验 install receipt、package lock、完整托管

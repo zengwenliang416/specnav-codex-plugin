@@ -169,7 +169,10 @@ function resolveManagedValidationReceiptAuthority(options = {}) {
 
   const kernel = options.kernel || require('../kernel');
   const runtimeAuthority = options.runtimeAuthority
-    || kernel.createRuntimeAuthority(options.runtimeAuthorityOptions);
+    || kernel.createRuntimeAuthority({
+      projectRoot,
+      ...(options.runtimeAuthorityOptions || {})
+    });
   const resolution = runtimeAuthority.resolve(runtimeStatus);
   if (
     !resolution

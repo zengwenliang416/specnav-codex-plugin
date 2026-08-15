@@ -14,6 +14,9 @@ const {
 const {
   createAuthorityLog
 } = require('../kernel/repair/authority-log');
+const {
+  loadProviderEnvironment
+} = require('../kernel/runtime/scope-resolver');
 
 function argValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -552,7 +555,7 @@ function loadContext(args, dependencies = {}) {
       )
     };
     const runtimeAuthority = dependencies.runtimeAuthority
-      || kernel.createRuntimeAuthority();
+      || kernel.createRuntimeAuthority({ projectRoot });
     const runtimeResolution = runtimeAuthority.resolve(
       context.runtimeStatusValue
     );
@@ -653,8 +656,24 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       fallback_used: false
     };
   }
+  const providerSelection = loadProviderEnvironment({
+    projectRoot: context.projectRoot,
+    scope: context.runtimeStatusValue.runtime_scope,
+    environment: process.env
+  });
+  if (!providerSelection.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: providerSelection.blockers,
+      fallback_used: false
+    };
+  }
   const clock = dependencies.clock || (() => new Date().toISOString());
-  const secrets = stableSecrets(context.snapshotValue);
+  const secrets = stableSecrets(context.snapshotValue, {
+    ...process.env,
+    ...providerSelection.environment
+  });
   const trustedFactAuthority = createTrustedFactAuthority({
     schemaRegistry: context.schemaRegistry,
     key: context.trustedFactKey,
@@ -715,6 +734,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     environmentHash: current.environmentHash,
     clock,
     secrets,
+    providerEnvironment: providerSelection.environment,
     scenarioRegistry,
     repairIdentityResolver(failureId) {
       return resolveRepairIdentity(context, trustedFactAuthority, failureId);
@@ -791,18 +811,18 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
   };
 }
 
-function stableSecrets(snapshot) {
+function stableSecrets(snapshot, environment = process.env) {
   const values = new Set();
   for (const testCase of snapshot.cases || []) {
     for (const key of testCase.runner?.env_keys || []) {
       if (
         key.startsWith('SPECNAV_')
-        || typeof process.env[key] !== 'string'
-        || process.env[key].length === 0
+        || typeof environment[key] !== 'string'
+        || environment[key].length === 0
       ) {
         continue;
       }
-      values.add(process.env[key]);
+      values.add(environment[key]);
     }
   }
   return [...values];

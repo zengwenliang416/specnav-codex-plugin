@@ -22,7 +22,8 @@ function assertGreen(result) {
   assert.deepEqual(Object.keys(result.snapshots).sort(), [
     'claude-code',
     'codefree-o',
-    'codex'
+    'codex',
+    'dsh'
   ]);
   assert.match(result.summary.digest, /^[a-f0-9]{64}$/);
 }

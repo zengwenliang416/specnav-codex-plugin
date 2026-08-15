@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const REQUIRED_HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
+const REQUIRED_HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o', 'dsh']);
 const OFFICIAL_HOST_REPOSITORIES = Object.freeze({
   'claude-code': Object.freeze({
     repository: 'https://github.com/zengwenliang416/specnav-claude-plugin.git',
@@ -16,6 +16,10 @@ const OFFICIAL_HOST_REPOSITORIES = Object.freeze({
   }),
   'codefree-o': Object.freeze({
     repository: 'https://github.com/zengwenliang416/specnav-codefree-o-plugin.git',
+    ref: 'refs/heads/main'
+  }),
+  dsh: Object.freeze({
+    repository: 'https://github.com/zengwenliang416/specnav-dsh-plugin.git',
     ref: 'refs/heads/main'
   })
 });
@@ -45,6 +49,15 @@ const HOST_DESCRIPTORS = Object.freeze({
       'scripts/plugin-runtime.js',
       'specnav-stage.json'
     ])
+  }),
+  dsh: Object.freeze({
+    plugin: 'modules/specnav-verification',
+    manifest: 'modules/specnav-verification/specnav-kernel-source.json',
+    hostFiles: Object.freeze([
+      'scripts/dsh-verification-adapter.js',
+      'scripts/plugin-runtime.js',
+      'specnav-stage.json'
+    ])
   })
 });
 const HOST_PROOF_RUNNER_MANIFEST = Object.freeze({
@@ -70,11 +83,53 @@ const HOST_PROOF_RUNNER_MANIFEST = Object.freeze({
     'plugins/specnav-verification/schemas'
   ])
 });
-const HOST_PROOF_RUNNER_FILES = Object.freeze([
-  ...HOST_PROOF_RUNNER_MANIFEST.javascriptEntries,
-  ...HOST_PROOF_RUNNER_MANIFEST.dynamicJavascriptEntries,
-  ...HOST_PROOF_RUNNER_MANIFEST.resourceFiles
-].sort());
+
+// The DeepSeek Harness checkout keeps the suite under the installed preset
+// root (modules/... at top level), so the runner manifest for the dsh host
+// uses preset-relative paths instead of the marketplace-layout plugins/...
+// paths of the external hosts.
+function proofRunnerManifestFor(host) {
+  if (host === 'dsh') {
+    return Object.freeze({
+      javascriptEntries: Object.freeze([
+        'modules/specnav-operations/scripts/verification-v2-host-artifacts.js',
+        'modules/specnav-operations/scripts/verification-v2-proof.js',
+        'modules/specnav-verification/scripts/verification-runtime.js'
+      ]),
+      dynamicJavascriptEntries: Object.freeze([
+        'modules/specnav-core/scripts/specnav-lib.js',
+        'modules/specnav-verification/kernel/index.js',
+        'modules/specnav-verification/kernel/repair/index.js'
+      ]),
+      resourceFiles: Object.freeze([
+        'specnav.suite.json',
+        'runtime/manifest.cjs',
+        'runtime/plugin-runtime.cjs',
+        'modules/specnav-verification/scripts/dsh-verification-adapter.js'
+      ]),
+      resourceDirectories: Object.freeze([
+        'modules/specnav-verification/assets',
+        'modules/specnav-verification/schemas'
+      ])
+    });
+  }
+  return HOST_PROOF_RUNNER_MANIFEST;
+}
+
+function manifestHostFor(repositoryRoot) {
+  return fs.existsSync(
+    path.join(repositoryRoot, '.agents', 'plugins', 'marketplace.json')
+  ) ? 'codex' : 'dsh';
+}
+
+function proofRunnerFiles(host) {
+  const manifest = proofRunnerManifestFor(host);
+  return [
+    ...manifest.javascriptEntries,
+    ...manifest.dynamicJavascriptEntries,
+    ...manifest.resourceFiles
+  ].sort();
+}
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -181,9 +236,10 @@ function resolveLocalDependency(repositoryRoot, importer, specifier) {
 }
 
 function javascriptDependencyClosure(repositoryRoot) {
+  const manifest = proofRunnerManifestFor(manifestHostFor(repositoryRoot));
   const pending = [
-    ...HOST_PROOF_RUNNER_MANIFEST.javascriptEntries,
-    ...HOST_PROOF_RUNNER_MANIFEST.dynamicJavascriptEntries
+    ...manifest.javascriptEntries,
+    ...manifest.dynamicJavascriptEntries
   ];
   const files = new Set();
   while (pending.length > 0) {
@@ -247,8 +303,9 @@ function resourceDirectoryFiles(repositoryRoot, relative) {
 }
 
 function hostProofRunnerSourceFiles(repositoryRoot) {
+  const manifest = proofRunnerManifestFor(manifestHostFor(repositoryRoot));
   const files = javascriptDependencyClosure(repositoryRoot);
-  for (const relative of HOST_PROOF_RUNNER_MANIFEST.resourceFiles) {
+  for (const relative of manifest.resourceFiles) {
     confinedRegularFile(
       repositoryRoot,
       relative,
@@ -256,7 +313,7 @@ function hostProofRunnerSourceFiles(repositoryRoot) {
     );
     files.add(relative);
   }
-  for (const relative of HOST_PROOF_RUNNER_MANIFEST.resourceDirectories) {
+  for (const relative of manifest.resourceDirectories) {
     for (const resource of resourceDirectoryFiles(repositoryRoot, relative)) {
       files.add(resource);
     }
@@ -453,8 +510,9 @@ function officialHostLockValid(lock) {
 
 module.exports = {
   HOST_DESCRIPTORS,
-  HOST_PROOF_RUNNER_FILES,
   HOST_PROOF_RUNNER_MANIFEST,
+  proofRunnerFiles,
+  proofRunnerManifestFor,
   OFFICIAL_HOST_REPOSITORIES,
   REQUIRED_HOSTS,
   expectedHostCommands,

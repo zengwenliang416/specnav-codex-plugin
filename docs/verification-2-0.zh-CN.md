@@ -13,25 +13,39 @@ hash 和 size。
 
 ```mermaid
 flowchart LR
-  A["开发交接"] --> B["锁定运行时 doctor"]
-  B --> C["批准的不可变用例快照"]
-  C --> D["六域执行"]
-  D --> E{"机器门禁"}
-  E -->|失败| F["冻结失败证据"]
-  F --> G["修复任务"]
-  G --> H["复测与回归"]
-  H --> D
-  E -->|通过| I["三页 HTML 审阅"]
-  I --> J["发布与归档门禁"]
+  A["开发交接"] --> B["Runtime 作用域检查与选择"]
+  B --> C["锁定运行时 doctor"]
+  C --> D["批准的不可变用例快照"]
+  D --> E["六域执行"]
+  E --> F{"机器门禁"}
+  F -->|失败| G["冻结失败证据"]
+  G --> H["修复任务"]
+  H --> I["复测与回归"]
+  I --> E
+  F -->|通过| J["三页 HTML 审阅"]
+  J --> K["发布与归档门禁"]
 ```
 
 ## 运行时安装与诊断
 
-托管运行时按版本并行安装到：
+受管 Runtime 有两个默认 base 候选：
 
 ```text
+<project>/.specnav/runtime/verification
+~/.specnav/runtime/verification
+```
+
+Runtime 版本按版本并行安装到选定 base：
+
+```text
+<project>/.specnav/runtime/verification/<version>/
 ~/.specnav/runtime/verification/<version>/
 ```
+
+默认推荐 `project`。推荐不等于选择：即使用户级候选已经安装 Runtime，也不得
+自动采用任一 base。用户必须显式选择 `project` 或 `user`，选择结果持久化到
+`<project>/.specnav/config.json`。doctor、install 和 repair 必须使用选定
+base。项目没有持久化选择时，每个操作都必须返回 `BLOCKED`，且没有 fallback。
 
 当前锁定版本：
 
@@ -46,7 +60,47 @@ flowchart LR
 | 初始平台 | `darwin-arm64` |
 | 视觉理解模型 | `gpt-5.6-luna` |
 
-先运行只读 doctor：
+在 doctor 或 setup 前检查两个候选：
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" inspect \
+  --project "$PWD" \
+  --json
+```
+
+`inspect` 返回项目级和用户级候选，以及已有的持久化选择。工作流默认推荐
+`project`。没有选择时，它必须要求用户显式选择并报告 `BLOCKED`；不得根据
+已安装文件或普通机器工具推断选择。
+
+用户选择后，准确持久化该选择：
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" select-scope \
+  --scope project \
+  --project "$PWD" \
+  --json
+
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" select-scope \
+  --scope user \
+  --project "$PWD" \
+  --json
+```
+
+只能执行与用户显式选择对应的一条命令。`select-scope` 将选择写入
+`<project>/.specnav/config.json`，不会安装、复制或提升 Runtime。
+
+Provider 配置跟随同一个已选作用域：
+
+```text
+project -> <project>/.specnav/secrets/verification.env
+user    -> ~/.specnav/secrets/verification.env
+```
+
+该文件必须是权限为 `0600` 的普通非符号链接文件。非法键、重复键、格式错误
+或不安全权限都会阻塞 doctor 与执行。文件缺失只表示 provider 未配置，不会
+转去另一作用域或 shell 启动文件查找。
+
+完成选择后运行只读 doctor；它使用选定 base：
 
 ```bash
 node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" doctor \
@@ -57,7 +111,9 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" doctor \
 
 只有批准用例使用 Midscene 时才增加 `--requires-midscene`。doctor 会报告
 package、browser、permission、receipt、Kernel、lock 和脱敏 provider 的
-准确 blocker，但不会安装或修复。
+准确 blocker。敏感 provider 和 proxy 配置只能报告 presence；名称、标识符、
+endpoint、credential、init JSON、proxy 值和其他配置值都不得输出。doctor
+不会安装、修复或寻找替代 base。
 
 安装是独立写操作，必须先获得用户明确批准：
 
@@ -70,13 +126,15 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" install \
 
 使用 `specnav-verification-runtime-status` 做诊断，使用
 `specnav-verification-runtime-setup` 执行已批准的安装或修复。安装器不得
-修改业务项目的 package manifest 或 lockfile，只能使用锁定的托管 package、
-浏览器制品和 receipt，不能换用全局工具、系统浏览器或其他版本。
+修改业务项目的 package manifest 或 lockfile；scope 选择只写入
+`<project>/.specnav/config.json`。安装器只能使用选定 base 中锁定的托管
+package、浏览器制品和 receipt。普通机器中全局安装的 Playwright、Midscene
+和浏览器可以出现在诊断结果中，但不能满足、替代、填充或修复受管 Runtime。
 
 预期产物：
 
 ```text
-~/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json
+<selected-base>/2.0.0-alpha.2/install-receipt.json
 package-lock.json
 browser INSTALLATION_COMPLETE markers
 安装失败时保留的 .failed-* attempt
@@ -304,6 +362,7 @@ snapshot 并比较所有宿主。已保存的绿色 host receipt 或 compatibili
 
 | Blocker family | 含义 | 必要动作 |
 | --- | --- | --- |
+| `verification-runtime:scope-*` | 无法检查 scope 候选，或未持久化明确的 project/user 选择 | 检查候选、要求用户选择，并在 doctor 或 setup 前准确持久化该选择 |
 | `verification-runtime:*` | runtime、lock、package、browser、permission、receipt 或 provider 问题 | 运行 `specnav-verification-runtime-status`，执行返回的准确 action |
 | `verify:user-test-cases-unapproved` | 当前不可变用例快照没有有效人工批准 | 审阅并批准当前 snapshot |
 | `verification-evidence:*` | evidence 缺失、过期、篡改、未绑定或无效 | 修复证据生产并重跑受影响用例 |

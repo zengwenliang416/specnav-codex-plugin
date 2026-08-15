@@ -9,7 +9,11 @@ const {
   LOCK_FILE,
   loadRuntimeLock
 } = require('./lock-manifest');
-const { runtimeBaseDefault } = require('./installer');
+const {
+  inspectRuntimeScopes,
+  projectProviderFile,
+  userProviderFile
+} = require('./scope-resolver');
 const {
   moduleTreeDigest
 } = require('./runtime-integrity');
@@ -41,6 +45,12 @@ function authorityProjection(status, staticEvidence = {}) {
   return {
     runtime_version: status.runtime_version,
     runtime_root: status.runtime_root,
+    runtime_scope: status.runtime_scope,
+    runtime_base: status.runtime_base,
+    scope_selection_source: status.scope_selection_source,
+    provider_scope: status.provider_scope,
+    provider_source: status.provider_source,
+    provider_file: status.provider_file,
     requires_midscene: status.requires_midscene === true,
     runtime_lock_sha256: staticEvidence.runtimeLockSha256 || null,
     install_receipt_sha256: staticEvidence.installReceiptSha256 || null,
@@ -53,12 +63,32 @@ function authorityProjection(status, staticEvidence = {}) {
 
 function createRuntimeAuthority(options = {}) {
   const lock = options.lock || loadRuntimeLock();
-  const runtimeBase = path.resolve(
-    options.runtimeBase
-      || process.env.SPECNAV_VERIFICATION_RUNTIME_BASE
-      || runtimeBaseDefault()
-  );
+  const projectRoot = path.resolve(options.projectRoot || process.cwd());
+  const scopeInspection = inspectRuntimeScopes({
+    projectRoot,
+    runtimeVersion: lock.runtime_version,
+    runtimeBase: options.runtimeBase,
+    environment: options.environment || {},
+    homeDirectory: options.homeDirectory
+  });
+  const runtimeBase = scopeInspection.ok
+    ? path.resolve(scopeInspection.runtime_base)
+    : null;
+  const providerFile = scopeInspection.selected_scope === 'project'
+    ? projectProviderFile(projectRoot)
+    : scopeInspection.selected_scope === 'user'
+      ? userProviderFile(options.homeDirectory)
+      : null;
   function resolve(persistedStatus) {
+    if (!scopeInspection.ok) {
+      return {
+        ok: false,
+        runtimeRoot: null,
+        runtimeStatus: null,
+        authority: null,
+        blockers: scopeInspection.blockers
+      };
+    }
     const blockers = [];
     if (
       !persistedStatus
@@ -68,6 +98,21 @@ function createRuntimeAuthority(options = {}) {
       || persistedStatus.readiness !== 'ready'
       || persistedStatus.fallback_used !== false
       || persistedStatus.runtime_version !== lock.runtime_version
+      || persistedStatus.runtime_scope !== scopeInspection.selected_scope
+      || path.resolve(persistedStatus.runtime_base || '') !== runtimeBase
+      || persistedStatus.scope_selection_source
+        !== scopeInspection.selection_source
+      || persistedStatus.provider_scope !== scopeInspection.selected_scope
+      || persistedStatus.provider_source !== (
+        scopeInspection.selected_scope === 'explicit'
+          ? 'process-environment'
+          : 'scope-file'
+      )
+      || (
+        persistedStatus.provider_file === null
+          ? null
+          : path.resolve(persistedStatus.provider_file)
+      ) !== providerFile
     ) {
       return {
         ok: false,
@@ -199,7 +244,11 @@ function createRuntimeAuthority(options = {}) {
     }
     const trustedStatus = {
       ...persistedStatus,
-      runtime_root: currentRoot
+      runtime_root: currentRoot,
+      runtime_scope: scopeInspection.selected_scope,
+      runtime_base: runtimeBase,
+      scope_selection_source: scopeInspection.selection_source,
+      provider_scope: scopeInspection.selected_scope
     };
     const projection = authorityProjection(trustedStatus, {
       runtimeLockSha256: sha256(fs.readFileSync(LOCK_FILE)),
@@ -226,7 +275,8 @@ function createRuntimeAuthority(options = {}) {
 
   return Object.freeze({
     resolve,
-    runtimeBase
+    runtimeBase,
+    runtimeScope: scopeInspection.selected_scope
   });
 }
 

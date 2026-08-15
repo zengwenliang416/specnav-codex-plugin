@@ -22,6 +22,9 @@ const {
   runtimeBaseDefault
 } = require('../../../plugins/specnav-verification/kernel/runtime/installer');
 const {
+  userProviderFile
+} = require('../../../plugins/specnav-verification/kernel/runtime/scope-resolver');
+const {
   createTrustedFactAuthority
 } = require('../../../plugins/specnav-verification/kernel/repair');
 const {
@@ -121,6 +124,29 @@ function ensureFixtureRepository(root) {
   ]);
   if (status.trim() !== '') {
     throw new Error(`verification-fixture:dirty-worktree:${status.trim()}`);
+  }
+}
+
+function ensureUserRuntimeSelection(root) {
+  writeJson(path.join(root, '.specnav', 'config.json'), {
+    schema: 'specnav.project-config.v1',
+    verification: {
+      runtime_scope: 'user'
+    }
+  });
+  fs.writeFileSync(
+    path.join(root, '.specnav', '.gitignore'),
+    'runtime/\nsecrets/\n'
+  );
+  git(root, ['add', '.specnav/config.json', '.specnav/.gitignore']);
+  const staged = git(root, ['diff', '--cached', '--name-only']);
+  if (staged.trim()) {
+    git(root, [
+      'commit',
+      '--quiet',
+      '-m',
+      'test: select user verification runtime'
+    ]);
   }
 }
 
@@ -353,7 +379,9 @@ function populateProject(projectRoot, change, options = {}) {
     throw new Error(JSON.stringify(approvalState.blockers));
   }
   ensureFixtureRepository(root);
+  ensureUserRuntimeSelection(root);
   const lock = loadRuntimeLock();
+  const runtimeBase = runtimeBaseDefault();
   const runtimeStatus = doctorRuntime({
     requestedVersion: lock.runtime_version,
     environment: {
@@ -370,14 +398,19 @@ function populateProject(projectRoot, change, options = {}) {
     },
     providerEnvironment: {},
     requiresMidscene: false,
-    runtimeBase: runtimeBaseDefault()
+    runtimeBase,
+    runtimeScope: 'user',
+    scopeSelectionSource: 'project-config',
+    providerScope: 'user',
+    providerSource: 'scope-file',
+    providerFile: userProviderFile()
   });
   if (!runtimeStatus.ok) {
     throw new Error(JSON.stringify(runtimeStatus.blockers));
   }
-  const runtimeResolution = kernel.createRuntimeAuthority().resolve(
-    runtimeStatus
-  );
+  const runtimeResolution = kernel.createRuntimeAuthority({
+    projectRoot: root
+  }).resolve(runtimeStatus);
   if (!runtimeResolution.ok || !runtimeResolution.signingKey) {
     throw new Error(JSON.stringify(runtimeResolution.blockers));
   }

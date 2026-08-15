@@ -54,6 +54,22 @@ const HOSTS = Object.freeze({
           && entry.path === 'modules/specnav-operations'
         ));
     }
+  }),
+  dsh: Object.freeze({
+    targetPath: 'presets/specnav/modules/specnav-operations',
+    validate(root) {
+      const manifest = readJson(
+        path.join(root, 'presets/specnav/specnav.suite.json'),
+        'operations-proof-sync:target-manifest-invalid'
+      );
+      return manifest.schema === 'specnav.dshSuite.v1'
+        && Array.isArray(manifest.modules)
+        && manifest.modules.some((entry) => (
+          entry
+          && entry.name === 'specnav-operations'
+          && entry.path === 'modules/specnav-operations'
+        ));
+    }
   })
 });
 
@@ -173,10 +189,17 @@ function copyFile(source, target) {
   fs.chmodSync(target, fs.statSync(source).mode);
 }
 
-function buildStagedTree(stagingRoot, host) {
+function buildStagedTree(stagingRoot, host, options = {}) {
+  const sourceRepositoryRoot = path.resolve(
+    options.sourceRepositoryRoot || ROOT
+  );
+  const sourceRoot = path.join(
+    sourceRepositoryRoot,
+    'plugins/specnav-operations'
+  );
   for (const relative of PROOF_FILES) {
     copyFile(
-      path.join(SOURCE_ROOT, relative),
+      path.join(sourceRoot, relative),
       path.join(stagingRoot, relative)
     );
   }
@@ -186,12 +209,14 @@ function buildStagedTree(stagingRoot, host) {
     generated_at: new Date().toISOString(),
     host,
     source_repository: 'specnav-codex-plugin',
-    source_commit: git(ROOT, ['rev-parse', 'HEAD']),
+    source_commit: git(sourceRepositoryRoot, ['rev-parse', 'HEAD']),
     source_dirty: false,
-    runner_source_sha256: hostProofRunnerSourceDigest(ROOT),
+    runner_source_sha256: hostProofRunnerSourceDigest(
+      sourceRepositoryRoot
+    ),
     files: PROOF_FILES.map((relative) => ({
       path: relative,
-      sha256: sha256(path.join(SOURCE_ROOT, relative))
+      sha256: sha256(path.join(sourceRoot, relative))
     }))
   };
   writeJson(path.join(stagingRoot, MANIFEST), manifest);

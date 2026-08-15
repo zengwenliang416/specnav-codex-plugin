@@ -910,7 +910,7 @@ function expectedCommandIds(host) {
     'checkout-init',
     'checkout-remote',
     ...(host === 'codex' ? ['checkout-tree'] : []),
-    ...(host === 'codefree-o' ? ['dependency-install'] : []),
+    ...(['codefree-o', 'dsh'].includes(host) ? ['dependency-install'] : []),
     'host-smoke',
     'remote-ref',
     'runtime-doctor'
@@ -1115,7 +1115,7 @@ function commandPlanValid(
       .includes(command.id)
   ));
   const sandboxedCommands = [
-    ...(host === 'codefree-o' ? [byId.get('dependency-install')] : []),
+    ...(['codefree-o', 'dsh'].includes(host) ? [byId.get('dependency-install')] : []),
     doctor,
     smoke
   ];
@@ -1205,7 +1205,7 @@ function commandPlanValid(
         : execution.observations.source_code_inventory_sha === null
     )
     && (
-      host === 'codefree-o'
+      ['codefree-o', 'dsh'].includes(host)
         ? /^[a-f0-9]{64}$/.test(
             execution.observations.package_lock_sha256 || ''
           )
@@ -1537,7 +1537,7 @@ function validateHostInstallations(
       node: preloadedCommand('runtime-doctor'),
       git: preloadedCommand('remote-ref'),
       bash: preloadedCommand('host-smoke'),
-      npm: preloadedCommand('dependency-install', 'codefree-o'),
+      npm: preloadedCommand('dependency-install', host === 'dsh' ? 'dsh' : 'codefree-o'),
       sandbox: preloadedCommand('runtime-doctor')
     };
     const tools = Object.fromEntries(

@@ -286,12 +286,28 @@ fallback route. Start with `specnav-verification-runtime-status`; run
 `specnav-verification-runtime-setup` only after explicit approval; then use
 `specnav-verify-plan` and execute all six domains.
 
+Runtime scope inspection reports both
+`<project>/.specnav/runtime/verification` and
+`~/.specnav/runtime/verification`. It recommends `project`, but never selects
+either candidate automatically. The user must explicitly select `project` or
+`user`; the choice is written to `<project>/.specnav/config.json`. Until that
+selection exists, runtime doctor, install, and repair are `BLOCKED`, with no
+fallback. After selection, every runtime operation must use the selected base.
+
 The locked runtime installs Playwright, Midscene, AJV, managed Chromium, and
-FFmpeg under `~/.specnav/runtime/verification/<version>/`, outside the
-business repository. Midscene may assist UI interaction, but deterministic
-assertions or explicit human signoff decide PASS. HTML reports are review
-projections; `verify/v2/report-model.json`, the release/archive gate decisions,
-and `verify/v2/report-render-manifest.json` are the machine-bound authority.
+FFmpeg under the selected base, with versions stored side-by-side. Playwright,
+Midscene, and browsers installed elsewhere on an ordinary machine may be
+reported as diagnostics only; they never qualify as the managed Runtime.
+Project scope reads Midscene provider configuration only from
+`<project>/.specnav/secrets/verification.env`; user scope reads it only from
+`~/.specnav/secrets/verification.env`. The selected file must use mode `0600`.
+Provider configuration never falls back across scopes or to shell startup
+files.
+Midscene may assist UI interaction, but deterministic assertions or explicit
+human signoff decide PASS. Sensitive provider configuration is reported only
+as presence, never as names or values. HTML reports are review projections;
+`verify/v2/report-model.json`, the release/archive gate decisions, and
+`verify/v2/report-render-manifest.json` are the machine-bound authority.
 
 Runtime readiness is re-established from live files, not trusted from a saved
 status. Doctor and release proof verify the install receipt, package lock,

@@ -17,8 +17,8 @@ const {
 } = require('../kernel');
 const { doctorRuntime } = require('../kernel/runtime/doctor');
 const {
-  runtimeBaseDefault
-} = require('../kernel/runtime/installer');
+  resolveSelectedRuntimeBase
+} = require('../kernel/runtime/scope-resolver');
 const {
   loadRuntimeLock
 } = require('../kernel/runtime/lock-manifest');
@@ -60,13 +60,16 @@ function readRequest(file) {
 
 function readySchemaRegistry() {
   const lock = loadRuntimeLock();
+  const runtimeSelection = resolveSelectedRuntimeBase({
+    projectRoot: process.cwd(),
+    runtimeVersion: lock.runtime_version
+  });
   const runtimeStatus = doctorRuntime({
     requestedVersion: lock.runtime_version,
     environment: currentEnvironment(),
     providerEnvironment: {},
     requiresMidscene: false,
-    runtimeBase: process.env.SPECNAV_VERIFICATION_RUNTIME_ROOT
-      || runtimeBaseDefault()
+    runtimeBase: runtimeSelection.runtime_base
   });
   if (!runtimeStatus.ok) {
     const error = new Error('verification-migration:runtime-not-ready');

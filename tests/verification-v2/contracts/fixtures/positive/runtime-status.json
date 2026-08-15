@@ -4,6 +4,12 @@
   "readiness": "ready",
   "runtime_version": "1.0.0",
   "runtime_root": "/tmp/specnav-verification-runtime",
+  "runtime_scope": "explicit",
+  "runtime_base": "/tmp",
+  "scope_selection_source": "runtime-argument",
+  "provider_scope": "explicit",
+  "provider_source": "process-environment",
+  "provider_file": null,
   "checks": {
     "lock": {
       "ok": true

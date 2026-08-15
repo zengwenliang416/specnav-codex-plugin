@@ -15,25 +15,41 @@ and sizes of the three HTML projections.
 
 ```mermaid
 flowchart LR
-  A["Development handoff"] --> B["Locked runtime doctor"]
-  B --> C["Approved immutable case snapshot"]
-  C --> D["Six-domain execution"]
-  D --> E{"Machine gate"}
-  E -->|fail| F["Freeze failure evidence"]
-  F --> G["Repair task"]
-  G --> H["Retest and regression"]
-  H --> D
-  E -->|pass| I["Three-page HTML review"]
-  I --> J["Release and archive gate"]
+  A["Development handoff"] --> B["Runtime scope inspection and selection"]
+  B --> C["Locked runtime doctor"]
+  C --> D["Approved immutable case snapshot"]
+  D --> E["Six-domain execution"]
+  E --> F{"Machine gate"}
+  F -->|fail| G["Freeze failure evidence"]
+  G --> H["Repair task"]
+  H --> I["Retest and regression"]
+  I --> E
+  F -->|pass| J["Three-page HTML review"]
+  J --> K["Release and archive gate"]
 ```
 
 ## Runtime Setup And Doctor
 
-The managed runtime is installed side-by-side under:
+The managed Runtime has two default base candidates:
 
 ```text
+<project>/.specnav/runtime/verification
+~/.specnav/runtime/verification
+```
+
+Runtime versions are installed side-by-side under the selected base:
+
+```text
+<project>/.specnav/runtime/verification/<version>/
 ~/.specnav/runtime/verification/<version>/
 ```
+
+The default recommendation is `project`. Recommendation is not selection:
+neither base may be adopted automatically, including when the user candidate
+already contains an installed Runtime. The user's explicit `project` or `user`
+choice is persisted in `<project>/.specnav/config.json`. Doctor, install, and
+repair must use the selected base. If the project has no persisted selection,
+each operation is `BLOCKED`; there is no fallback.
 
 The current lock is:
 
@@ -48,7 +64,50 @@ The current lock is:
 | Initial platform | `darwin-arm64` |
 | Visual understanding model | `gpt-5.6-luna` |
 
-Run doctor first. It is read-only:
+Inspect both candidates before doctor or setup:
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" inspect \
+  --project "$PWD" \
+  --json
+```
+
+`inspect` returns the project and user candidates and the persisted selection
+when one exists. The workflow recommends `project`. When no selection exists,
+it requires an explicit user choice and reports `BLOCKED`; it must not infer
+the choice from installed files or ordinary machine tooling.
+
+After the user chooses, persist exactly that choice:
+
+```bash
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" select-scope \
+  --scope project \
+  --project "$PWD" \
+  --json
+
+node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" select-scope \
+  --scope user \
+  --project "$PWD" \
+  --json
+```
+
+Run only the command matching the user's explicit choice. `select-scope` writes
+the choice to `<project>/.specnav/config.json`; it does not install, copy, or
+promote a Runtime.
+
+Provider configuration follows the same selected scope:
+
+```text
+project -> <project>/.specnav/secrets/verification.env
+user    -> ~/.specnav/secrets/verification.env
+```
+
+The selected file must be a regular non-symlink file with mode `0600`.
+Unsupported keys, duplicate keys, malformed lines, or unsafe permissions block
+doctor and execution. A missing file means provider configuration is absent;
+it does not trigger lookup in another scope or a shell startup file.
+
+After selection, run doctor. It is read-only and uses the selected base:
 
 ```bash
 node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" doctor \
@@ -59,7 +118,10 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" doctor \
 
 Add `--requires-midscene` only when an approved selected case uses Midscene.
 Doctor reports exact package, browser, permission, receipt, Kernel, lock, and
-redacted provider blockers. It never installs or repairs.
+redacted provider blockers. Sensitive provider and proxy configuration is
+reported only as presence; names, identifiers, endpoints, credentials, init
+JSON, proxy values, and other configured values remain hidden. Doctor never
+installs, repairs, or searches for a replacement base.
 
 Installation is a separate, explicit action and requires user approval:
 
@@ -73,13 +135,16 @@ node "$SPECNAV_VERIFICATION_ROOT/scripts/verification-runtime.js" install \
 Use `specnav-verification-runtime-status` for diagnosis and
 `specnav-verification-runtime-setup` for an approved install or repair. The
 installer must not change the business repository's package manifest or
-lockfile. It uses the locked managed packages, browser artifacts, and receipt;
-it does not substitute globally installed tooling or another browser.
+lockfile; scope selection writes only `<project>/.specnav/config.json`. The
+installer uses the locked managed packages, browser artifacts, and receipt in
+the selected base. Globally installed Playwright, Midscene, and browsers may
+appear in diagnostics, but they cannot satisfy, replace, seed, or repair the
+managed Runtime.
 
 Expected output includes:
 
 ```text
-~/.specnav/runtime/verification/2.0.0-alpha.2/install-receipt.json
+<selected-base>/2.0.0-alpha.2/install-receipt.json
 package-lock.json
 browser INSTALLATION_COMPLETE markers
 preserved .failed-* attempts when installation fails
@@ -343,6 +408,7 @@ green host receipts or compatibility data cannot override a live red result.
 
 | Blocker family | Meaning | Required action |
 | --- | --- | --- |
+| `verification-runtime:scope-*` | Scope candidates cannot be inspected, or no explicit project/user selection is persisted | Inspect candidates, ask the user to choose, and persist exactly that choice before doctor or setup |
 | `verification-runtime:*` | Runtime, lock, package, browser, permission, receipt, or provider problem | Run `specnav-verification-runtime-status`; use the exact returned action |
 | `verify:user-test-cases-unapproved` | Current immutable case snapshot has no valid human approval | Review and approve the current snapshot |
 | `verification-evidence:*` | Missing, stale, tampered, unbound, or invalid evidence | Repair evidence production and rerun affected cases |

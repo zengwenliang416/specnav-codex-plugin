@@ -6,8 +6,10 @@ const path = require('node:path');
 
 const metadata = require('../metadata');
 const { doctorRuntime } = require('../runtime/doctor');
-const { runtimeBaseDefault } = require('../runtime/installer');
 const { loadRuntimeLock } = require('../runtime/lock-manifest');
+const {
+  resolveSelectedRuntimeBase
+} = require('../runtime/scope-resolver');
 const { createSchemaRegistry } = require('./schema-registry');
 
 function fixtureRoot(projectRoot) {
@@ -40,12 +42,17 @@ function validateFixtures(options = {}) {
     'plugins/specnav-verification/schemas'
   );
   const lock = loadRuntimeLock();
+  const runtimeSelection = resolveSelectedRuntimeBase({
+    projectRoot,
+    runtimeVersion: lock.runtime_version,
+    runtimeBase: options.runtimeBase
+  });
   const runtimeStatus = doctorRuntime({
     requestedVersion: lock.runtime_version,
     environment: currentEnvironment(),
     providerEnvironment: {},
     requiresMidscene: false,
-    runtimeBase: options.runtimeBase || runtimeBaseDefault()
+    runtimeBase: runtimeSelection.runtime_base
   });
   if (!runtimeStatus.ok) {
     return {

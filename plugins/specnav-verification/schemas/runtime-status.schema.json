@@ -10,6 +10,12 @@
     "readiness",
     "runtime_version",
     "runtime_root",
+    "runtime_scope",
+    "runtime_base",
+    "scope_selection_source",
+    "provider_scope",
+    "provider_source",
+    "provider_file",
     "checks",
     "blockers",
     "warnings",
@@ -40,6 +46,43 @@
       ]
     },
     "runtime_root": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runtime_scope": {
+      "enum": [
+        "project",
+        "user",
+        "explicit"
+      ]
+    },
+    "runtime_base": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "scope_selection_source": {
+      "enum": [
+        "project-config",
+        "cli",
+        "environment",
+        "runtime-argument"
+      ]
+    },
+    "provider_scope": {
+      "enum": [
+        "project",
+        "user",
+        "explicit"
+      ]
+    },
+    "provider_source": {
+      "enum": [
+        "scope-file",
+        "process-environment"
+      ]
+    },
+    "provider_file": {
       "type": [
         "string",
         "null"

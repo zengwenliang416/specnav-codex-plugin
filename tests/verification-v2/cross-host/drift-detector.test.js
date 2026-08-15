@@ -13,15 +13,10 @@ const FIXTURE_ROOT = path.join(
   'plugins/specnav-verification/assets/contract-fixtures'
 );
 const CODEX_PLUGIN = path.join(ROOT, 'plugins/specnav-verification');
-const CLAUDE_ROOT = path.resolve(
-  process.env.SPECNAV_CLAUDE_ROOT
-    || path.join(ROOT, '../specnav-claude-plugin')
-);
-const CODEFREE_ROOT = path.resolve(
-  process.env.SPECNAV_CODEFREE_O_ROOT
-    || path.join(ROOT, '../specnav-codefree-o-plugin')
-);
 const kernel = require(CODEX_PLUGIN);
+const {
+  createHostAuthorityFixture
+} = require('./host-authority-test-helpers');
 const CLAUDE_HOST_FILES = Object.freeze([
   'commands/specnav-verification.md',
   'commands/specnav-verify.md',
@@ -94,39 +89,55 @@ function rewriteManifest(pluginRoot, mutate) {
   return manifestFile;
 }
 
-test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', () => {
+function hostPluginFixture(t, host) {
+  const fixture = createHostAuthorityFixture(t);
+  return {
+    fixture,
+    pluginRoot: path.join(
+      fixture.roots[host],
+      fixture.descriptors[host].plugin
+    )
+  };
+}
+
+test('Codex, Claude Code, and CodeFree-O match one compatibility snapshot', (t) => {
+  const hosts = createHostAuthorityFixture(t);
   const reference = snapshot({
     host: 'codex',
-    hostFiles: ['scripts/codex-verification-adapter.js']
+    pluginRoot: path.join(
+      hosts.roots.codex,
+      hosts.descriptors.codex.plugin
+    ),
+    hostFiles: hosts.descriptors.codex.hostFiles
   });
   const claudePlugin = path.join(
-    CLAUDE_ROOT,
-    'plugins/specnav-verification'
+    hosts.roots['claude-code'],
+    hosts.descriptors['claude-code'].plugin
   );
   const codefreePlugin = path.join(
-    CODEFREE_ROOT,
-    'modules/specnav-verification'
+    hosts.roots['codefree-o'],
+    hosts.descriptors['codefree-o'].plugin
   );
   const result = kernel.compareCompatibilitySnapshots(reference, [
     snapshot({
       host: 'claude-code',
       pluginRoot: claudePlugin,
       manifestFile: path.join(
-        claudePlugin,
-        'specnav-kernel-source.json'
+        hosts.roots['claude-code'],
+        hosts.descriptors['claude-code'].manifest
       ),
       hostFiles: CLAUDE_HOST_FILES,
-      expectedSourceCommit: HOST_LOCK.source.commit
+      expectedSourceCommit: hosts.sourceCommit
     }),
     snapshot({
       host: 'codefree-o',
       pluginRoot: codefreePlugin,
       manifestFile: path.join(
-        codefreePlugin,
-        'specnav-kernel-source.json'
+        hosts.roots['codefree-o'],
+        hosts.descriptors['codefree-o'].manifest
       ),
       hostFiles: CODEFREE_HOST_FILES,
-      expectedSourceCommit: HOST_LOCK.source.commit
+      expectedSourceCommit: hosts.sourceCommit
     })
   ]);
 
@@ -353,10 +364,7 @@ test('manifest paths cannot escape the synchronized plugin root', (t) => {
 });
 
 test('manifest cannot omit required host-owned files or hide rogue files', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'claude-code');
   const manifestFile = path.join(
     pluginRoot,
     'specnav-kernel-source.json'
@@ -385,10 +393,7 @@ test('manifest cannot omit required host-owned files or hide rogue files', (t) =
 });
 
 test('host-owned wrapper bytes must match synchronized provenance', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CODEFREE_ROOT, 'modules/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'codefree-o');
   const manifestFile = path.join(
     pluginRoot,
     'specnav-kernel-source.json'
@@ -410,10 +415,7 @@ test('host-owned wrapper bytes must match synchronized provenance', (t) => {
 });
 
 test('updated manifest hash cannot hide transformed skill tampering', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'claude-code');
   const target = 'skills/specnav-verification/SKILL.md';
   fs.appendFileSync(path.join(pluginRoot, target), '\nTampered skill.\n');
   const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
@@ -436,10 +438,7 @@ test('updated manifest hash cannot hide transformed skill tampering', (t) => {
 });
 
 test('updated manifest hash cannot hide generated host-file tampering', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'claude-code');
   const target = 'commands/specnav-verification.md';
   fs.appendFileSync(path.join(pluginRoot, target), '\nTampered command.\n');
   const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
@@ -462,10 +461,7 @@ test('updated manifest hash cannot hide generated host-file tampering', (t) => {
 });
 
 test('updated tree digest cannot hide exact canonical file tampering', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CLAUDE_ROOT, 'plugins/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'claude-code');
   const target = 'assets/icon.svg';
   fs.appendFileSync(path.join(pluginRoot, target), '\n<!-- tampered -->\n');
   const manifestFile = rewriteManifest(pluginRoot, (manifest) => {
@@ -506,10 +502,7 @@ test('missing manifest returns a stable drift blocker', (t) => {
 });
 
 test('host manifests must bind to a clean locked source commit', (t) => {
-  const pluginRoot = copyTree(
-    t,
-    path.join(CODEFREE_ROOT, 'modules/specnav-verification')
-  );
+  const { pluginRoot } = hostPluginFixture(t, 'codefree-o');
   const manifestFile = path.join(
     pluginRoot,
     'specnav-kernel-source.json'

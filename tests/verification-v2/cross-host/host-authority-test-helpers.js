@@ -18,6 +18,9 @@ const {
 const {
   buildStagedModule
 } = require('../../../integrations/codefree-o/sync-verification-module');
+const { buildStagedModule: buildDshStagedModule } = require(
+  '../../../integrations/dsh/sync-verification-module'
+);
 const {
   HOST_DESCRIPTORS
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
@@ -75,6 +78,7 @@ function materializeHost(root, host, sourceCommit) {
     path.join(pluginRoot, 'scripts/plugin-runtime.js')
   );
   if (host === 'claude-code') buildStagedPlugin(pluginRoot);
+  else if (host === 'dsh') buildDshStagedModule(pluginRoot);
   else buildStagedModule(pluginRoot);
   rewriteSourceBinding(pluginRoot, sourceCommit);
   return {
@@ -84,16 +88,13 @@ function materializeHost(root, host, sourceCommit) {
   };
 }
 
-function createHostAuthorityFixture(t) {
-  const tempRoot = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'specnav-host-authority-')
-  );
-  t.after(() => fs.rmSync(tempRoot, { recursive: true, force: true }));
-
+function materializeHostAuthorityFixture(tempRoot) {
+  fs.mkdirSync(tempRoot, { recursive: true });
   const roots = {
     codex: path.join(tempRoot, 'codex'),
     'claude-code': path.join(tempRoot, 'claude'),
-    'codefree-o': path.join(tempRoot, 'codefree')
+    'codefree-o': path.join(tempRoot, 'codefree'),
+    dsh: path.join(tempRoot, 'dsh')
   };
   const sourcePlugin = path.join(
     roots.codex,
@@ -106,7 +107,7 @@ function createHostAuthorityFixture(t) {
     'fixture: source host'
   );
 
-  for (const host of ['claude-code', 'codefree-o']) {
+  for (const host of ['claude-code', 'codefree-o', 'dsh']) {
     fs.mkdirSync(roots[host], { recursive: true });
     materializeHost(roots[host], host, sourceCommit);
     initializeRepository(roots[host], `fixture: ${host} host`);
@@ -140,6 +141,14 @@ function createHostAuthorityFixture(t) {
         commit: git(roots['codefree-o'], ['rev-parse', 'HEAD']),
         plugin_path: HOST_DESCRIPTORS['codefree-o'].plugin,
         manifest_path: HOST_DESCRIPTORS['codefree-o'].manifest
+      },
+      dsh: {
+        repository:
+          'https://github.com/zengwenliang416/specnav-dsh-plugin.git',
+        ref: 'refs/heads/main',
+        commit: git(roots.dsh, ['rev-parse', 'HEAD']),
+        plugin_path: HOST_DESCRIPTORS.dsh.plugin,
+        manifest_path: HOST_DESCRIPTORS.dsh.manifest
       }
     },
     generated_at: '2026-08-09T00:00:00Z',
@@ -197,10 +206,19 @@ function createHostAuthorityFixture(t) {
   };
 }
 
+function createHostAuthorityFixture(t) {
+  const tempRoot = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'specnav-host-authority-')
+  );
+  t.after(() => fs.rmSync(tempRoot, { recursive: true, force: true }));
+  return materializeHostAuthorityFixture(tempRoot);
+}
+
 module.exports = {
   HOST_DESCRIPTORS,
   createHostAuthorityFixture,
   git,
+  materializeHostAuthorityFixture,
   sha256,
   writeJson
 };

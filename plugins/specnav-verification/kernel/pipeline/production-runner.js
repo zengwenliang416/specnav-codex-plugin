@@ -492,7 +492,7 @@ function caseFingerprints(testCase) {
   };
 }
 
-function commandEnvironment(testCase, context) {
+function commandEnvironment(testCase, context, sourceEnvironment = process.env) {
   const values = {
     SPECNAV_VERIFICATION_ASSERTION_IDS: testCase.assertions
       .map((entry) => entry.id).join(','),
@@ -505,7 +505,7 @@ function commandEnvironment(testCase, context) {
   for (const key of testCase.runner.env_keys) {
     const value = Object.prototype.hasOwnProperty.call(values, key)
       ? values[key]
-      : process.env[key];
+      : sourceEnvironment[key];
     if (typeof value !== 'string' || value.length === 0) {
       blockers.push(blocker(
         'verification-production:approved-environment-missing',
@@ -1147,6 +1147,7 @@ function createProductionVerificationRunner(options = {}) {
     secrets = [],
     scenarioRegistry = null,
     repairIdentityResolver = null,
+    providerEnvironment = {},
     commandAdapter = null,
     playwrightAdapter = null,
     midsceneAdapter = null
@@ -1180,7 +1181,7 @@ function createProductionVerificationRunner(options = {}) {
     commandAdapter: commandAdapter || kernel.createCommandAdapter(),
     playwrightAdapter: playwrightAdapter || kernel.createPlaywrightAdapter(),
     midsceneAdapter: midsceneAdapter || kernel.createMidsceneAdapter({
-      providerEnvironment: process.env
+      providerEnvironment
     }),
     crossReferenceValidator,
     projectRoot,
@@ -1323,6 +1324,9 @@ function createProductionVerificationRunner(options = {}) {
           protocolFile,
           artifactRoot,
           attemptId: identity.attempt.id
+        }, {
+          ...process.env,
+          ...providerEnvironment
         })
       : { ok: true, env: {}, blockers: [] };
     if (!environment.ok) {

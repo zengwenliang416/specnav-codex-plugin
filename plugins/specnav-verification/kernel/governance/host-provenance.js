@@ -24,7 +24,8 @@ const SHARED_SCRIPTS = Object.freeze([
 ]);
 const HOST_RUNTIME_FILES = Object.freeze({
   'claude-code': Object.freeze(['scripts/plugin-runtime.js']),
-  'codefree-o': Object.freeze(['scripts/plugin-runtime.js'])
+  'codefree-o': Object.freeze(['scripts/plugin-runtime.js']),
+  dsh: Object.freeze(['scripts/plugin-runtime.js'])
 });
 
 function sha256(value) {
@@ -102,6 +103,28 @@ function transformSkill(source, host) {
         'scripts/codefree-o-verification-adapter.js'
       );
   }
+  if (host === 'dsh') {
+    return source
+      .replace(/when a Codex user/g, 'when a DeepSeek Harness user')
+      .replace(/as the Codex entrypoint/g, 'as the DeepSeek Harness entrypoint')
+      .replace(/Codex adapter contract/g, 'dsh adapter contract')
+      .replace(
+        /owning Codex plugin resolver/g,
+        'owning SpecNav dsh preset resolver'
+      )
+      .replace(
+        /owning SpecNav Codex plugin resolver/g,
+        'owning SpecNav dsh preset resolver'
+      )
+      .replace(
+        /Codex plugin code must use `PLUGIN_ROOT` and explicit /g,
+        'DeepSeek Harness skills must resolve the installed preset root and explicit '
+      )
+      .replace(
+        /scripts\/codex-verification-adapter\.js/g,
+        'scripts/dsh-verification-adapter.js'
+      );
+  }
   throw new Error(`verification-provenance:unsupported-host:${host}`);
 }
 
@@ -116,7 +139,12 @@ function stageManifest(host) {
           key: 'codefree_o_adapter',
           path: 'scripts/codefree-o-verification-adapter.js'
         }
-      : null;
+      : host === 'dsh'
+        ? {
+            key: 'dsh_adapter',
+            path: 'scripts/dsh-verification-adapter.js'
+          }
+        : null;
   if (!adapter) {
     throw new Error(`verification-provenance:unsupported-host:${host}`);
   }
@@ -239,6 +267,19 @@ function trustedHostFiles(host) {
         content: jsonBytes(stageManifest(host))
       }
     ];
+  } else if (host === 'dsh') {
+    files = [
+      {
+        target: 'scripts/dsh-verification-adapter.js',
+        content: readHostProvenance(
+          'dsh/dsh-verification-adapter.js'
+        )
+      },
+      {
+        target: 'specnav-stage.json',
+        content: jsonBytes(stageManifest(host))
+      }
+    ];
   } else {
     throw new Error(`verification-provenance:unsupported-host:${host}`);
   }
@@ -302,7 +343,9 @@ function createHostSyncPlan(host) {
       target: relative,
       transform: host === 'claude-code'
         ? 'claude-code-skill-v1'
-        : 'codefree-o-skill-v1',
+        : host === 'dsh'
+          ? 'dsh-skill-v1'
+          : 'codefree-o-skill-v1',
       source_sha256: sha256(source),
       target_sha256: sha256(content),
       content
@@ -320,7 +363,7 @@ function createHostSyncPlan(host) {
 }
 
 function resolveHostSyncPlan(host, manifest = null) {
-  const supported = new Set(['claude-code', 'codefree-o']);
+  const supported = new Set(['claude-code', 'codefree-o', 'dsh']);
   if (supported.has(host)) return createHostSyncPlan(host);
   if (supported.has(manifest?.host)) {
     return createHostSyncPlan(manifest.host);
