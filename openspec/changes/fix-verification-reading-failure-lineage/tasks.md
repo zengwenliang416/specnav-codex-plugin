@@ -21,4 +21,4 @@
 ## 4. Delivery
 
 - [x] 4.1 Review the final diff for scope and network-policy invariants.
-- [ ] 4.2 Commit locally without push.
+- [x] 4.2 Commit locally without push.
