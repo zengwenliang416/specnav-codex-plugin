@@ -1,0 +1,14 @@
+{
+  "schema": "specnav.runtime-repair-review.v1",
+  "id": "runtime-repair-review-historical-artifact-loss-routing-20260825",
+  "change_id": "fix-verification-historical-artifact-loss-routing",
+  "decision": "approved",
+  "reviewer": {
+    "id": "wenliang_zeng",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-25T08:50:23Z",
+  "reason": "Approve the narrow Runtime authority repair for byte-for-byte unrecoverable historical artifacts. The repair may add append-only artifact-loss authority and Core-owned route_break_loop routing only. It must not reconstruct history, mark failures green, modify product source, change Playwright network safety, push, or rewrite historical authority.",
+  "scope_file": "openspec/changes/fix-verification-historical-artifact-loss-routing/scope.json",
+  "scope_sha256": "fc9f044423a2f9aa6b6a7952e43be89d4b33881cf4edff67e139ff7f43dce863"
+}

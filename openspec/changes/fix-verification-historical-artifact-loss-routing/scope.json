@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "change_id": "fix-verification-historical-artifact-loss-routing",
+  "stage": "development",
+  "allowed_roots": [
+    "plugins/specnav-verification/kernel/contracts/schema-registry.js",
+    "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+    "plugins/specnav-verification/kernel/repair/trusted-fact-authority.js",
+    "plugins/specnav-verification/schemas/historical-artifact-loss-review.schema.json",
+    "plugins/specnav-verification/schemas/historical-artifact-loss.schema.json",
+    "plugins/specnav-verification/schemas/trusted-fact-envelope.schema.json",
+    "plugins/specnav-verification/scripts/host-verification-adapter.js",
+    "plugins/specnav-verification/scripts/verification-v2-repair-loop.js",
+    "plugins/specnav-verification/skills/specnav-verify-rerun/SKILL.md",
+    "tests/verification-v2/contracts/**",
+    "tests/verification-v2/cross-host/**",
+    "tests/verification-v2/production/host-adapter-routing.test.js",
+    "tests/verification-v2/repair-loop/**",
+    "openspec/changes/fix-verification-historical-artifact-loss-routing/**"
+  ],
+  "denied_roots": [
+    ".git",
+    "node_modules",
+    "coverage",
+    "dist",
+    ".env",
+    ".env.local",
+    "plugins/specnav-verification/kernel/execution/**",
+    "plugins/specnav-verification/kernel/runtime/**",
+    "plugins/specnav-verification/assets/runtime/**",
+    "plugins/specnav-verification/scripts/browser-access-policy.js",
+    "plugins/specnav-verification/scripts/playwright-api-guard.js",
+    "plugins/specnav-verification/scripts/playwright-worker.js",
+    "plugins/specnav-verification/scripts/verification-v2-run.js",
+    "openspec/changes/verification-2-0/verify/**"
+  ],
+  "external_denied_roots": [
+    "/Volumes/zwl/camera-rental-github/camera-rental-admin/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-server/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-staff/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-uniapp/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-web/**",
+    "/private/tmp/camera-rental-dispatch-verification-final/openspec/changes/add-xianyu-dispatch-backfill/verify/runs/**"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  },
+  "constraints": [
+    "Do not reconstruct or rewrite historical attempts, failures, readings, evidence, integrity, or trusted envelopes.",
+    "Do not synthesize attempt facts or evidence-integrity claims from classification authority.",
+    "The only lifecycle result permitted by historical artifact loss is a Core-owned route_break_loop proposal.",
+    "Do not relax Playwright network restrictions.",
+    "Do not modify product source.",
+    "Do not push."
+  ]
+}
