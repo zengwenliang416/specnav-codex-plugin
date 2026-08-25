@@ -1,0 +1,26 @@
+{
+  "schema": "specnav.verification.historical-artifact-loss.v1",
+  "id": "historical-artifact-loss-minimal",
+  "failure_id": "failure-minimal",
+  "change_id": "change-v2",
+  "run_id": "run-minimal",
+  "case_id": "case-minimal",
+  "attempt_id": "attempt-minimal",
+  "classification": "test_defect",
+  "status": "unrecoverable",
+  "review_id": "historical-artifact-loss-review-minimal",
+  "reviewer": {
+    "id": "reviewer-1",
+    "kind": "human"
+  },
+  "reviewed_at": "2026-08-01T08:00:00Z",
+  "reason": "The original run artifacts cannot be recovered byte for byte.",
+  "classification_envelope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "recovery_audit_path": "verify/historical-artifact-recovery.md",
+  "recovery_audit_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "missing_artifact_paths": [
+    "runs/run-minimal/attempts/attempt-minimal/integrity.json"
+  ],
+  "permitted_transition": "route_break_loop",
+  "recorded_at": "2026-08-01T08:00:00Z"
+}

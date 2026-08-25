@@ -161,6 +161,31 @@ test('repair actions route to the dedicated append-only repair-loop CLI', () => 
     'openspec/changes/change-v2/rebind-review.json'
   );
 
+  const parsedArtifactLoss = parseCli([
+    'repair-artifact-loss-record',
+    '--project',
+    PROJECT,
+    '--change',
+    'change-v2',
+    '--reviewer-id',
+    'reviewer-1',
+    '--failure-id',
+    'failure-open',
+    '--artifact-loss-review',
+    'openspec/changes/change-v2/artifact-loss-review.json',
+    '--approved'
+  ]);
+  assert.equal(parsedArtifactLoss.approved, true);
+  const artifactLoss = command(
+    parsedArtifactLoss.action,
+    parsedArtifactLoss
+  );
+  assert.equal(artifactLoss[1], 'artifact-loss-record');
+  assert.equal(
+    artifactLoss[artifactLoss.indexOf('--artifact-loss-review') + 1],
+    'openspec/changes/change-v2/artifact-loss-review.json'
+  );
+
   const applied = command('repair-transition-apply', {
     change: 'change-v2',
     reviewer_id: 'reviewer-1',

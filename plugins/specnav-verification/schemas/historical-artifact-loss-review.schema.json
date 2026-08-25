@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/historical-artifact-loss-review.schema.json",
+  "title": "SpecNav Verification 2.0 Historical Artifact Loss Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "failure_id",
+    "change_id",
+    "run_id",
+    "case_id",
+    "attempt_id",
+    "classification",
+    "decision",
+    "reviewer",
+    "reviewed_at",
+    "reason",
+    "classification_envelope_digest",
+    "recovery_audit_path",
+    "recovery_audit_digest",
+    "missing_artifact_paths",
+    "permitted_transition"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.historical-artifact-loss-review.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "failure_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "run_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "attempt_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "classification": {
+      "enum": [
+        "product_defect",
+        "test_defect",
+        "environment_defect",
+        "flaky",
+        "expected_blocker",
+        "requirement_ambiguity"
+      ]
+    },
+    "decision": {
+      "const": "approved"
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "kind": {
+          "const": "human"
+        }
+      }
+    },
+    "reviewed_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "reason": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "classification_envelope_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "recovery_audit_path": {
+      "$ref": "common.schema.json#/$defs/relativePath"
+    },
+    "recovery_audit_digest": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "missing_artifact_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "common.schema.json#/$defs/relativePath"
+      },
+      "uniqueItems": true
+    },
+    "permitted_transition": {
+      "const": "route_break_loop"
+    }
+  }
+}

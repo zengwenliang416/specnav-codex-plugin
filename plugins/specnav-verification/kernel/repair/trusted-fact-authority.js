@@ -14,6 +14,7 @@ const PRODUCERS = Object.freeze({
   repair_baseline: 'specnav-repair-baseline-recorder',
   repair_recovery: 'specnav-repair-lineage-recovery',
   repair_rebind: 'specnav-repair-generation-rebind',
+  historical_artifact_loss: 'specnav-historical-artifact-loss-recorder',
   attempt_fact: 'specnav-execution-evidence',
   host_execution: 'specnav-managed-host-proof-runner',
   rerun_plan: 'specnav-case-rerun-planner',
@@ -43,6 +44,12 @@ const CLAIMS = Object.freeze({
     'repair-rebind:human-approved',
     'repair-rebind:previous-generation-preserved',
     'repair-rebind:scope-verified'
+  ]),
+  historical_artifact_loss: Object.freeze([
+    'artifact-loss:human-approved',
+    'artifact-loss:classification-bound',
+    'artifact-loss:history-unrecoverable',
+    'artifact-loss:no-integrity-claim'
   ]),
   attempt_fact: Object.freeze([
     'attempt-binding:verified',
@@ -160,6 +167,16 @@ function payloadValid(schemaRegistry, kind, payload, bindings) {
       payload
     );
     return rebind.ok && sameBindings(rebind.value, bindings);
+  }
+  if (kind === 'historical_artifact_loss') {
+    const artifactLoss = schemaRegistry.validate(
+      'historical-artifact-loss',
+      payload
+    );
+    return artifactLoss.ok && sameBindings(
+      artifactLoss.value,
+      bindings
+    );
   }
   if (kind === 'attempt_fact') {
     return typeof payload.attempt_id === 'string'

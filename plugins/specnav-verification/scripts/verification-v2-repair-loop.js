@@ -74,6 +74,9 @@ function paths(context, failureId = null) {
     repairRebinds: repairRoot
       ? path.posix.join(repairRoot, 'repair-generation-rebinds.jsonl')
       : null,
+    historicalArtifactLosses: repairRoot
+      ? path.posix.join(repairRoot, 'historical-artifact-losses.jsonl')
+      : null,
     rerunPlans: repairRoot
       ? path.posix.join(repairRoot, 'rerun-plans.jsonl')
       : null,
@@ -935,6 +938,19 @@ function historyFor(context, store, failure) {
   return { runs: selectedRuns, attempts };
 }
 
+function historicalArtifactPathAllowed(failure, relativePath) {
+  if (
+    typeof relativePath !== 'string'
+    || relativePath.length === 0
+    || relativePath !== path.posix.normalize(relativePath)
+    || relativePath.startsWith('/')
+    || relativePath.includes('\\')
+  ) {
+    return false;
+  }
+  return relativePath.startsWith(`runs/${failure.run_id}/`);
+}
+
 function attemptFact(context, store, attempt) {
   const integrity = integrityForAttempt(context, store, attempt);
   const facts = integrity.facts?.evidence || [];
@@ -996,6 +1012,49 @@ function evaluateState(
     store,
     failure.id
   );
+  const artifactLossHistory = authorityLog.validate(
+    paths(context, failure.id).historicalArtifactLosses,
+    'historical_artifact_loss'
+  );
+  if (!artifactLossHistory.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: artifactLossHistory.blockers
+    };
+  }
+  if (artifactLossHistory.value.length > 1) {
+    return {
+      ok: false,
+      status: 'blocked',
+      transition_proposal: null,
+      blockers: [blocker(
+        'verification-repair:historical-artifact-loss-ambiguous',
+        failure.id
+      )]
+    };
+  }
+  const historicalArtifactLoss = artifactLossHistory.value[0];
+  if (historicalArtifactLoss) {
+    const machine = kernel.createRepairLoopStateMachine({
+      schemaRegistry: context.schemaRegistry,
+      trustVerifier: authority,
+      rerunScopeAuthority: {
+        resolve() {
+          return { ok: false };
+        }
+      },
+      clock
+    });
+    return machine.evaluate({
+      classification_result: classification,
+      runs: [],
+      attempts: [],
+      attempt_facts: [],
+      historical_artifact_loss: historicalArtifactLoss
+    });
+  }
   const requestedRepair = readOptionalJson(
     store,
     relativeRepairPath(
@@ -1397,6 +1456,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     'repair-complete',
     'repair-recover',
     'repair-rebind',
+    'artifact-loss-record',
     'rerun-plan',
     'evaluate',
     'transition-apply',
@@ -1429,6 +1489,202 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
   try {
     const root = rootFailure(context, failureId);
     const failure = root.failure;
+
+    if (action === 'artifact-loss-record') {
+      const reviewFile = resolveChangeFile(
+        context,
+        argValue(args, '--artifact-loss-review'),
+        'verification-repair:artifact-loss-review-required'
+      );
+      const review = readRequiredJson(
+        changeStore,
+        reviewFile,
+        'verification-repair:artifact-loss-review-read-failed'
+      );
+      const validatedReview = context.schemaRegistry.validate(
+        'historical-artifact-loss-review',
+        review
+      );
+      const classification = classificationEnvelope(
+        context,
+        store,
+        failure.id
+      );
+      const classificationVerification = authority.verify(classification);
+      if (
+        !validatedReview.ok
+        || classificationVerification.ok !== true
+        || review.failure_id !== failure.id
+        || review.change_id !== failure.change_id
+        || review.run_id !== failure.run_id
+        || review.case_id !== failure.case_id
+        || review.attempt_id !== failure.attempt_id
+        || review.classification !== classification.payload.packet.classification
+        || review.classification_envelope_digest
+          !== envelopeDigest(classification)
+        || review.reviewer.id !== context.reviewerId
+        || review.reviewer.kind !== 'human'
+        || review.decision !== 'approved'
+        || review.permitted_transition !== 'route_break_loop'
+      ) {
+        return blocked(
+          'verification-repair:artifact-loss-review-invalid',
+          reviewFile
+        );
+      }
+      const auditFile = resolveChangeFile(
+        context,
+        review.recovery_audit_path,
+        'verification-repair:artifact-loss-audit-required'
+      );
+      const auditRead = changeStore.readBytes(auditFile);
+      if (
+        !auditRead.ok
+        || auditRead.missing
+        || sha256(auditRead.bytes) !== review.recovery_audit_digest
+      ) {
+        return blocked(
+          'verification-repair:artifact-loss-audit-invalid',
+          auditFile
+        );
+      }
+      const auditText = auditRead.bytes.toString('utf8');
+      if (
+        !auditText.includes('BLOCKED_UNRECOVERABLE')
+        || !auditText.includes(
+          'verification-history:immutable-run-artifacts-unrecoverable'
+        )
+        || !auditText.includes(failure.id)
+        || !auditText.includes(failure.run_id)
+        || !auditText.includes(failure.attempt_id)
+      ) {
+        return blocked(
+          'verification-repair:artifact-loss-audit-binding-mismatch',
+          auditFile
+        );
+      }
+      const missingArtifactPaths = [...review.missing_artifact_paths].sort();
+      const requiredIntegrityPath = path.posix.join(
+        'runs',
+        failure.run_id,
+        'attempts',
+        failure.attempt_id,
+        'integrity.json'
+      );
+      if (
+        !missingArtifactPaths.includes(requiredIntegrityPath)
+        || missingArtifactPaths.some((artifactPath) => (
+          !historicalArtifactPathAllowed(failure, artifactPath)
+        ))
+      ) {
+        return blocked(
+          'verification-repair:artifact-loss-path-invalid',
+          reviewFile
+        );
+      }
+      for (const artifactPath of missingArtifactPaths) {
+        const artifactRead = store.readBytes(artifactPath);
+        if (!artifactRead.ok) {
+          return {
+            ok: false,
+            status: 'blocked',
+            blockers: artifactRead.blockers,
+            fallback_used: false
+          };
+        }
+        if (!artifactRead.missing) {
+          return blocked(
+            'verification-repair:artifact-loss-artifact-present',
+            artifactPath
+          );
+        }
+      }
+      const artifactLossCandidate = {
+        schema: 'specnav.verification.historical-artifact-loss.v1',
+        id: `historical-artifact-loss-${sha256(canonicalJson({
+          review_id: review.id,
+          failure_id: failure.id,
+          classification_envelope_digest:
+            review.classification_envelope_digest,
+          recovery_audit_digest: review.recovery_audit_digest,
+          missing_artifact_paths: missingArtifactPaths
+        }))}`,
+        failure_id: failure.id,
+        change_id: failure.change_id,
+        run_id: failure.run_id,
+        case_id: failure.case_id,
+        attempt_id: failure.attempt_id,
+        classification: review.classification,
+        status: 'unrecoverable',
+        review_id: review.id,
+        reviewer: review.reviewer,
+        reviewed_at: review.reviewed_at,
+        reason: review.reason,
+        classification_envelope_digest:
+          review.classification_envelope_digest,
+        recovery_audit_path: auditFile,
+        recovery_audit_digest: review.recovery_audit_digest,
+        missing_artifact_paths: missingArtifactPaths,
+        permitted_transition: 'route_break_loop',
+        recorded_at: review.reviewed_at
+      };
+      const artifactLoss = context.schemaRegistry.validate(
+        'historical-artifact-loss',
+        artifactLossCandidate
+      );
+      if (!artifactLoss.ok) {
+        return blocked(
+          'verification-repair:artifact-loss-contract-invalid',
+          failure.id
+        );
+      }
+      const existing = authorityLog.validate(
+        paths(context, failure.id).historicalArtifactLosses,
+        'historical_artifact_loss'
+      );
+      if (!existing.ok) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: existing.blockers,
+          fallback_used: false
+        };
+      }
+      if (
+        existing.value.length > 0
+        && canonicalJson(existing.value[0].payload)
+          !== canonicalJson(artifactLoss.value)
+      ) {
+        return blocked(
+          'verification-repair:artifact-loss-authority-conflict',
+          failure.id
+        );
+      }
+      const persisted = authorityLog.append(
+        paths(context, failure.id).historicalArtifactLosses,
+        'historical_artifact_loss',
+        artifactLoss.value,
+        bindings(failure, failure.attempt_id)
+      );
+      if (!persisted.ok) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: persisted.blockers,
+          fallback_used: false
+        };
+      }
+      return {
+        ok: true,
+        status: 'historical_artifact_loss_recorded',
+        failure_id: failure.id,
+        artifact_loss_id: artifactLoss.value.id,
+        envelope_id: persisted.envelope.id,
+        replayed: !persisted.appended,
+        blockers: [],
+        fallback_used: false
+      };
+    }
 
     if (action === 'classify') {
       const check = rootCauseReview(

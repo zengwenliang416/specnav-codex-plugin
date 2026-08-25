@@ -32,6 +32,7 @@ const PRODUCERS = Object.freeze({
   repair_link: 'specnav-development-repair-bridge',
   repair_recovery: 'specnav-repair-lineage-recovery',
   repair_rebind: 'specnav-repair-generation-rebind',
+  historical_artifact_loss: 'specnav-historical-artifact-loss-recorder',
   attempt_fact: 'specnav-execution-evidence',
   rerun_plan: 'specnav-case-rerun-planner'
 });
@@ -51,6 +52,12 @@ const CLAIMS = Object.freeze({
     'repair-rebind:human-approved',
     'repair-rebind:previous-generation-preserved',
     'repair-rebind:scope-verified'
+  ],
+  historical_artifact_loss: [
+    'artifact-loss:human-approved',
+    'artifact-loss:classification-bound',
+    'artifact-loss:history-unrecoverable',
+    'artifact-loss:no-integrity-claim'
   ],
   attempt_fact: [
     'attempt-binding:verified',
@@ -334,6 +341,42 @@ function attemptFact(attempt, overrides = {}) {
   };
 }
 
+function historicalArtifactLoss(
+  packet,
+  classificationEnvelope,
+  overrides = {}
+) {
+  return {
+    schema: 'specnav.verification.historical-artifact-loss.v1',
+    id: 'historical-artifact-loss-minimal',
+    failure_id: packet.id,
+    change_id: packet.change_id,
+    run_id: packet.run_id,
+    case_id: packet.case_id,
+    attempt_id: packet.attempt_id,
+    classification: packet.classification,
+    status: 'unrecoverable',
+    review_id: 'historical-artifact-loss-review-minimal',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The original run artifacts cannot be recovered byte for byte.',
+    classification_envelope_digest: sha256(canonicalJson(
+      classificationEnvelope
+    )),
+    recovery_audit_path: 'verify/historical-artifact-recovery.md',
+    recovery_audit_digest: 'a'.repeat(64),
+    missing_artifact_paths: [
+      `runs/${packet.run_id}/attempts/${packet.attempt_id}/integrity.json`
+    ],
+    permitted_transition: 'route_break_loop',
+    recorded_at: FIXED_TIME,
+    ...overrides
+  };
+}
+
 function retestAttempt(baseAttempt = initialAttempt(), overrides = {}) {
   return {
     ...baseAttempt,
@@ -494,13 +537,14 @@ function request(options = {}) {
   };
   const factPayloads = options.attemptFacts
     || attempts.map((attempt) => attemptFact(attempt));
+  const classificationEnvelope = options.classificationEnvelope
+    || seal(
+      'classification_result',
+      classificationPayload,
+      baseBindings
+    );
   return {
-    classification_result: options.classificationEnvelope
-      || seal(
-        'classification_result',
-        classificationPayload,
-        baseBindings
-      ),
+    classification_result: classificationEnvelope,
     attempts,
     attempt_facts: options.attemptFactEnvelopes
       || factPayloads.map((fact, index) => seal(
@@ -514,6 +558,23 @@ function request(options = {}) {
         }
       )),
     runs: options.runs || runHistory(attempts, packet),
+    ...(options.historicalArtifactLoss === undefined
+      && options.historicalArtifactLossEnvelope === undefined
+      ? {}
+      : {
+          historical_artifact_loss:
+            options.historicalArtifactLossEnvelope || seal(
+              'historical_artifact_loss',
+              options.historicalArtifactLoss || historicalArtifactLoss(
+                packet,
+                classificationEnvelope
+              ),
+              {
+                ...baseBindings,
+                attempt_id: packet.attempt_id
+              }
+            )
+        }),
     ...(options.repairLink === undefined && options.repairEnvelope === undefined
       ? {}
       : {
@@ -621,6 +682,125 @@ test('preserves first failure repair retest and regression as immutable history'
   assert.equal(Object.isFrozen(result), true);
   assert.equal(Object.isFrozen(result.history), true);
   assert.equal(Object.isFrozen(result.transition_proposal), true);
+});
+
+test('routes approved historical artifact loss only to Core break-loop governance', () => {
+  const classificationPayload = classificationResult({
+    classification: 'test_defect'
+  });
+  const result = factory().evaluate(request({
+    classificationResult: classificationPayload,
+    runs: [],
+    attempts: [],
+    attemptFacts: [],
+    historicalArtifactLoss: undefined,
+    historicalArtifactLossEnvelope: (() => {
+      const bindings = {
+        failure_id: classificationPayload.packet.id,
+        change_id: classificationPayload.packet.change_id,
+        run_id: classificationPayload.packet.run_id,
+        case_id: classificationPayload.packet.case_id
+      };
+      const classificationEnvelope = seal(
+        'classification_result',
+        classificationPayload,
+        bindings
+      );
+      return seal(
+        'historical_artifact_loss',
+        historicalArtifactLoss(
+          classificationPayload.packet,
+          classificationEnvelope
+        ),
+        {
+          ...bindings,
+          attempt_id: classificationPayload.packet.attempt_id
+        }
+      );
+    })(),
+    classificationEnvelope: seal(
+      'classification_result',
+      classificationPayload,
+      {
+        failure_id: classificationPayload.packet.id,
+        change_id: classificationPayload.packet.change_id,
+        run_id: classificationPayload.packet.run_id,
+        case_id: classificationPayload.packet.case_id
+      }
+    )
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'break_loop_required');
+  assert.equal(result.label, 'blocked');
+  assert.equal(result.transition_proposal.action, 'route_break_loop');
+  assert.equal(result.transition_proposal.owner, 'core');
+  assert.deepEqual(result.transition_proposal.attempt_ids, []);
+  assert.equal(
+    result.transition_proposal.reason_ids.includes(
+      'historical-artifact-loss:unrecoverable'
+    ),
+    true
+  );
+});
+
+test('historical artifact loss rejects normal history and false classification binding', () => {
+  const classificationPayload = classificationResult({
+    classification: 'test_defect'
+  });
+  const bindings = {
+    failure_id: classificationPayload.packet.id,
+    change_id: classificationPayload.packet.change_id,
+    run_id: classificationPayload.packet.run_id,
+    case_id: classificationPayload.packet.case_id
+  };
+  const classificationEnvelope = seal(
+    'classification_result',
+    classificationPayload,
+    bindings
+  );
+  const artifactLossEnvelope = seal(
+    'historical_artifact_loss',
+    historicalArtifactLoss(
+      classificationPayload.packet,
+      classificationEnvelope
+    ),
+    {
+      ...bindings,
+      attempt_id: classificationPayload.packet.attempt_id
+    }
+  );
+  const mixed = factory().evaluate(request({
+    classificationEnvelope,
+    historicalArtifactLossEnvelope: artifactLossEnvelope
+  }));
+  assert.equal(mixed.ok, false);
+  assert.deepEqual(blockerIds(mixed), [
+    'verification-repair-loop:historical-artifact-loss-authority-ambiguous'
+  ]);
+
+  const wrongDigest = factory().evaluate(request({
+    classificationEnvelope,
+    runs: [],
+    attempts: [],
+    attemptFacts: [],
+    historicalArtifactLossEnvelope: seal(
+      'historical_artifact_loss',
+      historicalArtifactLoss(
+        classificationPayload.packet,
+        classificationEnvelope,
+        { classification_envelope_digest: 'f'.repeat(64) }
+      ),
+      {
+        ...bindings,
+        attempt_id: classificationPayload.packet.attempt_id
+      }
+    )
+  }));
+  assert.equal(wrongDigest.ok, false);
+  assert.deepEqual(blockerIds(wrongDigest), [
+    'verification-repair-loop:historical-artifact-loss-invalid'
+  ]);
 });
 
 test('accepts trusted reading-level failure after a passed initial attempt', () => {

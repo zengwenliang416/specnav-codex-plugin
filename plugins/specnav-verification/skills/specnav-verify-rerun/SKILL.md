@@ -124,12 +124,33 @@ case ids.
    identity, prior completed repair digest, task scope, required review paths,
    and reviewed blob SHAs exactly match. It appends a signed
    `repair_rebind` fact and starts a fresh retest and regression window.
-8. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
+8. If the original immutable run or attempt artifacts were created but later
+   lost, do not reconstruct them and do not infer attempt integrity from the
+   classification envelope. Record the exact byte-for-byte recovery audit,
+   prepare a `historical-artifact-loss-review` bound to the signed
+   classification envelope digest, audit digest, and exact missing paths, then
+   obtain explicit human approval. Apply only the approved authority through:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     repair-artifact-loss-record --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --failure-id "<failure-id>" \
+     --artifact-loss-review \
+     "openspec/changes/<change-id>/verify/repairs/<failure-id>/historical-artifact-loss-review.json" \
+     --approved --json
+   ```
+
+   This appends a signed `historical_artifact_loss` fact. It never creates an
+   `attempt_fact`, never claims evidence integrity, and can only produce a
+   Core-owned `route_break_loop` proposal. Apply that proposal separately under
+   step 16. The failure is not green and Verification cannot finalize.
+9. Require `verify/v2/case-snapshot.json`, `verify/v2/case-approval.json`,
    `verify/v2/requirements-source.json`, `verify/v2/acceptance-source.json`,
    `verify/v2/freshness.json`, `verify/rerun-policy.json`, and
    `verify/traceability-matrix.json`. If CodeGraph impact is used, require a
    valid `codegraph/impact-report.json`.
-9. Persist the trusted repaired, impacted, and baseline scope:
+10. Persist the trusted repaired, impacted, and baseline scope:
 
    ```bash
    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -145,13 +166,13 @@ case ids.
    them with a manually chosen domain list.
    Pass `--reviewer-id <authenticated-human-id>` so the current approval is
    revalidated against the current snapshot and source hashes.
-10. If the result is blocked, stop. Unknown references, missing freshness,
+11. If the result is blocked, stop. Unknown references, missing freshness,
    malformed CodeGraph evidence, and unmapped production changes may expand
    scope but may never silently shrink it.
-11. Task 020 executes the returned cases as retest or regression attempts.
+12. Task 020 executes the returned cases as retest or regression attempts.
    Preserve prior failed attempts and evidence; do not edit the stale marker
    by hand.
-12. Execute every returned case through the V2 `execute` action using the
+13. Execute every returned case through the V2 `execute` action using the
    required retry, retest, or regression identity. Never overwrite the first
    failed attempt.
    - Retry uses the original run and requires unchanged fingerprints:
@@ -178,7 +199,7 @@ case ids.
        --attempt-kind regression --parent-attempt "<retest-attempt-id>" \
        --failure-id "<failure-id>" --json
      ```
-13. Evaluate the repair state after each retest or regression batch:
+14. Evaluate the repair state after each retest or regression batch:
 
     ```bash
     node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
@@ -190,12 +211,12 @@ case ids.
 
     Continue only with the exact Core-owned transition proposal. Never set a
     failure status by hand.
-14. A failed or blocked retest/regression must not be overwritten or bypassed.
+15. A failed or blocked retest/regression must not be overwritten or bypassed.
     Evaluate it, obtain the Core-owned `reopen_failure` proposal, apply that
     exact transition after explicit approval, diagnose and repair the new
     defect generation, then run a fresh retest and the full required
     regression scope. A later passing attempt never erases the failed attempt.
-15. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
+16. Apply `close_failure`, `reopen_failure`, or `route_break_loop` only after
     explicit user approval:
 
     ```bash
@@ -211,7 +232,7 @@ case ids.
     Transition proposals and applications are append-only JSONL facts.
     Repeating the same idempotency key returns the original receipt; a
     conflicting replay blocks.
-16. Run the V2 `finalize` action only after every `required_cases` member has
+17. Run the V2 `finalize` action only after every `required_cases` member has
    fresh terminal evidence and all required six-domain readings.
 
 ## Required Outputs
@@ -219,6 +240,8 @@ case ids.
 - A recorded rerun scope containing `required_cases`, `baseline_cases`,
   `repaired_cases`, `stale_cases`, `reasons_by_case`, CodeGraph refs, and
   policy refs.
+- For irrecoverable history, the approved recovery audit and review plus the
+  append-only `historical-artifact-losses.jsonl` authority chain.
 - Fresh attempts and readings for every required case.
 - `verify/v2/transition-proposals.jsonl`,
   `verify/v2/transition-receipts.jsonl`, and rebuildable

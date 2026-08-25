@@ -670,6 +670,202 @@ test('repair CLI appends one deterministic proposal across repeated state evalua
   );
 });
 
+test('repair CLI records approved historical artifact loss and routes break loop', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const classificationFile = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'classification-envelope.json'
+  );
+  const classificationEnvelope = JSON.parse(fs.readFileSync(
+    classificationFile,
+    'utf8'
+  ));
+  const auditFile = path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'verify',
+    'historical-artifact-recovery.md'
+  );
+  const audit = [
+    '# Historical Artifact Recovery Audit',
+    '',
+    'Status: BLOCKED_UNRECOVERABLE',
+    '',
+    source.failure.id,
+    source.failure.run_id,
+    source.failure.attempt_id,
+    '',
+    'verification-history:immutable-run-artifacts-unrecoverable',
+    ''
+  ].join('\n');
+  fs.mkdirSync(path.dirname(auditFile), { recursive: true });
+  fs.writeFileSync(auditFile, audit);
+  const missingIntegrity = path.posix.join(
+    'runs',
+    source.failure.run_id,
+    'attempts',
+    source.failure.attempt_id,
+    'integrity.json'
+  );
+  fs.rmSync(path.join(source.verificationRoot, missingIntegrity));
+  const reviewFile = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'historical-artifact-loss-review.json'
+  );
+  writeJson(reviewFile, {
+    schema: 'specnav.verification.historical-artifact-loss-review.v1',
+    id: 'historical-artifact-loss-review-cli',
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    run_id: source.failure.run_id,
+    case_id: source.failure.case_id,
+    attempt_id: source.failure.attempt_id,
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The original run artifacts cannot be recovered byte for byte.',
+    classification_envelope_digest: sha256(canonicalJson(
+      classificationEnvelope
+    )),
+    recovery_audit_path: path.relative(source.projectRoot, auditFile),
+    recovery_audit_digest: sha256(Buffer.from(audit)),
+    missing_artifact_paths: [missingIntegrity],
+    permitted_transition: 'route_break_loop'
+  });
+  const recordArgs = [
+    ...baseArgs(source, 'artifact-loss-record'),
+    '--artifact-loss-review',
+    path.relative(source.projectRoot, reviewFile)
+  ];
+  const recorded = await run(recordArgs, deps);
+  const replayed = await run(recordArgs, deps);
+  assert.equal(recorded.ok, true, JSON.stringify(recorded.blockers));
+  assert.equal(recorded.status, 'historical_artifact_loss_recorded');
+  assert.equal(recorded.replayed, false);
+  assert.equal(replayed.ok, true, JSON.stringify(replayed.blockers));
+  assert.equal(replayed.replayed, true);
+
+  const state = await run(baseArgs(source, 'state'), deps);
+  assert.equal(state.ok, true, JSON.stringify(state.blockers));
+  assert.equal(state.status, 'break_loop_required');
+  assert.equal(state.transition_proposal.action, 'route_break_loop');
+  assert.equal(
+    fs.existsSync(path.join(
+      source.verificationRoot,
+      'v2',
+      'attempt-facts.jsonl'
+    )),
+    false
+  );
+  const lossHistory = fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'historical-artifact-losses.jsonl'
+  ), 'utf8').trim().split(/\r?\n/);
+  assert.equal(lossHistory.length, 1);
+});
+
+test('repair CLI refuses artifact-loss authority while declared history exists', async () => {
+  const source = projectFixture();
+  const deps = dependencies();
+  const classified = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile)
+  ], deps);
+  assert.equal(classified.ok, true, JSON.stringify(classified.blockers));
+  const classificationEnvelope = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'classification-envelope.json'
+  ), 'utf8'));
+  const auditFile = path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'verify',
+    'historical-artifact-recovery.md'
+  );
+  const audit = [
+    'Status: BLOCKED_UNRECOVERABLE',
+    source.failure.id,
+    source.failure.run_id,
+    source.failure.attempt_id,
+    'verification-history:immutable-run-artifacts-unrecoverable',
+    ''
+  ].join('\n');
+  fs.mkdirSync(path.dirname(auditFile), { recursive: true });
+  fs.writeFileSync(auditFile, audit);
+  const integrityPath = path.posix.join(
+    'runs',
+    source.failure.run_id,
+    'attempts',
+    source.failure.attempt_id,
+    'integrity.json'
+  );
+  const reviewFile = path.join(
+    source.verificationRoot,
+    'repairs',
+    source.failure.id,
+    'historical-artifact-loss-review.json'
+  );
+  writeJson(reviewFile, {
+    schema: 'specnav.verification.historical-artifact-loss-review.v1',
+    id: 'historical-artifact-loss-review-present',
+    failure_id: source.failure.id,
+    change_id: source.failure.change_id,
+    run_id: source.failure.run_id,
+    case_id: source.failure.case_id,
+    attempt_id: source.failure.attempt_id,
+    classification: 'test_defect',
+    decision: 'approved',
+    reviewer: {
+      id: 'reviewer-1',
+      kind: 'human'
+    },
+    reviewed_at: FIXED_TIME,
+    reason: 'The review incorrectly claims an existing artifact is missing.',
+    classification_envelope_digest: sha256(canonicalJson(
+      classificationEnvelope
+    )),
+    recovery_audit_path: path.relative(source.projectRoot, auditFile),
+    recovery_audit_digest: sha256(Buffer.from(audit)),
+    missing_artifact_paths: [integrityPath],
+    permitted_transition: 'route_break_loop'
+  });
+  const result = await run([
+    ...baseArgs(source, 'artifact-loss-record'),
+    '--artifact-loss-review',
+    path.relative(source.projectRoot, reviewFile)
+  ], deps);
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.blockers, [{
+    id: 'verification-repair:artifact-loss-artifact-present',
+    artifact: integrityPath,
+    detail: null
+  }]);
+});
+
 test('repair CLI preserves classifications for two independent root failures', async () => {
   const source = projectFixture();
   const deps = dependencies();
