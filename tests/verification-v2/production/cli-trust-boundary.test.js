@@ -23,6 +23,10 @@ const FIXTURE_ROOT = path.resolve(
   __dirname,
   '../contracts/fixtures/positive'
 );
+const VERIFICATION_CLI = path.resolve(
+  __dirname,
+  '../../../plugins/specnav-verification/scripts/verification-v2-run.js'
+);
 
 function git(root, args) {
   const result = childProcess.spawnSync('git', args, {
@@ -487,6 +491,39 @@ test('production CLI summarizes standalone finalize output without embedding rep
   assert.ok(result.artifacts.some((entry) => (
     entry.path === 'verify/reports/overview.html'
   )));
+});
+
+test('production CLI writes JSON larger than the pipe buffer without truncation', () => {
+  const detailLength = 128 * 1024;
+  const script = [
+    `const { writeCliJson } = require(${JSON.stringify(VERIFICATION_CLI)});`,
+    'writeCliJson({',
+    '  ok: false,',
+    "  status: 'blocked',",
+    '  blockers: [{',
+    "    id: 'verification-production:large-output-fixture',",
+    "    artifact: 'fixture',",
+    "    detail: 'x'.repeat(Number(process.argv[1]))",
+    '  }],',
+    '  fallback_used: false',
+    '}).then(() => {',
+    '  process.exitCode = 2;',
+    '});'
+  ].join('\n');
+  const result = childProcess.spawnSync(
+    process.execPath,
+    ['-e', script, String(detailLength)],
+    {
+      encoding: 'utf8',
+      maxBuffer: 1024 * 1024
+    }
+  );
+
+  assert.equal(result.status, 2, result.stderr);
+  assert.ok(Buffer.byteLength(result.stdout) > 64 * 1024);
+  const parsed = JSON.parse(result.stdout);
+  assert.equal(parsed.blockers[0].detail.length, detailLength);
+  assert.equal(parsed.blockers[0].detail, 'x'.repeat(detailLength));
 });
 
 test('full production run injects the live trusted authority into automatic finalize', async () => {

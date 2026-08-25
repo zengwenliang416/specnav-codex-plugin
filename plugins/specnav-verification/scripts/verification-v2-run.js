@@ -957,20 +957,33 @@ function summarizeCliResult(result) {
   };
 }
 
+function writeCliJson(value) {
+  const output = `${JSON.stringify(value, null, 2)}\n`;
+  return new Promise((resolve, reject) => {
+    process.stdout.write(output, (error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
 async function main() {
   const result = await run();
-  process.stdout.write(`${JSON.stringify(summarizeCliResult(result), null, 2)}\n`);
-  process.exit(result.ok ? 0 : 2);
+  await writeCliJson(summarizeCliResult(result));
+  process.exitCode = result.ok ? 0 : 2;
 }
 
 if (require.main === module) {
-  main().catch((error) => {
-    process.stdout.write(`${JSON.stringify(blocked(
+  main().catch(async (error) => {
+    await writeCliJson(blocked(
       'verification-production:unhandled',
       'verification-v2-run',
       error instanceof Error ? error.message : String(error)
-    ), null, 2)}\n`);
-    process.exit(2);
+    ));
+    process.exitCode = 2;
   });
 }
 
@@ -986,5 +999,6 @@ module.exports = {
   run,
   stableSecrets,
   summarizeCaseExecution,
-  summarizeCliResult
+  summarizeCliResult,
+  writeCliJson
 };
