@@ -44,3 +44,9 @@ The repair-loop state machine SHALL interpret a verified
 ### Requirement: Network safety is invariant
 
 The change SHALL NOT modify Playwright network or browser execution policy.
+
+#### Scenario: Artifact-loss authority is installed
+
+- **WHEN** the Runtime repair is installed or exercised
+- **THEN** `browser-access-policy.js`, `playwright-api-guard.js`, and
+  `playwright-worker.js` remain byte-identical to the approved baseline
