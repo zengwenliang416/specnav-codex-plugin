@@ -550,6 +550,7 @@ function makeInitialRun(context, testCase, now) {
       environment_hash: context.environmentHash,
       runtime_version: context.runtimeStatus.runtime_version,
       kernel_version: context.kernelVersion,
+      generation_id: context.generationId,
       status: 'planned',
       created_at: now,
       started_at: null,
@@ -648,6 +649,7 @@ function makeFollowupRun(context, testCase, now, options, history) {
       || parentRun.runtime_version !== context.runtimeStatus.runtime_version
       || parentRun.kernel_version !== context.kernelVersion
       || parentRun.case_snapshot_hash !== context.snapshot.snapshot_hash
+      || parentRun.generation_id !== context.generationId
     ) {
       return {
         ok: false,
@@ -713,7 +715,9 @@ function makeFollowupRun(context, testCase, now, options, history) {
     && rootRun.origin_run_id === null
     && rootRun.parent_run_id === null
     && rootRun.case_ids.includes(rootFailure.case_id)
+    && rootRun.generation_id === context.generationId
     && parentRun.change_id === context.snapshot.change_id
+    && parentRun.generation_id === context.generationId
     && parentRun.case_ids.includes(parentAttempt.case_id);
   const kindLineageValid = kind === 'retest'
     ? commonLineageValid
@@ -766,6 +770,7 @@ function makeFollowupRun(context, testCase, now, options, history) {
         environment_hash: context.environmentHash,
         runtime_version: context.runtimeStatus.runtime_version,
         kernel_version: context.kernelVersion,
+        generation_id: context.generationId,
         status: 'planned',
         created_at: now,
         started_at: null,
@@ -1143,6 +1148,7 @@ function createProductionVerificationRunner(options = {}) {
     codeSha,
     testSha,
     environmentHash,
+    generation,
     clock = () => new Date().toISOString(),
     secrets = [],
     scenarioRegistry = null,
@@ -1220,6 +1226,31 @@ function createProductionVerificationRunner(options = {}) {
         fallback_used: false
       };
     }
+    if (
+      !generation
+      || typeof generation.id !== 'string'
+      || generation.change_id !== snapshot.change_id
+      || generation.snapshot_id !== snapshot.id
+      || generation.snapshot_hash !== snapshot.snapshot_hash
+      || generation.fingerprints?.case_snapshot_hash
+        !== snapshot.snapshot_hash
+      || generation.fingerprints?.code_sha !== codeSha
+      || generation.fingerprints?.test_sha !== testSha
+      || generation.fingerprints?.environment_hash !== environmentHash
+      || generation.fingerprints?.runtime_version
+        !== runtimeStatus.runtime_version
+      || generation.fingerprints?.kernel_version !== kernel.metadata.version
+    ) {
+      return {
+        ok: false,
+        status: 'blocked',
+        blockers: [blocker(
+          'verification-generation:active-required',
+          caseId
+        )],
+        fallback_used: false
+      };
+    }
     const testCase = snapshot.cases.find((entry) => entry.id === caseId);
     if (!testCase) {
       return {
@@ -1291,7 +1322,8 @@ function createProductionVerificationRunner(options = {}) {
       codeSha,
       testSha,
       environmentHash,
-      kernelVersion: kernel.metadata.version
+      kernelVersion: kernel.metadata.version,
+      generationId: generation.id
     }, testCase, now, {
       ...executionOptions,
       repairIdentity

@@ -54,6 +54,25 @@ test('host execute and finalize actions route to the Verification 2.0 CLI', () =
   assert.equal(finalize[1], 'finalize');
 });
 
+test('successor generation prepare and activation route through approval boundary', () => {
+  const prepared = command('generation-prepare', {
+    change: 'change-1',
+    reviewer_id: 'reviewer-1'
+  });
+  assert.equal(prepared[1], 'generation-prepare');
+  assert.ok(prepared.includes('--reviewer-id'));
+
+  const activated = command('generation-activate', {
+    change: 'change-1',
+    reviewer_id: 'reviewer-1',
+    generation_review: 'openspec/changes/change-1/verify/v2/generation-reviews/review.json',
+    approved: true
+  });
+  assert.equal(activated[1], 'generation-activate');
+  assert.ok(activated.includes('--generation-review'));
+  assert.ok(activated.includes('--approved'));
+});
+
 test('validate aggregate and report use V2 while legacy actions remain explicit', () => {
   for (const action of ['validate', 'aggregate', 'report']) {
     const routed = command(action, {

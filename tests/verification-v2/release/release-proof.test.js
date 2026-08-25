@@ -54,7 +54,7 @@ const {
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-pointer-chain');
 const CHANGE = 'release-proof-change';
 const CASE_ID = 'case-release-proof';
-const HOSTS = ['claude-code', 'codex', 'codefree-o'];
+const HOSTS = ['claude-code', 'codex', 'codefree-o', 'dsh'];
 const RUNTIME_VERSION = loadRuntimeLock().runtime_version;
 const TRUST_KEY = Buffer.alloc(32, 17);
 const ROOT = path.resolve(__dirname, '../../..');
@@ -329,7 +329,7 @@ function gateInput() {
       reasons: []
     },
     integrity_status: 'intact',
-    evidence_index_version: 7,
+    evidence_index_version: SIX_DOMAINS.length,
     runtime_version: RUNTIME_VERSION,
     kernel_version: '2.0.0-alpha.2',
     policy_version: 'verification-v2.0'
@@ -402,14 +402,72 @@ function makeProject(options = {}) {
   });
   assert.equal(snapshotResult.ok, true, JSON.stringify(snapshotResult.blockers));
   const snapshot = snapshotResult.snapshot;
+  const generationFingerprints = {
+    case_snapshot_hash: snapshot.snapshot_hash,
+    code_sha: SOURCE_CODE_SHA,
+    test_sha: '2'.repeat(40),
+    environment_hash: '4'.repeat(64),
+    runtime_version: RUNTIME_VERSION,
+    kernel_version: '2.0.0-alpha.2'
+  };
+  const generationStore = kernel.createVerificationArtifactStore({
+    changeRoot: changeDir,
+    root: path.join(changeDir, 'verify')
+  });
+  const generationAuthority = kernel.createVerificationGenerationAuthority({
+    schemaRegistry,
+    key: TRUST_KEY,
+    clock: () => '2026-08-02T00:00:00.500Z'
+  });
+  const generationState = {
+    change_id: CHANGE,
+    reviewer_id: reviewer().id,
+    snapshot_id: snapshot.id,
+    snapshot_hash: snapshot.snapshot_hash,
+    parent_generation_id: null,
+    fingerprints: generationFingerprints,
+    historical_break_loop_failure_ids: [],
+    collections: {
+      runs: [],
+      attempts: [],
+      executions: [],
+      readings: [],
+      failures: [],
+      repair_links: [],
+      evidence: [],
+      transition_proposals: [],
+      transition_receipts: [],
+      attempt_facts: []
+    }
+  };
+  const generationReview = generationAuthority.prepare(generationState);
+  assert.equal(
+    generationReview.ok,
+    true,
+    JSON.stringify(generationReview.blockers)
+  );
+  const generationActivation = generationAuthority.append(
+    generationStore,
+    generationReview.review,
+    generationState,
+    true
+  );
+  assert.equal(
+    generationActivation.ok,
+    true,
+    JSON.stringify(generationActivation.blockers)
+  );
+  const activeGeneration = generationActivation.value;
   const input = gateInput();
   if (options.lane) input.lane = options.lane;
   input.case_snapshot_id = snapshot.id;
   input.case_snapshot_hash = snapshot.snapshot_hash;
+  input.generation_id = activeGeneration.id;
   const run = {
     schema: 'specnav.verification.run.v1',
     id: 'run-release',
     change_id: CHANGE,
+    generation_id: activeGeneration.id,
     case_snapshot_id: snapshot.id,
     case_snapshot_hash: snapshot.snapshot_hash,
     case_ids: [CASE_ID],
@@ -489,7 +547,9 @@ function makeProject(options = {}) {
   });
   input.authority_chain_digest = sha256(canonicalJson({
     anchor_id: authorityAnchor.id,
-    logs: authorityHeads
+    logs: authorityHeads,
+    generation_id: activeGeneration.id,
+    generation_digest: sha256(canonicalJson(activeGeneration))
   }));
   const freshness = {
     ok: true,
@@ -542,6 +602,7 @@ function makeProject(options = {}) {
     id: 'report-model-release',
     change_id: CHANGE,
     sources: {
+      generation_id: activeGeneration.id,
       case_snapshot_id: snapshot.id,
       case_snapshot_hash: snapshot.snapshot_hash,
       run_ids: ['run-release'],
@@ -685,19 +746,21 @@ function makeProject(options = {}) {
     evidence_index_digest: evidenceIndex.source_digest
   };
   const configuredCommits = options.hostCommits || Object.fromEntries(
-    HOSTS.map((host, index) => [host, String(index + 7).repeat(40)])
+    HOSTS.map((host, index) => [host, ['7', '8', '9', 'a'][index].repeat(40)])
   );
   const hostRepositories = {
     'claude-code':
       'https://github.com/zengwenliang416/specnav-claude-plugin.git',
     codex: 'https://github.com/zengwenliang416/specnav-codex-plugin.git',
     'codefree-o':
-      'https://github.com/zengwenliang416/specnav-codefree-o-plugin.git'
+      'https://github.com/zengwenliang416/specnav-codefree-o-plugin.git',
+    dsh: 'https://github.com/zengwenliang416/specnav-dsh-plugin.git'
   };
   const hostPluginPaths = {
     'claude-code': 'plugins/specnav-verification',
     codex: 'plugins/specnav-verification',
-    'codefree-o': 'modules/specnav-verification'
+    'codefree-o': 'modules/specnav-verification',
+    dsh: 'modules/specnav-verification'
   };
   const defaultHostRoots = Object.fromEntries(HOSTS.map((host) => {
     const hostRoot = path.join(root, '.host-authority', host);
@@ -729,6 +792,13 @@ function makeProject(options = {}) {
         ref: 'refs/heads/main',
         commit: configuredCommits['codefree-o'],
         plugin_path: hostPluginPaths['codefree-o'],
+        manifest_path: 'modules/specnav-verification/specnav-kernel-source.json'
+      },
+      dsh: {
+        repository: hostRepositories.dsh,
+        ref: 'refs/heads/main',
+        commit: configuredCommits.dsh,
+        plugin_path: hostPluginPaths.dsh,
         manifest_path: 'modules/specnav-verification/specnav-kernel-source.json'
       }
     },
@@ -921,7 +991,7 @@ function makeProject(options = {}) {
         'HEAD'
       ], SOURCE_TREE_INVENTORY));
     }
-    if (host === 'codefree-o') {
+    if (['codefree-o', 'dsh'].includes(host)) {
       commands.push(hostCommand(host, 'dependency-install', [
         tools.npm,
         'ci',
@@ -986,7 +1056,7 @@ function makeProject(options = {}) {
         advertised_commit: locked.commit,
         checkout_head: locked.commit,
         source_code_inventory_sha: host === 'codex' ? SOURCE_CODE_SHA : null,
-        package_lock_sha256: host === 'codefree-o'
+        package_lock_sha256: ['codefree-o', 'dsh'].includes(host)
           ? sha256('codefree-package-lock')
           : null
       },

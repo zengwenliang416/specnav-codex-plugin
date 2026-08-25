@@ -62,9 +62,15 @@ const {
   createV1ToV2Migrator
 } = require('./migration');
 const {
+  COLLECTIONS,
+  collectGenerationState,
+  collectionInventory,
+  createBaseline,
   createCompatibilitySnapshot,
   createHostCompatibilityAuthority,
-  compareCompatibilitySnapshots
+  compareCompatibilitySnapshots,
+  createVerificationGenerationAuthority,
+  verifyBaseline
 } = require('./governance');
 const {
   createVerificationArtifactStore
@@ -125,6 +131,12 @@ module.exports = Object.freeze({
   createCompatibilitySnapshot,
   createHostCompatibilityAuthority,
   compareCompatibilitySnapshots,
+  COLLECTIONS,
+  collectGenerationState,
+  collectionInventory,
+  createBaseline,
+  createVerificationGenerationAuthority,
+  verifyBaseline,
   createCaseApprovalValidator,
   createRuntimeAuthority,
   createVerificationArtifactStore,

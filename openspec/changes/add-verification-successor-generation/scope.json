@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "change_id": "add-verification-successor-generation",
+  "stage": "development",
+  "allowed_roots": [
+    "plugins/specnav-verification/kernel/contracts/schema-registry.js",
+    "plugins/specnav-verification/kernel/governance/**",
+    "plugins/specnav-verification/kernel/index.js",
+    "plugins/specnav-verification/kernel/pipeline/artifact-pipeline.js",
+    "plugins/specnav-verification/kernel/pipeline/production-runner.js",
+    "plugins/specnav-verification/kernel/reporting/report-model-builder.js",
+    "plugins/specnav-verification/schemas/report-model.schema.json",
+    "plugins/specnav-verification/schemas/verification-generation-review.schema.json",
+    "plugins/specnav-verification/schemas/verification-generation.schema.json",
+    "plugins/specnav-verification/schemas/verification-run.schema.json",
+    "plugins/specnav-verification/scripts/host-verification-adapter.js",
+    "plugins/specnav-verification/scripts/verification-v2-run.js",
+    "plugins/specnav-verification/skills/specnav-verification/SKILL.md",
+    "plugins/specnav-operations/scripts/verification-v2-host-contract.js",
+    "plugins/specnav-operations/scripts/verification-v2-proof.js",
+    "plugins/specnav-verification/assets/contract-fixtures/**",
+    "plugins/specnav-verification/schemas/cross-host-lock.schema.json",
+    "plugins/specnav-verification/schemas/cross-host-release-result.schema.json",
+    "plugins/specnav-verification/schemas/host-execution.schema.json",
+    "plugins/specnav-verification/schemas/host-install-receipt.schema.json",
+    "plugins/specnav-verification/schemas/host-installation-index.schema.json",
+    "tests/verification-v2/contracts/**",
+    "tests/verification-v2/production/**",
+    "tests/verification-v2/release/host-artifacts.test.js",
+    "tests/verification-v2/release/populate-project.js",
+    "tests/verification-v2/release/release-proof.test.js",
+    "openspec/changes/add-verification-successor-generation/**"
+  ],
+  "denied_roots": [
+    ".git",
+    "node_modules",
+    "coverage",
+    "dist",
+    ".env",
+    ".env.local",
+    "plugins/specnav-verification/kernel/execution/browser-access-policy.js",
+    "plugins/specnav-verification/kernel/execution/playwright-api-guard.js",
+    "plugins/specnav-verification/kernel/execution/playwright-worker.js"
+  ],
+  "external_denied_roots": [
+    "/Volumes/zwl/camera-rental-github/camera-rental-admin/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-server/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-staff/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-uniapp/**",
+    "/Volumes/zwl/camera-rental-github/camera-rental-web/**"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  },
+  "constraints": [
+    "Do not delete, rewrite, reconstruct, or regenerate historical attempts, failures, readings, evidence, or execution artifacts.",
+    "Do not infer generation membership from timestamps.",
+    "Do not treat prior break_loop incidents as passed.",
+    "Do not relax Playwright network restrictions.",
+    "Do not modify product source.",
+    "Do not push."
+  ]
+}

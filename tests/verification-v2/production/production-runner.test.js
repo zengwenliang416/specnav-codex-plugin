@@ -226,7 +226,24 @@ function fixture(options = {}) {
     approval,
     runtimeStatus,
     schemaRegistry,
-    trustedFactAuthority
+    trustedFactAuthority,
+    generation: {
+      id: 'generation-production',
+      change_id: changeId,
+      snapshot_id: snapshot.id,
+      snapshot_hash: snapshot.snapshot_hash,
+      activated_at: '2026-08-02T19:59:45.000Z',
+      historical_break_loop_failure_ids: [],
+      baseline: kernel.createBaseline({}),
+      fingerprints: {
+        case_snapshot_hash: snapshot.snapshot_hash,
+        code_sha: '1'.repeat(40),
+        test_sha: '2'.repeat(64),
+        environment_hash: '3'.repeat(64),
+        runtime_version: runtimeStatus.runtime_version,
+        kernel_version: kernel.metadata.version
+      }
+    }
   };
 }
 
@@ -249,6 +266,15 @@ function runner(source, overrides = {}) {
     codeSha,
     testSha,
     environmentHash,
+    generation: {
+      ...source.generation,
+      fingerprints: {
+        ...source.generation.fingerprints,
+        code_sha: codeSha,
+        test_sha: testSha,
+        environment_hash: environmentHash
+      }
+    },
     repairIdentityResolver: () => ({
       ok: true,
       identity: {
@@ -276,6 +302,13 @@ function currentFingerprints(source, overrides = {}) {
     runtime_version: source.runtimeStatus.runtime_version,
     kernel_version: kernel.metadata.version,
     ...overrides
+  };
+}
+
+function generationFor(source, fingerprints = currentFingerprints(source)) {
+  return {
+    ...source.generation,
+    fingerprints: structuredClone(fingerprints)
   };
 }
 
@@ -309,6 +342,7 @@ test('approved command persists run, attempt, evidence, integrity and six-domain
   assert.equal(result.evidence.length, 3);
   assert.equal(result.readings.length, 6);
   assert.equal(result.integrity.ok, true);
+  assert.equal(result.run.generation_id, source.generation.id);
   assert.equal(
     fs.existsSync(path.join(
       source.verificationRoot,
@@ -332,6 +366,24 @@ test('approved command persists run, attempt, evidence, integrity and six-domain
     'index.json'
   ), 'utf8'));
   assert.equal(index.record_count, 3);
+});
+
+test('execution without an active successor generation creates no artifacts', async () => {
+  const source = fixture();
+  const subject = runner(source, { generation: null });
+
+  const result = await subject.executeCase(source.testCase.id);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.status, 'blocked');
+  assert.equal(
+    result.blockers[0].id,
+    'verification-generation:active-required'
+  );
+  assert.equal(
+    fs.existsSync(path.join(source.verificationRoot, 'runs')),
+    false
+  );
 });
 
 test('assertion protocol rejects missing duplicate extra and forged results', () => {
@@ -508,6 +560,7 @@ test('retry preserves immutable attempt integrity and finalizes the full evidenc
     snapshot: source.snapshot,
     approval: source.approval,
     currentFingerprints: currentFingerprints(source),
+    activeGeneration: generationFor(source),
     trustedFactAuthority: source.trustedFactAuthority,
     clock: clock()
   }).build();
@@ -890,6 +943,9 @@ test('finalize derives release and archive gates from raw failures and signed cl
     currentFingerprints: currentFingerprints(source, {
       code_sha: '4'.repeat(40)
     }),
+    activeGeneration: generationFor(source, currentFingerprints(source, {
+      code_sha: '4'.repeat(40)
+    })),
     trustedFactAuthority: source.trustedFactAuthority,
     clock: clock(),
     secrets: []
@@ -1154,6 +1210,7 @@ test('artifact pipeline derives both gates, one report model and three HTML page
     snapshot: source.snapshot,
     approval: source.approval,
     currentFingerprints: currentFingerprints(source),
+    activeGeneration: generationFor(source),
     trustedFactAuthority: source.trustedFactAuthority,
     clock: clock(),
     secrets: []
@@ -1173,6 +1230,69 @@ test('artifact pipeline derives both gates, one report model and three HTML page
     );
   }
   assert.equal(result.report_manifest.reports.length, 3);
+});
+
+test('successor generation excludes immutable historical break-loop facts from the current Gate', async () => {
+  const source = fixture();
+  const historicalRun = {
+    id: 'run-historical-break-loop',
+    status: 'failed'
+  };
+  const historicalFailure = {
+    id: 'failure-historical-break-loop',
+    status: 'break_loop'
+  };
+  fs.writeFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'runs.json'
+  ), `${JSON.stringify([historicalRun], null, 2)}\n`);
+  fs.writeFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failures.json'
+  ), `${JSON.stringify([historicalFailure], null, 2)}\n`);
+  source.generation = {
+    ...source.generation,
+    historical_break_loop_failure_ids: [historicalFailure.id],
+    baseline: kernel.createBaseline({
+      runs: [historicalRun],
+      failures: [historicalFailure]
+    })
+  };
+
+  const executed = await runner(source).executeCase(source.testCase.id);
+  assert.equal(executed.ok, true, JSON.stringify(executed.blockers));
+  const finalized = kernel.createVerificationArtifactPipeline({
+    kernel,
+    schemaRegistry: source.schemaRegistry,
+    changeRoot: source.changeRoot,
+    verificationRoot: source.verificationRoot,
+    snapshot: source.snapshot,
+    approval: source.approval,
+    currentFingerprints: currentFingerprints(source),
+    activeGeneration: generationFor(source),
+    trustedFactAuthority: source.trustedFactAuthority,
+    clock: clock(),
+    secrets: []
+  }).build();
+
+  assert.equal(finalized.ok, true, JSON.stringify(finalized.blockers));
+  assert.equal(finalized.release_gate.decision, 'pass');
+  assert.deepEqual(finalized.gate_input.open_failure_ids, []);
+  assert.equal(
+    finalized.report_model.warnings.some((entry) => (
+      entry.id === 'verification-generation:historical-break-loop'
+      && entry.artifact === historicalFailure.id
+    )),
+    true
+  );
+  const persistedFailures = JSON.parse(fs.readFileSync(path.join(
+    source.verificationRoot,
+    'v2',
+    'failures.json'
+  ), 'utf8'));
+  assert.deepEqual(persistedFailures, [historicalFailure]);
 });
 
 test('freshness selects the latest completed attempt when sequences match', () => {

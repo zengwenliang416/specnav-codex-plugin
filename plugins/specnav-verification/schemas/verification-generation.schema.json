@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/verification-generation.schema.json",
+  "title": "SpecNav Verification Successor Generation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "review_id",
+    "review_sha256",
+    "reviewer_id",
+    "snapshot_id",
+    "snapshot_hash",
+    "parent_generation_id",
+    "fingerprints",
+    "historical_break_loop_failure_ids",
+    "baseline",
+    "activated_at",
+    "log_sequence",
+    "previous_generation_digest",
+    "signature_algorithm",
+    "signature"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.generation.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "review_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "review_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "reviewer_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "snapshot_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "snapshot_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "parent_generation_id": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fingerprints": {
+      "$ref": "verification-generation-review.schema.json#/$defs/fingerprints"
+    },
+    "historical_break_loop_failure_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "baseline": {
+      "$ref": "verification-generation-review.schema.json#/$defs/baseline"
+    },
+    "activated_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "log_sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_generation_digest": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "signature_algorithm": {
+      "const": "hmac-sha256"
+    },
+    "signature": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

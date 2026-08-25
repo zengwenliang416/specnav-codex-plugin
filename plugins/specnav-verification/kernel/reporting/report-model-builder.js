@@ -1199,6 +1199,20 @@ function createReportModelBuilder(options = {}) {
       : 'change-unknown';
     const blockers = [];
     const warnings = [];
+    for (const warning of Array.isArray(input.historical_warnings)
+      ? input.historical_warnings
+      : []) {
+      if (
+        warning
+        && typeof warning.id === 'string'
+        && (
+          warning.artifact === null
+          || typeof warning.artifact === 'string'
+        )
+      ) {
+        warnings.push(warning);
+      }
+    }
 
     const caseSnapshot = validateOne(
       schemaRegistry,
@@ -1565,6 +1579,9 @@ function createReportModelBuilder(options = {}) {
       change_id: changeId,
       verdict,
       sources: {
+        generation_id: typeof input.generation_id === 'string'
+          ? input.generation_id
+          : latestRun?.generation_id || null,
         case_snapshot_id: caseSnapshot?.id || null,
         case_snapshot_hash: caseSnapshot?.snapshot_hash || null,
         run_ids: stableIds(runs.map((entry) => entry.id)),

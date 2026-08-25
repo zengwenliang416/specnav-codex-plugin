@@ -42,7 +42,28 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
    `specnav-verify-static`, `specnav-verify-unit`,
    `specnav-verify-redteam`, `specnav-verify-e2e`, and
    `specnav-verify-sensory`.
-6. Execute the approved snapshot through the V2 adapter:
+6. Prepare the exact successor generation review:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     generation-prepare --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" --json
+   ```
+
+   Obtain explicit human approval for the returned review id and SHA-256, then
+   activate that exact review:
+
+   ```bash
+   node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" \
+     generation-activate --project "$PWD" --change "<change-id>" \
+     --reviewer-id "<authenticated-human-id>" \
+     --generation-review "<project-relative-review-path>" \
+     --approved --json
+   ```
+
+   Activation freezes prior facts without closing or rewriting prior failures.
+   Pre-activation executions never satisfy the successor Gate.
+7. Execute the approved snapshot through the V2 adapter:
 
    ```bash
    node "$SPECNAV_VERIFICATION_ROOT/scripts/codex-verification-adapter.js" execute \
@@ -54,16 +75,17 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
 
    Add `--scenario-registry "<project-relative-module>"` only when an approved
    Playwright or Midscene case requires project-owned scenario code.
-7. On failure, preserve the failed attempt and use `specnav-verify-rerun`.
+8. On failure, preserve the failed attempt and use `specnav-verify-rerun`.
    Repair, retest, and regression evidence must remain separate.
-8. Re-run adapter validation. Do not infer green from agent prose, a
+9. Re-run adapter validation. Do not infer green from agent prose, a
    screenshot path, or HTML.
-9. Generate stakeholder reports only through `specnav-html-report` after the
+10. Generate stakeholder reports only through `specnav-html-report` after the
    machine gate passes.
 
 ## Required Outputs
 
 - Approved case snapshot and signoff.
+- Approved successor generation and append-only activation record.
 - Six-domain readings and content-addressed evidence.
 - Runtime, freshness, integrity, repair-loop, and gate artifacts.
 - `verify/v2/report-model.json` as the machine report authority.
@@ -78,6 +100,8 @@ Verification Kernel. Verification 2.0 has no light, compact, or simplified lane.
 - Runtime, browser, provider, case approval, evidence, or deterministic oracle
   is missing.
 - Any request asks for fallback, manual green, or fewer than all six domains.
+- Execution or finalization is requested without an active generation, or the
+  generation baseline, snapshot, fingerprints, or signature has drifted.
 - A failed, stale, blocked, running, or canceled attempt is presented as PASS.
 - A report is treated as gate authority.
 

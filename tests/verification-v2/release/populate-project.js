@@ -37,7 +37,7 @@ const {
 } = require('../../../plugins/specnav-operations/scripts/verification-v2-host-contract');
 const { readySchemaRegistry } = require('../contracts/cross-reference/test-helpers');
 
-const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o']);
+const HOSTS = Object.freeze(['claude-code', 'codex', 'codefree-o', 'dsh']);
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -308,7 +308,8 @@ function loadHostLock(lockFile) {
   const commits = {
     codex: lock.source?.commit,
     'claude-code': lock.hosts?.['claude-code']?.commit,
-    'codefree-o': lock.hosts?.['codefree-o']?.commit
+    'codefree-o': lock.hosts?.['codefree-o']?.commit,
+    dsh: lock.hosts?.dsh?.commit
   };
   for (const host of HOSTS) {
     if (!/^[a-f0-9]{40}$/.test(commits[host] || '')) {
@@ -323,6 +324,8 @@ function populateProject(projectRoot, change, options = {}) {
   const changeDir = path.join(root, 'openspec', 'changes', change);
   const verifyV2 = path.join(changeDir, 'verify', 'v2');
   const opsDir = path.join(changeDir, 'operations');
+  fs.mkdirSync(verifyV2, { recursive: true });
+  fs.mkdirSync(opsDir, { recursive: true });
   const caseId = `case-${change}`;
   const approvalId = `approval-${change}`;
   const reviewerId = 'reviewer-release';
@@ -518,6 +521,51 @@ function populateProject(projectRoot, change, options = {}) {
     record_count: evidenceEntries.length,
     entries: evidenceEntries
   };
+  const generationStore = kernel.createVerificationArtifactStore({
+    changeRoot: changeDir,
+    root: path.join(changeDir, 'verify')
+  });
+  const generationAuthority = kernel.createVerificationGenerationAuthority({
+    schemaRegistry,
+    key: runtimeResolution.signingKey,
+    clock: () => '2026-08-02T00:00:00.500Z'
+  });
+  const generationState = {
+    change_id: change,
+    reviewer_id: reviewerId,
+    snapshot_id: snapshot.id,
+    snapshot_hash: snapshot.snapshot_hash,
+    parent_generation_id: null,
+    fingerprints,
+    historical_break_loop_failure_ids: [],
+    collections: {
+      runs: [],
+      attempts: [],
+      executions: [],
+      readings: [],
+      failures: [],
+      repair_links: [],
+      evidence: [],
+      transition_proposals: [],
+      transition_receipts: [],
+      attempt_facts: []
+    }
+  };
+  const generationReview = generationAuthority.prepare(generationState);
+  if (!generationReview.ok) {
+    throw new Error(JSON.stringify(generationReview.blockers));
+  }
+  const generationActivation = generationAuthority.append(
+    generationStore,
+    generationReview.review,
+    generationState,
+    true
+  );
+  if (!generationActivation.ok) {
+    throw new Error(JSON.stringify(generationActivation.blockers));
+  }
+  const activeGeneration = generationActivation.value;
+  run.generation_id = activeGeneration.id;
 
   writeJson(path.join(verifyV2, 'runtime-status.json'), runtimeStatus);
   writeJson(
@@ -561,6 +609,7 @@ function populateProject(projectRoot, change, options = {}) {
     snapshot,
     approval,
     currentFingerprints: fingerprints,
+    activeGeneration,
     trustedFactAuthority,
     clock: () => '2026-08-02T00:00:03Z',
     secrets: [],
@@ -600,7 +649,8 @@ function populateProject(projectRoot, change, options = {}) {
     roots: options.hostRoots || {
       codex: process.env.SPECNAV_CODEX_REPOSITORY_ROOT,
       'claude-code': process.env.SPECNAV_CLAUDE_REPOSITORY_ROOT,
-      'codefree-o': process.env.SPECNAV_CODEFREE_O_REPOSITORY_ROOT
+      'codefree-o': process.env.SPECNAV_CODEFREE_O_REPOSITORY_ROOT,
+      dsh: process.env.SPECNAV_DSH_REPOSITORY_ROOT
     }
   }).resolve();
   if (!hostAuthority.ok) {
@@ -762,7 +812,7 @@ function populateProject(projectRoot, change, options = {}) {
         'HEAD'
       ], repositoryInventory));
     }
-    if (host === 'codefree-o') {
+    if (['codefree-o', 'dsh'].includes(host)) {
       commands.push(hostCommand(host, 'dependency-install', [
         toolchain.npm.path,
         'ci',
@@ -823,7 +873,7 @@ function populateProject(projectRoot, change, options = {}) {
         source_code_inventory_sha: host === 'codex'
           ? fingerprints.code_sha
           : null,
-        package_lock_sha256: host === 'codefree-o'
+        package_lock_sha256: ['codefree-o', 'dsh'].includes(host)
           ? sha256(
               fs.existsSync(path.join(
                 hostAuthority.roots[host],

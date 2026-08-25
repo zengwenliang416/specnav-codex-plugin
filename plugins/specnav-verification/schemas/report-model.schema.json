@@ -42,6 +42,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "generation_id",
         "case_snapshot_id",
         "case_snapshot_hash",
         "run_ids",
@@ -54,6 +55,9 @@
         "gate_decision_id"
       ],
       "properties": {
+        "generation_id": {
+          "$ref": "#/$defs/nullableStableId"
+        },
         "case_snapshot_id": {
           "$ref": "#/$defs/nullableStableId"
         },

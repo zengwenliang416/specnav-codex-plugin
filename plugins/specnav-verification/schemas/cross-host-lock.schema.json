@@ -27,13 +27,17 @@
       "additionalProperties": false,
       "required": [
         "claude-code",
-        "codefree-o"
+        "codefree-o",
+        "dsh"
       ],
       "properties": {
         "claude-code": {
           "$ref": "#/$defs/repository"
         },
         "codefree-o": {
+          "$ref": "#/$defs/repository"
+        },
+        "dsh": {
           "$ref": "#/$defs/repository"
         }
       }

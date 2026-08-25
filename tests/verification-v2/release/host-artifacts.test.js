@@ -154,7 +154,7 @@ function launcherFixture(fixture, failure = null, onRun = null) {
   let sequence = 0;
   const lock = fixture.hosts.readLock();
   const setup = Object.fromEntries(
-    ['claude-code', 'codex', 'codefree-o'].map((host) => {
+    ['claude-code', 'codex', 'codefree-o', 'dsh'].map((host) => {
       const locked = host === 'codex' ? lock.source : lock.hosts[host];
       const commands = [
         execution('remote-ref', [
@@ -234,7 +234,7 @@ function launcherFixture(fixture, failure = null, onRun = null) {
         roots: fixture.hosts.roots,
         setup,
         observations: Object.fromEntries(
-          ['claude-code', 'codex', 'codefree-o'].map((host) => {
+          ['claude-code', 'codex', 'codefree-o', 'dsh'].map((host) => {
             const locked = host === 'codex'
               ? lock.source
               : lock.hosts[host];
@@ -244,7 +244,7 @@ function launcherFixture(fixture, failure = null, onRun = null) {
               source_code_inventory_sha: host === 'codex'
                 ? fixture.sourceCodeSha
                 : null,
-              package_lock_sha256: host === 'codefree-o'
+              package_lock_sha256: ['codefree-o', 'dsh'].includes(host)
                 ? '8'.repeat(64)
                 : null
             }];
@@ -346,7 +346,7 @@ test('production host artifact generator writes proof-consumable receipts', (t) 
   });
 
   assert.equal(result.ok, true, JSON.stringify(result.blockers));
-  assert.equal(result.hosts.length, 3);
+  assert.equal(result.hosts.length, 4);
   const pointer = JSON.parse(fs.readFileSync(
     path.join(fixture.operations, 'host-proof-current.json'),
     'utf8'
@@ -360,7 +360,7 @@ test('production host artifact generator writes proof-consumable receipts', (t) 
   ), 'utf8'));
   assert.deepEqual(
     index.hosts.map((entry) => entry.host),
-    ['claude-code', 'codex', 'codefree-o']
+    ['claude-code', 'codex', 'codefree-o', 'dsh']
   );
   for (const entry of index.hosts) {
     const receipt = JSON.parse(fs.readFileSync(

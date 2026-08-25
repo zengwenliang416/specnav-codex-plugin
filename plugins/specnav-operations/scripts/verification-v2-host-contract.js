@@ -447,7 +447,7 @@ function hostProbeCommands(host, root, pluginPath, toolchain = {}, options = {})
     throw new Error('verification-host-contract:managed-runtime-probe-required');
   }
   return [
-    ...(host === 'codefree-o' ? [[
+    ...(['codefree-o', 'dsh'].includes(host) ? [[
       npm,
       'ci',
       '--ignore-scripts',

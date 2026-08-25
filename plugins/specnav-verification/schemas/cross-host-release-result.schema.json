@@ -54,8 +54,8 @@
     },
     "hosts": {
       "type": "array",
-      "minItems": 3,
-      "maxItems": 3,
+      "minItems": 4,
+      "maxItems": 4,
       "allOf": [
         {
           "contains": {
@@ -101,6 +101,21 @@
           },
           "minContains": 1,
           "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "const": "dsh"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
         }
       ],
       "items": {
@@ -117,7 +132,8 @@
             "enum": [
               "claude-code",
               "codex",
-              "codefree-o"
+              "codefree-o",
+              "dsh"
             ]
           },
           "commit": {

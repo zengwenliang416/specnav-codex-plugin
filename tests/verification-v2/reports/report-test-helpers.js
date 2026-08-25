@@ -43,6 +43,7 @@ function reportModel(verdict = 'green', overrides = {}) {
     generated_at: '2026-08-02T00:00:00Z',
     verdict,
     sources: {
+      generation_id: verdict === 'blocked' ? null : 'generation-001',
       case_snapshot_id: 'snapshot-001',
       case_snapshot_hash: 'a'.repeat(64),
       run_ids: verdict === 'blocked' ? [] : ['run-001'],

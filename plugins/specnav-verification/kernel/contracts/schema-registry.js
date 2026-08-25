@@ -22,6 +22,8 @@ const ENTITY_TYPES = Object.freeze([
   'repair-generation-rebind-review',
   'historical-artifact-loss',
   'historical-artifact-loss-review',
+  'verification-generation-review',
+  'verification-generation',
   'repair-review',
   'root-cause-review',
   'authority-chain-anchor',

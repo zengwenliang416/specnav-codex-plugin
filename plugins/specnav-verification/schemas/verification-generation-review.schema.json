@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specnav.dev/schemas/verification/v2/verification-generation-review.schema.json",
+  "title": "SpecNav Verification Successor Generation Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "change_id",
+    "reviewer_id",
+    "snapshot_id",
+    "snapshot_hash",
+    "parent_generation_id",
+    "fingerprints",
+    "historical_break_loop_failure_ids",
+    "baseline",
+    "prepared_at",
+    "review_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "specnav.verification.generation-review.v1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "change_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "reviewer_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "snapshot_id": {
+      "$ref": "common.schema.json#/$defs/stableId"
+    },
+    "snapshot_hash": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "parent_generation_id": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fingerprints": {
+      "$ref": "#/$defs/fingerprints"
+    },
+    "historical_break_loop_failure_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/stableId"
+      },
+      "uniqueItems": true
+    },
+    "baseline": {
+      "$ref": "#/$defs/baseline"
+    },
+    "prepared_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "review_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "fingerprints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_snapshot_hash",
+        "code_sha",
+        "test_sha",
+        "environment_hash",
+        "runtime_version",
+        "kernel_version"
+      ],
+      "properties": {
+        "case_snapshot_hash": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "code_sha": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        },
+        "test_sha": {
+          "$ref": "common.schema.json#/$defs/sourceSha"
+        },
+        "environment_hash": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "runtime_version": {
+          "$ref": "common.schema.json#/$defs/semver"
+        },
+        "kernel_version": {
+          "$ref": "common.schema.json#/$defs/semver"
+        }
+      }
+    },
+    "recordDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/stableId"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "digest",
+        "records"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "digest": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recordDigest"
+          }
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runs",
+        "attempts",
+        "executions",
+        "readings",
+        "failures",
+        "repair_links",
+        "evidence",
+        "transition_proposals",
+        "transition_receipts",
+        "attempt_facts"
+      ],
+      "properties": {
+        "runs": {
+          "$ref": "#/$defs/collection"
+        },
+        "attempts": {
+          "$ref": "#/$defs/collection"
+        },
+        "executions": {
+          "$ref": "#/$defs/collection"
+        },
+        "readings": {
+          "$ref": "#/$defs/collection"
+        },
+        "failures": {
+          "$ref": "#/$defs/collection"
+        },
+        "repair_links": {
+          "$ref": "#/$defs/collection"
+        },
+        "evidence": {
+          "$ref": "#/$defs/collection"
+        },
+        "transition_proposals": {
+          "$ref": "#/$defs/collection"
+        },
+        "transition_receipts": {
+          "$ref": "#/$defs/collection"
+        },
+        "attempt_facts": {
+          "$ref": "#/$defs/collection"
+        }
+      }
+    }
+  }
+}

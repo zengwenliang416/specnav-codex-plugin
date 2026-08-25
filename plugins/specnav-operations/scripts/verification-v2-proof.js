@@ -410,6 +410,7 @@ function completeGateInput(input, change) {
     && /^[a-f0-9]{64}$/.test(input.case_snapshot_hash || '')
     && isConcreteString(input.case_approval_id)
     && isConcreteString(input.case_approval_reviewer_id)
+    && isConcreteString(input.generation_id)
     && isRecord(aggregation)
     && aggregation.change_id === change
     && Array.isArray(aggregation.case_ids)
@@ -627,6 +628,12 @@ function validateReportModel(
   }
   if (model.sources.gate_decision_id !== releaseGate.id) {
     blockers.push(blocker('verification-release:report-gate-mismatch', artifact));
+  }
+  if (model.sources.generation_id !== input.generation_id) {
+    blockers.push(blocker(
+      'verification-release:report-generation-mismatch',
+      artifact
+    ));
   }
   try {
     const aggregate = kernel.createSixDomainAggregator({
@@ -1537,7 +1544,7 @@ function validateHostInstallations(
       node: preloadedCommand('runtime-doctor'),
       git: preloadedCommand('remote-ref'),
       bash: preloadedCommand('host-smoke'),
-      npm: preloadedCommand('dependency-install', host === 'dsh' ? 'dsh' : 'codefree-o'),
+      npm: preloadedCommand('dependency-install', 'codefree-o'),
       sandbox: preloadedCommand('runtime-doctor')
     };
     const tools = Object.fromEntries(
@@ -2186,6 +2193,7 @@ function createReleaseProofValidator(options = {}) {
     let trustedFactAuthority = options.trustedFactAuthority || null;
     let canonicalRebuild = null;
     let currentFingerprints = null;
+    let activeGeneration = null;
     if (inputComplete) {
       approval = validateApproval(
         schemaRegistry,
@@ -2229,19 +2237,98 @@ function createReleaseProofValidator(options = {}) {
             runtimeResolution.runtimeStatus,
             runtimeResolution.authority
           );
-          canonicalRebuild = kernel.createVerificationArtifactPipeline({
-            kernel,
-            schemaRegistry,
+          const artifactStore = kernel.createVerificationArtifactStore({
             changeRoot: changeDir,
-            verificationRoot: path.join(changeDir, 'verify'),
-            snapshot: approval.snapshot,
-            approval: approval.approval,
-            currentFingerprints,
-            trustedFactAuthority,
-            clock: () => input.freshness.checked_at,
-            secrets: [],
-            policyVersion: input.policy_version
-          }).build({ persist: false });
+            root: path.join(changeDir, 'verify')
+          });
+          const generationRead = artifactStore.readJsonl(
+            'v2/generations.jsonl'
+          );
+          if (!generationRead.ok) {
+            blockers.push(...generationRead.blockers);
+          } else {
+            const generationAuthority =
+              kernel.createVerificationGenerationAuthority({
+                schemaRegistry,
+                key: runtimeResolution.signingKey,
+                clock: () => input.freshness.checked_at
+              });
+            const generationLog = generationAuthority.validateLog(
+              generationRead.value,
+              change
+            );
+            if (!generationLog.ok) {
+              blockers.push(...generationLog.blockers);
+            } else if (!generationLog.active) {
+              blockers.push(blocker(
+                'verification-generation:active-required',
+                'verify/v2/generations.jsonl'
+              ));
+            } else {
+              const collected = kernel.collectGenerationState({
+                store: artifactStore,
+                changeId: change,
+                reviewerId: approval.approval.reviewer.id,
+                snapshot: approval.snapshot,
+                currentFingerprints,
+                parentGenerationId: generationLog.active.id
+              });
+              if (!collected.ok) {
+                blockers.push(...collected.blockers);
+              } else {
+                const generationState = structuredClone(collected.state);
+                generationState.historical_break_loop_failure_ids = [
+                  ...new Set([
+                    ...generationLog.active
+                      .historical_break_loop_failure_ids,
+                    ...generationState.historical_break_loop_failure_ids
+                  ])
+                ].sort();
+                const validatedGeneration =
+                  generationAuthority.validateActive(
+                    generationLog.active,
+                    generationState
+                  );
+                if (!validatedGeneration.ok) {
+                  blockers.push(...validatedGeneration.blockers);
+                } else if (
+                  input.generation_id
+                    !== validatedGeneration.generation.id
+                ) {
+                  blockers.push(blocker(
+                    'verification-generation:active-binding-mismatch',
+                    input.generation_id
+                  ));
+                } else {
+                  activeGeneration = validatedGeneration.generation;
+                }
+              }
+            }
+          }
+          if (activeGeneration) {
+            canonicalRebuild = kernel.createVerificationArtifactPipeline({
+              kernel,
+              schemaRegistry,
+              changeRoot: changeDir,
+              verificationRoot: path.join(changeDir, 'verify'),
+              snapshot: approval.snapshot,
+              approval: approval.approval,
+              currentFingerprints,
+              activeGeneration,
+              trustedFactAuthority,
+              clock: () => input.freshness.checked_at,
+              secrets: [],
+              policyVersion: input.policy_version
+            }).build({ persist: false });
+          }
+          if (!canonicalRebuild) {
+            canonicalRebuild = {
+              ok: false,
+              blockers: blockers.filter((entry) => (
+                entry.id.startsWith('verification-generation:')
+              ))
+            };
+          }
           if (!canonicalRebuild.ok) {
             blockers.push(blocker(
               'verification-release:canonical-rebuild-blocked',

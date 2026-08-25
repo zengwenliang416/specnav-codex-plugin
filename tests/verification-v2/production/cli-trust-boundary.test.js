@@ -18,6 +18,7 @@ const {
 const {
   readySchemaRegistry
 } = require('../contracts/cross-reference/test-helpers');
+const kernel = require('../../../plugins/specnav-verification/kernel');
 
 const FIXTURE_ROOT = path.resolve(
   __dirname,
@@ -530,6 +531,36 @@ test('full production run injects the live trusted authority into automatic fina
   const source = cliProjectFixture();
   const schemaRegistry = readySchemaRegistry();
   let receivedAuthority = null;
+  const v2Root = path.join(
+    source.projectRoot,
+    'openspec',
+    'changes',
+    source.changeId,
+    'verify',
+    'v2'
+  );
+  const snapshot = JSON.parse(fs.readFileSync(path.join(
+    v2Root,
+    'case-snapshot.json'
+  ), 'utf8'));
+  const runtimeStatus = JSON.parse(fs.readFileSync(path.join(
+    v2Root,
+    'runtime-status.json'
+  ), 'utf8'));
+  const activeGeneration = {
+    id: 'generation-cli',
+    change_id: source.changeId,
+    snapshot_id: snapshot.id,
+    snapshot_hash: snapshot.snapshot_hash,
+    fingerprints: {
+      case_snapshot_hash: snapshot.snapshot_hash,
+      code_sha: '1'.repeat(40),
+      test_sha: '2'.repeat(64),
+      environment_hash: '3'.repeat(64),
+      runtime_version: runtimeStatus.runtime_version,
+      kernel_version: kernel.metadata.version
+    }
+  };
   const result = await run([
     'run',
     '--project',
@@ -563,6 +594,24 @@ test('full production run injects the live trusted authority into automatic fina
         };
       }
     },
+    createVerificationGenerationAuthority: () => ({
+      validateLog() {
+        return {
+          ok: true,
+          values: [activeGeneration],
+          active: activeGeneration,
+          latest_digest: '5'.repeat(64),
+          blockers: []
+        };
+      },
+      validateActive() {
+        return {
+          ok: true,
+          generation: activeGeneration,
+          blockers: []
+        };
+      }
+    }),
     createProductionVerificationRunner: () => ({
       approvalState: { ok: true, blockers: [] },
       async executeCase(caseId) {

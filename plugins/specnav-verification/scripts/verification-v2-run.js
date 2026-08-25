@@ -593,7 +593,13 @@ function loadContext(args, dependencies = {}) {
 
 async function run(args = process.argv.slice(2), dependencies = {}) {
   const action = args.find((entry) => !entry.startsWith('--')) || 'preflight';
-  if (!['preflight', 'run', 'finalize'].includes(action)) {
+  if (![
+    'preflight',
+    'generation-prepare',
+    'generation-activate',
+    'run',
+    'finalize'
+  ].includes(action)) {
     return blocked(
       `verification-production:unsupported-action:${action}`,
       action
@@ -679,6 +685,192 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     key: context.trustedFactKey,
     clock
   });
+  const generationAuthority = (
+    dependencies.createVerificationGenerationAuthority
+    || kernel.createVerificationGenerationAuthority
+  )({
+    schemaRegistry: context.schemaRegistry,
+    key: context.trustedFactKey,
+    clock
+  });
+  const artifactStore = kernel.createVerificationArtifactStore({
+    changeRoot: context.changeRoot,
+    root: context.verificationRoot
+  });
+  const generationLogRead = artifactStore.readJsonl(
+    'v2/generations.jsonl'
+  );
+  if (!generationLogRead.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: generationLogRead.blockers,
+      fallback_used: false
+    };
+  }
+  const generationLog = generationAuthority.validateLog(
+    generationLogRead.value,
+    context.changeId
+  );
+  if (!generationLog.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: generationLog.blockers,
+      fallback_used: false
+    };
+  }
+  const currentFingerprints = {
+    case_snapshot_hash: context.snapshotValue.snapshot_hash,
+    code_sha: current.codeSha,
+    test_sha: current.testSha,
+    environment_hash: current.environmentHash,
+    runtime_version: context.runtimeStatusValue.runtime_version,
+    kernel_version: kernel.metadata.version
+  };
+  const collected = kernel.collectGenerationState({
+    store: artifactStore,
+    changeId: context.changeId,
+    reviewerId: context.reviewerId,
+    snapshot: context.snapshotValue,
+    currentFingerprints,
+    parentGenerationId: generationLog.active?.id || null
+  });
+  if (!collected.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: collected.blockers,
+      fallback_used: false
+    };
+  }
+  const generationState = structuredClone(collected.state);
+  generationState.historical_break_loop_failure_ids = [
+    ...new Set([
+      ...(generationLog.active?.historical_break_loop_failure_ids || []),
+      ...generationState.historical_break_loop_failure_ids
+    ])
+  ].sort();
+  if (action === 'generation-prepare') {
+    const prepared = generationAuthority.prepare(generationState);
+    if (!prepared.ok) {
+      return {
+        ok: false,
+        status: 'blocked',
+        blockers: prepared.blockers,
+        fallback_used: false
+      };
+    }
+    const relativePath = `v2/generation-reviews/${prepared.review.id}.json`;
+    const write = artifactStore.publishImmutableJson(
+      relativePath,
+      prepared.review
+    );
+    if (!write.ok) {
+      const existing = artifactStore.readJson(relativePath);
+      if (
+        !existing.ok
+        || canonicalJson(existing.value) !== canonicalJson(prepared.review)
+      ) {
+        return {
+          ok: false,
+          status: 'blocked',
+          blockers: write.blockers,
+          fallback_used: false
+        };
+      }
+    }
+    return {
+      ok: true,
+      status: 'approval-required',
+      review: prepared.review,
+      review_id: prepared.review.id,
+      review_sha256: prepared.review.review_sha256,
+      artifact: `verify/${relativePath}`,
+      blockers: [],
+      fallback_used: false
+    };
+  }
+  if (action === 'generation-activate') {
+    const reviewArg = argValue(args, '--generation-review');
+    if (!reviewArg) {
+      return blocked(
+        'verification-generation:review-required',
+        '--generation-review'
+      );
+    }
+    const reviewPath = path.resolve(context.projectRoot, reviewArg);
+    const reviewRoot = path.resolve(
+      context.verificationRoot,
+      'v2',
+      'generation-reviews'
+    );
+    const relative = path.relative(reviewRoot, reviewPath);
+    if (
+      relative.startsWith('..')
+      || path.isAbsolute(relative)
+      || !relative.endsWith('.json')
+    ) {
+      return blocked(
+        'verification-generation:review-path-invalid',
+        reviewArg
+      );
+    }
+    let review;
+    try {
+      review = readJson(
+        reviewPath,
+        'verification-generation:review-read-failed'
+      );
+    } catch (error) {
+      return blocked(
+        error instanceof Error ? error.message : String(error),
+        reviewArg
+      );
+    }
+    const appended = generationAuthority.append(
+      artifactStore,
+      review,
+      generationState,
+      args.includes('--approved')
+    );
+    if (!appended.ok) {
+      return {
+        ok: false,
+        status: 'blocked',
+        blockers: appended.blockers,
+        fallback_used: false
+      };
+    }
+    return {
+      ok: true,
+      status: 'activated',
+      generation: appended.value,
+      generation_id: appended.value.id,
+      appended: appended.appended,
+      artifact: 'verify/v2/generations.jsonl',
+      blockers: [],
+      fallback_used: false
+    };
+  }
+  if (!generationLog.active) {
+    return blocked(
+      'verification-generation:active-required',
+      'verify/v2/generations.jsonl'
+    );
+  }
+  const activeGeneration = generationAuthority.validateActive(
+    generationLog.active,
+    generationState
+  );
+  if (!activeGeneration.ok) {
+    return {
+      ok: false,
+      status: 'blocked',
+      blockers: activeGeneration.blockers,
+      fallback_used: false
+    };
+  }
   const createArtifactPipeline = dependencies.createVerificationArtifactPipeline
     || kernel.createVerificationArtifactPipeline;
   if (action === 'finalize') {
@@ -689,14 +881,8 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       verificationRoot: context.verificationRoot,
       snapshot: context.snapshotValue,
       approval: context.approvalValue,
-      currentFingerprints: {
-        case_snapshot_hash: context.snapshotValue.snapshot_hash,
-        code_sha: current.codeSha,
-        test_sha: current.testSha,
-        environment_hash: current.environmentHash,
-        runtime_version: context.runtimeStatusValue.runtime_version,
-        kernel_version: kernel.metadata.version
-      },
+      currentFingerprints,
+      activeGeneration: activeGeneration.generation,
       trustedFactAuthority,
       clock,
       secrets
@@ -732,6 +918,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     codeSha: current.codeSha,
     testSha: current.testSha,
     environmentHash: current.environmentHash,
+    generation: activeGeneration.generation,
     clock,
     secrets,
     providerEnvironment: providerSelection.environment,
@@ -792,14 +979,8 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
     verificationRoot: context.verificationRoot,
     snapshot: context.snapshotValue,
     approval: context.approvalValue,
-    currentFingerprints: {
-      case_snapshot_hash: context.snapshotValue.snapshot_hash,
-      code_sha: current.codeSha,
-      test_sha: current.testSha,
-      environment_hash: current.environmentHash,
-      runtime_version: context.runtimeStatusValue.runtime_version,
-      kernel_version: kernel.metadata.version
-    },
+    currentFingerprints,
+    activeGeneration: activeGeneration.generation,
     trustedFactAuthority,
     clock,
     secrets

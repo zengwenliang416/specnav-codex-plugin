@@ -70,7 +70,12 @@ function readOptionalJson(store, relative, blockers) {
   }
 }
 
-function rawFailureInventory(store, runs, blockers) {
+function rawFailureInventory(
+  store,
+  runs,
+  blockers,
+  options = {}
+) {
   const inventoryBlockers = [];
   const inventory = store.listDirectory('runs');
   if (!inventory.ok) {
@@ -90,7 +95,7 @@ function rawFailureInventory(store, runs, blockers) {
       continue;
     }
     directoryRunIds.add(entry.name);
-    if (!indexedRunIds.has(entry.name)) {
+    if (!indexedRunIds.has(entry.name) && options.ignoreUnindexed !== true) {
       inventoryBlockers.push(blocker(
         'verification-production:run-unindexed',
         `runs/${entry.name}`
@@ -105,7 +110,9 @@ function rawFailureInventory(store, runs, blockers) {
       ));
     }
   }
-  const values = [...directoryRunIds].sort().flatMap((runId) => readJsonl(
+  const values = [...directoryRunIds].filter((runId) => (
+    indexedRunIds.has(runId)
+  )).sort().flatMap((runId) => readJsonl(
     store,
     `runs/${runId}/failures.jsonl`,
     inventoryBlockers
@@ -322,6 +329,33 @@ function reportHash(bytes) {
   return crypto.createHash('sha256').update(bytes).digest('hex');
 }
 
+function scopedEvidenceIndex(index, runIds, activatedAt) {
+  const entries = (index.entries || []).filter((entry) => (
+    runIds.has(entry.run_id)
+  )).sort((left, right) => (
+    String(left.captured_at).localeCompare(String(right.captured_at))
+    || String(left.id).localeCompare(String(right.id))
+  ));
+  const rawBytes = Buffer.from(
+    entries.length === 0
+      ? ''
+      : `${entries.map((entry) => JSON.stringify(entry)).join('\n')}\n`
+  );
+  return {
+    rawBytes,
+    index: {
+      schema: 'specnav.verification.evidence-index.v1',
+      index_version: Math.max(1, entries.length),
+      change_id: index.change_id,
+      generated_at: entries.at(-1)?.captured_at || activatedAt,
+      source_raw: 'raw.jsonl',
+      source_digest: sha256(rawBytes),
+      record_count: entries.length,
+      entries
+    }
+  };
+}
+
 function createVerificationArtifactPipeline(options = {}) {
   const {
     kernel,
@@ -331,6 +365,7 @@ function createVerificationArtifactPipeline(options = {}) {
     snapshot,
     approval,
     currentFingerprints,
+    activeGeneration,
     trustedFactAuthority,
     clock = () => new Date().toISOString(),
     secrets = [],
@@ -345,6 +380,8 @@ function createVerificationArtifactPipeline(options = {}) {
     || !approval
     || !currentFingerprints
     || typeof currentFingerprints !== 'object'
+    || !activeGeneration
+    || typeof activeGeneration.id !== 'string'
     || !trustedFactAuthority
     || typeof trustedFactAuthority.verify !== 'function'
     || typeof clock !== 'function'
@@ -359,26 +396,32 @@ function createVerificationArtifactPipeline(options = {}) {
   function build(buildOptions = {}) {
     const persist = buildOptions.persist !== false;
     const blockers = [];
-    const runs = readJson(store, 'v2/runs.json', [], blockers);
-    const attempts = readJson(
+    let runs = readJson(store, 'v2/runs.json', [], blockers);
+    let attempts = readJson(
       store,
       'v2/attempts.json',
       [],
       blockers
     );
-    const readings = readJson(
+    const executions = readJson(
+      store,
+      'v2/executions.json',
+      [],
+      blockers
+    );
+    let readings = readJson(
       store,
       'v2/readings.json',
       [],
       blockers
     );
-    const failures = readJson(
+    let failures = readJson(
       store,
       'v2/failures.json',
       [],
       blockers
     );
-    const repairLinks = readJson(
+    let repairLinks = readJson(
       store,
       'v2/repair-links.json',
       [],
@@ -433,14 +476,6 @@ function createVerificationArtifactPipeline(options = {}) {
         'v2/authority-chain-anchor.json'
       ));
     }
-    const classificationEnvelopes = failures.map((failure) => readJson(
-      store,
-      `repairs/${failure.id}/classification-envelope.json`,
-      null,
-      blockers
-    )).filter(Boolean);
-    const rawFailureState = rawFailureInventory(store, runs, blockers);
-    const rawFailures = rawFailureState.values;
     const evidenceIndex = readJson(
       store,
       'evidence/index.json',
@@ -458,6 +493,83 @@ function createVerificationArtifactPipeline(options = {}) {
         fallback_used: false
       };
     }
+    const baseline = kernel.verifyBaseline(activeGeneration.baseline, {
+      runs,
+      attempts,
+      executions,
+      readings,
+      failures,
+      repair_links: repairLinks,
+      evidence: evidenceIndex.entries,
+      transition_proposals: proposalLog.value || [],
+      transition_receipts: receiptLog.value || [],
+      attempt_facts: attemptFactLog.value || []
+    });
+    blockers.push(...baseline.blockers);
+    if (
+      activeGeneration.change_id !== snapshot.change_id
+      || activeGeneration.snapshot_id !== snapshot.id
+      || activeGeneration.snapshot_hash !== snapshot.snapshot_hash
+      || canonicalJson(activeGeneration.fingerprints)
+        !== canonicalJson(currentFingerprints)
+    ) {
+      blockers.push(blocker(
+        'verification-generation:active-binding-mismatch',
+        activeGeneration.id
+      ));
+    }
+    if (
+      !baseline.ok
+      || blockers.some((entry) => (
+        entry.id === 'verification-generation:active-binding-mismatch'
+      ))
+    ) {
+      return {
+        ok: false,
+        status: 'blocked',
+        blockers,
+        fallback_used: false
+      };
+    }
+    const generationRunIds = new Set(runs.filter((entry) => (
+      entry.generation_id === activeGeneration.id
+    )).map((entry) => entry.id));
+    runs = runs.filter((entry) => generationRunIds.has(entry.id));
+    attempts = attempts.filter((entry) => generationRunIds.has(entry.run_id));
+    readings = readings.filter((entry) => generationRunIds.has(entry.run_id));
+    failures = failures.filter((entry) => generationRunIds.has(entry.run_id));
+    const generationFailureIds = new Set(failures.map((entry) => entry.id));
+    repairLinks = repairLinks.filter((entry) => (
+      generationFailureIds.has(entry.failure_id)
+    ));
+    const generationEvidence = scopedEvidenceIndex(
+      evidenceIndex,
+      generationRunIds,
+      activeGeneration.activated_at
+    );
+    const scopedIndexValidation = schemaRegistry.validate(
+      'evidence-index',
+      generationEvidence.index
+    );
+    if (!scopedIndexValidation.ok) {
+      blockers.push(...scopedIndexValidation.blockers);
+    }
+    const currentEvidenceIndex = scopedIndexValidation.ok
+      ? scopedIndexValidation.value
+      : generationEvidence.index;
+    const classificationEnvelopes = failures.map((failure) => readJson(
+      store,
+      `repairs/${failure.id}/classification-envelope.json`,
+      null,
+      blockers
+    )).filter(Boolean);
+    const rawFailureState = rawFailureInventory(
+      store,
+      runs,
+      blockers,
+      { ignoreUnindexed: true }
+    );
+    const rawFailures = rawFailureState.values;
     const integrity = mergeIntegrity(store, runs, attempts);
     blockers.push(...integrity.blockers);
     const freshness = freshnessProjection(
@@ -473,7 +585,7 @@ function createVerificationArtifactPipeline(options = {}) {
       change_id: snapshot.change_id,
       case_ids: snapshot.cases.map((entry) => entry.id),
       readings: aggregationReadings,
-      evidence: evidenceIndex.entries,
+      evidence: currentEvidenceIndex.entries,
       integrity,
       policy_facts: {
         not_applicable_decisions: [],
@@ -506,8 +618,12 @@ function createVerificationArtifactPipeline(options = {}) {
       raw_failures: rawFailures,
       runs,
       classification_envelopes: classificationEnvelopes,
-      transition_proposal_envelopes: proposalLog.value || [],
-      transition_receipt_envelopes: receiptLog.value || []
+      transition_proposal_envelopes: (proposalLog.value || []).filter(
+        (entry) => generationFailureIds.has(entry.bindings?.failure_id)
+      ),
+      transition_receipt_envelopes: (receiptLog.value || []).filter(
+        (entry) => generationFailureIds.has(entry.bindings?.failure_id)
+      )
     });
     blockers.push(...failureState.blockers);
     const openFailureIds = failureState.open_failure_ids;
@@ -548,7 +664,9 @@ function createVerificationArtifactPipeline(options = {}) {
         });
     const authorityChainDigest = sha256(canonicalJson({
       anchor_id: authorityAnchor.id,
-      logs: authorityHeads
+      logs: authorityHeads,
+      generation_id: activeGeneration.id,
+      generation_digest: sha256(canonicalJson(activeGeneration))
     }));
     const gateInput = {
       schema: 'specnav.verification.release-gate-input.v1',
@@ -558,6 +676,7 @@ function createVerificationArtifactPipeline(options = {}) {
       case_snapshot_hash: snapshot.snapshot_hash,
       case_approval_id: approval.id,
       case_approval_reviewer_id: approval.reviewer.id,
+      generation_id: activeGeneration.id,
       aggregation_request: aggregationRequest,
       open_failure_ids: openFailureIds,
       failure_state_status: failureStateStatus,
@@ -565,7 +684,7 @@ function createVerificationArtifactPipeline(options = {}) {
       authority_chain_digest: authorityChainDigest,
       freshness: gateFreshness(freshness),
       integrity_status: integrity.facts.summary.integrity,
-      evidence_index_version: evidenceIndex.index_version,
+      evidence_index_version: currentEvidenceIndex.index_version,
       runtime_version: latestRun.runtime_version,
       kernel_version: latestRun.kernel_version,
       policy_version: policyVersion
@@ -585,7 +704,7 @@ function createVerificationArtifactPipeline(options = {}) {
       authority_chain_digest: authorityChainDigest,
       freshness: gateInput.freshness,
       integrity_status: gateInput.integrity_status,
-      evidence_index_version: evidenceIndex.index_version,
+      evidence_index_version: currentEvidenceIndex.index_version,
       runtime_version: latestRun.runtime_version,
       kernel_version: latestRun.kernel_version,
       policy_version: policyVersion
@@ -600,20 +719,13 @@ function createVerificationArtifactPipeline(options = {}) {
       authority_chain_digest: authorityChainDigest,
       freshness: gateInput.freshness,
       integrity_status: gateInput.integrity_status,
-      evidence_index_version: evidenceIndex.index_version,
+      evidence_index_version: currentEvidenceIndex.index_version,
       runtime_version: latestRun.runtime_version,
       kernel_version: latestRun.kernel_version,
       policy_version: policyVersion
     });
     blockers.push(...releaseResult.blockers, ...archiveResult.blockers);
-    const rawRead = store.readBytes('evidence/raw.jsonl');
-    if (!rawRead.ok || rawRead.missing) {
-      blockers.push(...(rawRead.blockers || [blocker(
-        'verification-production:evidence-raw-missing',
-        'verify/evidence/raw.jsonl'
-      )]));
-    }
-    const rawBytes = rawRead.ok ? rawRead.bytes : Buffer.alloc(0);
+    const rawBytes = generationEvidence.rawBytes;
     const factAuthority = kernel.createReportFactAuthority({
       verifyIntegrity: (payload) => (
         canonicalJson(payload.integrity) === canonicalJson(integrity)
@@ -650,11 +762,12 @@ function createVerificationArtifactPipeline(options = {}) {
     });
     const report = builder.build({
       change_id: snapshot.change_id,
+      generation_id: activeGeneration.id,
       case_snapshot: snapshot,
       runs,
       attempts,
       readings,
-      evidence_index: evidenceIndex,
+      evidence_index: currentEvidenceIndex,
       integrity,
       policy_facts: aggregationRequest.policy_facts,
       aggregate,
@@ -664,7 +777,13 @@ function createVerificationArtifactPipeline(options = {}) {
       failure_state_status: failureStateStatus,
       failure_state_digest: failureStateDigest,
       authority_chain_digest: authorityChainDigest,
-      gate_decision: releaseResult.gate
+      gate_decision: releaseResult.gate,
+      historical_warnings: activeGeneration
+        .historical_break_loop_failure_ids.map((failureId) => blocker(
+          'verification-generation:historical-break-loop',
+          failureId,
+          activeGeneration.id
+        ))
     });
     blockers.push(...report.blockers);
     if (!report.model) {
@@ -763,6 +882,7 @@ function createVerificationArtifactPipeline(options = {}) {
       archive_gate: archiveResult.gate,
       report_model: report.model,
       report_manifest: reportManifest,
+      generation: activeGeneration,
       blockers,
       fallback_used: false
     };

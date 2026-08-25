@@ -128,6 +128,8 @@ test('registry compiles and validates every Verification Contract V2 entity', ()
     'repair-generation-rebind-review',
     'historical-artifact-loss',
     'historical-artifact-loss-review',
+    'verification-generation-review',
+    'verification-generation',
     'repair-review',
     'root-cause-review',
     'authority-chain-anchor',

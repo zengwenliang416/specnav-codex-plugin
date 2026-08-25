@@ -15,6 +15,7 @@ const APPROVAL_BLOCKERS = new Map([
   ['repair-recover', 'transition-approval-required'],
   ['repair-rebind', 'transition-approval-required'],
   ['repair-artifact-loss-record', 'artifact-loss-approval-required'],
+  ['generation-activate', 'generation-approval-required'],
   ['repair-transition-apply', 'transition-approval-required'],
   ['migrate-apply', 'mutation-approval-required'],
   ['migrate-rollback', 'mutation-approval-required']
@@ -31,6 +32,8 @@ const SUPPORTED_ACTIONS = new Set([
   'runtime-status',
   'runtime-setup',
   'runtime-repair',
+  'generation-prepare',
+  'generation-activate',
   'repair-classify',
   'repair-request',
   'repair-start',
@@ -86,6 +89,8 @@ const ACTIONS = Object.freeze([
   ['runtime-status', false],
   ['runtime-setup', true],
   ['runtime-repair', true],
+  ['generation-prepare', false],
+  ['generation-activate', true],
   ['repair-classify', false],
   ['repair-request', false],
   ['repair-start', false],
@@ -340,7 +345,10 @@ function createVerificationHostAdapter(options = {}) {
       execution = options.execute({
         action,
         project_root: request.project_root,
-        options: commandOptions
+        options: {
+          ...commandOptions,
+          approved: request.approved === true
+        }
       });
     } catch (error) {
       return blocked(
@@ -457,6 +465,29 @@ function commandFor(pluginRoot, request) {
         ['runtime_status', '--runtime-status'],
         ['scenario_registry', '--scenario-registry']
       ]),
+      '--json'
+    ];
+  }
+  if (
+    request.action === 'generation-prepare'
+    || request.action === 'generation-activate'
+  ) {
+    return [
+      path.join(scripts, 'verification-v2-run.js'),
+      request.action,
+      '--project',
+      request.project_root,
+      ...optionArgs(options, [
+        ['change', '--change'],
+        ['reviewer_id', '--reviewer-id'],
+        ['generation_review', '--generation-review'],
+        ['case_snapshot', '--snapshot'],
+        ['case_approval', '--approval'],
+        ['requirements_source', '--requirements'],
+        ['acceptance_source', '--acceptance'],
+        ['runtime_status', '--runtime-status']
+      ]),
+      ...(options.approved === true ? ['--approved'] : []),
       '--json'
     ];
   }
@@ -702,6 +733,7 @@ function parseCli(args) {
     traceability: argValue(args, '--traceability'),
     codegraph_impact: argValue(args, '--codegraph-impact'),
     runtime_status: argValue(args, '--runtime-status'),
+    generation_review: argValue(args, '--generation-review'),
     scenario_registry: argValue(args, '--scenario-registry'),
     render: args.includes('--render'),
     requires_midscene: args.includes('--requires-midscene'),

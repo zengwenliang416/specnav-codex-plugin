@@ -9,9 +9,23 @@ const {
 const {
   createHostCompatibilityAuthority
 } = require('./host-authority');
+const {
+  COLLECTIONS,
+  collectGenerationState,
+  collectionInventory,
+  createBaseline,
+  createVerificationGenerationAuthority,
+  verifyBaseline
+} = require('./verification-generation-authority');
 
 module.exports = {
+  COLLECTIONS,
+  collectGenerationState,
+  collectionInventory,
+  createBaseline,
   createCompatibilitySnapshot,
   compareCompatibilitySnapshots,
-  createHostCompatibilityAuthority
+  createHostCompatibilityAuthority,
+  createVerificationGenerationAuthority,
+  verifyBaseline
 };
