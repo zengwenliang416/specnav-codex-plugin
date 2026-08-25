@@ -179,6 +179,18 @@ function orderedAttempts(values) {
   return [...values].sort(compareAttempts);
 }
 
+function isTrustedInitialFailure(packet, attempt, fact) {
+  if (!attempt || !fact) return false;
+  if (attempt.status === 'passed') {
+    return fact.verdict === 'pass'
+      && packet.reading_ids.length > 0
+      && packet.failed_assertion_ids.length > 0;
+  }
+  if (attempt.status === 'blocked') return fact.verdict === 'blocked';
+  if (attempt.status === 'failed') return fact.verdict === 'fail';
+  return false;
+}
+
 function rerunScopeProjection(plan) {
   return {
     required_cases: sorted(plan.required_cases),
@@ -616,7 +628,7 @@ function validateAttempts(
       || first.change_id !== packet.change_id
       || first.run_id !== packet.run_id
       || first.case_id !== packet.case_id
-      || !['failed', 'blocked'].includes(first.status)
+      || !['passed', 'failed', 'blocked'].includes(first.status)
     )
   ) {
     blockers.push(blocker(
@@ -675,7 +687,7 @@ function validateAttempts(
   );
   blockers.push(...factResult.blockers);
   const firstFact = first ? factResult.factsByAttempt.get(first.id) : null;
-  if (firstFact && !['fail', 'blocked'].includes(firstFact.verdict)) {
+  if (firstFact && !isTrustedInitialFailure(packet, first, firstFact)) {
     blockers.push(blocker(
       'verification-repair-loop:initial-failure-fact-required',
       first.id

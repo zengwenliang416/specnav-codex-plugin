@@ -623,6 +623,62 @@ test('preserves first failure repair retest and regression as immutable history'
   assert.equal(Object.isFrozen(result.transition_proposal), true);
 });
 
+test('accepts trusted reading-level failure after a passed initial attempt', () => {
+  const first = initialAttempt({
+    status: 'passed',
+    exit_status: 0
+  });
+  const rebind = repairRebind(first);
+  const retest = retestAttempt(first, {
+    ...rebind.rebound_repair_link.after_identity,
+    started_at: '2026-08-01T08:01:00Z',
+    completed_at: '2026-08-01T08:01:01Z'
+  });
+  const classification = classificationResult({
+    classification: 'test_defect'
+  });
+  const result = factory().evaluate(request({
+    attempts: [first, retest],
+    attemptFacts: [attemptFact(first), attemptFact(retest)],
+    classificationResult: classification,
+    repairRebind: rebind,
+    rerunPlan: rerunPlan()
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'regression_required');
+  assert.equal(result.transition_proposal.action, 'request_regression');
+  assert.deepEqual(result.transition_proposal.case_ids, ['case-baseline']);
+  assert.deepEqual(
+    result.history.map((entry) => [entry.kind, entry.verdict]),
+    [
+      ['initial', 'pass'],
+      ['repair', undefined],
+      ['retest', 'pass']
+    ]
+  );
+});
+
+test('rejects a forged failure fact for a passed initial attempt', () => {
+  const first = initialAttempt({
+    status: 'passed',
+    exit_status: 0
+  });
+  const result = factory().evaluate(request({
+    firstAttempt: first,
+    attemptFacts: [attemptFact(first, { verdict: 'fail' })]
+  }));
+
+  assert.equal(result.ok, false);
+  assert.equal(
+    blockerIds(result).includes(
+      'verification-repair-loop:attempt-fact-status-mismatch'
+    ),
+    true,
+    JSON.stringify(result.blockers)
+  );
+});
+
 test('accepts explicit audited recovery for invalid repair lineage', () => {
   const first = initialAttempt();
   const classification = classificationResult({

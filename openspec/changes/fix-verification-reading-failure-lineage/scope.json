@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "change_id": "fix-verification-reading-failure-lineage",
+  "stage": "development",
+  "allowed_roots": [
+    "plugins/specnav-verification/kernel/repair/repair-loop-state-machine.js",
+    "tests/verification-v2/repair-loop/state-machine.test.js",
+    "openspec/changes/fix-verification-reading-failure-lineage/**"
+  ],
+  "denied_roots": [
+    ".git",
+    "node_modules",
+    "coverage",
+    "dist",
+    ".env",
+    ".env.local",
+    "plugins/specnav-verification/kernel/execution/**",
+    "plugins/specnav-verification/kernel/runtime/**",
+    "plugins/specnav-verification/assets/runtime/**",
+    "plugins/specnav-verification/scripts/verification-v2-run.js",
+    "openspec/changes/verification-2-0/verify/**"
+  ],
+  "external_denied_roots": [
+    "/Volumes/zwl/camera-rental-github/**",
+    "/private/tmp/camera-rental-dispatch-verification-final/openspec/changes/add-xianyu-dispatch-backfill/verify/**"
+  ],
+  "allowed_operations": {
+    "create": true,
+    "modify": true,
+    "delete": false,
+    "rename": false
+  },
+  "constraints": [
+    "Do not rewrite historical attempts, failures, readings, evidence, or trusted envelopes.",
+    "Do not relax Playwright network restrictions.",
+    "Do not modify product source.",
+    "Do not push."
+  ]
+}
