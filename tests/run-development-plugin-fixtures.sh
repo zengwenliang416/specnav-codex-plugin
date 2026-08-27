@@ -38,6 +38,17 @@ assert_blocker() {
   jq -e --arg blocker "$blocker" '.blockers[] | select(. == $blocker)' "$output" >/dev/null
 }
 
+prepend_validation_entry() {
+  local project="$1"
+  local entry="$2"
+  local file="$project/openspec/changes/add-dashboard/development/validation-log.jsonl"
+  local temporary="$file.prepend"
+
+  printf '%s\n' "$entry" >"$temporary"
+  cat "$file" >>"$temporary"
+  mv "$temporary" "$file"
+}
+
 init_git_baseline() {
   local project="$1"
 
@@ -1963,6 +1974,41 @@ cat >"$VALIDATION_FAIL_PROJECT/openspec/changes/add-dashboard/development/valida
 JSONL
 run_json "$VALIDATION_FAIL_PROJECT" "$TMP_DIR/validation-fail.json" 2
 assert_blocker "$TMP_DIR/validation-fail.json" 'validation-log:no-pass'
+
+LEGACY_FAILURE_SUPERSEDED_PROJECT="$TMP_DIR/legacy-failure-superseded-project"
+cp -R "$HAPPY_PROJECT" "$LEGACY_FAILURE_SUPERSEDED_PROJECT"
+prepend_validation_entry "$LEGACY_FAILURE_SUPERSEDED_PROJECT" \
+  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+run_json "$LEGACY_FAILURE_SUPERSEDED_PROJECT" "$TMP_DIR/legacy-failure-superseded.json" 0
+jq -e '.artifacts[] | select(.name == "validation-log.jsonl" and .legacy_failures_superseded == 1)' \
+  "$TMP_DIR/legacy-failure-superseded.json" >/dev/null
+
+LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT="$TMP_DIR/legacy-failure-untrusted-pass-project"
+cp -R "$HAPPY_PROJECT" "$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT"
+LEGACY_UNTRUSTED_LOG="$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl"
+jq -c '.receipt_signature = ("0" * 64)' "$LEGACY_UNTRUSTED_LOG" >"$TMP_DIR/legacy-untrusted-pass.jsonl"
+mv "$TMP_DIR/legacy-untrusted-pass.jsonl" "$LEGACY_UNTRUSTED_LOG"
+prepend_validation_entry "$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT" \
+  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+run_json "$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT" "$TMP_DIR/legacy-failure-untrusted-pass.json" 2
+assert_blocker "$TMP_DIR/legacy-failure-untrusted-pass.json" \
+  'validation-log:executed-evidence-failed:001-dashboard-summary'
+
+LEGACY_FAILURE_OTHER_TASK_PROJECT="$TMP_DIR/legacy-failure-other-task-project"
+cp -R "$HAPPY_PROJECT" "$LEGACY_FAILURE_OTHER_TASK_PROJECT"
+prepend_validation_entry "$LEGACY_FAILURE_OTHER_TASK_PROJECT" \
+  '{"task":"002-dashboard-detail","command":"npm test dashboard-detail.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+run_json "$LEGACY_FAILURE_OTHER_TASK_PROJECT" "$TMP_DIR/legacy-failure-other-task.json" 2
+assert_blocker "$TMP_DIR/legacy-failure-other-task.json" \
+  'validation-log:executed-evidence-failed:002-dashboard-detail'
+
+V2_FAILURE_WITHOUT_EVIDENCE_PROJECT="$TMP_DIR/v2-failure-without-evidence-project"
+cp -R "$HAPPY_PROJECT" "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT"
+prepend_validation_entry "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT" \
+  '{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # invalid-v2-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","overturned":false}'
+run_json "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT" "$TMP_DIR/v2-failure-without-evidence.json" 2
+assert_blocker "$TMP_DIR/v2-failure-without-evidence.json" \
+  'validation-log:executed-evidence-failed:001-dashboard-summary'
 
 EXECUTED_FAILURE_PROJECT="$TMP_DIR/executed-failure-project"
 cp -R "$HAPPY_PROJECT" "$EXECUTED_FAILURE_PROJECT"

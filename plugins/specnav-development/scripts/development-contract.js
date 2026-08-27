@@ -1537,13 +1537,41 @@ function validateDriftCheck(developmentDir, activeChange) {
   return artifactResult(activeChange, name, unique(blockers), true, { entries: result.entries.length });
 }
 
-function validateValidationLog(developmentDir, activeChange) {
+function validateValidationLog(
+  projectRoot,
+  developmentDir,
+  activeChange,
+  receiptAuthority
+) {
   const name = 'validation-log.jsonl';
   const result = parseJsonl(path.join(developmentDir, name), name);
   const blockers = [...result.blockers];
+  const changeDir = path.dirname(developmentDir);
   const isPass = (entry) => {
     const status = String(entry.status || '').toLowerCase();
     return entry.ok === true || status === 'pass' || status === 'passed';
+  };
+  const taskIdOf = (entry) => entry.task || entry.task_id || 'unknown';
+  const isTrustedBoundV2Pass = (entry) => {
+    if (
+      entry.schema !== 'specnav.validationLog.v2'
+      || entry.attestation !== 'system-executed'
+      || entry.status !== 'pass'
+      || entry.ok !== true
+      || entry.exit_status !== 0
+      || entry.overturned === true
+      || !receiptAuthority
+      || typeof receiptAuthority.verify !== 'function'
+      || !receiptAuthority.verify(entry)
+    ) {
+      return false;
+    }
+    const evidence = resolveTaskEvidence(projectRoot, changeDir, entry.evidence_log);
+    return (
+      evidence !== null
+      && entry.evidence_log_sha256 === evidence.sha256
+      && entry.evidence_log_size === evidence.size
+    );
   };
   const indexedEntries = result.entries.map((entry, index) => ({ entry, index }));
   const executed = indexedEntries.filter(({ entry }) => entry.attestation === 'system-executed');
@@ -1704,6 +1732,27 @@ function validateValidationLog(developmentDir, activeChange) {
     }
   }
 
+  const legacyFailuresSuperseded = new Set();
+  for (const failure of executedFailures) {
+    const evidenceLog = typeof failure.entry.evidence_log === 'string'
+      ? failure.entry.evidence_log.trim()
+      : '';
+    if (
+      failure.entry.schema === 'specnav.validationLog.v2'
+      || evidenceLog
+    ) {
+      continue;
+    }
+    const taskId = taskIdOf(failure.entry);
+    const trustedSuccessor = executed.some((candidate) => (
+      candidate.index > failure.index
+      && taskIdOf(candidate.entry) === taskId
+      && isTrustedBoundV2Pass(candidate.entry)
+      && !supersededPasses.has(candidate.entry.evidence_log)
+    ));
+    if (trustedSuccessor) legacyFailuresSuperseded.add(failure.index);
+  }
+
   if (!hasPass) blockers.push('validation-log:no-pass');
   // Handoff requires at least one system-executed pass when any entry is
   // replayable: claims alone do not clear the gate. Run
@@ -1717,9 +1766,10 @@ function validateValidationLog(developmentDir, activeChange) {
   // adjudication for the same target, but it must name an exact later
   // system-executed PASS before it can retire a failure or supersede stale
   // green evidence.
-  for (const { entry } of executedFailures) {
+  for (const { entry, index } of executedFailures) {
+    if (legacyFailuresSuperseded.has(index)) continue;
     if (adjudicatedFailures.has(entry.evidence_log)) continue;
-    blockers.push(`validation-log:executed-evidence-failed:${entry.task || entry.task_id || 'unknown'}`);
+    blockers.push(`validation-log:executed-evidence-failed:${taskIdOf(entry)}`);
   }
   // Non-replayable self-reported entries must carry a caveat explaining why
   // the evidence cannot be executed by the runner.
@@ -1736,6 +1786,7 @@ function validateValidationLog(developmentDir, activeChange) {
     adjudicated_failures: adjudicatedFailures.size,
     superseded_passes: supersededPasses.size,
     corrected_adjudications: correctedAdjudications.size,
+    legacy_failures_superseded: legacyFailuresSuperseded.size,
     attestation: hasExecutedPass ? 'system-executed' : 'self-reported-only'
   });
 }
@@ -3046,7 +3097,12 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
     artifacts.push(...migrations.artifacts);
     artifacts.push(validateTaskLedger(developmentDir, activeChange, taskIds));
     artifacts.push(validateDriftCheck(developmentDir, activeChange));
-    artifacts.push(validateValidationLog(developmentDir, activeChange));
+    artifacts.push(validateValidationLog(
+      projectRoot,
+      developmentDir,
+      activeChange,
+      receiptAuthority
+    ));
     artifacts.push(validateHandoffToVerify(developmentDir, activeChange));
   }
 
