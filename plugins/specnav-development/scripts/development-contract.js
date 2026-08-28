@@ -11,10 +11,7 @@ const { validatePrototype } = runtime.requirePluginScript('specnav-prototype', '
 const { guard: validateCodeGraph } = runtime.requirePluginScript('specnav-codegraph', 'scripts/codegraph-contract');
 const {
   resolveManagedValidationReceiptAuthority
-} = runtime.requirePluginScript(
-  'specnav-verification',
-  'scripts/validation-receipt-authority'
-);
+} = require('./development-receipt-authority');
 const { isValidTaskId } = require('./task-id');
 
 const CHANGE_ARTIFACTS = ['scope.json', 'tasks.md'];
@@ -1453,7 +1450,19 @@ function validateLightDevelopment(projectRoot, mode, prototype, activeChange, ch
   };
 }
 
-const LOOP_DETECTION_THRESHOLD = Number(process.env.SPECNAV_LOOP_THRESHOLD || 3);
+function positiveInteger(value, fallback) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+const LOOP_DETECTION_THRESHOLD = positiveInteger(
+  process.env.SPECNAV_LOOP_THRESHOLD,
+  3
+);
+const LOOP_ATTEMPT_BUDGET = positiveInteger(
+  process.env.SPECNAV_LOOP_ATTEMPT_BUDGET,
+  5
+);
 const LEDGER_FAILURE_STATUSES = new Set([
   'spec_review_failed',
   'quality_review_failed',
@@ -1463,13 +1472,51 @@ const LEDGER_FAILURE_STATUSES = new Set([
   'failed'
 ]);
 const LEDGER_ESCALATION_STATUSES = new Set(['escalated', 'break_loop', 'replanned', 'split']);
+const LEDGER_COMPLETION_STATUSES = new Set(['complete', 'completed', 'closed', 'done', 'passed']);
+
+function normalizedBlockerValue(value) {
+  if (typeof value === 'string') {
+    return value.replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map(normalizedBlockerValue)
+      .filter((entry) => entry !== '' && entry !== null)
+      .sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
+  }
+  if (isPlainObject(value)) {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, normalizedBlockerValue(value[key])])
+    );
+  }
+  if (value === null || ['number', 'boolean'].includes(typeof value)) return value;
+  return '';
+}
+
+function ledgerBlockerDigest(entry) {
+  if (
+    typeof entry.blocker_digest === 'string'
+    && /^[a-f0-9]{64}$/i.test(entry.blocker_digest.trim())
+  ) {
+    return entry.blocker_digest.trim().toLowerCase();
+  }
+  const blockerSource = Array.isArray(entry.blockers) && entry.blockers.length > 0
+    ? entry.blockers
+    : typeof entry.blocker === 'string' && entry.blocker.trim()
+      ? entry.blocker
+      : entry.status;
+  return crypto.createHash('sha256')
+    .update(JSON.stringify(normalizedBlockerValue(blockerSource)))
+    .digest('hex');
+}
 
 function detectTaskLoops(developmentDir) {
-  // Deterministic circuit breaker: N consecutive failures of a task on the
-  // same blocker (no pass or escalation in between) trips loop-detected.
-  // The breaker resets when a later ledger entry records an escalation.
+  // The breaker resets only after completion or an explicit escalation. This
+  // prevents superficial progress entries from hiding repeated failed work.
   const result = parseJsonl(path.join(developmentDir, 'task-ledger.jsonl'), 'task-ledger.jsonl');
-  const streaks = new Map();
+  const states = new Map();
   const tripped = new Map();
 
   for (const entry of result.entries) {
@@ -1477,28 +1524,61 @@ function detectTaskLoops(developmentDir) {
     if (!taskId || typeof entry.status !== 'string') continue;
     const status = entry.status;
     if (LEDGER_ESCALATION_STATUSES.has(status)) {
-      streaks.delete(taskId);
+      states.delete(taskId);
+      tripped.delete(taskId);
+      continue;
+    }
+    if (LEDGER_COMPLETION_STATUSES.has(status)) {
+      states.delete(taskId);
       tripped.delete(taskId);
       continue;
     }
     if (LEDGER_FAILURE_STATUSES.has(status)) {
-      const cause = typeof entry.blocker === 'string' && entry.blocker
-        ? entry.blocker
-        : status;
-      const current = streaks.get(taskId);
-      const next = current && current.cause === cause ? { cause, count: current.count + 1 } : { cause, count: 1 };
-      streaks.set(taskId, next);
-      if (next.count >= LOOP_DETECTION_THRESHOLD) tripped.set(taskId, next);
+      const blockerDigest = ledgerBlockerDigest(entry);
+      const current = states.get(taskId) || {
+        blocker_digest: null,
+        consecutive_failures: 0,
+        attempt_count: 0
+      };
+      const next = {
+        blocker_digest: blockerDigest,
+        consecutive_failures: current.blocker_digest === blockerDigest
+          ? current.consecutive_failures + 1
+          : 1,
+        attempt_count: current.attempt_count + 1
+      };
+      states.set(taskId, next);
+      const triggers = [];
+      if (next.consecutive_failures >= LOOP_DETECTION_THRESHOLD) {
+        triggers.push('same-blocker');
+      }
+      if (next.attempt_count >= LOOP_ATTEMPT_BUDGET) {
+        triggers.push('attempt-budget');
+      }
+      if (triggers.length > 0) {
+        tripped.set(taskId, {
+          ...next,
+          triggers,
+          next_action: 'specnav-break-loop'
+        });
+      }
       continue;
     }
-    // Any non-failure, non-escalation status (progress, pass) breaks the streak.
-    streaks.delete(taskId);
+    // started/progress/review entries are not evidence that the blocker was
+    // resolved, so they cannot reset either breaker.
   }
 
-  return Array.from(tripped.entries()).map(([taskId, streak]) => ({
+  return Array.from(tripped.entries()).map(([taskId, loop]) => ({
     task_id: taskId,
-    cause: streak.cause,
-    consecutive_failures: streak.count
+    blocker_digest: loop.blocker_digest,
+    consecutive_failures: loop.consecutive_failures,
+    attempt_count: loop.attempt_count,
+    thresholds: {
+      consecutive_failures: LOOP_DETECTION_THRESHOLD,
+      attempt_budget: LOOP_ATTEMPT_BUDGET
+    },
+    triggers: loop.triggers,
+    next_action: loop.next_action
   }));
 }
 
@@ -1754,9 +1834,8 @@ function validateValidationLog(
   }
 
   if (!hasPass) blockers.push('validation-log:no-pass');
-  // Handoff requires at least one system-executed pass when any entry is
-  // replayable: claims alone do not clear the gate. Run
-  // specnav-verification/scripts/evidence-runner.js to upgrade attestation.
+  // Handoff requires at least one Development-owned system-executed pass when
+  // any entry is replayable. Formal Verification is a later lifecycle stage.
   const hasReplayable = selfReported.some((entry) =>
     entry.replayable !== false && typeof entry.command === 'string' && entry.command.trim());
   if (hasReplayable && !hasExecutedPass) blockers.push('validation-log:no-executed-evidence');
@@ -3090,7 +3169,12 @@ function validateDevelopment(root = lib.projectRoot(), options = {}) {
   blockers.push(...validateLaneEscalation(projectRoot, changeDir));
   const loops = detectTaskLoops(developmentDir);
   for (const loop of loops) {
-    blockers.push(`loop-detected:${loop.task_id}`);
+    if (loop.triggers.includes('same-blocker')) {
+      blockers.push(`loop-detected:${loop.task_id}`);
+    }
+    if (loop.triggers.includes('attempt-budget')) {
+      blockers.push(`attempt-budget-exhausted:${loop.task_id}`);
+    }
   }
   if (mode === 'handoff') {
     const migrations = validateMigrations(developmentDir, changeDir, activeChange);
@@ -3192,6 +3276,7 @@ function toCompact(result) {
     active_change: result.active_change,
     blockers: result.blockers,
     warnings: result.warnings || [],
+    loops: Array.isArray(result.loops) ? result.loops : [],
     task_count: Array.isArray(result.tasks) ? result.tasks.length : 0,
     repair_incidents: Array.isArray(result.repair_incidents)
       ? result.repair_incidents.map((incident) => ({

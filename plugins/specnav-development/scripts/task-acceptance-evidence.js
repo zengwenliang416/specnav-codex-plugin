@@ -5,13 +5,9 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const runtime = require('./plugin-runtime');
 const {
   resolveManagedValidationReceiptAuthority
-} = runtime.requirePluginScript(
-  'specnav-verification',
-  'scripts/validation-receipt-authority'
-);
+} = require('./development-receipt-authority');
 
 const TASK_ID_PATTERN = /^\d{3}-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const REPAIR_TASK_SCHEMA = 'specnav.development.repair-task.v1';

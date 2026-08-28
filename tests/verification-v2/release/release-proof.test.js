@@ -1227,6 +1227,7 @@ function makeProject(options = {}) {
   const validatorOptions = {
     schemaRegistry,
     runtimeAuthority,
+    requireHostProof: true,
     fingerprints: options.fingerprints || (() => ({
       case_snapshot_hash: snapshot.snapshot_hash,
       code_sha: run.code_sha,

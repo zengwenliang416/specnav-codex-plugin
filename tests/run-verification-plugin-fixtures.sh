@@ -21,6 +21,11 @@ write_runtime_status() {
   )"
   mkdir -p "$(dirname "$status_file")"
   PROJECT_DIR="$project" node \
+    "$VERIFY/scripts/verification-runtime.js" select-scope \
+    --scope user \
+    --project "$project" \
+    --json >/dev/null
+  PROJECT_DIR="$project" node \
     "$VERIFY/scripts/verification-runtime.js" doctor \
     --version "$runtime_version" \
     --project "$project" \
@@ -33,7 +38,7 @@ materialize_development_evidence() {
   local acceptance_output="$TMP_DIR/development-acceptance.json"
 
   PROJECT_DIR="$project" node \
-    "$VERIFY/scripts/evidence-runner.js" refresh-current-head \
+    "$DEVELOPMENT/scripts/evidence-runner.js" refresh-current-head \
     --change add-dashboard \
     --json >"$refresh_output"
   jq -e '.ok == true and .failed == 0 and .replayed == 1' \

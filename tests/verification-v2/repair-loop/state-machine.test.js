@@ -617,7 +617,7 @@ function request(options = {}) {
   };
 }
 
-function factory() {
+function factory(options = {}) {
   assert.equal(
     typeof createRepairLoopStateMachine,
     'function',
@@ -627,7 +627,8 @@ function factory() {
     schemaRegistry: readySchemaRegistry(),
     trustVerifier: TRUST_VERIFIER,
     rerunScopeAuthority: RERUN_SCOPE_AUTHORITY,
-    clock: () => FIXED_TIME
+    clock: () => FIXED_TIME,
+    ...options
   });
   assert.equal(typeof machine.evaluate, 'function');
   return machine;
@@ -1233,6 +1234,104 @@ test('routes only a trusted classifier no-progress signal to Core break-loop gov
   assert.deepEqual(blockerIds(rejected), [
     'verification-repair-loop:trusted-envelope-invalid'
   ]);
+});
+
+test('automatically routes repeated failed attempts to Core break-loop governance', () => {
+  const first = initialAttempt();
+  const retry = {
+    ...first,
+    id: 'attempt-retry-failed',
+    kind: 'retry',
+    sequence: 2,
+    parent_attempt_id: first.id,
+    started_at: '2026-07-31T00:00:02Z',
+    completed_at: '2026-07-31T00:00:03Z'
+  };
+  const repeated = {
+    ...retry,
+    id: 'attempt-retry-failed-again',
+    sequence: 3,
+    parent_attempt_id: retry.id,
+    started_at: '2026-07-31T00:00:04Z',
+    completed_at: '2026-07-31T00:00:05Z'
+  };
+  const attempts = [first, retry, repeated];
+  const result = factory().evaluate(request({
+    classificationResult: classificationResult({
+      classification: 'environment_defect'
+    }),
+    attempts,
+    attemptFacts: attempts.map((attempt) => attemptFact(attempt, {
+      verdict: 'fail'
+    }))
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'break_loop_required');
+  assert.equal(result.transition_proposal.action, 'route_break_loop');
+  assert.equal(
+    result.transition_proposal.reason_ids.includes(
+      'no-progress-source:attempt-history'
+    ),
+    true
+  );
+  assert.equal(
+    result.transition_proposal.reason_ids.includes(
+      'loop-trigger:same-blocker'
+    ),
+    true
+  );
+  assert.equal(
+    result.transition_proposal.reason_ids.some((id) => (
+      id.startsWith('blocker-digest:')
+    )),
+    true
+  );
+});
+
+test('automatically routes an exhausted failed-attempt budget', () => {
+  const first = initialAttempt();
+  const attempts = [first];
+  for (let sequence = 2; sequence <= 5; sequence += 1) {
+    const parent = attempts.at(-1);
+    const startedSecond = String(sequence * 2).padStart(2, '0');
+    const completedSecond = String(sequence * 2 + 1).padStart(2, '0');
+    attempts.push({
+      ...parent,
+      id: `attempt-budget-${sequence}`,
+      kind: 'retry',
+      sequence,
+      parent_attempt_id: parent.id,
+      status: 'failed',
+      started_at: `2026-07-31T00:00:${startedSecond}Z`,
+      completed_at: `2026-07-31T00:00:${completedSecond}Z`
+    });
+  }
+  const result = factory({
+    noProgressThreshold: 99,
+    attemptBudget: 5
+  }).evaluate(request({
+    classificationResult: classificationResult({
+      classification: 'environment_defect'
+    }),
+    attempts,
+    attemptFacts: attempts.map((attempt) => attemptFact(attempt, {
+      verdict: 'fail'
+    }))
+  }));
+
+  assert.equal(result.ok, true, JSON.stringify(result.blockers));
+  assert.equal(result.status, 'break_loop_required');
+  assert.equal(
+    result.transition_proposal.reason_ids.includes(
+      'loop-trigger:attempt-budget'
+    ),
+    true
+  );
+  assert.equal(
+    result.transition_proposal.reason_ids.includes('attempt-count:5'),
+    true
+  );
 });
 
 test('rejects caller-authored lifecycle fields fallback and manual green', () => {

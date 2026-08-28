@@ -11,11 +11,9 @@ const HOST_PROVENANCE_ROOT = path.join(
 );
 const SHARED_SCRIPTS = Object.freeze([
   'anchor-scan.js',
-  'evidence-runner.js',
   'host-verification-adapter.js',
   'rerun-scope.js',
   'scenario-registry-loader.js',
-  'validation-receipt-authority.js',
   'verification-migrate.js',
   'verification-runtime.js',
   'verification-v2-repair-loop.js',

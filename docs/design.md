@@ -215,13 +215,18 @@ keeps the tombstone to drain the payload and exit successfully without
 duplicating verification invalidation. Hook-removing releases must increment
 the `specnav-core` plugin version for correct update discovery, but must not
 assume older cache directories remain installed: Codex may prune the previous
-version during upgrade.
+version during upgrade. Every registered hook command therefore validates
+`PLUGIN_ROOT` before execution and, when that snapshotted directory has been
+pruned, deterministically resolves the newest installed
+`$CODEX_HOME/plugins/cache/specnav-marketplace/specnav-core/` directory. If no
+installed Core runtime exists, the hook exits with an explicit error instead
+of silently disabling governance.
 
 Hook commands must use `PLUGIN_ROOT`:
 
 ```json
 {
-  "command": "node \"${PLUGIN_ROOT}/scripts/specnav-session-start.js\""
+  "command": "ROOT=\"${PLUGIN_ROOT:-}\"; if [ ! -f \"$ROOT/scripts/specnav-session-start.js\" ]; then ROOT=\"$(ls -1dt \"${CODEX_HOME:-$HOME/.codex}/plugins/cache/specnav-marketplace/specnav-core/\"*/ 2>/dev/null | head -n 1)\"; fi; if [ ! -f \"$ROOT/scripts/specnav-session-start.js\" ]; then echo \"SpecNav hook runtime missing: specnav-session-start.js\" >&2; exit 1; fi; exec node \"$ROOT/scripts/specnav-session-start.js\""
 }
 ```
 

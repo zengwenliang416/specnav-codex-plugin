@@ -81,7 +81,7 @@ const {
   createValidationReceiptAuthority
 } = require(path.join(
   root,
-  'plugins/specnav-verification/scripts/validation-receipt-authority'
+  'plugins/specnav-development/scripts/development-receipt-authority'
 ));
 const authority = createValidationReceiptAuthority({
   key: Buffer.alloc(32, 29),
@@ -637,7 +637,7 @@ JSONL
 
   cat >"$development/validation-log.jsonl" <<'JSONL'
 {"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","status":"passed","ok":true}
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log"}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log"}
 JSONL
   printf '%s\n' "dashboard summary focused validation passed" >"$development/evidence/001-dashboard-summary.log"
 
@@ -979,7 +979,7 @@ MD
   reviewed_head="$(git -C "$project" rev-parse HEAD)"
   reviewed_tree="$(git -C "$project" rev-parse 'HEAD^{tree}')"
   cat >"$development/validation-log.jsonl" <<JSONL
-{"schema":"specnav.validationLog.v2","receipt_id":"receipt-dashboard-summary","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","assertion_ids":["TASK-01"],"status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-08-11T00:00:00.000Z","reviewed_git_head":"$reviewed_head","reviewed_git_tree":"$reviewed_tree","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","receipt_id":"receipt-dashboard-summary","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx","assertion_ids":["TASK-01"],"status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-08-11T00:00:00.000Z","reviewed_git_head":"$reviewed_head","reviewed_git_tree":"$reviewed_tree","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
 JSONL
   materialize_task_acceptance "$project" add-dashboard
 }
@@ -1978,7 +1978,7 @@ assert_blocker "$TMP_DIR/validation-fail.json" 'validation-log:no-pass'
 LEGACY_FAILURE_SUPERSEDED_PROJECT="$TMP_DIR/legacy-failure-superseded-project"
 cp -R "$HAPPY_PROJECT" "$LEGACY_FAILURE_SUPERSEDED_PROJECT"
 prepend_validation_entry "$LEGACY_FAILURE_SUPERSEDED_PROJECT" \
-  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
 run_json "$LEGACY_FAILURE_SUPERSEDED_PROJECT" "$TMP_DIR/legacy-failure-superseded.json" 0
 jq -e '.artifacts[] | select(.name == "validation-log.jsonl" and .legacy_failures_superseded == 1)' \
   "$TMP_DIR/legacy-failure-superseded.json" >/dev/null
@@ -1989,7 +1989,7 @@ LEGACY_UNTRUSTED_LOG="$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT/openspec/changes/ad
 jq -c '.receipt_signature = ("0" * 64)' "$LEGACY_UNTRUSTED_LOG" >"$TMP_DIR/legacy-untrusted-pass.jsonl"
 mv "$TMP_DIR/legacy-untrusted-pass.jsonl" "$LEGACY_UNTRUSTED_LOG"
 prepend_validation_entry "$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT" \
-  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+  '{"task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
 run_json "$LEGACY_FAILURE_UNTRUSTED_PASS_PROJECT" "$TMP_DIR/legacy-failure-untrusted-pass.json" 2
 assert_blocker "$TMP_DIR/legacy-failure-untrusted-pass.json" \
   'validation-log:executed-evidence-failed:001-dashboard-summary'
@@ -1997,7 +1997,7 @@ assert_blocker "$TMP_DIR/legacy-failure-untrusted-pass.json" \
 LEGACY_FAILURE_OTHER_TASK_PROJECT="$TMP_DIR/legacy-failure-other-task-project"
 cp -R "$HAPPY_PROJECT" "$LEGACY_FAILURE_OTHER_TASK_PROJECT"
 prepend_validation_entry "$LEGACY_FAILURE_OTHER_TASK_PROJECT" \
-  '{"task":"002-dashboard-detail","command":"npm test dashboard-detail.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
+  '{"task":"002-dashboard-detail","command":"npm test dashboard-detail.test.tsx # legacy-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z"}'
 run_json "$LEGACY_FAILURE_OTHER_TASK_PROJECT" "$TMP_DIR/legacy-failure-other-task.json" 2
 assert_blocker "$TMP_DIR/legacy-failure-other-task.json" \
   'validation-log:executed-evidence-failed:002-dashboard-detail'
@@ -2005,7 +2005,7 @@ assert_blocker "$TMP_DIR/legacy-failure-other-task.json" \
 V2_FAILURE_WITHOUT_EVIDENCE_PROJECT="$TMP_DIR/v2-failure-without-evidence-project"
 cp -R "$HAPPY_PROJECT" "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT"
 prepend_validation_entry "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT" \
-  '{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # invalid-v2-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","overturned":false}'
+  '{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # invalid-v2-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:00:00.000Z","overturned":false}'
 run_json "$V2_FAILURE_WITHOUT_EVIDENCE_PROJECT" "$TMP_DIR/v2-failure-without-evidence.json" 2
 assert_blocker "$TMP_DIR/v2-failure-without-evidence.json" \
   'validation-log:executed-evidence-failed:001-dashboard-summary'
@@ -2013,7 +2013,7 @@ assert_blocker "$TMP_DIR/v2-failure-without-evidence.json" \
 EXECUTED_FAILURE_PROJECT="$TMP_DIR/executed-failure-project"
 cp -R "$HAPPY_PROJECT" "$EXECUTED_FAILURE_PROJECT"
 cat >>"$EXECUTED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # unresolved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # unresolved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
 JSONL
 run_json "$EXECUTED_FAILURE_PROJECT" "$TMP_DIR/executed-failure.json" 2
 assert_blocker "$TMP_DIR/executed-failure.json" 'validation-log:executed-evidence-failed:001-dashboard-summary'
@@ -2021,7 +2021,7 @@ assert_blocker "$TMP_DIR/executed-failure.json" 'validation-log:executed-evidenc
 OVERTURNED_FAILURE_PROJECT="$TMP_DIR/overturned-failure-project"
 cp -R "$HAPPY_PROJECT" "$OVERTURNED_FAILURE_PROJECT"
 cat >>"$OVERTURNED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":true}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":true}
 JSONL
 run_json "$OVERTURNED_FAILURE_PROJECT" "$TMP_DIR/overturned-failure.json" 2
 assert_blocker "$TMP_DIR/overturned-failure.json" 'validation-log:executed-evidence-failed:001-dashboard-summary'
@@ -2029,8 +2029,8 @@ assert_blocker "$TMP_DIR/overturned-failure.json" 'validation-log:executed-evide
 ADJUDICATED_FAILURE_PROJECT="$TMP_DIR/adjudicated-failure-project"
 cp -R "$HAPPY_PROJECT" "$ADJUDICATED_FAILURE_PROJECT"
 cat >>"$ADJUDICATED_FAILURE_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # repaired-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/003-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # repaired-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/003-dashboard-summary.log","overturned":false}
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/002-dashboard-summary.log","superseding_evidence_log":"development/evidence/003-dashboard-summary.log","reason":"A later system-executed repair run and approved reviews supersede this preserved RED attempt.","recorded_at":"2026-07-03T00:03:00.000Z"}
 JSONL
 run_json "$ADJUDICATED_FAILURE_PROJECT" "$TMP_DIR/adjudicated-failure.json" 0
@@ -2046,7 +2046,7 @@ assert_blocker "$TMP_DIR/invalid-adjudication.json" 'validation-log:invalid-over
 INVALID_ADJUDICATION_SUCCESSOR_PROJECT="$TMP_DIR/invalid-adjudication-successor-project"
 cp -R "$HAPPY_PROJECT" "$INVALID_ADJUDICATION_SUCCESSOR_PROJECT"
 cat >>"$INVALID_ADJUDICATION_SUCCESSOR_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # preserved-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/002-dashboard-summary.log","superseding_evidence_log":"development/evidence/001-dashboard-summary.log","reason":"The referenced pass predates the preserved RED attempt.","recorded_at":"2026-07-03T00:02:00.000Z"}
 JSONL
 run_json "$INVALID_ADJUDICATION_SUCCESSOR_PROJECT" "$TMP_DIR/invalid-adjudication-successor.json" 2
@@ -2056,7 +2056,7 @@ PASS_SUPERSESSION_PROJECT="$TMP_DIR/pass-supersession-project"
 cp -R "$HAPPY_PROJECT" "$PASS_SUPERSESSION_PROJECT"
 cat >>"$PASS_SUPERSESSION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":null,"reason":"An independent review invalidated this otherwise green receipt before a corrected run existed.","recorded_at":"2026-07-03T00:01:00.000Z"}
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":"development/evidence/002-dashboard-summary.log","reason":"The later system-executed run repairs the earlier incomplete adjudication without rewriting append-only history.","recorded_at":"2026-07-03T00:03:00.000Z"}
 JSONL
 node - "$PASS_SUPERSESSION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'NODE'
@@ -2083,7 +2083,7 @@ UNCORRECTED_ADJUDICATION_PROJECT="$TMP_DIR/uncorrected-adjudication-project"
 cp -R "$HAPPY_PROJECT" "$UNCORRECTED_ADJUDICATION_PROJECT"
 cat >>"$UNCORRECTED_ADJUDICATION_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":null,"reason":"This incomplete adjudication must remain visible even when a later valid adjudication exists.","recorded_at":"2026-07-03T00:01:00.000Z"}
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # current-green","status":"pass","ok":true,"exit_status":0,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:02:00.000Z","evidence_log":"development/evidence/002-dashboard-summary.log","overturned":false}
 {"schema":"specnav.validationAdjudication.v1","task":"001-dashboard-summary","status":"overturned","target_evidence_log":"development/evidence/001-dashboard-summary.log","superseding_evidence_log":"development/evidence/002-dashboard-summary.log","reason":"This valid replacement must not silently hide the earlier invalid record.","recorded_at":"2026-07-03T00:03:00.000Z"}
 JSONL
 run_json "$UNCORRECTED_ADJUDICATION_PROJECT" "$TMP_DIR/uncorrected-adjudication.json" 2
@@ -2100,9 +2100,54 @@ assert_blocker "$TMP_DIR/unresolved-pass-supersession.json" 'validation-log:inva
 DUPLICATE_EVIDENCE_LOG_PROJECT="$TMP_DIR/duplicate-evidence-log-project"
 cp -R "$HAPPY_PROJECT" "$DUPLICATE_EVIDENCE_LOG_PROJECT"
 cat >>"$DUPLICATE_EVIDENCE_LOG_PROJECT/openspec/changes/add-dashboard/development/validation-log.jsonl" <<'JSONL'
-{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # forged-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
+{"schema":"specnav.validationLog.v2","task":"001-dashboard-summary","command":"npm test dashboard-summary.test.tsx # forged-red","status":"fail","ok":false,"exit_status":1,"attestation":"system-executed","recorded_by":"specnav-development-evidence-runner","recorded_at":"2026-07-03T00:01:00.000Z","evidence_log":"development/evidence/001-dashboard-summary.log","overturned":false}
 JSONL
 run_json "$DUPLICATE_EVIDENCE_LOG_PROJECT" "$TMP_DIR/duplicate-evidence-log.json" 2
 assert_blocker "$TMP_DIR/duplicate-evidence-log.json" 'validation-log:duplicate-evidence-log:001-dashboard-summary'
+
+SAME_BLOCKER_LOOP_PROJECT="$TMP_DIR/same-blocker-loop-project"
+cp -R "$HAPPY_PROJECT" "$SAME_BLOCKER_LOOP_PROJECT"
+cat >"$SAME_BLOCKER_LOOP_PROJECT/openspec/changes/add-dashboard/development/task-ledger.jsonl" <<'JSONL'
+{"task":"001-dashboard-summary","status":"started"}
+{"task":"001-dashboard-summary","status":"fix_failed","blockers":[" Browser assertion failed ","API TIMEOUT"]}
+{"task":"001-dashboard-summary","status":"started"}
+{"task":"001-dashboard-summary","status":"fix_failed","blockers":["api timeout","browser assertion failed"]}
+{"task":"001-dashboard-summary","status":"started"}
+{"task":"001-dashboard-summary","status":"fix_failed","blockers":["BROWSER ASSERTION FAILED","api   timeout"]}
+JSONL
+run_json "$SAME_BLOCKER_LOOP_PROJECT" "$TMP_DIR/same-blocker-loop.json" 2 entry
+assert_blocker "$TMP_DIR/same-blocker-loop.json" 'loop-detected:001-dashboard-summary'
+jq -e '
+  .loops[]
+  | select(
+      .task_id == "001-dashboard-summary"
+      and (.blocker_digest | test("^[a-f0-9]{64}$"))
+      and .consecutive_failures == 3
+      and .attempt_count == 3
+      and .next_action == "specnav-break-loop"
+      and (.triggers | index("same-blocker"))
+    )
+' "$TMP_DIR/same-blocker-loop.json" >/dev/null
+
+ATTEMPT_BUDGET_PROJECT="$TMP_DIR/attempt-budget-project"
+cp -R "$HAPPY_PROJECT" "$ATTEMPT_BUDGET_PROJECT"
+cat >"$ATTEMPT_BUDGET_PROJECT/openspec/changes/add-dashboard/development/task-ledger.jsonl" <<'JSONL'
+{"task":"001-dashboard-summary","status":"fix_failed","blocker":"failure-a"}
+{"task":"001-dashboard-summary","status":"debug_failed","blocker":"failure-b"}
+{"task":"001-dashboard-summary","status":"spec_review_failed","blocker":"failure-c"}
+{"task":"001-dashboard-summary","status":"quality_review_failed","blocker":"failure-d"}
+{"task":"001-dashboard-summary","status":"blocked","blocker":"failure-e"}
+JSONL
+run_json "$ATTEMPT_BUDGET_PROJECT" "$TMP_DIR/attempt-budget.json" 2 entry
+assert_blocker "$TMP_DIR/attempt-budget.json" 'attempt-budget-exhausted:001-dashboard-summary'
+jq -e '
+  .loops[]
+  | select(
+      .task_id == "001-dashboard-summary"
+      and .attempt_count == 5
+      and .next_action == "specnav-break-loop"
+      and (.triggers | index("attempt-budget"))
+    )
+' "$TMP_DIR/attempt-budget.json" >/dev/null
 
 echo "specnav development plugin fixtures ok"

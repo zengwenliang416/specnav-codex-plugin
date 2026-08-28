@@ -14,9 +14,9 @@ const runtime = require('./plugin-runtime');
 const lib = runtime.requirePluginScript('specnav-core', 'scripts/specnav-lib');
 const {
   resolveManagedValidationReceiptAuthority
-} = require('./validation-receipt-authority');
+} = require('./development-receipt-authority');
 
-const RUNNER_ID = 'specnav-evidence-runner';
+const RUNNER_ID = 'specnav-development-evidence-runner';
 const REFRESH_CURRENT_HEAD_MODE = 'refresh-current-head';
 const ADJUDICATE_CURRENT_HEAD_MODE = 'adjudicate-current-head';
 const DEFAULT_TIMEOUT_MS = 900000;

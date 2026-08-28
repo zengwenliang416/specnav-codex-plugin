@@ -4,9 +4,12 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const RECEIPT_SIGNATURE_ALGORITHM = 'hmac-sha256';
 const RECEIPT_SCHEMA = 'specnav.validationLog.v2';
+const RECEIPT_PRODUCER = 'specnav-development-evidence-runner';
+const KEY_BYTES = 32;
 
 function canonicalize(value) {
   if (Array.isArray(value)) return value.map(canonicalize);
@@ -86,7 +89,7 @@ function createValidationReceiptAuthority(options = {}) {
       || Array.isArray(receipt)
       || receipt.schema !== RECEIPT_SCHEMA
       || receipt.attestation !== 'system-executed'
-      || receipt.recorded_by !== 'specnav-evidence-runner'
+      || receipt.recorded_by !== RECEIPT_PRODUCER
       || receipt.receipt_signature_algorithm !== RECEIPT_SIGNATURE_ALGORITHM
       || receipt.runtime_authority_digest !== authorityDigest
       || typeof receipt.evidence_log !== 'string'
@@ -153,48 +156,74 @@ function resolveManagedValidationReceiptAuthority(options = {}) {
       `validation-receipt-authority:change-root-unsafe:${error instanceof Error ? error.message : String(error)}`
     );
   }
-  const statusFile = path.join(changeDir, 'verify', 'v2', 'runtime-status.json');
-  let runtimeStatus;
+  let gitCommonDir;
   try {
-    const status = fs.lstatSync(statusFile);
-    if (status.isSymbolicLink() || !status.isFile()) {
-      throw new Error('unsafe-runtime-status');
+    const configured = execFileSync(
+      'git',
+      ['-C', projectRoot, 'rev-parse', '--git-common-dir'],
+      {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe']
+      }
+    ).trim();
+    gitCommonDir = fs.realpathSync(
+      path.isAbsolute(configured)
+        ? configured
+        : path.resolve(projectRoot, configured)
+    );
+    if (!fs.statSync(gitCommonDir).isDirectory()) {
+      throw new Error('git-common-dir-not-directory');
     }
-    runtimeStatus = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
   } catch (error) {
     throw new Error(
-      `validation-receipt-authority:runtime-status-invalid:${error instanceof Error ? error.message : String(error)}`
+      `validation-receipt-authority:git-private-state-unavailable:${error instanceof Error ? error.message : String(error)}`
     );
   }
 
-  const kernel = options.kernel || require('../kernel');
-  const runtimeAuthority = options.runtimeAuthority
-    || kernel.createRuntimeAuthority({
-      projectRoot,
-      ...(options.runtimeAuthorityOptions || {})
+  const authorityDir = path.join(gitCommonDir, 'specnav');
+  const keyFile = path.join(authorityDir, 'development-receipt.key');
+  try {
+    if (!fs.existsSync(authorityDir)) {
+      fs.mkdirSync(authorityDir, { mode: 0o700 });
+    }
+    const authorityDirStatus = fs.lstatSync(authorityDir);
+    if (
+      authorityDirStatus.isSymbolicLink()
+      || !authorityDirStatus.isDirectory()
+    ) {
+      throw new Error('authority-directory-unsafe');
+    }
+    if (!fs.existsSync(keyFile)) {
+      fs.writeFileSync(keyFile, crypto.randomBytes(KEY_BYTES), {
+        flag: 'wx',
+        mode: 0o600
+      });
+    }
+    const keyStatus = fs.lstatSync(keyFile);
+    if (keyStatus.isSymbolicLink() || !keyStatus.isFile()) {
+      throw new Error('authority-key-unsafe');
+    }
+    const key = fs.readFileSync(keyFile);
+    if (key.length !== KEY_BYTES) {
+      throw new Error('authority-key-size-invalid');
+    }
+    const authorityDigest = crypto.createHash('sha256')
+      .update('specnav-development-receipt-authority.v1\0')
+      .update(key)
+      .digest('hex');
+    return createValidationReceiptAuthority({
+      key,
+      authorityDigest
     });
-  const resolution = runtimeAuthority.resolve(runtimeStatus);
-  if (
-    !resolution
-    || resolution.ok !== true
-    || !resolution.signingKey
-    || !resolution.authority
-    || typeof resolution.authority.digest !== 'string'
-  ) {
-    const blockerIds = Array.isArray(resolution?.blockers)
-      ? resolution.blockers.map((entry) => entry?.id || String(entry))
-      : [];
+  } catch (error) {
     throw new Error(
-      `validation-receipt-authority:managed-runtime-unavailable:${blockerIds.join(',') || 'unknown'}`
+      `validation-receipt-authority:git-private-state-invalid:${error instanceof Error ? error.message : String(error)}`
     );
   }
-  return createValidationReceiptAuthority({
-    key: resolution.signingKey,
-    authorityDigest: resolution.authority.digest
-  });
 }
 
 module.exports = {
+  RECEIPT_PRODUCER,
   RECEIPT_SCHEMA,
   RECEIPT_SIGNATURE_ALGORITHM,
   canonicalJson,

@@ -347,10 +347,47 @@ function createPlaywrightApiGuard(options) {
               ...args.slice(2)
             ];
           }
-          return wrapResult(
-            Reflect.apply(member, target, guardedArgs),
-            property === 'waitForEvent' ? eventKind : null
-          );
+          const call = {
+            kind,
+            method: String(property)
+          };
+          if (typeof options.beforeCall === 'function') {
+            options.beforeCall(call);
+          }
+          const result = Reflect.apply(member, target, guardedArgs);
+          const forcedKind = property === 'waitForEvent'
+            ? eventKind
+            : kind === 'page' && [
+                '$',
+                '$$',
+                'frame',
+                'frameLocator',
+                'getByAltText',
+                'getByLabel',
+                'getByPlaceholder',
+                'getByRole',
+                'getByTestId',
+                'getByText',
+                'getByTitle',
+                'locator',
+                'mainFrame'
+              ].includes(property)
+              ? 'playwright'
+              : null;
+          if (
+            result
+            && typeof result.then === 'function'
+            && typeof options.afterCall === 'function'
+          ) {
+            return result.then(async (entry) => {
+              await options.afterCall(call);
+              return wrap(entry, forcedKind);
+            });
+          }
+          if (typeof options.afterCall === 'function') {
+            options.afterCall(call);
+          }
+          return wrapResult(result, forcedKind);
         }, kind, property);
       },
       getPrototypeOf() {

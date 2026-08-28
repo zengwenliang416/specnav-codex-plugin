@@ -187,6 +187,59 @@ function orderedAttempts(values) {
   return [...values].sort(compareAttempts);
 }
 
+function deriveLoopBreak(
+  packet,
+  attempts,
+  factsByAttempt,
+  noProgressThreshold,
+  attemptBudget
+) {
+  const relevant = orderedAttempts(attempts.filter((attempt) => (
+    attempt.case_id === packet.case_id
+    && ['initial', 'retry', 'retest'].includes(attempt.kind)
+  )));
+  const failedAttempts = relevant.filter((attempt) => (
+    ['fail', 'blocked'].includes(factsByAttempt.get(attempt.id)?.verdict)
+  ));
+  const latest = relevant.at(-1);
+  const latestFact = latest ? factsByAttempt.get(latest.id) : null;
+  if (!latestFact || latestFact.verdict === 'pass') return null;
+
+  let blockerDigest = null;
+  let consecutiveFailures = 0;
+  for (const attempt of [...relevant].reverse()) {
+    const fact = factsByAttempt.get(attempt.id);
+    if (!fact || fact.verdict === 'pass') break;
+    const digest = sha256(canonicalJson({
+      failure_id: packet.id,
+      classification: packet.classification,
+      case_id: packet.case_id,
+      failed_assertion_ids: sorted(packet.failed_assertion_ids),
+      verdict: fact.verdict
+    }));
+    if (blockerDigest !== null && digest !== blockerDigest) break;
+    blockerDigest = digest;
+    consecutiveFailures += 1;
+  }
+
+  const triggers = [];
+  if (consecutiveFailures >= noProgressThreshold) {
+    triggers.push('same-blocker');
+  }
+  if (failedAttempts.length >= attemptBudget) {
+    triggers.push('attempt-budget');
+  }
+  if (triggers.length === 0) return null;
+  return {
+    blocker_digest: blockerDigest,
+    consecutive_failures: consecutiveFailures,
+    attempt_count: failedAttempts.length,
+    no_progress_threshold: noProgressThreshold,
+    attempt_budget: attemptBudget,
+    triggers
+  };
+}
+
 function isTrustedInitialFailure(packet, attempt, fact) {
   if (!attempt || !fact) return false;
   if (attempt.status === 'passed') {
@@ -1188,7 +1241,9 @@ function createRepairLoopStateMachine(options = {}) {
     schemaRegistry,
     trustVerifier,
     rerunScopeAuthority,
-    clock = () => new Date().toISOString()
+    clock = () => new Date().toISOString(),
+    noProgressThreshold = 3,
+    attemptBudget = 5
   } = options;
   if (
     !schemaRegistry
@@ -1198,6 +1253,10 @@ function createRepairLoopStateMachine(options = {}) {
     || !rerunScopeAuthority
     || typeof rerunScopeAuthority.resolve !== 'function'
     || typeof clock !== 'function'
+    || !Number.isInteger(noProgressThreshold)
+    || noProgressThreshold < 1
+    || !Number.isInteger(attemptBudget)
+    || attemptBudget < 1
   ) {
     throw new Error('verification-repair-loop:config-invalid');
   }
@@ -1424,8 +1483,28 @@ function createRepairLoopStateMachine(options = {}) {
       repairLink = rebind.link;
     }
     const history = buildHistory(attempts, factsByAttempt, repairLink);
+    const automaticLoop = deriveLoopBreak(
+      packet,
+      attempts,
+      factsByAttempt,
+      noProgressThreshold,
+      attemptBudget
+    );
 
-    if (signal) {
+    if (signal || automaticLoop) {
+      const reasonIds = signal
+        ? [
+            'no-progress-source:classifier',
+            `no-progress-threshold:${signal.threshold}`,
+            `no-progress-count:${signal.no_progress_count}`
+          ]
+        : [
+            'no-progress-source:attempt-history',
+            `blocker-digest:${automaticLoop.blocker_digest}`,
+            `consecutive-failures:${automaticLoop.consecutive_failures}`,
+            `attempt-count:${automaticLoop.attempt_count}`,
+            ...automaticLoop.triggers.map((trigger) => `loop-trigger:${trigger}`)
+          ];
       return result({
         packet,
         status: 'break_loop_required',
@@ -1434,10 +1513,7 @@ function createRepairLoopStateMachine(options = {}) {
         action: 'route_break_loop',
         caseIds: [packet.case_id],
         attempts,
-        reasonIds: [
-          `no-progress-threshold:${signal.threshold}`,
-          `no-progress-count:${signal.no_progress_count}`
-        ],
+        reasonIds,
         repairLink
       });
     }

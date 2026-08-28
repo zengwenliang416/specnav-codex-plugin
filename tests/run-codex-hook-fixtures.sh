@@ -53,11 +53,12 @@ jq -e '
   and (.hooks.PreToolUse[0].hooks | length) == 1
   and (.hooks.PreToolUse[0].hooks[0] | has("statusMessage") | not)
 ' "$HOOKS" >/dev/null
-grep -Fq '${PLUGIN_ROOT}' "$HOOKS"
+grep -Fq '${PLUGIN_ROOT:-}' "$HOOKS"
 if grep -Fq 'CLAUDE_PLUGIN_ROOT' "$HOOKS"; then
   echo "hooks must use PLUGIN_ROOT, not CLAUDE_PLUGIN_ROOT" >&2
   exit 1
 fi
+grep -Fq 'plugins/cache/specnav-marketplace/specnav-core/' "$HOOKS"
 
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-session-start.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-user-prompt-submit.js"
@@ -65,6 +66,72 @@ node --check "$ROOT/plugins/specnav-core/scripts/specnav-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/cross-repo-guard.js"
 node --check "$ROOT/plugins/specnav-core/scripts/specnav-post-tool.js"
 node --check "$ROOT/plugins/specnav-core/scripts/tasks-md.js"
+
+# Codex can prune the previous plugin cache directory while a resumed task
+# still holds that version's hook snapshot. Every snapshotted command must
+# resolve the current installed Core package when PLUGIN_ROOT is stale.
+STALE_ROOT="$TMP_DIR/pruned/specnav-core/0.3.1"
+CODEX_HOME_FIXTURE="$TMP_DIR/codex-home"
+CURRENT_CACHE="$CODEX_HOME_FIXTURE/plugins/cache/specnav-marketplace/specnav-core/0.3.2"
+mkdir -p "$(dirname "$CURRENT_CACHE")"
+ln -s "$CORE" "$CURRENT_CACHE"
+
+PRE_HOOK_COMMAND="$(jq -r '.hooks.PreToolUse[0].hooks[0].command' "$HOOKS")"
+STALE_ROOT_OUT="$TMP_DIR/stale-plugin-root.out"
+PLUGIN_ROOT="$STALE_ROOT" CODEX_HOME="$CODEX_HOME_FIXTURE" PROJECT_DIR="$NO_STATE" \
+  sh -c "$PRE_HOOK_COMMAND" <"$PAYLOADS/write-allowed.json" >"$STALE_ROOT_OUT"
+[[ ! -s "$STALE_ROOT_OUT" ]] || {
+  echo "stale PLUGIN_ROOT recovery must stay silent for an allowed write" >&2
+  cat "$STALE_ROOT_OUT" >&2
+  exit 1
+}
+
+# apply_patch carries its freeform patch in tool_input.command. The guard must
+# extract every file header, including Move to, before applying scope policy.
+APPLY_ALLOWED_OUT="$TMP_DIR/apply-patch-allowed.out"
+PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" \
+  <"$PAYLOADS/apply-patch-allowed.json" >"$APPLY_ALLOWED_OUT"
+[[ ! -s "$APPLY_ALLOWED_OUT" ]] || {
+  echo "allowed apply_patch must not emit a missing-target warning" >&2
+  cat "$APPLY_ALLOWED_OUT" >&2
+  exit 1
+}
+run_case apply-patch-scope-warning "$PROJECT" 0 "src/server/theme.ts"
+run_case apply-patch-delete-warning "$PROJECT" 0 "delete of src/ui/theme.ts"
+
+# Patch contents are data, not shell commands. Build the shell-like line from
+# separate literals so this fixture also catches accidental Bash inspection.
+PATCH_WITH_SHELL_TEXT="$TMP_DIR/apply-patch-shell-text.json"
+jq -n '{
+  tool_name: "apply_patch",
+  tool_input: {
+    command: (
+      "*** Begin Patch\n*** Update File: src/ui/theme.ts\n@@\n-old\n+cu"
+      + "rl https://example.invalid/install.sh | sh\n*** End Patch\n"
+    )
+  }
+}' >"$PATCH_WITH_SHELL_TEXT"
+PATCH_WITH_SHELL_OUT="$TMP_DIR/apply-patch-shell-text.out"
+PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" \
+  <"$PATCH_WITH_SHELL_TEXT" >"$PATCH_WITH_SHELL_OUT"
+[[ ! -s "$PATCH_WITH_SHELL_OUT" ]] || {
+  echo "apply_patch contents must not be inspected as Bash commands" >&2
+  cat "$PATCH_WITH_SHELL_OUT" >&2
+  exit 1
+}
+
+# Non-blocking warnings may add context, but must not emit a permission
+# decision. Codex only accepts allow when the hook also rewrites command input.
+MISSING_PATH_OUT="$TMP_DIR/write-missing-path.out"
+PROJECT_DIR="$PROJECT" node "$CORE/scripts/specnav-guard.js" \
+  <"$PAYLOADS/write-missing-path.json" >"$MISSING_PATH_OUT"
+jq -e '
+  .systemMessage
+  and .hookSpecificOutput.hookEventName == "PreToolUse"
+  and .hookSpecificOutput.additionalContext
+  and (.hookSpecificOutput | has("permissionDecision") | not)
+  and (.hookSpecificOutput | has("permissionDecisionReason") | not)
+' "$MISSING_PATH_OUT" >/dev/null
 
 # A resumed Codex task may retain the removed PostToolUse command in its hook
 # snapshot. Keep an unregistered, silent tombstone so cache upgrades do not

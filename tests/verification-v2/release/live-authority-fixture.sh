@@ -24,4 +24,6 @@ specnav_verification_prepare_live_authority() {
   SPECNAV_CODEFREE_O_REPOSITORY_ROOT="$(
     jq -er '.roots["codefree-o"]' "$manifest_file"
   )"
+  export SPECNAV_DSH_REPOSITORY_ROOT
+  SPECNAV_DSH_REPOSITORY_ROOT="$(jq -er '.roots.dsh' "$manifest_file")"
 }

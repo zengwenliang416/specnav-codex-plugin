@@ -20,6 +20,38 @@ const CHILD_MARKER = 'specnav.playwright.child.v1';
 const SANDBOX_EXECUTABLE = '/usr/bin/sandbox-exec';
 const DEFAULT_SHUTDOWN_GRACE_MS = 1500;
 const DEFAULT_KILL_GRACE_MS = 500;
+const REVIEW_ACTION_HOLD_MS = 450;
+const REVIEW_FINAL_HOLD_MS = 900;
+const REVIEW_ACTION_METHODS = new Set([
+  'check',
+  'click',
+  'dblclick',
+  'dragTo',
+  'fill',
+  'goto',
+  'hover',
+  'press',
+  'selectOption',
+  'setInputFiles',
+  'tap',
+  'type',
+  'uncheck'
+]);
+const REVIEW_ACTION_LABELS = Object.freeze({
+  check: 'Check',
+  click: 'Click',
+  dblclick: 'Double click',
+  dragTo: 'Drag',
+  fill: 'Fill',
+  goto: 'Navigate',
+  hover: 'Hover',
+  press: 'Press key',
+  selectOption: 'Select option',
+  setInputFiles: 'Upload file',
+  tap: 'Tap',
+  type: 'Type',
+  uncheck: 'Uncheck'
+});
 
 function blocker(id, artifact = 'playwright', detail = null) {
   return { id, artifact, detail };
@@ -78,7 +110,7 @@ class AssertionContractError extends Error {
   }
 }
 
-function createAssertionApi(contractIds, assertions, emit) {
+function createAssertionApi(contractIds, assertions, emit, onRecord = null) {
   const allowed = new Set(contractIds);
   const used = new Set();
 
@@ -105,6 +137,7 @@ function createAssertionApi(contractIds, assertions, emit) {
     });
     assertions.push(assertion);
     emit({ type: 'assertion', assertion });
+    if (typeof onRecord === 'function') onRecord(assertion);
     return passed;
   }
 
@@ -207,6 +240,7 @@ function workerResult(state, overrides = {}) {
     assertions: state.assertions,
     console: state.console,
     network: state.network,
+    review: state.review,
     browser: state.browser,
     observation: state.observation || null,
     exit_status: null,
@@ -276,6 +310,7 @@ async function executeWorker(payload, options = {}) {
     assertions: [],
     console: [],
     network: [],
+    review: [],
     browser: payload.browser,
     observation: null
   };
@@ -293,6 +328,8 @@ async function executeWorker(payload, options = {}) {
   const consolePath = path.join(artifactRoot, 'console.json');
   const networkPath = path.join(artifactRoot, 'network.json');
   const assertionsPath = path.join(artifactRoot, 'assertions.json');
+  const reviewPath = path.join(artifactRoot, 'human-review.json');
+  const reviewStartedAt = Date.now();
   let browser = null;
   let context = null;
   let page = null;
@@ -353,6 +390,139 @@ async function executeWorker(payload, options = {}) {
         error: error instanceof Error ? error.message : String(error)
       });
     }
+  }
+
+  function reviewText(value, fallback) {
+    const normalized = typeof value === 'string'
+      ? value.replace(/\s+/g, ' ').trim()
+      : '';
+    return (normalized || fallback).slice(0, 240);
+  }
+
+  function recordReview(kind, title, status = 'info', detail = null) {
+    const entry = {
+      sequence: state.review.length + 1,
+      offset_ms: Date.now() - reviewStartedAt,
+      kind: reviewText(kind, 'step'),
+      title: reviewText(title, 'Step'),
+      status: reviewText(status, 'info'),
+      detail: detail == null ? null : reviewText(detail, 'detail')
+    };
+    state.review.push(entry);
+    emit({ type: 'review', entry });
+    return entry;
+  }
+
+  async function showReviewOverlay(entry) {
+    if (!page || page.isClosed()) return;
+    try {
+      await page.evaluate((value) => {
+        window.__specnavReviewOverlay?.show(value);
+      }, entry);
+    } catch {
+      // Navigation can replace the document between event capture and render.
+    }
+  }
+
+  async function installReviewOverlay() {
+    const install = () => {
+      if (window.__specnavReviewOverlay) return;
+      const style = document.createElement('style');
+      style.textContent = `
+        #specnav-review-overlay {
+          position: fixed;
+          z-index: 2147483647;
+          top: 18px;
+          right: 18px;
+          width: min(360px, calc(100vw - 36px));
+          box-sizing: border-box;
+          padding: 14px 16px;
+          border: 1px solid rgba(255,255,255,.28);
+          border-radius: 14px;
+          background: rgba(9, 18, 30, .90);
+          box-shadow: 0 16px 50px rgba(0,0,0,.32);
+          color: #f8fbff;
+          font: 600 14px/1.35 ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif;
+          pointer-events: none;
+          backdrop-filter: blur(12px);
+        }
+        #specnav-review-overlay [data-specnav-status="passed"] { color: #71e6a2; }
+        #specnav-review-overlay [data-specnav-status="failed"] { color: #ff8d8d; }
+        #specnav-review-overlay small {
+          display: block;
+          margin-top: 5px;
+          color: rgba(232, 241, 250, .72);
+          font-weight: 500;
+        }
+        .specnav-review-click {
+          position: fixed;
+          z-index: 2147483646;
+          width: 34px;
+          height: 34px;
+          margin: -17px 0 0 -17px;
+          border: 3px solid #ffb84d;
+          border-radius: 50%;
+          box-shadow: 0 0 0 8px rgba(255,184,77,.24);
+          pointer-events: none;
+          animation: specnav-review-click 1.1s ease-out forwards;
+        }
+        @keyframes specnav-review-click {
+          from { opacity: 1; transform: scale(.55); }
+          to { opacity: 0; transform: scale(1.45); }
+        }
+      `;
+      document.documentElement.appendChild(style);
+      const overlay = document.createElement('div');
+      overlay.id = 'specnav-review-overlay';
+      overlay.innerHTML = '<div>Scenario ready</div><small>Human review timeline enabled</small>';
+      document.documentElement.appendChild(overlay);
+      const show = (entry) => {
+        if (!overlay.isConnected) document.documentElement.appendChild(overlay);
+        const detail = entry.detail
+          ? `<small>${String(entry.detail).replace(/[&<>"]/g, (char) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+          })[char])}</small>`
+          : '';
+        overlay.innerHTML = `<div data-specnav-status="${entry.status}">${
+          String(entry.title).replace(/[&<>"]/g, (char) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+          })[char])
+        }</div>${detail}`;
+      };
+      document.addEventListener('click', (event) => {
+        const marker = document.createElement('div');
+        marker.className = 'specnav-review-click';
+        marker.style.left = `${event.clientX}px`;
+        marker.style.top = `${event.clientY}px`;
+        document.documentElement.appendChild(marker);
+        setTimeout(() => marker.remove(), 1200);
+        const target = event.target;
+        const label = target?.getAttribute?.('aria-label')
+          || target?.id
+          || target?.textContent
+          || target?.tagName
+          || 'page';
+        const entry = {
+          kind: 'action',
+          title: 'Click',
+          status: 'info',
+          detail: String(label).replace(/\s+/g, ' ').trim().slice(0, 120)
+        };
+        show(entry);
+        window.__specnavRecordReview?.(entry);
+      }, true);
+      window.__specnavReviewOverlay = { show };
+    };
+    await page.exposeBinding('__specnavRecordReview', (_source, entry) => {
+      recordReview(
+        entry?.kind,
+        entry?.title,
+        entry?.status,
+        entry?.detail
+      );
+    });
+    await page.addInitScript(install);
+    await page.evaluate(install);
   }
 
   try {
@@ -484,10 +654,37 @@ async function executeWorker(payload, options = {}) {
 
       page = await Promise.race([context.newPage(), stopPromise]);
       video = page.video();
+      await installReviewOverlay();
+      const startedReview = recordReview(
+        'lifecycle',
+        `Scenario: ${payload.scenario_id}`,
+        'info',
+        'Browser recording and human review timeline started.'
+      );
+      await showReviewOverlay(startedReview);
+      page.on('framenavigated', (frame) => {
+        if (frame !== page.mainFrame()) return;
+        const navigation = recordReview(
+          'navigation',
+          'Navigation',
+          'info',
+          frame.url()
+        );
+        showReviewOverlay(navigation);
+      });
       const assertion = createAssertionApi(
         payload.assertion_contract_ids,
         state.assertions,
-        emit
+        emit,
+        (entry) => {
+          const assertionReview = recordReview(
+            'assertion',
+            `Assertion ${entry.status.toUpperCase()}: ${entry.id}`,
+            entry.status,
+            entry.method
+          );
+          showReviewOverlay(assertionReview);
+        }
       );
       const guarded = createPlaywrightApiGuard({
         browser,
@@ -497,6 +694,17 @@ async function executeWorker(payload, options = {}) {
           if (!accessViolations.includes(detail)) {
             accessViolations.push(detail);
           }
+        },
+        async afterCall(call) {
+          if (!REVIEW_ACTION_METHODS.has(call.method)) return;
+          const action = recordReview(
+            'action',
+            `Completed: ${REVIEW_ACTION_LABELS[call.method] || call.method}`,
+            'info',
+            `${call.kind}.${call.method}`
+          );
+          await showReviewOverlay(action);
+          await page.waitForTimeout(REVIEW_ACTION_HOLD_MS);
         }
       });
       const oracleGuarded = payload.mode === 'midscene'
@@ -557,9 +765,27 @@ async function executeWorker(payload, options = {}) {
       });
       try {
         await Promise.race([scenarioPromise, stopPromise]);
+        const completedReview = recordReview(
+          'lifecycle',
+          'Scenario completed',
+          'passed',
+          `${state.assertions.length} deterministic assertion(s) recorded.`
+        );
+        await showReviewOverlay(completedReview);
+        await page.waitForTimeout(REVIEW_FINAL_HOLD_MS);
       } catch (error) {
         scenarioError = error;
         scenarioPromise.catch(() => {});
+        const failedReview = recordReview(
+          'lifecycle',
+          'Scenario stopped',
+          'failed',
+          error instanceof Error ? error.message : String(error)
+        );
+        await showReviewOverlay(failedReview);
+        if (!page.isClosed()) {
+          await page.waitForTimeout(REVIEW_FINAL_HOLD_MS).catch(() => {});
+        }
       }
     }
   } catch (error) {
@@ -637,6 +863,7 @@ async function executeWorker(payload, options = {}) {
     writeJsonArtifact('log', consolePath, state.console);
     writeJsonArtifact('log', networkPath, state.network);
     writeJsonArtifact('assertion_result', assertionsPath, state.assertions);
+    writeJsonArtifact('log', reviewPath, state.review);
   }
 
   if (stopCause === 'canceled') {
@@ -1061,6 +1288,7 @@ function runSandboxedScenario(payload, options = {}) {
       assertions: [],
       console: [],
       network: [],
+      review: [],
       browser: payload.browser
     };
     let profile;
@@ -1196,6 +1424,7 @@ function runSandboxedScenario(payload, options = {}) {
           assertions: resolvedResult.assertions || partial.assertions,
           console: resolvedResult.console || partial.console,
           network: resolvedResult.network || partial.network,
+          review: resolvedResult.review || partial.review,
           browser: resolvedResult.browser || partial.browser
         }, stopCause)
         : resolvedResult);
@@ -1239,6 +1468,7 @@ function runSandboxedScenario(payload, options = {}) {
         if (event?.type === 'assertion') partial.assertions.push(event.assertion);
         if (event?.type === 'console') partial.console.push(event.entry);
         if (event?.type === 'network') partial.network.push(event.entry);
+        if (event?.type === 'review') partial.review.push(event.entry);
         if (typeof options.onEvent === 'function') options.onEvent(event);
         return;
       }
@@ -1294,6 +1524,7 @@ async function runPlaywrightWorker(payload, options = {}) {
     assertions: [],
     console: [],
     network: [],
+    review: [],
     browser: payload.browser
   };
   let stopCause = null;
@@ -1427,6 +1658,7 @@ if (process.env.SPECNAV_PLAYWRIGHT_CHILD === CHILD_MARKER) {
             assertions: [],
             console: [],
             network: [],
+            review: [],
             browser: childPayload.browser,
             observation: null
           }, error)

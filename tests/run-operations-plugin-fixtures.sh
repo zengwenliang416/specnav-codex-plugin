@@ -265,6 +265,7 @@ assert_blocker "$TMP_DIR/missing-ops.json" 'missing-operations-artifact:readines
 write_plugin_marketplace_ops "$PROJECT"
 run_gate operations-gate.js "$PROJECT" "$TMP_DIR/valid-ops.json" 0
 jq -e '.ok == true and .release_target == "plugin-marketplace"' "$TMP_DIR/valid-ops.json" >/dev/null
+jq -e '.verification_v2_proof.host_proof_required == true' "$TMP_DIR/valid-ops.json" >/dev/null
 run_gate archive-gate.js "$PROJECT" "$TMP_DIR/archive-green.json" 0
 jq -e '.verdict == "green"' "$TMP_DIR/archive-green.json" >/dev/null
 test -f "$PROJECT/openspec/changes/add-dashboard/operations/archive-gate.json"
@@ -383,8 +384,13 @@ mv "$TMP_DIR/local-checklist.tmp" "$LOCAL_ONLY/openspec/changes/add-dashboard/op
 rm "$LOCAL_ONLY/openspec/changes/add-dashboard/operations/install-verification.json"
 rm "$LOCAL_ONLY/openspec/changes/add-dashboard/operations/update-policy.json"
 rm "$LOCAL_ONLY/openspec/changes/add-dashboard/operations/compatibility-matrix.md"
+rm "$LOCAL_ONLY/openspec/changes/add-dashboard/operations/host-proof-current.json"
 run_gate operations-gate.js "$LOCAL_ONLY" "$TMP_DIR/local-only.json" 0
-jq -e '.release_target == "local-only"' "$TMP_DIR/local-only.json" >/dev/null
+jq -e '
+  .release_target == "local-only"
+  and .verification_v2_proof.host_proof_required == false
+  and (.verification_v2_proof.hosts | length) == 0
+' "$TMP_DIR/local-only.json" >/dev/null
 
 # Non-user-facing change: changelog/release-notes are not required and may be absent.
 NON_USER_FACING="$TMP_DIR/non-user-facing"

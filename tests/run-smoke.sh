@@ -25,8 +25,6 @@ bash "$ROOT/tests/run-codegraph-policy-fixtures.sh"
 bash "$ROOT/tests/run-codegraph-context-fixtures.sh"
 bash "$ROOT/tests/run-light-compact-gate-fixtures.sh"
 bash "$ROOT/tests/run-verification-runtime-scope.sh"
-bash "$ROOT/tests/run-verification-v2-cross-host.sh"
-bash "$ROOT/tests/run-verification-v2-release.sh"
 
 if rg -n 'CLAUDE_PLUGIN_ROOT|\\.claude-plugin|claude plugin' \
   "$ROOT/plugins" \

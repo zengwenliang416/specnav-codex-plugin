@@ -15,15 +15,18 @@ Build the final operations readiness decision.
 
 ## Workflow
 
-Before declaring readiness, run the Verification 2.0 release/archive proof:
+Before declaring readiness, run the Operations gate:
 
 ```bash
-node "$SPECNAV_OPERATIONS_ROOT/scripts/verification-v2-proof.js" --json
+node "$SPECNAV_OPERATIONS_ROOT/scripts/operations-gate.js" --json
 ```
 
 Treat every returned blocker as release-blocking. Do not accept legacy green
 aggregates, HTML text, light verification, partial-domain evidence, fallback,
-or a manual green override.
+or a manual green override. The gate requires cross-host proof only when
+`release_target` is `plugin-marketplace` or `host-compatibility`; ordinary
+project and package targets validate only the current project's Verification
+proof.
 
 1. Read verification aggregate report, receipt, blocker classification, development handoff, `tasks.md`, `development/migrations/manifest.json`, release plan, git state, and operations artifacts.
 2. Write readiness from direct evidence only.

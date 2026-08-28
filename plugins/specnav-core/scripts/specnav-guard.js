@@ -64,17 +64,61 @@ function collectFallbackPaths(value, paths, fallbackFields, context) {
   }
 }
 
+function collectApplyPatchPaths(patch, paths, operations = new Map()) {
+  if (typeof patch !== 'string' || !patch.trim()) return operations;
+  let updateSource = null;
+  for (const line of patch.split(/\r?\n/)) {
+    const header = line.match(
+      /^\*\*\* (Add|Delete|Update) File:\s*(.+?)\s*$/
+    );
+    if (header) {
+      const target = header[2].trim();
+      if (!addPath(paths, target)) continue;
+      const operation = {
+        Add: 'create',
+        Delete: 'delete',
+        Update: 'modify'
+      }[header[1]];
+      operations.set(target, operation);
+      updateSource = header[1] === 'Update' ? target : null;
+      continue;
+    }
+    const move = line.match(/^\*\*\* Move to:\s*(.+?)\s*$/);
+    if (!move) continue;
+    const target = move[1].trim();
+    if (updateSource) operations.set(updateSource, 'rename');
+    if (addPath(paths, target)) operations.set(target, 'rename');
+    updateSource = null;
+  }
+  return operations;
+}
+
 function normalizePayload(payload) {
-  const input = payload.tool_input || payload.input || {};
+  const rawInput = payload.tool_input ?? payload.input ?? {};
+  const input = rawInput && typeof rawInput === 'object' && !Array.isArray(rawInput)
+    ? rawInput
+    : {};
+  const tool = toolName(payload);
   const paths = new Set();
+  const operations = new Map();
   const fallbackFields = new Set();
   addPath(paths, input.file_path);
   addPath(paths, input.notebook_path);
   collectFallbackPaths(input, paths, fallbackFields, { nested: false });
+  if (/^apply_patch$/i.test(tool)) {
+    const patch = [
+      input.command,
+      input.patch,
+      input.input,
+      typeof rawInput === 'string' ? rawInput : null
+    ].find((value) => typeof value === 'string' && value.trim());
+    collectApplyPatchPaths(patch, paths, operations);
+  }
   return {
-    tool: toolName(payload),
+    tool,
     command: typeof input.command === 'string' ? input.command : '',
     paths: Array.from(paths),
+    operations: Object.fromEntries(operations),
     fallback_fields: Array.from(fallbackFields).sort()
   };
 }
@@ -148,19 +192,17 @@ function recordGateHit(root, sessionId, reason, change) {
 }
 
 function warn(root, message, reason = 'warn', context = {}) {
-  // Non-blocking advisory. Exit 0 + structured JSON is the Claude Code
-  // contract for "allow with a message"; exit 1 renders as a hook ERROR
-  // banner ("Failed with non-blocking status code") even though nothing is
-  // blocked, which reads as breakage to the user. The warning still reaches
-  // the model via systemMessage and stays auditable via the hook.warn event.
+  // Non-blocking advisory. Codex accepts systemMessage/additionalContext on
+  // exit 0. An allow decision is reserved for command rewrites that also
+  // provide updatedInput.command, so advisory hooks must omit it.
   lib.event(root, 'hook.warn', { reason, message });
   if (context.silent) process.exit(0);
+  const warning = `SpecNav gate warning: ${message}`;
   process.stdout.write(`${JSON.stringify({
-    systemMessage: `SpecNav gate warning: ${message}`,
+    systemMessage: warning,
     hookSpecificOutput: {
       hookEventName: 'PreToolUse',
-      permissionDecision: 'allow',
-      permissionDecisionReason: `SpecNav gate warning: ${message}`
+      additionalContext: warning
     }
   })}\n`);
   process.exit(0);
@@ -312,6 +354,25 @@ function selfCheck(options = {}) {
       name: 'notebook-path',
       payload: { tool_name: 'NotebookEdit', tool_input: { notebook_path: 'notebooks/selfcheck.ipynb' } },
       expect: (result) => result.tool === 'NotebookEdit' && result.paths.includes('notebooks/selfcheck.ipynb')
+    },
+    {
+      name: 'apply-patch-command',
+      payload: {
+        tool_name: 'apply_patch',
+        tool_input: {
+          command: [
+            '*** Begin Patch',
+            '*** Update File: src/selfcheck.ts',
+            '*** Move to: src/selfcheck-renamed.ts',
+            '*** End Patch'
+          ].join('\n')
+        }
+      },
+      expect: (result) => (
+        result.tool === 'apply_patch'
+        && result.paths.includes('src/selfcheck.ts')
+        && result.paths.includes('src/selfcheck-renamed.ts')
+      )
     }
   ];
   const failures = [];
@@ -490,7 +551,11 @@ function main() {
       fallback_fields: normalized.fallback_fields
     });
   }
-  if (normalized.command && isDangerousCommand(normalized.command)) {
+  if (
+    isBashTool(normalized.tool)
+    && normalized.command
+    && isDangerousCommand(normalized.command)
+  ) {
     if (overrideAllows(root, 'dangerous-command', { command: normalized.command })) {
       allow(root, 'override-dangerous-command');
     }
@@ -521,10 +586,18 @@ function main() {
   // external repos), never by in-project scope globs.
   const externalAbsPaths = [];
   const relPaths = [];
+  const relativeOperations = new Map();
   for (const target of normalized.paths) {
     const absolute = path.resolve(root, target);
-    if (isContainedIn(root, absolute)) relPaths.push(toRelativeProjectPath(root, absolute));
-    else externalAbsPaths.push(absolute);
+    if (isContainedIn(root, absolute)) {
+      const relative = toRelativeProjectPath(root, absolute);
+      relPaths.push(relative);
+      if (normalized.operations[target]) {
+        relativeOperations.set(relative, normalized.operations[target]);
+      }
+    } else {
+      externalAbsPaths.push(absolute);
+    }
   }
   const productionPaths = relPaths.filter((rel) => !rel.startsWith('openspec/'));
   const hasOpenSpec = fs.existsSync(lib.openspecDir(root));
@@ -668,7 +741,8 @@ function main() {
       }
     }
     if (scope.operations) {
-      const operation = fs.existsSync(path.resolve(root, rel)) ? 'modify' : 'create';
+      const operation = relativeOperations.get(rel)
+        || (fs.existsSync(path.resolve(root, rel)) ? 'modify' : 'create');
       if (scope.operations[operation] === false && !pathOverrideAllows(root, 'operation', rel, change)) {
         softDeny(root, 'operation', `${operation} of ${rel} is blocked by scope.json allowed_operations. Fix: enable the operation in scope.json or create an operation override.`);
       }
@@ -694,6 +768,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  collectApplyPatchPaths,
   collectFallbackPaths,
   isReadOnlyBashCommand,
   markVerificationStale,

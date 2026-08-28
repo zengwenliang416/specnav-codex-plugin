@@ -22,7 +22,12 @@ if (fs.existsSync(root) && fs.readdirSync(root).length > 0) {
   process.exit(2);
 }
 
-const fixture = materializeHostAuthorityFixture(root);
+const fixture = materializeHostAuthorityFixture(root, {
+  fixtureRoot: path.join(
+    __dirname,
+    '../../../plugins/specnav-verification/assets/contract-fixtures'
+  )
+});
 process.stdout.write(`${JSON.stringify({
   schema: 'specnav.verification.live-authority-fixture.v1',
   host_lock: fixture.lockFile,

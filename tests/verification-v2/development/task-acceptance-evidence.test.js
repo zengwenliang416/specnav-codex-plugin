@@ -21,7 +21,7 @@ const {
   createValidationReceiptAuthority
 } = require(path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/validation-receipt-authority'
+  'plugins/specnav-development/scripts/development-receipt-authority'
 ));
 const SCHEMA_FILE = path.join(
   ROOT,
@@ -93,7 +93,7 @@ function validationEntry(options) {
     ok: true,
     exit_status: 0,
     attestation: 'system-executed',
-    recorded_by: 'specnav-evidence-runner',
+    recorded_by: 'specnav-development-evidence-runner',
     recorded_at: options.recordedAt,
     reviewed_git_head: options.head,
     reviewed_git_tree: options.tree,

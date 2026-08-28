@@ -11,13 +11,13 @@ process.env.SPECNAV_CORE_ROOT = path.join(ROOT, 'plugins/specnav-core');
 
 const { replayValidationLog } = require(path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/evidence-runner'
+  'plugins/specnav-development/scripts/evidence-runner'
 ));
 const {
   createValidationReceiptAuthority
 } = require(path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/validation-receipt-authority'
+  'plugins/specnav-development/scripts/development-receipt-authority'
 ));
 const RECEIPT_AUTHORITY = createValidationReceiptAuthority({
   key: Buffer.alloc(32, 23),

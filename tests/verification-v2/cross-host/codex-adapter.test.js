@@ -124,7 +124,9 @@ test('Codex invokes the shared command surface and preserves blockers', () => {
   assert.deepEqual(calls, [{
     action: 'validate',
     project_root: '/tmp/specnav-codex-project',
-    options: {}
+    options: {
+      approved: false
+    }
   }]);
   assert.equal(response.ok, false);
   assert.equal(response.status, 'blocked');

@@ -6,12 +6,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/specnav-session-start.js\"",
+            "command": "ROOT=\"${PLUGIN_ROOT:-}\"; if [ ! -f \"$ROOT/scripts/specnav-session-start.js\" ]; then ROOT=\"$(ls -1dt \"${CODEX_HOME:-$HOME/.codex}/plugins/cache/specnav-marketplace/specnav-core/\"*/ 2>/dev/null | head -n 1)\"; fi; if [ ! -f \"$ROOT/scripts/specnav-session-start.js\" ]; then echo \"SpecNav hook runtime missing: specnav-session-start.js\" >&2; exit 1; fi; exec node \"$ROOT/scripts/specnav-session-start.js\"",
             "statusMessage": "Loading SpecNav context"
           },
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/cross-repo-announce.js\"",
+            "command": "ROOT=\"${PLUGIN_ROOT:-}\"; if [ ! -f \"$ROOT/scripts/cross-repo-announce.js\" ]; then ROOT=\"$(ls -1dt \"${CODEX_HOME:-$HOME/.codex}/plugins/cache/specnav-marketplace/specnav-core/\"*/ 2>/dev/null | head -n 1)\"; fi; if [ ! -f \"$ROOT/scripts/cross-repo-announce.js\" ]; then echo \"SpecNav hook runtime missing: cross-repo-announce.js\" >&2; exit 1; fi; exec node \"$ROOT/scripts/cross-repo-announce.js\"",
             "timeout": 10,
             "statusMessage": "Scanning sibling CodeGraph indexes"
           }
@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/specnav-user-prompt-submit.js\"",
+            "command": "ROOT=\"${PLUGIN_ROOT:-}\"; if [ ! -f \"$ROOT/scripts/specnav-user-prompt-submit.js\" ]; then ROOT=\"$(ls -1dt \"${CODEX_HOME:-$HOME/.codex}/plugins/cache/specnav-marketplace/specnav-core/\"*/ 2>/dev/null | head -n 1)\"; fi; if [ ! -f \"$ROOT/scripts/specnav-user-prompt-submit.js\" ]; then echo \"SpecNav hook runtime missing: specnav-user-prompt-submit.js\" >&2; exit 1; fi; exec node \"$ROOT/scripts/specnav-user-prompt-submit.js\"",
             "timeout": 15
           }
         ]
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${PLUGIN_ROOT}/scripts/specnav-guard.js\"",
+            "command": "ROOT=\"${PLUGIN_ROOT:-}\"; if [ ! -f \"$ROOT/scripts/specnav-guard.js\" ]; then ROOT=\"$(ls -1dt \"${CODEX_HOME:-$HOME/.codex}/plugins/cache/specnav-marketplace/specnav-core/\"*/ 2>/dev/null | head -n 1)\"; fi; if [ ! -f \"$ROOT/scripts/specnav-guard.js\" ]; then echo \"SpecNav hook runtime missing: specnav-guard.js\" >&2; exit 1; fi; exec node \"$ROOT/scripts/specnav-guard.js\"",
             "timeout": 15
           }
         ]

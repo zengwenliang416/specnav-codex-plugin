@@ -1468,6 +1468,13 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
       action
     );
   }
+  if (args.includes('--no-progress')) {
+    return blocked(
+      'verification-repair:no-progress-override-forbidden',
+      '--no-progress',
+      'Loop progress is derived from trusted attempt history.'
+    );
+  }
   const loaded = loadContext(args, dependencies);
   if (!loaded.ok) return loaded;
   const context = loaded.context;
@@ -1711,8 +1718,7 @@ async function run(args = process.argv.slice(2), dependencies = {}) {
         readings,
         evidence: evidenceFor(context, store, failure.evidence_ids),
         integrity: classifierIntegrity(context, store, failure),
-        root_cause_check_id: check.id,
-        no_progress_count: Number(argValue(args, '--no-progress', '0'))
+        root_cause_check_id: check.id
       });
       if (!result.ok) return { ...result, fallback_used: false };
       const envelope = authority.seal(

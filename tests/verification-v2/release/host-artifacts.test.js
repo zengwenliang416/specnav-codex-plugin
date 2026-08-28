@@ -388,6 +388,7 @@ test('production host artifact generator writes proof-consumable receipts', (t) 
     );
   }
   const proof = createReleaseProofValidator({
+    requireHostProof: true,
     expectedHostRunnerSourceSha256: RUNNER_SOURCE_SHA256,
     expectedFixtureManifestSha256: managedFixtureManifestDigest(
       fixture.hosts.fixtureRoot

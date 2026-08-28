@@ -1,10 +1,11 @@
 {
   "name": "specnav-codex-plugin",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "description": "SpecNav OpenSpec lifecycle plugin suite for Codex.",
   "scripts": {
-    "test": "bash tests/run-smoke.sh"
+    "test": "bash tests/run-smoke.sh",
+    "test:release": "bash tests/run-release-smoke.sh"
   },
   "license": "MIT"
 }

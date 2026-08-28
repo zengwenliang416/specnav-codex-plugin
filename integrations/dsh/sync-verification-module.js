@@ -17,7 +17,6 @@ const REQUIRED_STAGED_EXACT_FILES = Object.freeze([
   'kernel/execution/index.js',
   'kernel/index.js',
   'kernel/repair/trusted-fact-authority.js',
-  'scripts/validation-receipt-authority.js',
   'schemas/cross-host-lock.schema.json',
   'schemas/cross-host-release-result.schema.json',
   'schemas/host-execution.schema.json',

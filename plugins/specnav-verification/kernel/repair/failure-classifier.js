@@ -244,8 +244,13 @@ function createFailureClassifier(options = {}) {
       || !Array.isArray(input.evidence)
       || !isRecord(input.integrity)
       || typeof input.root_cause_check_id !== 'string'
-      || !Number.isInteger(input.no_progress_count)
-      || input.no_progress_count < 0
+      || (
+        input.no_progress_count !== undefined
+        && (
+          !Number.isInteger(input.no_progress_count)
+          || input.no_progress_count < 0
+        )
+      )
     ) {
       return blocked([
         blocker('verification-failure:request-invalid', 'failure-request')
@@ -591,10 +596,11 @@ function createFailureClassifier(options = {}) {
         )
       ], validatedPacket);
     }
-    const signals = input.no_progress_count >= noProgressThreshold
+    const noProgressCount = input.no_progress_count || 0;
+    const signals = noProgressCount >= noProgressThreshold
       ? [{
           kind: 'break_loop_required',
-          no_progress_count: input.no_progress_count,
+          no_progress_count: noProgressCount,
           threshold: noProgressThreshold,
           failure_packet_id: validatedPacket.id
         }]

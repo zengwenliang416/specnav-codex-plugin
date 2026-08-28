@@ -202,7 +202,9 @@ test('Claude Code preserves exact blockers and report artifact paths', () => {
   assert.deepEqual(calls, [{
     action: 'validate',
     project_root: '/tmp/specnav-claude-project',
-    options: {}
+    options: {
+      approved: false
+    }
   }]);
   assert.equal(response.ok, false);
   assert.equal(response.status, 'blocked');

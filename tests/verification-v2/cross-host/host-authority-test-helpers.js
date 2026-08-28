@@ -88,7 +88,8 @@ function materializeHost(root, host, sourceCommit) {
   };
 }
 
-function materializeHostAuthorityFixture(tempRoot) {
+function materializeHostAuthorityFixture(tempRoot, options = {}) {
+  const fixtureRoot = options.fixtureRoot || FIXTURE_ROOT;
   fs.mkdirSync(tempRoot, { recursive: true });
   const roots = {
     codex: path.join(tempRoot, 'codex'),
@@ -159,7 +160,7 @@ function materializeHostAuthorityFixture(tempRoot) {
   function authority(overrides = {}) {
     return kernel.createHostCompatibilityAuthority({
       lockFile: overrides.lockFile || lockFile,
-      fixtureRoot: overrides.fixtureRoot || FIXTURE_ROOT,
+      fixtureRoot: overrides.fixtureRoot || fixtureRoot,
       descriptors: HOST_DESCRIPTORS,
       sourceHost: 'codex',
       roots: { ...roots, ...(overrides.roots || {}) }
@@ -194,7 +195,7 @@ function materializeHostAuthorityFixture(tempRoot) {
     authority,
     commitHost,
     descriptors: HOST_DESCRIPTORS,
-    fixtureRoot: FIXTURE_ROOT,
+    fixtureRoot,
     lockFile,
     mutateManifest,
     readLock,

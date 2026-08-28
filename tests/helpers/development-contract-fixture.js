@@ -14,7 +14,7 @@ const {
   createValidationReceiptAuthority
 } = require(path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/validation-receipt-authority'
+  'plugins/specnav-development/scripts/development-receipt-authority'
 ));
 
 function argValue(args, name, fallback = null) {

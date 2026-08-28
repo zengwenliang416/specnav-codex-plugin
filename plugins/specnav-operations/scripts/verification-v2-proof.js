@@ -1926,6 +1926,7 @@ function atomicWriteJson(changeDir, relative, value) {
 function createReleaseProofValidator(options = {}) {
   const clock = options.clock || (() => new Date().toISOString());
   const runtimeAuthority = options.runtimeAuthority || null;
+  const requireHostProof = options.requireHostProof === true;
   const expectedHostRunnerSourceSha256 = options.expectedHostRunnerSourceSha256
     || hostProofRunnerSourceDigest(LOCAL_REPOSITORY_ROOT);
   const expectedFixtureManifestSha256 = options.expectedFixtureManifestSha256
@@ -2093,12 +2094,14 @@ function createReleaseProofValidator(options = {}) {
       'verify/evidence/index.json',
       blockers
     );
-    const pointerRead = readJson(
-      changeDir,
-      'operations/host-proof-current.json',
-      'operations/host-proof-current.json',
-      blockers
-    );
+    const pointerRead = requireHostProof
+      ? readJson(
+        changeDir,
+        'operations/host-proof-current.json',
+        'operations/host-proof-current.json',
+        blockers
+      )
+      : { value: null, bytes: null };
     const canonicalReads = {
       runs: readJsonValue(
         changeDir,
@@ -2431,42 +2434,44 @@ function createReleaseProofValidator(options = {}) {
         gate_input_sha256: inputRead.bytes ? sha256(inputRead.bytes) : null,
         evidence_index_digest: evidenceIndex?.source_digest || null
       };
-      hostBundle = loadHostProofBundle(
-        schemaRegistry,
-        changeDir,
-        pointerRead,
-        change,
-        runtimeResolution?.authority,
-        blockers
-      );
-      if (hostBundle && trustedFactAuthority) {
-        hosts = validateHostInstallations(
+      if (requireHostProof) {
+        hostBundle = loadHostProofBundle(
           schemaRegistry,
-          trustedFactAuthority,
           changeDir,
-          hostBundle.index.value,
-          releaseBindings,
-          hostBundle.pointer,
-          hostBundle.lock.validated,
+          pointerRead,
+          change,
           runtimeResolution?.authority,
-          expectedHostRunnerSourceSha256,
-          expectedFixtureManifestSha256,
-          currentFingerprints?.code_sha,
           blockers
         );
-        compatibility = validateCompatibility(
-          schemaRegistry,
-          hostBundle.compatibility.value,
-          input,
-          hosts,
-          releaseBindings,
-          hostBundle.pointer,
-          hostBundle.lock.validated,
-          blockers
-        );
-        hostAuthorityResult = compatibility
-          ? { summary: compatibility.authority_summary }
-          : null;
+        if (hostBundle && trustedFactAuthority) {
+          hosts = validateHostInstallations(
+            schemaRegistry,
+            trustedFactAuthority,
+            changeDir,
+            hostBundle.index.value,
+            releaseBindings,
+            hostBundle.pointer,
+            hostBundle.lock.validated,
+            runtimeResolution?.authority,
+            expectedHostRunnerSourceSha256,
+            expectedFixtureManifestSha256,
+            currentFingerprints?.code_sha,
+            blockers
+          );
+          compatibility = validateCompatibility(
+            schemaRegistry,
+            hostBundle.compatibility.value,
+            input,
+            hosts,
+            releaseBindings,
+            hostBundle.pointer,
+            hostBundle.lock.validated,
+            blockers
+          );
+          hostAuthorityResult = compatibility
+            ? { summary: compatibility.authority_summary }
+            : null;
+        }
       }
     }
     const reports = validateReports(
@@ -2518,6 +2523,7 @@ function createReleaseProofValidator(options = {}) {
       case_approval_id: approval.approval?.id || null,
       case_approval_reviewer_id: approval.approval?.reviewer?.id || null,
       runtime_authority: runtimeResolution?.authority || null,
+      host_proof_required: requireHostProof,
       host_authority: hostAuthorityResult?.summary || null,
       release_gate: releaseGate ? {
         id: releaseGate.id,
@@ -2607,7 +2613,9 @@ function main() {
   const projectRoot = process.env.PROJECT_DIR || process.cwd();
   const changeIndex = args.indexOf('--change');
   const change = changeIndex >= 0 ? args[changeIndex + 1] : null;
-  const validator = createReleaseProofValidator();
+  const validator = createReleaseProofValidator({
+    requireHostProof: args.includes('--require-host-proof')
+  });
   const result = validator.validate(projectRoot, change);
   process.stdout.write(
     args.includes('--json')

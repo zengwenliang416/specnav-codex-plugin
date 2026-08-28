@@ -479,6 +479,7 @@ function createResult(state, overrides = {}) {
     assertions: state.assertions,
     console: state.console,
     network: state.network,
+    review: state.review,
     browser: state.browser,
     exit_status: null,
     signal: null,
@@ -586,6 +587,7 @@ function publishArtifacts(workspace, state, emit, options = {}) {
   const jsonArtifacts = [
     ['log', 'console.json', state.console],
     ['log', 'network.json', state.network],
+    ['log', 'human-review.json', state.review],
     ['assertion_result', 'assertions.json', state.assertions]
   ];
   try {
@@ -624,6 +626,7 @@ function publishArtifacts(workspace, state, emit, options = {}) {
       ['trace', 'trace.zip'],
       ['log', 'console.json'],
       ['log', 'network.json'],
+      ['log', 'human-review.json'],
       ['assertion_result', 'assertions.json']
     ];
     const artifacts = [];
@@ -673,6 +676,7 @@ function createPlaywrightAdapter(factoryOptions = {}) {
       assertions: [],
       console: [],
       network: [],
+      review: [],
       browser: null
     };
 
@@ -779,6 +783,9 @@ function createPlaywrightAdapter(factoryOptions = {}) {
     state.network = Array.isArray(workerResult.network)
       ? workerResult.network
       : [];
+    state.review = Array.isArray(workerResult.review)
+      ? workerResult.review
+      : [];
 
     const published = publishArtifacts(workspace, state, emit);
     if (published.blocker) {
@@ -805,7 +812,8 @@ function createPlaywrightAdapter(factoryOptions = {}) {
       artifacts: state.artifacts,
       assertions: state.assertions,
       console: state.console,
-      network: state.network
+      network: state.network,
+      review: state.review
     });
   }
 

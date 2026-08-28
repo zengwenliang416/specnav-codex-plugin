@@ -12,6 +12,7 @@ const {
 } = require('./verification-v2-proof');
 
 const TARGETS = new Set(['local-only', 'plugin-marketplace', 'package', 'host-compatibility', 'project-deploy']);
+const HOST_PROOF_TARGETS = new Set(['plugin-marketplace', 'host-compatibility']);
 const RECEIPT_CONFIDENCE = new Set(['A', 'B', 'C']);
 const UPDATE_SPEC_STATUSES = new Set(['no_writeback_needed', 'written_back', 'deferred']);
 // Act -> capability promotion. A promoted_check distils a resolved bad case into
@@ -257,8 +258,14 @@ function validateVerificationV1Legacy(
   return { blockers: unique(blockers), artifacts };
 }
 
-function validateVerificationV2Proof(projectRoot, change) {
-  const result = createReleaseProofValidator().validate(projectRoot, change);
+function validateVerificationV2Proof(
+  projectRoot,
+  change,
+  requireHostProof = false
+) {
+  const result = createReleaseProofValidator({
+    requireHostProof
+  }).validate(projectRoot, change);
   const proof = result.proof;
   const proofBlockers = result.blockers.map((entry) => entry.id);
   return {
@@ -543,7 +550,16 @@ function validateOperations(root = lib.projectRoot()) {
   }
 
   const signoff = fs.existsSync(path.join(opsDir, 'signoff.yaml')) || fs.existsSync(path.join(changeDir, 'signoff.yaml'));
-  const verificationV2 = validateVerificationV2Proof(projectRoot, change);
+  const readinessPreview = readJsonFile(path.join(opsDir, 'readiness.json'));
+  const previewTarget = isPlainObject(readinessPreview.value)
+    && TARGETS.has(readinessPreview.value.release_target)
+    ? readinessPreview.value.release_target
+    : null;
+  const verificationV2 = validateVerificationV2Proof(
+    projectRoot,
+    change,
+    HOST_PROOF_TARGETS.has(previewTarget)
+  );
   artifacts.push(verificationV2.artifact);
   blockers.push(...verificationV2.artifact.blockers);
   if (risk.tier === 'high-risk' && !signoff) blockers.push('high-risk-signoff');
@@ -742,6 +758,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  HOST_PROOF_TARGETS,
   TARGETS,
   validateOperations,
   validateVerificationV1Legacy,

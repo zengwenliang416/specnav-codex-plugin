@@ -294,6 +294,36 @@ test('real managed Playwright run captures deterministic browser artifacts', asy
         false
       );
     }
+    const reviewArtifact = result.artifacts.find((entry) => (
+      entry.path.endsWith('/human-review.json')
+    ));
+    assert.ok(reviewArtifact, JSON.stringify(result.artifacts));
+    const reviewTimeline = JSON.parse(fs.readFileSync(
+      reviewArtifact.path,
+      'utf8'
+    ));
+    assert.equal(reviewTimeline.length >= 4, true);
+    assert.equal(
+      reviewTimeline.some((entry) => (
+        entry.kind === 'action'
+        && entry.title.includes('Click')
+      )),
+      true,
+      JSON.stringify(reviewTimeline)
+    );
+    assert.equal(
+      reviewTimeline.some((entry) => (
+        entry.kind === 'assertion'
+        && entry.status === 'passed'
+        && entry.title.includes('assertion-1')
+      )),
+      true,
+      JSON.stringify(reviewTimeline)
+    );
+    assert.deepEqual(
+      reviewTimeline.map((entry) => entry.sequence),
+      reviewTimeline.map((_entry, index) => index + 1)
+    );
     assert.deepEqual(
       result.events.slice(-2).map((entry) => entry.type),
       ['attempt.terminal', 'run.terminal']

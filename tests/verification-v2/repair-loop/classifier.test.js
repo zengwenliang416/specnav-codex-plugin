@@ -463,3 +463,12 @@ test('emits only break_loop_required when no-progress threshold is reached', () 
   assert.equal(Object.hasOwn(result, 'transition'), false);
   assert.equal(Object.hasOwn(result, 'decision_artifact'), false);
 });
+
+test('defaults no-progress input to zero when the trusted caller omits it', () => {
+  const input = fixture();
+  delete input.no_progress_count;
+  const result = createClassifier().classify(input);
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.signals, []);
+});

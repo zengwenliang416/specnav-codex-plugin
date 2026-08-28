@@ -10,7 +10,7 @@ const test = require('node:test');
 const ROOT = path.resolve(__dirname, '../../..');
 const RUNNER = path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/evidence-runner.js'
+  'plugins/specnav-development/scripts/evidence-runner.js'
 );
 process.env.SPECNAV_CORE_ROOT = path.join(ROOT, 'plugins/specnav-core');
 
@@ -25,7 +25,7 @@ const {
   createValidationReceiptAuthority
 } = require(path.join(
   ROOT,
-  'plugins/specnav-verification/scripts/validation-receipt-authority'
+  'plugins/specnav-development/scripts/development-receipt-authority'
 ));
 
 const CHANGE = 'example-change';
@@ -162,7 +162,7 @@ test('refresh-current-head reruns stale receipts and is idempotent per HEAD task
       evidence_log: 'development/evidence/stale.log',
       evidence_log_sha256: 'e'.repeat(64),
       evidence_log_size: 0,
-      recorded_by: 'specnav-evidence-runner'
+      recorded_by: 'specnav-development-evidence-runner'
     }))}\n`);
 
     const first = refreshCurrentHead(current.project, { change: CHANGE });
@@ -482,7 +482,7 @@ test('refresh-current-head does not trust a handwritten system-executed receipt'
       ok: true,
       exit_status: 0,
       attestation: 'system-executed',
-      recorded_by: 'specnav-evidence-runner',
+      recorded_by: 'specnav-development-evidence-runner',
       recorded_at: '2026-08-11T12:00:00.000Z',
       reviewed_git_head: current.head,
       reviewed_git_tree: current.tree,
@@ -611,15 +611,23 @@ test('CLI and function dispatch require explicit refresh-current-head mode with 
         }
       }
     );
-    assert.equal(explicit.status, 2, explicit.stderr || explicit.stdout);
+    assert.equal(explicit.status, 0, explicit.stderr || explicit.stdout);
     const result = JSON.parse(explicit.stdout);
-    assert.equal(result.ok, false);
+    assert.equal(result.ok, true);
     assert.equal(result.mode, REFRESH_CURRENT_HEAD_MODE);
-    assert.match(
-      result.blockers[0],
-      /^validation-receipt-authority:runtime-status-invalid:/
-    );
+    assert.deepEqual(result.blockers, []);
     assert.equal(result.fallback_used, false);
+    assert.equal(
+      fs.existsSync(path.join(
+        current.project,
+        'openspec',
+        'changes',
+        CHANGE,
+        'verify',
+        'v2'
+      )),
+      false
+    );
   } finally {
     cleanup(current);
   }

@@ -633,6 +633,24 @@ test('repair CLI replays classification and repair request without overwriting t
   );
 });
 
+test('repair CLI rejects caller-authored no-progress overrides', async () => {
+  const source = projectFixture();
+  const result = await run([
+    ...baseArgs(source, 'classify'),
+    '--root-cause-check',
+    path.relative(source.projectRoot, source.rootCauseFile),
+    '--no-progress',
+    '99'
+  ], dependencies());
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.blockers, [{
+    id: 'verification-repair:no-progress-override-forbidden',
+    artifact: '--no-progress',
+    detail: 'Loop progress is derived from trusted attempt history.'
+  }]);
+});
+
 test('repair CLI appends one deterministic proposal across repeated state evaluation', async () => {
   const source = projectFixture();
   const deps = dependencies();
